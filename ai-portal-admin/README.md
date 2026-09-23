@@ -2,6 +2,7 @@
 
 基于 vue-element-plus-admin 模板搭建，对接 `ai-portal-api`（NestJS，端口 3001）。
 管理后台从前台 Next.js 站点中拆出，独立运行、独立部署。
+仓库总览见[根 README](../README.md)，部署细节见 [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)。
 
 ## 功能模块
 
@@ -30,6 +31,15 @@ pnpm dev            # http://localhost:5173
 - 登录账号：使用后端用户表中的 `role=admin` 账号（非管理员登录会被直接拒绝）。
 - 后端：需先启动 `ai-portal-api`（默认 :3001）。开发环境经 vite 代理转发
   `/api` 与 `/uploads`，无跨域问题。
+
+## 常用命令
+
+```bash
+pnpm typecheck      # vue-tsc 类型检查（--noEmit --skipLibCheck）
+pnpm lint           # eslint（--max-warnings 0）
+pnpm build          # 清 dist 后生产构建（按 VITE_COMPRESSION 生成 .gz/.br 静态压缩产物）
+pnpm preview        # 本地预览构建产物
+```
 
 ## 认证机制（Bearer 双 token）
 

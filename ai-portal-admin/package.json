@@ -50,6 +50,7 @@
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.70.1",
     "vite": "^7.0.0",
+    "vite-plugin-compression2": "^2.5.3",
     "vite-svg-loader": "^5.1.0",
     "vue-tsc": "^3.0.0"
   }

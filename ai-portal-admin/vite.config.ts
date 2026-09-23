@@ -1,11 +1,31 @@
 import { fileURLToPath, URL } from "node:url";
 import { readFileSync } from "node:fs";
-import { defineConfig, type Plugin } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import vue from "@vitejs/plugin-vue";
 import svgLoader from "vite-svg-loader";
+import { compression, type Algorithm } from "vite-plugin-compression2";
 
 /** 后端网关（NestJS，ai-portal-api）开发代理目标 */
 const API_TARGET = "http://localhost:3001";
+
+/**
+ * VITE_COMPRESSION → 静态压缩产物（.gz/.br）：gzip / brotli / both，
+ * 加 -clear 后缀则删除原文件；none 或未配置时关闭。
+ * 产物供 nginx gzip_static 优先返回（见 docker/nginx.conf.template）。
+ */
+function createCompressionPlugins(mode: string): Plugin[] {
+  const raw = (loadEnv(mode, process.cwd()).VITE_COMPRESSION ?? "none").trim();
+  const deleteOriginalAssets = raw.endsWith("-clear");
+  const kind = deleteOriginalAssets ? raw.slice(0, -"-clear".length) : raw;
+  const algorithms: Algorithm[] =
+    kind === "both"
+      ? ["gzip", "brotli"]
+      : kind === "gzip" || kind === "brotli"
+        ? [kind]
+        : [];
+  if (algorithms.length === 0) return [];
+  return [compression({ algorithms, deleteOriginalAssets })];
+}
 
 /**
  * Element Plus 图标集兼容补丁：welcome 页引用 News 图标，
@@ -29,8 +49,8 @@ function iconsNewsCompat(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [vue(), svgLoader(), iconsNewsCompat()],
+export default defineConfig(({ mode }) => ({
+  plugins: [vue(), svgLoader(), iconsNewsCompat(), ...createCompressionPlugins(mode)],
   optimizeDeps: {
     esbuildOptions: {
       plugins: [
@@ -74,4 +94,4 @@ export default defineConfig({
     sourcemap: false,
     chunkSizeWarningLimit: 4096
   }
-});
+}));
