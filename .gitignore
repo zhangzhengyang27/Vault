@@ -27,6 +27,10 @@ build/
 
 # Uploads
 uploads/
+# 提示词示例图必须版本化：2026-09 该目录曾因只存在于本机磁盘而丢失 166 张
+# （线上/NAS/备份全没有），后从 ~/Downloads/AI 生图 找回 105 张。
+# 目录被重新包含后其中的文件也会入库；新增上传的图片随之自动受版本控制
+!ai-portal-api/uploads/
 
 # IDE
 .vscode/
