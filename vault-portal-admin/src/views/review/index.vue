@@ -8,6 +8,7 @@ import {
   reviewBatch,
   errMsg,
   type ReviewItem,
+  type ReviewStatus,
   type ReviewType
 } from "@/api/admin";
 
@@ -28,6 +29,15 @@ const TYPE_KEYS = Object.keys(TYPE_META) as ReviewType[];
 const PAGE_SIZE = 20;
 
 const type = ref<ReviewType>("news");
+// 状态页签：pending=待审核（先审后发模式用）；published=已发布（可下架）；rejected=已拒绝
+// 采集内容默认免审直发（CRAWLER_AUTO_PUBLISH），日常主要在「已发布」页签做下架
+const statusFilter = ref<ReviewStatus>("pending");
+const STATUS_META: Record<ReviewStatus, { label: string }> = {
+  pending: { label: "待审核" },
+  published: { label: "已发布" },
+  rejected: { label: "已拒绝" }
+};
+const STATUS_KEYS = Object.keys(STATUS_META) as ReviewStatus[];
 const items = ref<ReviewItem[]>([]);
 const loading = ref(false);
 const busyId = ref<number | null>(null);
@@ -41,6 +51,11 @@ const detailOpen = ref(false);
 const detailItem = ref<ReviewItem | null>(null);
 
 const meta = computed(() => TYPE_META[type.value]);
+const statusMeta = computed(() => STATUS_META[statusFilter.value]);
+// 拒绝动作在「已发布」页签语义为下架
+const rejectVerb = computed(() =>
+  statusFilter.value === "published" ? "下架" : "拒绝"
+);
 const selectedIds = computed(() => selectedRows.value.map(r => r.id));
 const pagedItems = computed(() =>
   items.value.slice((page.value - 1) * PAGE_SIZE, page.value * PAGE_SIZE)
@@ -53,7 +68,7 @@ const summaryOf = (item: ReviewItem) => item.description ?? item.summary ?? "";
 async function load() {
   loading.value = true;
   try {
-    const data = await getReviewList(type.value);
+    const data = await getReviewList(type.value, statusFilter.value);
     items.value = Array.isArray(data) ? data : [];
     // 数据刷新后当前页可能越界（如批量通过后队列清空）
     if ((page.value - 1) * PAGE_SIZE >= items.value.length) page.value = 1;
@@ -78,7 +93,9 @@ async function review(id: number, action: "approve" | "reject") {
   busyId.value = id;
   try {
     await reviewOne(type.value, id, action);
-    message(action === "approve" ? "已通过" : "已拒绝", { type: "success" });
+    message(action === "approve" ? "已通过" : `已${rejectVerb.value}`, {
+      type: "success"
+    });
     await load();
   } catch (e) {
     message(errMsg(e, "操作失败"), { type: "error" });
@@ -108,10 +125,10 @@ async function runBulk(action: "approve" | "reject", scope: "selected" | "all") 
   const ids = scope === "selected" ? selectedIds.value : undefined;
   if (scope === "selected" && ids.length === 0) return;
 
-  const verb = action === "approve" ? "通过" : "拒绝";
+  const verb = action === "approve" ? "通过" : rejectVerb.value;
   const target =
     scope === "all"
-      ? `当前全部待审的${meta.value.label}（每次最多 500 条）`
+      ? `当前${statusMeta.value.label}的全部${meta.value.label}（每次最多 500 条）`
       : `选中的 ${ids.length} 条${meta.value.label}`;
   try {
     await ElMessageBox.confirm(`确认${verb}${target}？`, "批量审核", {
@@ -125,12 +142,18 @@ async function runBulk(action: "approve" | "reject", scope: "selected" | "all") 
 
   bulkBusy.value = true;
   try {
-    const res = await reviewBatch(type.value, action, ids);
+    // scope=all 按当前状态页签圈定范围（后端按 status 查询后批量翻转）
+    const res = await reviewBatch(
+      type.value,
+      action,
+      ids,
+      scope === "all" ? statusFilter.value : undefined
+    );
     clearSelection();
     await load();
     if (res.remaining > 0) {
       message(
-        `本次${verb} ${res.updated} 条，队列还剩 ${res.remaining} 条待审，可再次点击「全部${verb}」继续。`,
+        `本次${verb} ${res.updated} 条，还剩 ${res.remaining} 条，可再次点击「全部${verb}」继续。`,
         { type: "info", duration: 5000 }
       );
     }
@@ -148,6 +171,11 @@ watch(type, () => {
   page.value = 1;
   load();
 });
+watch(statusFilter, () => {
+  clearSelection();
+  page.value = 1;
+  load();
+});
 </script>
 
 <template>
@@ -155,54 +183,85 @@ watch(type, () => {
     <div class="mb-4">
       <h2 class="text-lg font-semibold">采集审核</h2>
       <p class="mt-1 text-sm text-[var(--el-text-color-secondary)]">
-        处理采集内容的发布审核，通过后自动发布到前台。
+        采集内容默认免审自动发布；在「已发布」页签可下架违规内容。设环境变量
+        CRAWLER_AUTO_PUBLISH=false 可恢复「先审后发」模式。
       </p>
     </div>
 
-    <!-- 筛选行：类型切换 + 批量操作 -->
+    <!-- 筛选行：类型切换 + 状态页签 + 批量操作 -->
     <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <el-radio-group v-model="type" size="small">
-        <el-radio-button v-for="k in TYPE_KEYS" :key="k" :value="k">
-          {{ TYPE_META[k].label }}
-        </el-radio-button>
-      </el-radio-group>
+      <div class="flex flex-wrap items-center gap-3">
+        <el-radio-group v-model="type" size="small">
+          <el-radio-button v-for="k in TYPE_KEYS" :key="k" :value="k">
+            {{ TYPE_META[k].label }}
+          </el-radio-button>
+        </el-radio-group>
+        <el-radio-group v-model="statusFilter" size="small">
+          <el-radio-button v-for="s in STATUS_KEYS" :key="s" :value="s">
+            {{ STATUS_META[s].label }}
+          </el-radio-button>
+        </el-radio-group>
+      </div>
       <div class="flex flex-wrap items-center gap-2">
-        <el-button
-          size="small"
-          type="success"
-          :disabled="bulkBusy || selectedIds.length === 0"
-          @click="runBulk('approve', 'selected')"
-        >
-          通过所选（{{ selectedIds.length }}）
-        </el-button>
-        <el-button
-          size="small"
-          type="danger"
-          plain
-          :disabled="bulkBusy || selectedIds.length === 0"
-          @click="runBulk('reject', 'selected')"
-        >
-          拒绝所选
-        </el-button>
-        <el-divider direction="vertical" />
-        <el-button
-          size="small"
-          type="success"
-          plain
-          :disabled="bulkBusy"
-          @click="runBulk('approve', 'all')"
-        >
-          全部通过
-        </el-button>
-        <el-button
-          size="small"
-          type="danger"
-          plain
-          :disabled="bulkBusy"
-          @click="runBulk('reject', 'all')"
-        >
-          全部拒绝
-        </el-button>
+        <template v-if="statusFilter === 'pending'">
+          <el-button
+            size="small"
+            type="success"
+            :disabled="bulkBusy || selectedIds.length === 0"
+            @click="runBulk('approve', 'selected')"
+          >
+            通过所选（{{ selectedIds.length }}）
+          </el-button>
+          <el-button
+            size="small"
+            type="danger"
+            plain
+            :disabled="bulkBusy || selectedIds.length === 0"
+            @click="runBulk('reject', 'selected')"
+          >
+            拒绝所选
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button
+            size="small"
+            type="success"
+            plain
+            :disabled="bulkBusy"
+            @click="runBulk('approve', 'all')"
+          >
+            全部通过
+          </el-button>
+          <el-button
+            size="small"
+            type="danger"
+            plain
+            :disabled="bulkBusy"
+            @click="runBulk('reject', 'all')"
+          >
+            全部拒绝
+          </el-button>
+        </template>
+        <template v-else-if="statusFilter === 'published'">
+          <el-button
+            size="small"
+            type="danger"
+            plain
+            :disabled="bulkBusy || selectedIds.length === 0"
+            @click="runBulk('reject', 'selected')"
+          >
+            下架所选（{{ selectedIds.length }}）
+          </el-button>
+          <el-divider direction="vertical" />
+          <el-button
+            size="small"
+            type="danger"
+            plain
+            :disabled="bulkBusy"
+            @click="runBulk('reject', 'all')"
+          >
+            全部下架
+          </el-button>
+        </template>
       </div>
     </div>
 
@@ -258,6 +317,7 @@ watch(type, () => {
               查看详情
             </el-button>
             <el-button
+              v-if="statusFilter === 'pending'"
               link
               type="success"
               size="small"
@@ -267,26 +327,27 @@ watch(type, () => {
               通过
             </el-button>
             <el-button
+              v-if="statusFilter !== 'rejected'"
               link
               type="danger"
               size="small"
               :disabled="busyId === row.id || bulkBusy"
               @click="review(row.id, 'reject')"
             >
-              拒绝
+              {{ rejectVerb }}
             </el-button>
           </template>
         </el-table-column>
         <template #empty>
           <el-empty
-            :description="`暂无待审核的${meta.label}内容`"
+            :description="`暂无${statusMeta.label}的${meta.label}内容`"
             :image-size="80"
           />
         </template>
       </el-table>
       <div class="flex items-center justify-between p-3">
         <span class="text-xs text-[var(--el-text-color-secondary)]">
-          共 {{ items.length }} 条待审
+          共 {{ items.length }} 条{{ statusMeta.label }}
         </span>
         <el-pagination
           v-model:current-page="page"
@@ -354,14 +415,16 @@ watch(type, () => {
       <template #footer>
         <el-button @click="detailOpen = false">关闭</el-button>
         <el-button
+          v-if="statusFilter !== 'rejected'"
           type="danger"
           plain
           :disabled="busyId === detailItem?.id"
           @click="reviewFromDetail('reject')"
         >
-          拒绝
+          {{ rejectVerb }}
         </el-button>
         <el-button
+          v-if="statusFilter === 'pending'"
           type="success"
           :disabled="busyId === detailItem?.id"
           @click="reviewFromDetail('approve')"

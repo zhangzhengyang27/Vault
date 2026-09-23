@@ -125,8 +125,13 @@ export interface ReviewItem {
   createdAt?: string;
 }
 
-export const getReviewList = (type: ReviewType) =>
-  http.request<ReviewItem[]>("get", url(`/crawler/review/${type}?status=pending`));
+export type ReviewStatus = "pending" | "published" | "rejected";
+
+export const getReviewList = (type: ReviewType, status: ReviewStatus = "pending") =>
+  http.request<ReviewItem[]>(
+    "get",
+    url(`/crawler/review/${type}?status=${status}`)
+  );
 
 export const reviewOne = (
   type: ReviewType,
@@ -142,10 +147,11 @@ export interface BatchResult {
 export const reviewBatch = (
   type: ReviewType,
   action: "approve" | "reject",
-  ids?: number[]
+  ids?: number[],
+  status?: ReviewStatus
 ) =>
   http.request<BatchResult>("post", url(`/crawler/review/${type}/batch`), {
-    data: { action, ids }
+    data: { action, ids, status }
   });
 
 // ============ 数据源管理 ============

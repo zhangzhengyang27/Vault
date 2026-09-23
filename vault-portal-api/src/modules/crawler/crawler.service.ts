@@ -75,12 +75,16 @@ const INTERVAL_CRON: Record<string, string> = {
  * 自动采集管道：
  * 1) 按配置的频率（minutely/hourly/daily/weekly）定时调度采集；
  * 2) RSS/Atom 抓取 → 清洗 → 标题指纹去重 → AI 摘要 → 分类打标；
- * 3) 落库时状态为 pending，进入待审核队列，管理员审核后发布；
+ * 3) 落库默认免审直发（published）；设 CRAWLER_AUTO_PUBLISH=false 可恢复
+ *    「先进审核队列（pending），管理员审核后发布」的旧行为。已发布条目
+ *    仍可在后台「采集审核」页下架（reject）；
  * 4) 每次任务记录采集日志（crawl_logs）。
  */
 @Injectable()
 export class CrawlerService {
   private readonly logger = new Logger(CrawlerService.name);
+  /** 采集内容是否免审直发：默认 true；显式设 CRAWLER_AUTO_PUBLISH=false 恢复先审后发 */
+  private readonly autoPublish = process.env.CRAWLER_AUTO_PUBLISH !== "false";
   private readonly parser = new Parser({
     timeout: 15000,
     headers: {
@@ -641,7 +645,12 @@ export class CrawlerService {
     );
   }
 
-  /* ------------------------- 落库（进入待审核队列） ------------------------- */
+  /* ------------------------- 落库（免审直发或进审核队列） ------------------------- */
+
+  /** 采集内容初始状态：默认免审直发 published；CRAWLER_AUTO_PUBLISH=false 时进审核队列 */
+  private initialStatus(): "published" | "pending" {
+    return this.autoPublish ? "published" : "pending";
+  }
 
   private async saveItem(
     sourceType: string,
@@ -667,7 +676,7 @@ export class CrawlerService {
               sourceUrl: item.link || undefined,
               tags: tags.length ? tags : undefined,
               category: classifyNewsCategory({ title, summary, tags }),
-              status: "pending",
+              status: this.initialStatus(),
               phase: "crawl",
             }),
           ),
@@ -681,7 +690,7 @@ export class CrawlerService {
               description: summary,
               content: content ?? "",
               tags,
-              status: "pending",
+              status: this.initialStatus(),
               phase: "crawl",
             }),
           ),
@@ -695,7 +704,7 @@ export class CrawlerService {
               description: summary,
               content: content ?? "",
               source: "crawl",
-              status: "pending",
+              status: this.initialStatus(),
               phase: "crawl",
             }),
           ),
@@ -719,7 +728,7 @@ export class CrawlerService {
               name: title,
               description: summary,
               phase: "crawl",
-              status: "pending", // 采集内容默认进审核队列，与 news/tool/prompt 一致
+              status: this.initialStatus(), // 免审直发 published / 进审核队列 pending
             }),
           ),
         );
@@ -732,7 +741,7 @@ export class CrawlerService {
               title,
               summary,
               content,
-              status: "pending",
+              status: this.initialStatus(),
               phase: "crawl",
             }),
           ),
@@ -828,10 +837,13 @@ export class CrawlerService {
     };
     const repo = targets[sourceType];
     if (!repo) throw new BadRequestException(`不支持的内容类型: ${sourceType}`);
-    // 仅允许审核 pending 条目：重复 approve 会向订阅者重复推送，
-    // 对已发布内容 reject 则会把正式内容静默翻成 rejected
+    // approve 仅允许 pending：重复 approve 会向订阅者重复推送；
+    // reject 额外允许 published（即「下架」，配合采集免审直发的常规操作）
     const item = (await repo.findOne({
-      where: { id, status: "pending" },
+      where: {
+        id,
+        status: action === "approve" ? "pending" : In(["pending", "published"]),
+      },
     })) as ReviewableItem | null;
     if (!item) return false;
     item.status = action === "approve" ? "published" : "rejected";
@@ -911,8 +923,13 @@ export class CrawlerService {
       return { updated: 0, remaining: await repo.count({ where: { status } }) };
     }
 
-    // 批量翻转同样只允许 pending → published/rejected，防止误伤已发布内容
-    await repo.update({ id: In(ids), status: "pending" }, { status: next });
+    // approve 仅翻 pending（防重复推送）；reject 额外允许下架已发布内容
+    const fromStatuses =
+      action === "approve" ? ["pending"] : ["pending", "published"];
+    await repo.update(
+      { id: In(ids), status: In(fromStatuses) },
+      { status: next },
+    );
 
     const remaining = await repo.count({ where: { status } });
     this.logger.log(

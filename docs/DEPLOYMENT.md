@@ -32,6 +32,7 @@ TRUST_PROXY=1             # 位于 nginx 等反代之后时设置跳数，限流
 FIRECRAWL_API_KEY=...     # 托管抓取时
 SEED_DEMO=                # 生产绝对不要设 true（代码层已在 NODE_ENV=production 拒绝）
 MCP_STDIO_PROBE_ENABLED=  # 保持为空：stdio 探测会在服务器执行 npx/uvx/docker（任意代码执行面）
+CRAWLER_AUTO_PUBLISH=     # 采集内容免审直发开关：留空/true=抓到即发布（默认）；false=先进审核队列
 ```
 
 ### 数据库初始化（从零建库）
