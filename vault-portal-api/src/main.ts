@@ -112,7 +112,7 @@ async function bootstrap() {
   app.enableShutdownHooks();
 
   // 开发默认 JWT_SECRET 告警（缺失时 auth 模块会直接启动失败）
-  if (process.env.JWT_SECRET === "ai-portal-dev-secret") {
+  if (process.env.JWT_SECRET === "vault-portal-dev-secret") {
     new Logger("Security").warn(
       "当前使用开发默认 JWT_SECRET，仅限本地开发；部署前必须更换为强随机密钥",
     );

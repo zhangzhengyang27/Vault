@@ -10,7 +10,7 @@ interface LikeButtonProps {
   className?: string;
 }
 
-const STORAGE_KEY = "ai-portal-likes";
+const STORAGE_KEY = "vault-portal-likes";
 
 export default function LikeButton({
   targetType,

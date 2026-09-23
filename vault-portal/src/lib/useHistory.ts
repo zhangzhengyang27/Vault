@@ -10,7 +10,7 @@ export interface HistoryItem {
   timestamp: number;
 }
 
-const STORAGE_KEY = "ai-portal-history";
+const STORAGE_KEY = "vault-portal-history";
 const MAX_ITEMS = 50;
 
 export function useHistory() {

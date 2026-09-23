@@ -27,7 +27,7 @@ import { OnlineUserService } from "./online-user.service";
         }
         // 拒绝示例/文档值：照抄 .env.example 上线等于公开密钥
         const forbiddenSecrets = [
-          "ai-portal-dev-secret",
+          "vault-portal-dev-secret",
           "change-me-to-a-strong-random-secret",
         ];
         if (forbiddenSecrets.includes(secret)) {
