@@ -63,7 +63,7 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-200/70 bg-white/90 backdrop-blur-xl dark:border-zinc-800/70 dark:bg-zinc-950/90">
-      <div className="mx-auto flex min-h-14 w-full max-w-[1400px] items-center gap-3 px-4 py-2 sm:px-6">
+      <div className="mx-auto flex min-h-14 w-full max-w-[1400px] items-center justify-between gap-3 px-4 py-2 sm:px-6">
         <Link href="/" className="flex shrink-0 items-center gap-2">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1677ff] to-[#4096ff] text-white shadow-sm">
             <Sparkles size={16} />
