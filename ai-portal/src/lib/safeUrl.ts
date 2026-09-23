@@ -13,3 +13,12 @@ export function safeExternalUrl(raw: string | null | undefined): string | null {
     return null;
   }
 }
+
+/** 同源站内路径安全校验：只放行以单个 / 开头的相对路径（静态资源如 /demos/x.html）。
+ *  拒绝 // 开头（协议相对外链）与一切带 scheme 的写法，外链仍走 safeExternalUrl。 */
+export function safeInternalPath(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const url = raw.trim();
+  // 单个 / 开头且第二个字符不是 /：站内绝对路径
+  return /^\/(?!\/)[\w\-./?=&%#]*$/.test(url) ? url : null;
+}

@@ -26,7 +26,7 @@ import HistoryTracker from "@/components/HistoryTracker";
 import { copyToClipboard } from "@/lib/clipboard";
 import { useAuth } from "@/lib/auth";
 import { clearListCache } from "@/lib/promptListState";
-import { safeExternalUrl } from "@/lib/safeUrl";
+import { safeExternalUrl, safeInternalPath } from "@/lib/safeUrl";
 
 interface ApiPrompt {
   id: number;
@@ -68,6 +68,20 @@ export default function PromptDetailPage() {
   const isAdmin = user?.role === "admin";
   // 每次浏览只把首次复制计为一次使用，避免反复复制刷量
   const useCountedRef = useRef(false);
+  // 附件缺失时的演示入口兜底：slug 与 public/demos/ 下同名 html 匹配即展示
+  const [fallbackDemo, setFallbackDemo] = useState<string | null>(null);
+  useEffect(() => {
+    const url = `/demos/${slug}.html`;
+    let alive = true;
+    fetch(url, { method: "HEAD" }).then((res) => {
+      if (alive && res.ok) setFallbackDemo(url);
+      else if (alive) setFallbackDemo(null);
+    });
+    return () => {
+      alive = false;
+      setFallbackDemo(null);
+    };
+  }, [slug]);
 
   const countUse = () => {
     if (useCountedRef.current) return;
@@ -204,9 +218,13 @@ export default function PromptDetailPage() {
     attachments: prompt.attachments ?? [],
   };
 
-  const demoLink = prompt.attachments?.find(
-    (a) => a.type === "link" && safeExternalUrl(a.url),
-  );
+  // 演示链接：优先取附件里的外链或站内 /demos/ 路径（历史数据多为相对路径，
+  // 之前被 safeExternalUrl 整体拦掉导致「访问演示」按钮不渲染），无附件回退 HEAD 探测
+  const demoLink =
+    prompt.attachments
+      ?.filter((a) => a.type === "link")
+      .map((a) => safeExternalUrl(a.url) ?? safeInternalPath(a.url))
+      .find((u): u is string => !!u) ?? fallbackDemo;
   const title = prompt.title.trim() || "无标题";
 
   const main = (
@@ -410,7 +428,7 @@ export default function PromptDetailPage() {
         <div className="space-y-2">
           {demoLink && (
             <a
-              href={demoLink.url}
+              href={demoLink}
               target="_blank"
               rel="noopener noreferrer"
               className="flex w-full items-center justify-center gap-1.5 rounded-md bg-[#1677ff] px-3 py-2 text-sm font-medium text-white transition hover:bg-[#4096ff]"
