@@ -11,19 +11,35 @@ import {
   Menu,
   X,
   Plus,
+  ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useTheme } from "@/components/theme-provider";
 import NotificationBell from "@/components/NotificationBell";
 import UserMenu from "@/components/UserMenu";
 
-/** 扁平一级导航（codefather 同款：logo + 平铺菜单 + 右侧操作区） */
-const NAV_LINKS = [
+/** 扁平一级导航（codefather 同款：logo + 平铺菜单 + 右侧操作区）；
+ *  children 非空时桌面端渲染为悬停下拉，父项点击仍跳 href */
+interface NavLinkItem {
+  href: string;
+  label: string;
+  children?: { href: string; label: string }[];
+}
+
+const NAV_LINKS: NavLinkItem[] = [
   { href: "/", label: "主页" },
   { href: "/tools", label: "AI工具" },
   { href: "/mcp", label: "MCP" },
   { href: "/skills", label: "Skills" },
-  { href: "/prompts", label: "AI提示词" },
+  {
+    href: "/prompts",
+    label: "AI提示词",
+    children: [
+      { href: "/prompts", label: "通用提示词" },
+      { href: "/prompts/precise", label: "图片画廊" },
+      { href: "/prompts/text", label: "网页生成" },
+    ],
+  },
   { href: "/knowledge", label: "AI知识库" },
   { href: "/news", label: "AI资讯" },
   { href: "/community", label: "社区" },
@@ -39,6 +55,10 @@ export default function Nav() {
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
 
+  /** 含子菜单的项：父项或任一子路径命中即高亮 */
+  const isGroupActive = (item: (typeof NAV_LINKS)[number]) =>
+    [item.href, ...(item.children?.map((c) => c.href) ?? [])].some(isActive);
+
   const closeMobile = () => setMobileOpen(false);
 
   return (
@@ -53,25 +73,59 @@ export default function Nav() {
           </span>
         </Link>
 
-        {/* 桌面端扁平导航 */}
-        <nav className="hidden min-w-0 flex-1 items-center gap-0.5 overflow-x-auto lg:flex">
+        {/* 桌面端扁平导航（含子菜单的项为悬停下拉） */}
+        <nav className="hidden min-w-0 flex-1 items-center gap-0.5 lg:flex">
           {NAV_LINKS.map((item) => {
-            const active = isActive(item.href);
+            const active = isGroupActive(item);
+            const linkCls = `relative flex shrink-0 whitespace-nowrap items-center gap-0.5 px-2.5 py-2 text-sm transition ${
+              active
+                ? "font-medium text-[#1677ff] dark:text-[#5aa0ff]"
+                : "text-zinc-700 hover:text-[#1677ff] dark:text-zinc-300 dark:hover:text-[#5aa0ff]"
+            }`;
+            if (!item.children) {
+              return (
+                <Link key={item.href} href={item.href} className={linkCls}>
+                  {item.label}
+                  {active && (
+                    <span className="absolute inset-x-2.5 -bottom-2 h-0.5 rounded-full bg-[#1677ff] dark:bg-[#5aa0ff]" />
+                  )}
+                </Link>
+              );
+            }
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`relative flex shrink-0 whitespace-nowrap px-2.5 py-2 text-sm transition ${
-                  active
-                    ? "font-medium text-[#1677ff] dark:text-[#5aa0ff]"
-                    : "text-zinc-700 hover:text-[#1677ff] dark:text-zinc-300 dark:hover:text-[#5aa0ff]"
-                }`}
-              >
-                {item.label}
-                {active && (
-                  <span className="absolute inset-x-2.5 -bottom-2 h-0.5 rounded-full bg-[#1677ff] dark:bg-[#5aa0ff]" />
-                )}
-              </Link>
+              <div key={item.href} className="group relative shrink-0">
+                <Link href={item.href} className={linkCls}>
+                  {item.label}
+                  <ChevronDown
+                    size={12}
+                    className="transition-transform group-hover:rotate-180"
+                  />
+                  {active && (
+                    <span className="absolute inset-x-2.5 -bottom-2 h-0.5 rounded-full bg-[#1677ff] dark:bg-[#5aa0ff]" />
+                  )}
+                </Link>
+                {/* 下拉面板：pt-2 补 hover 间隙，防止移向面板时菜单收起 */}
+                <div className="invisible absolute left-0 top-full z-50 pt-2 opacity-0 transition-all duration-150 group-hover:visible group-hover:opacity-100">
+                  <div className="w-44 overflow-hidden rounded-xl border border-zinc-200 bg-white py-1 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={`flex items-center justify-between px-4 py-2.5 text-sm transition ${
+                          pathname === child.href
+                            ? "bg-[#1677ff]/10 font-medium text-[#1677ff] dark:bg-[#5aa0ff]/10 dark:text-[#5aa0ff]"
+                            : "text-zinc-600 hover:bg-zinc-50 hover:text-[#1677ff] dark:text-zinc-300 dark:hover:bg-zinc-800/60 dark:hover:text-[#5aa0ff]"
+                        }`}
+                      >
+                        {child.label}
+                        {isActive(child.href) && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#1677ff] dark:bg-[#5aa0ff]" />
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              </div>
             );
           })}
         </nav>
@@ -138,18 +192,22 @@ export default function Nav() {
       {mobileOpen && (
         <div className="border-t border-zinc-200 bg-white px-4 py-4 dark:border-zinc-800 dark:bg-zinc-950 lg:hidden">
           <nav className="grid grid-cols-2 gap-1">
-            {NAV_LINKS.map((item) => (
+            {/* 移动端无悬停：父子项平铺直达 */}
+            {NAV_LINKS.flatMap((item) => [
+              { href: item.href, label: item.label },
+              ...(item.children ?? []),
+            ]).map((link, idx) => (
               <Link
-                key={item.href}
-                href={item.href}
+                key={`${link.href}-${idx}`}
+                href={link.href}
                 onClick={closeMobile}
                 className={`rounded-md px-3 py-2 text-sm transition ${
-                  isActive(item.href)
+                  isActive(link.href)
                     ? "bg-[#1677ff]/10 font-medium text-[#1677ff] dark:bg-[#5aa0ff]/10 dark:text-[#5aa0ff]"
                     : "text-zinc-600 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800/70"
                 }`}
               >
-                {item.label}
+                {link.label}
               </Link>
             ))}
             <Link

@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Plus } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import PageHeader from "@/components/PageHeader";
 import { PromptCard, PromptImageCard } from "@/components/cards";
 import PromptEditor from "@/components/PromptEditor";
@@ -120,7 +118,6 @@ export default function PromptsList({
   const [totalPages, setTotalPages] = useState(cached?.totalPages ?? 1);
   const [loading, setLoading] = useState(!cached?.prompts);
   const [editorOpen, setEditorOpen] = useState(false);
-  const pathname = usePathname();
   const { user } = useAuth();
 
   const handleDelete = useCallback(
@@ -270,13 +267,6 @@ export default function PromptsList({
     return arr;
   }, [imagePrompts]);
 
-  // 三个提示词子站的导航 tab（/prompts、/prompts/precise、/prompts/text 互为入口）
-  const MODE_TABS = [
-    { href: "/prompts", label: "通用提示词" },
-    { href: "/prompts/precise", label: "图片画廊" },
-    { href: "/prompts/text", label: "网页生成" },
-  ];
-
   return (
     <div className="space-y-6">
       <PageHeader
@@ -291,26 +281,6 @@ export default function PromptsList({
           </button>
         }
       />
-
-      <nav className="flex flex-wrap gap-2" aria-label="提示词分类导航">
-        {MODE_TABS.map((t) => {
-          const active = pathname === t.href;
-          return (
-            <Link
-              key={t.href}
-              href={t.href}
-              aria-current={active ? "page" : undefined}
-              className={`inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium transition ${
-                active
-                  ? "border-indigo-600 bg-indigo-600 text-white shadow-sm"
-                  : "border-zinc-200 bg-white text-zinc-600 hover:border-indigo-300 hover:text-indigo-600 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:border-indigo-500/60 dark:hover:text-indigo-400"
-              }`}
-            >
-              {t.label}
-            </Link>
-          );
-        })}
-      </nav>
 
       {isImageMode ? (
         <div className="space-y-3">
