@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ashford Manor — Where Your Story Begins. · Hertfordshire</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-400-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-600-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-600.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ivory: 'hsl(40, 33%, 97%)',
+        ivorydeep: 'hsl(38, 28%, 94%)',
+        sage: 'hsl(104, 14%, 38%)',
+        sagemid: 'hsl(104, 14%, 55%)',
+        sagelight: 'hsl(104, 14%, 94%)',
+        goldw: 'hsl(40, 52%, 56%)',
+        goldlight: 'hsl(40, 52%, 92%)',
+        charcoal: 'hsl(210, 10%, 20%)',
+        textmid: 'hsl(210, 8%, 42%)',
+      },
+      fontFamily: {
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans"', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: "Plus Jakarta Sans", "PingFang SC", Arial, sans-serif; font-weight: 300; line-height: 1.75; }
+  .label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500; }
+  .hero-vignette { background: radial-gradient(ellipse at center, rgba(0,0,0,0) 30%, rgba(0,0,0,0.55) 100%), linear-gradient(to bottom, rgba(0,0,0,0) 40%, rgba(0,0,0,0.50) 100%); }
+  .watermark { font-family: "Cormorant Garamond", serif; font-style: italic; font-weight: 600; font-size: clamp(200px, 30vw, 460px); color: hsl(104, 14%, 38% / 0.025); line-height: 1; }
+  .goldline { transform: scaleX(0); transform-origin: left center; transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1) .8s; }
+  .goldline.in { transform: scaleX(1); }
+  .fadeup { opacity: 0; transform: translateY(20px); transition: opacity .7s cubic-bezier(0.22,1,0.36,1), transform .7s cubic-bezier(0.22,1,0.36,1); transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .venue-card { overflow: hidden; border-radius: 8px; transition: transform .3s cubic-bezier(0.22,1,0.36,1); }
+  .venue-card:hover { transform: scale(1.02); }
+  .venue-card svg { transition: transform .5s cubic-bezier(0.22,1,0.36,1); }
+  .venue-card:hover svg { transform: scale(1.06); }
+  @keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+  .bob { animation: bob 2.5s ease-in-out infinite; }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: rgba(255,255,255,0.7);
+    box-shadow: 0 0 0 3px rgba(196,163,90,0.30);
+    transition: box-shadow .2s ease, border-color .2s ease;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fadeup, .goldline { opacity: 1; transform: none; transition: none; }
+    .bob { animation: none; }
+  }
+</style>
+</head>
+<body class="bg-ivory text-charcoal font-sans antialiased">
+
+<!-- 1. 导航栏 -->
+<header class="sticky top-0 z-[90] bg-ivory/90 backdrop-blur-[12px] border-b border-[hsl(40,20%,88%)]" style="backdrop-filter: blur(12px) saturate(1.5)">
+  <div class="flex items-center justify-between px-5 md:px-[clamp(24px,5vw,96px)] py-4">
+    <nav class="hidden lg:flex items-center gap-6 text-sm text-textmid flex-1">
+      <a href="#spaces" class="hover:text-sage">Services</a>
+      <a href="#spaces" class="hover:text-sage">Gallery</a>
+      <a href="#included" class="hover:text-sage">Packages</a>
+    </nav>
+    <a href="#top" class="text-center flex-1 lg:flex-none">
+      <span class="font-serif italic font-semibold text-2xl">Ashford Manor</span>
+      <span class="block w-8 h-px bg-goldw mx-auto mt-1"></span>
+    </a>
+    <div class="hidden lg:flex items-center gap-6 justify-end text-sm text-textmid flex-1">
+      <a href="#testimonials" class="hover:text-sage">Testimonials</a>
+      <a href="#enquire" class="hover:text-sage">Contact</a>
+      <a href="#enquire" class="bg-sage text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-90">Enquire</a>
+    </div>
+    <button id="burger" class="lg:hidden p-2 text-charcoal" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden lg:hidden border-t border-[hsl(40,20%,88%)] px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm text-textmid">
+      <a href="#spaces" class="py-1">Spaces</a><a href="#included" class="py-1">Packages</a>
+      <a href="#testimonials" class="py-1">Testimonials</a><a href="#enquire" class="py-1 text-sage font-medium">Enquire</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. Hero -->
+  <section class="relative h-screen min-h-[680px] overflow-hidden">
+    <div class="absolute inset-0 z-[1]" aria-hidden="true">
+      <svg class="w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <rect width="1440" height="900" fill="hsl(45, 30%, 80%)"/>
+        <g fill="hsl(104, 20%, 42%)"><ellipse cx="200" cy="760" rx="320" ry="120"/><ellipse cx="1300" cy="780" rx="300" ry="110"/></g>
+        <path d="M1020 900 L1020 480 L1180 380 L1340 480 L1340 900 Z" fill="hsl(38, 22%, 62%)" opacity=".55"/>
+        <g fill="hsl(0, 0%, 96%)">
+          <rect x="150" y="640" width="10" height="70"/><rect x="230" y="640" width="10" height="70"/><rect x="310" y="640" width="10" height="70"/><rect x="390" y="640" width="10" height="70"/>
+          <rect x="130" y="710" width="290" height="8"/>
+        </g>
+        <g fill="hsl(340, 30%, 88%)"><circle cx="760" cy="560" r="14"/><circle cx="800" cy="545" r="16"/><circle cx="845" cy="560" r="14"/><circle cx="805" cy="525" r="15"/></g>
+        <g stroke="hsl(104, 20%, 52%)" stroke-width="4" fill="none"><path d="M760 590 Q805 640 850 590"/></g>
+        <circle cx="1180" cy="180" r="70" fill="hsl(45, 60%, 82%)" opacity=".8"/>
+      </svg>
+    </div>
+    <span class="watermark absolute inset-0 z-[5] flex items-center justify-center select-none" aria-hidden="true">MANOR</span>
+    <div class="absolute inset-0 z-10 hero-vignette" aria-hidden="true"></div>
+    <div class="relative z-20 h-full flex flex-col items-center justify-center text-center px-5">
+      <p class="label text-goldw" style="letter-spacing: 0.18em">Ashford, Hertfordshire · Est. 1847</p>
+      <h1 class="font-serif italic font-semibold text-white leading-none mt-5 text-[clamp(52px,8vw,140px)]" style="letter-spacing: -0.02em">Where Your Story Begins.</h1>
+      <span class="goldline block w-56 h-[2px] bg-goldw mt-6"></span>
+      <p class="mt-6 text-white/85 max-w-lg fadeup" style="--d:900ms">An exclusive country manor for intimate weddings and grand celebrations alike.</p>
+      <p class="mt-2 label text-white/70 fadeup" style="--d:1000ms">Capacity 20–180 guests · Licensed for civil ceremonies</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4 fadeup" style="--d:1100ms">
+        <a href="#enquire" class="bg-sage text-white font-semibold px-6 py-3 rounded-md hover:opacity-90">Check Availability</a>
+        <a href="#spaces" class="border border-white/80 text-white font-semibold px-6 py-3 rounded-md hover:bg-white/10">View Our Gallery</a>
+      </div>
+    </div>
+    <a href="#spaces" class="bob absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-white/80" aria-label="Scroll down">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
+    </a>
+  </section>
+
+  <div class="flex items-center justify-center gap-4 py-10 text-goldw" aria-hidden="true"><span class="w-16 h-px bg-goldw/50"></span>✦<span class="w-16 h-px bg-goldw/50"></span></div>
+
+  <!-- 3. 三大场地 -->
+  <section id="spaces" class="px-5 md:px-[clamp(24px,5vw,96px)] pb-24">
+    <div class="text-center fadeup">
+      <p class="label text-goldw">Our Spaces</p>
+      <h2 class="font-serif italic font-semibold text-[clamp(34px,4.5vw,72px)] leading-tight mt-3">Three Breathtaking Settings</h2>
+    </div>
+    <div class="mt-14 grid md:grid-cols-3 gap-6">
+      <article class="fadeup venue-card" style="--d:0ms">
+        <svg class="w-full aspect-[16/9] block" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(38, 20%, 74%)"/><path d="M60 40 L200 0 L340 40 L340 20 L60 20 Z" fill="hsl(38, 18%, 60%)"/><g stroke="hsl(40, 30%, 82%)" stroke-width="2"><path d="M100 25 v185 M200 5 v205 M300 25 v185"/></g><g fill="hsl(0, 0%, 98%)"><ellipse cx="140" cy="140" rx="14" ry="8"/><ellipse cx="200" cy="140" rx="14" ry="8"/><ellipse cx="260" cy="140" rx="14" ry="8"/><ellipse cx="140" cy="170" rx="14" ry="8"/><ellipse cx="200" cy="170" rx="14" ry="8"/><ellipse cx="260" cy="170" rx="14" ry="8"/></g></svg>
+        <div class="relative bg-whitep border border-t-0 border-[hsl(40,20%,88%)] p-5">
+          <span class="absolute -top-3 right-4 label bg-goldlight text-goldw border border-goldw/40 rounded-full px-3 py-0.5">Up to 200</span>
+          <h3 class="font-serif italic font-semibold text-2xl">The Grand Hall</h3>
+          <p class="mt-2 text-textmid text-sm">Vaulted stone ceilings, crystal chandeliers, and original oak floors.</p>
+        </div>
+      </article>
+      <article class="fadeup venue-card" style="--d:120ms">
+        <svg class="w-full aspect-[16/9] block" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(45, 32%, 86%)"/><g stroke="hsl(40, 25%, 68%)" stroke-width="3" fill="hsl(50, 35%, 80%)"><path d="M60 30 Q200 -10 340 30 L340 225 L60 225 Z" opacity=".5"/></g><g stroke="hsl(104, 20%, 55%)" stroke-width="3" fill="none"><path d="M40 40 q30 -20 60 0 M330 40 q-30 -20 -60 0"/></g><g fill="hsl(0, 0%, 98%)"><rect x="130" y="120" width="140" height="10" rx="5"/><rect x="145" y="145" width="110" height="10" rx="5"/></g><g stroke="hsl(40, 30%, 68%)" stroke-width="4"><rect x="20" y="10" width="360" height="205" rx="10" fill="none"/></g></svg>
+        <div class="relative bg-whitep border border-t-0 border-[hsl(40,20%,88%)] p-5">
+          <span class="absolute -top-3 right-4 label bg-goldlight text-goldw border border-goldw/40 rounded-full px-3 py-0.5">Up to 80</span>
+          <h3 class="font-serif italic font-semibold text-2xl">The Orangery</h3>
+          <p class="mt-2 text-textmid text-sm">Floor-to-ceiling glass, tropical botanicals, and dappled garden light.</p>
+        </div>
+      </article>
+      <article class="fadeup venue-card" style="--d:240ms">
+        <svg class="w-full aspect-[16/9] block" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(30, 28%, 30%)"/><g fill="hsl(45, 70%, 75%)"><circle cx="80" cy="60" r="3"/><circle cx="140" cy="40" r="3"/><circle cx="200" cy="55" r="3"/><circle cx="260" cy="38" r="3"/><circle cx="320" cy="58" r="3"/><circle cx="110" cy="90" r="3"/><circle cx="290" cy="88" r="3"/></g><g fill="hsl(0, 0%, 96%)"><circle cx="150" cy="150" r="10"/><circle cx="200" cy="150" r="10"/><circle cx="250" cy="150" r="10"/><rect x="130" y="160" width="140" height="8"/></g><rect x="0" y="190" width="400" height="35" fill="hsl(38, 16%, 55%)"/></svg>
+        <div class="relative bg-whitep border border-t-0 border-[hsl(40,20%,88%)] p-5">
+          <span class="absolute -top-3 right-4 label bg-goldlight text-goldw border border-goldw/40 rounded-full px-3 py-0.5">Up to 60</span>
+          <h3 class="font-serif italic font-semibold text-2xl">The Garden Terrace</h3>
+          <p class="mt-2 text-textmid text-sm">Open-air celebrations beneath a canopy of fairy lights and stars.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 4. 包含清单 -->
+  <section id="included" class="bg-ivorydeep py-24">
+    <div class="px-5 md:px-[clamp(24px,5vw,96px)] grid md:grid-cols-[1fr_1.2fr] gap-12 items-center">
+      <div class="fadeup">
+        <p class="label text-goldw">Every Wedding Includes</p>
+        <h2 class="font-serif italic font-semibold text-[clamp(34px,4.5vw,72px)] leading-tight mt-3">Everything, taken care of.</h2>
+        <p class="mt-5 text-textmid text-[15px]">One dedicated coordinator, exclusive use of the grounds on your day, and a network of trusted suppliers we've worked with for decades.</p>
+      </div>
+      <ul class="fadeup grid sm:grid-cols-2 gap-x-8 gap-y-3 text-[15px] text-charcoal" style="--d:120ms">
+        <li class="flex gap-2 items-start"><span class="text-sage">✓</span> Dedicated wedding coordinator</li>
+        <li class="flex gap-2 items-start"><span class="text-sage">✓</span> Exclusive grounds access</li>
+        <li class="flex gap-2 items-start"><span class="text-sage">✓</span> Civil ceremony licence</li>
+        <li class="flex gap-2 items-start"><span class="text-sage">✓</span> In-house catering &amp; bar</li>
+        <li class="flex gap-2 items-start"><span class="text-sage">✓</span> Bridal suite &amp; late checkout</li>
+        <li class="flex gap-2 items-start"><span class="text-sage">✓</span> Preferred supplier list</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 5. 评价 -->
+  <section id="testimonials" class="py-24 px-5 md:px-[clamp(24px,5vw,96px)]">
+    <div class="text-center fadeup">
+      <p class="label text-goldw">Kind Words</p>
+      <h2 class="font-serif italic font-semibold text-[clamp(34px,4.5vw,72px)] mt-3">Couples on Ashford</h2>
+    </div>
+    <div class="mt-14 grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <blockquote class="fadeup bg-white border border-[hsl(40,20%,88%)] rounded-lg p-7" style="--d:0ms">
+        <p class="font-serif italic text-xl leading-relaxed">"The Orangery at golden hour was the single most beautiful room I've ever said 'I do' in."</p>
+        <footer class="mt-4 font-serif italic text-lg text-sage">— Ellie &amp; James</footer>
+        <p class="label text-soft mt-1">September, 90 guests</p>
+      </blockquote>
+      <blockquote class="fadeup bg-white border border-[hsl(40,20%,88%)] rounded-lg p-7" style="--d:120ms">
+        <p class="font-serif italic text-xl leading-relaxed">"Fairy lights, open air, and not a single logistics worry on the day. Our families still talk about it."</p>
+        <footer class="mt-4 font-serif italic text-lg text-sage">— Priya &amp; Tom</footer>
+        <p class="label text-soft mt-1">June, 55 guests</p>
+      </blockquote>
+      <blockquote class="fadeup bg-white border border-[hsl(40,20%,88%)] rounded-lg p-7" style="--d:240ms">
+        <p class="font-serif italic text-xl leading-relaxed">"The coordinator anticipated things we didn't know to ask. Genuinely flawless."</p>
+        <footer class="mt-4 font-serif italic text-lg text-sage">— Grace &amp; Daniel</footer>
+        <p class="label text-soft mt-1">May, 160 guests</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <div class="flex items-center justify-center gap-4 py-10 text-goldw" aria-hidden="true"><span class="w-16 h-px bg-goldw/50"></span>✦<span class="w-16 h-px bg-goldw/50"></span></div>
+
+  <!-- 6. 咨询表单 -->
+  <section id="enquire" class="bg-sage py-24 px-5 md:px-[clamp(24px,5vw,96px)]">
+    <div class="max-w-3xl mx-auto text-center fadeup">
+      <p class="label text-goldlight">Enquire</p>
+      <h2 class="font-serif italic font-semibold text-white text-[clamp(34px,4.5vw,72px)] leading-tight mt-3">Check Your Date</h2>
+      <p class="mt-4 text-white/75 text-[15px]">Tell us a little about your day and our coordinator will reply within one working day.</p>
+      <form id="wform" class="mt-10 grid sm:grid-cols-2 gap-4 text-left" novalidate>
+        <input required type="text" placeholder="Your names" class="bg-white/10 border border-white/30 rounded-md px-4 py-3 text-white placeholder:text-white/50">
+        <input required type="email" placeholder="Email" class="bg-white/10 border border-white/30 rounded-md px-4 py-3 text-white placeholder:text-white/50">
+        <input type="date" class="bg-white/10 border border-white/30 rounded-md px-4 py-3 text-white placeholder:text-white/50">
+        <select class="bg-white/10 border border-white/30 rounded-md px-4 py-3 text-white">
+          <option>20–60 guests</option><option>60–120 guests</option><option>120–180 guests</option>
+        </select>
+        <textarea rows="4" placeholder="Tell us about your day…" class="sm:col-span-2 bg-white/10 border border-white/30 rounded-md px-4 py-3 text-white placeholder:text-white/50"></textarea>
+        <button type="submit" class="sm:col-span-2 bg-ivory text-charcoal font-semibold py-3.5 rounded-md hover:bg-goldlight">Send Enquiry</button>
+        <p id="wnote" class="hidden sm:col-span-2 text-center text-goldlight text-sm">Thank you — we'll be in touch within one working day. (Demo form.)</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-ivory border-t border-[hsl(40,20%,88%)]">
+  <div class="max-w-6xl mx-auto px-5 py-12 text-center">
+    <p class="font-serif italic font-semibold text-2xl">Ashford Manor</p>
+    <p class="mt-2 text-sm text-textmid">Ashford, Hertfordshire · Licensed for civil ceremonies · Est. 1847</p>
+    <p class="mt-4 text-xs text-soft">© 2026 Ashford Manor · Demo page generated from the wedding venue prompt.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.fadeup, .goldline').forEach(function (el) { io.observe(el); });
+  document.getElementById('wform').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('wnote').classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Digital | 数字化解决方案领航者</title>
+    <style>
+        /* ====================
+           全局变量与重置
+           ==================== */
+        :root {
+            --bg-color: #0a0a0f;
+            --text-main: #ffffff;
+            --text-muted: #a1a1aa;
+            --accent-color: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --nav-bg: rgba(10, 10, 15, 0.8);
+            --transition-speed: 0.3s;
+            --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* ====================
+           通用组件
+           ==================== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 60px;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 0 20px var(--accent-glow);
+            border: 1px solid var(--accent-color);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px var(--accent-glow);
+            background: #2563eb;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        /* 背景装饰光球 */
+        .glow-bg {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%);
+            top: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ====================
+           磁吸导航栏
+           ==================== */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: var(--nav-bg);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .nav-menu {
+            position: relative;
+            display: flex;
+            gap: 5px;
+            padding: 5px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-item {
+            position: relative;
+            z-index: 1;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 8px 24px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            border-radius: 50px;
+        }
+
+        .nav-item:hover .nav-link,
+        .nav-item.active .nav-link {
+            color: #fff;
+        }
+
+        /* 磁吸背景块 */
+        .nav-indicator {
+            position: absolute;
+            top: 5px;
+            left: 5px; /* 初始位置 */
+            height: calc(100% - 10px);
+            background: rgba(255,255,255,0.1);
+            border-radius: 50px;
+            transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 0;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .mobile-toggle {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* ====================
+           Hero 区域
+           ==================== */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding-top: 80px;
+        }
+
+        .hero-content h1 {
+            font-size: 4rem;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            font-weight: 800;
+            letter-spacing: -2px;
+        }
+
+        .hero-content h1 span {
+            display: block;
+            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateX(-50%) translateY(0);}
+            40% {transform: translateX(-50%) translateY(-10px);}
+            60% {transform: translateX(-50%) translateY(-5px);}
+        }
+
+        /* ====================
+           服务卡片 (3D Tilt)
+           ==================== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            perspective: 1000px; /* 3D 透视 */
+        }
+
+        .tilt-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 40px;
+            position: relative;
+            transform-style: preserve-3d; /* 保持子元素3D */
+            transition: transform 0.1s ease-out; /* JS驱动时使用极快过渡以保持跟手，移开后使用CSS transition */
+            will-change: transform;
+            overflow: hidden;
+            cursor: default;
+        }
+
+        /* 卡片内部光泽层 */
+        .tilt-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(
+                800px circle at var(--mouse-x) var(--mouse-y),
+                rgba(255,255,255,0.06),
+                transparent 40%
+            );
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.5s;
+            pointer-events: none;
+        }
+
+        .tilt-card:hover::before {
+            opacity: 1;
+        }
+
+        .tilt-card:hover {
+            border-color: rgba(255,255,255,0.2);
+        }
+
+        .card-content {
+            transform: translateZ(20px); /* 让文字悬浮 */
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            transform: translateZ(30px); /* 图标悬浮更高 */
+        }
+
+        .tilt-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .tilt-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .card-link {
+            color: var(--accent-color);
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transform: translateZ(25px);
+        }
+
+        /* ====================
+           关于我们 (图文)
+           ==================== */
+        .about-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .about-text p {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .stat-item h4 {
+            font-size: 2rem;
+            color: var(--accent-color);
+            font-weight: 800;
+        }
+
+        .stat-item span {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* ====================
+           联系我们
+           ==================== */
+        .contact-box {
+            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 60px;
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 500px;
+            margin: 40px auto 0;
+        }
+
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            color: #fff;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: var(--accent-color);
+        }
+
+        /* ====================
+           页脚
+           ==================== */
+        footer {
+            border-top: 1px solid var(--card-border);
+            padding: 50px 0 20px;
+            margin-top: 50px;
+            background: #050508;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand p {
+            color: var(--text-muted);
+            margin-top: 10px;
+            max-width: 300px;
+        }
+
+        .footer-links h4 {
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .footer-links ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-links ul li a {
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .footer-links ul li a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            text-align: center;
+            color: #52525b;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+        }
+
+        /* ====================
+           Toast Notification
+           ==================== */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* ====================
+           响应式设计
+           ==================== */
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .nav-menu {
+                display: none; /* 简化：移动端隐藏菜单，实际项目可做折叠 */
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+
+            .about-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-box {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 背景光效 -->
+    <div class="glow-bg"></div>
+
+    <!-- 导航栏 -->
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <span>◆</span> NEXUS
+                </div>
+                <div class="nav-menu" id="navMenu">
+                    <div class="nav-indicator" id="navIndicator"></div>
+                    <div class="nav-item active">
+                        <a href="#home" class="nav-link">首页</a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#services" class="nav-link">解决方案</a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#about" class="nav-link">关于我们</a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="#contact" class="nav-link">联系合作</a>
+                    </div>
+                </div>
+                <div class="mobile-toggle" onclick="toggleMobileMenu()">☰</div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 主体内容 -->
+    <main>
+        <!-- Hero 区域 -->
+        <section id="home" class="hero">
+            <div class="container hero-content">
+                <h1>重塑企业<br><span>数字化未来</span></h1>
+                <p>我们提供从战略规划到技术落地的全链路数字化解决方案，助力企业在智能时代保持领先。</p>
+                <div style="display: flex; gap: 20px; justify-content: center;">
+                    <a href="#services" class="btn btn-primary">探索服务</a>
+                    <a href="#contact" class="btn btn-outline">立即咨询</a>
+                </div>
+            </div>
+            <div class="scroll-down">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--text-muted);">
+                    <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                </svg>
+            </div>
+        </section>
+
+        <!-- 服务区域 (3D 倾斜卡片) -->
+        <section id="services" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">核心解决方案</h2>
+                <p class="section-subtitle">融合前沿技术与商业洞察，打造增长引擎</p>
+                
+                <div class="services-grid">
+                    <!-- 卡片 1 -->
+                    <div class="tilt-card js-tilt">
+                        <div class="card-content">
+                            <div class="card-icon">⚡</div>
+                            <h3>云原生架构</h3>
+                            <p>基于微服务和容器化技术，构建弹性、高可用的企业级云平台，大幅降低运维成本。</p>
+                            <a href="#" class="card-link">了解更多 &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 2 -->
+                    <div class="tilt-card js-tilt">
+                        <div class="card-content">
+                            <div class="card-icon">🧠</div>
+                            <h3>人工智能应用</h3>
+                            <p>利用深度学习与大数据分析，为业务流程注入智能决策能力，实现自动化与精准营销。</p>
+                            <a href="#" class="card-link">了解更多 &rarr;</a>
+                        </div>
+                    </div>
+
+                    <!-- 卡片 3 -->
+                    <div class="tilt-card js-tilt">
+                        <div class="card-content">
+                            <div class="card-icon">🎨</div>
+                            <h3>沉浸式交互</h3>
+                            <p>采用 WebGL 与 3D 建模技术，打造极具视觉冲击力的网页与数字体验，提升品牌形象。</p>
+                            <a href="#" class="card-link">了解更多 &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于我们 -->
+        <section id="about" class="section-padding" style="background: rgba(255,255,255,0.01);">
+            <div class="container about-wrapper">
+                <div class="about-image">
+                    <img src="https://picsum.photos/seed/tech/600/400" alt="Team working">
+                </div>
+                <div class="about-text">
+                    <h2>不只是技术，<br>更是商业伙伴</h2>
+                    <p>Nexus Digital 成立于 2015 年，我们拥有一支由资深架构师、设计师和数据科学家组成的精英团队。我们深信技术的价值在于解决实际商业问题。</p>
+                    <p>无论是传统企业的数字化转型，还是初创公司的 MVP 快速迭代，我们都能提供量身定制的支持。</p>
+                    
+                    <div class="stats">
+                        <div class="stat-item">
+                            <h4>8+</h4>
+                            <span>年行业经验</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>200+</h4>
+                            <span>成功案例</span>
+                        </div>
+                        <div class="stat-item">
+                            <h4>98%</h4>
+                            <span>客户满意度</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 联系我们 -->
+        <section id="contact" class="section-padding">
+            <div class="container">
+                <h2 class="section-title">开启合作之旅</h2>
+                <p class="section-subtitle">填写下方表格，我们的顾问将在 24 小时内与您联系</p>
+
+                <div class="contact-box">
+                    <form class="contact-form" id="contactForm">
+                        <div class="form-group">
+                            <input type="text" placeholder="您的姓名" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" placeholder="企业邮箱" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea rows="4" placeholder="项目需求简述..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">发送消息</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo"><span>◆</span> NEXUS</div>
+                    <p>致力于为全球企业提供卓越的数字化转型服务。</p>
+                </div>
+                <div class="footer-links">
+                    <h4>服务</h4>
+                    <ul>
+                        <li><a href="#">云架构</a></li>
+                        <li><a href="#">AI 开发</a></li>
+                        <li><a href="#">UI/UX 设计</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>公司</h4>
+                    <ul>
+                        <li><a href="#">关于我们</a></li>
+                        <li><a href="#">招贤纳士</a></li>
+                        <li><a href="#">联系方式</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>社交</h4>
+                    <ul>
+                        <li><a href="#">LinkedIn</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Dribbble</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 Nexus Digital Inc. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast 通知 -->
+    <div class="toast" id="toast">✅ 消息已发送，我们会尽快联系您！</div>
+
+    <script>
+        /**
+         * 1. 磁吸导航逻辑
+         */
+        const navMenu = document.getElementById('navMenu');
+        const indicator = document.getElementById('navIndicator');
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function moveIndicator(element) {
+            // 获取当前元素的宽度和位置
+            const width = element.offsetWidth;
+            const left = element.offsetLeft;
+            
+            // 移动指示器
+            indicator.style.width = `${width}px`;
+            indicator.style.left = `${left}px`;
+        }
+
+        // 初始化位置
+        window.addEventListener('load', () => {
+            const activeItem = document.querySelector('.nav-item.active');
+            if (activeItem) moveIndicator(activeItem);
+        });
+
+        // 鼠标悬停事件
+        navItems.forEach(item => {
+            item.addEventListener('mouseenter', (e) => {
+                moveIndicator(e.currentTarget);
+            });
+            
+            // 点击激活状态
+            item.addEventListener('click', (e) => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                e.currentTarget.classList.add('active');
+                moveIndicator(e.currentTarget);
+            });
+        });
+
+        // 鼠标移出菜单时，回归到激活项
+        navMenu.addEventListener('mouseleave', () => {
+            const activeItem = document.querySelector('.nav-item.active');
+            if (activeItem) moveIndicator(activeItem);
+        });
+
+        // 移动端菜单切换（简单实现）
+        function toggleMobileMenu() {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '80px';
+                navMenu.style.left = '0';
+                navMenu.style.width = '100%';
+                navMenu.style.background = '#0a0a0f';
+                navMenu.style.padding = '20px';
+                indicator.style.display = 'none'; // 移动端隐藏磁吸块
+            }
+        }
+
+        /**
+         * 2. 3D 倾斜卡片逻辑
+         */
+        const cards = document.querySelectorAll('.js-tilt');
+
+        cards.forEach(card => {
+            card.addEventListener('mousemove', handleMouseMove);
+            card.addEventListener('mouseleave', handleMouseLeave);
+        });
+
+        function handleMouseMove(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            
+            // 计算鼠标在卡片内的相对坐标 (0 到 1)
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            // 设置 CSS 变量给光泽层使用
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+
+            // 计算旋转角度 (中心点为 0)
+            // 限制最大旋转角度为 10deg
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -10; // 鼠标在下，向上仰(X轴负转)
+            const rotateY = ((x - centerX) / centerX) * 10;  // 鼠标在右，向右转(Y轴正转)
+
+            // 应用变换
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        }
+
+        function handleMouseLeave(e) {
+            const card = e.currentTarget;
+            // 复位
+            card.style.transform = `perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)`;
+        }
+
+        /**
+         * 3. 表单提交 Toast 提示
+         */
+        const contactForm = document.getElementById('contactForm');
+        const toast = document.getElementById('toast');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault(); // 阻止实际提交
+            
+            // 显示 Toast
+            toast.classList.add('show');
+            
+            // 重置表单
+            contactForm.reset();
+
+            // 3秒后隐藏
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        });
+
+        /**
+         * 4. 平滑滚动 (针对锚点)
+         */
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // 如果在移动端，点击后关闭菜单
+                if (window.innerWidth <= 768) {
+                    navMenu.style.display = 'none';
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

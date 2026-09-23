@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#5d5346">
+<title>美短日报 · 复古报刊编辑部</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+QingKe+HuangYou&family=Noto+Serif+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3ecd9;
+    --paper-hi:#faf4e4;
+    --paper-deep:#e7dcc0;
+    --ink:#5a4636;
+    --ink-deep:#3d3023;
+    --ink-faint:#97826a;
+    --line:rgba(90,70,54,.26);
+    --line-strong:rgba(61,48,35,.5);
+    --orange:#e0882e;
+    --orange-deep:#c16a1c;
+    --green:#40604d;
+    --green-deep:#2e4838;
+    --red:#c0523b;
+    --tape:rgba(214,196,150,.55);
+    --shadow:0 30px 80px rgba(25,18,9,.5);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{min-height:100%;}
+  body{
+    font-family:'Noto Serif SC','Songti SC','SimSun',serif;
+    color:var(--ink);
+    background:
+      radial-gradient(120% 90% at 50% 0%, #6f5e4a 0%, #574a3b 55%, #44382c 100%);
+    min-height:100vh;
+    padding:52px 16px 80px;
+    display:flex;
+    justify-content:center;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;opacity:.5;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .hand{font-family:'Ma Shan Zheng','STKaiti','KaiTi',cursive;font-weight:400;}
+  .play{font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif;}
+
+  /* ===== 舞台与层叠纸张 ===== */
+  .stage{position:relative;width:100%;max-width:1180px;}
+  .paper-back{
+    position:absolute;inset:0;transform:rotate(-2.1deg) translateY(14px);
+    background:linear-gradient(180deg,#efe5cd,#e4d8bc);
+    box-shadow:0 18px 50px rgba(25,18,9,.35);
+    border-radius:3px;
+  }
+  .paper-back::after{
+    content:"";position:absolute;left:0;right:0;bottom:-6px;height:6px;
+    background:linear-gradient(135deg,transparent 60%,#e4d8bc 60%) 0 0/9px 6px repeat-x,
+               linear-gradient(-135deg,transparent 60%,#e4d8bc 60%) 4.5px 0/9px 6px repeat-x;
+    opacity:.9;
+  }
+
+  .paper{
+    position:relative;
+    background:
+      radial-gradient(150px 110px at 86% 7%, rgba(166,132,82,.13), transparent 70%),
+      radial-gradient(210px 150px at 10% 80%, rgba(150,116,70,.11), transparent 72%),
+      radial-gradient(110px 84px at 70% 93%, rgba(160,128,80,.12), transparent 70%),
+      radial-gradient(90px 70px at 30% 28%, rgba(150,118,74,.07), transparent 70%),
+      radial-gradient(130px 100px at 4% 12%, rgba(158,124,76,.09), transparent 70%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='150' height='150'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2'/%3E%3C/filter%3E%3Crect width='150' height='150' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E"),
+      linear-gradient(180deg, var(--paper-hi) 0%, var(--paper) 16%, #f1e8d0 80%, var(--paper-deep) 100%);
+    box-shadow:
+      inset 0 0 130px rgba(140,110,70,.3),
+      inset 0 0 7px rgba(120,95,60,.28),
+      var(--shadow);
+    padding:36px 44px 34px;
+    border-radius:3px;
+    transform:rotate(-.55deg);
+    animation:paperIn 1s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes paperIn{
+    from{transform:rotate(-2deg) translateY(26px) scale(.985);opacity:0;}
+    to{transform:rotate(-.55deg) translateY(0) scale(1);opacity:1;}
+  }
+  /* 撕纸毛边（下） */
+  .paper::after{
+    content:"";position:absolute;left:0;right:0;bottom:-7px;height:7px;
+    background:linear-gradient(135deg,transparent 60%,#f3ecd9 60%) 0 0/10px 7px repeat-x,
+               linear-gradient(-135deg,transparent 60%,#f3ecd9 60%) 5px 0/10px 7px repeat-x;
+    filter:drop-shadow(0 3px 3px rgba(25,18,9,.25));
+    opacity:.9;
+  }
+  /* 撕纸毛边（上） */
+  .paper::before{
+    content:"";position:absolute;left:0;right:0;top:-6px;height:6px;
+    background:linear-gradient(45deg,transparent 60%,#f6f0e0 60%) 0 0/9px 6px repeat-x,
+               linear-gradient(-45deg,transparent 60%,#f6f0e0 60%) 4.5px 0/9px 6px repeat-x;
+    opacity:.8;
+  }
+
+  /* ===== 三栏网格 ===== */
+  .sheet{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    column-gap:30px;
+    position:relative;
+  }
+  /* 报纸中缝折痕 */
+  .fold-v{
+    position:absolute;top:0;bottom:0;left:50%;width:2px;z-index:2;pointer-events:none;
+    background:linear-gradient(180deg,transparent,rgba(120,95,60,.34) 12%,rgba(120,95,60,.34) 88%,transparent);
+    box-shadow:-1px 0 0 rgba(255,255,255,.45);
+    transform:translateX(-50%);
+  }
+  .fold-h{
+    position:absolute;left:0;right:0;top:52%;height:2px;z-index:2;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(120,95,60,.3) 8%,rgba(120,95,60,.3) 92%,transparent);
+  }
+  .col-line{border-left:1px dashed var(--line);padding-left:30px;}
+  .ruler{grid-column:1 / -1;height:0;margin:18px 0 20px;border-top:3px double var(--line-strong);position:relative;}
+  .ruler::after{content:"✦";position:absolute;left:50%;top:-14px;transform:translateX(-50%);color:var(--orange);font-size:14px;background:var(--paper);padding:0 10px;}
+
+  /* ===== 刊头 ===== */
+  .masthead{grid-column:1 / -1;position:relative;padding-bottom:16px;border-bottom:3px double var(--line-strong);}
+  .masthead .topline{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-size:12px;color:var(--ink-faint);letter-spacing:.04em;}
+  .masthead .topline .left{display:flex;align-items:center;gap:10px;}
+  .masthead .topline .est{border:1px solid var(--line-strong);border-radius:2px;padding:1px 7px;font-size:11px;letter-spacing:.12em;color:var(--ink-deep);}
+  .masthead .topline .issue{font-size:11px;}
+  .masthead .name-row{display:flex;align-items:center;justify-content:center;gap:22px;margin:16px 0 4px;position:relative;}
+  .masthead h1{font-size:84px;line-height:.92;letter-spacing:.06em;color:var(--ink-deep);text-shadow:1px 1px 0 rgba(90,70,54,.12);}
+  .masthead .en-sub{text-align:center;font-size:12px;letter-spacing:.44em;color:var(--orange-deep);text-transform:uppercase;margin-top:6px;}
+  .masthead .name-flank{font-family:'Noto Serif SC',serif;font-size:13px;color:var(--ink-faint);letter-spacing:.2em;writing-mode:vertical-rl;}
+  .masthead .dateline{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:12px;color:var(--ink);border-top:1px solid var(--line);padding-top:8px;}
+  .masthead .dateline .ed{color:var(--ink-deep);}
+  .masthead .dateline .ed b{color:var(--orange-deep);font-weight:700;}
+  .masthead .dateline .price{color:var(--ink-faint);font-size:11px;}
+
+  /* 天气栏 */
+  .weather{
+    grid-column:1 / -1;display:flex;align-items:center;gap:14px;
+    padding:9px 4px;font-size:12px;color:var(--ink);border-bottom:1px solid var(--line);
+    flex-wrap:wrap;
+  }
+  .weather .w{display:flex;align-items:center;gap:6px;}
+  .weather .w b{color:var(--orange-deep);font-size:15px;}
+  .weather .dot-sep{color:var(--line-strong);}
+  .weather .tip{margin-left:auto;color:var(--ink-faint);font-style:italic;}
+
+  /* 邮票 */
+  .stamp-corner{position:absolute;top:-16px;right:-8px;width:92px;transform:rotate(5deg);filter:drop-shadow(0 3px 5px rgba(60,45,20,.35));z-index:3;transition:transform .35s ease;}
+  .stamp-corner:hover{transform:rotate(1deg) translateY(-4px);}
+  .stamp{position:relative;background:var(--paper-hi);border:1px dashed rgba(90,70,54,.4);padding:6px;text-align:center;}
+  .stamp .inner{border:1px solid rgba(90,70,54,.25);padding:7px 5px 6px;background:linear-gradient(160deg,#fdf8ea,#f1e6ca);}
+  .stamp .val{font-size:10px;color:var(--orange-deep);letter-spacing:.1em;}
+  .stamp .who{font-size:9px;color:var(--ink-faint);margin-top:2px;}
+
+  /* ===== 主编寄语 ===== */
+  .lead{grid-column:1 / 3;}
+  .lead .kicker{font-size:11px;letter-spacing:.2em;color:var(--orange-deep);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .lead .kicker::after{content:"";flex:1;height:1px;background:var(--line);}
+  .greet{display:flex;gap:20px;align-items:flex-start;}
+  .cat-wrap{flex:0 0 auto;width:150px;position:relative;}
+  .cat-wrap svg{width:100%;height:auto;filter:drop-shadow(0 6px 10px rgba(60,45,20,.28));}
+  .cat-wrap .byline{position:absolute;left:6px;bottom:-16px;font-size:13px;color:var(--red);transform:rotate(-6deg);white-space:nowrap;}
+  .cat-wrap .byline::after{content:"";position:absolute;left:-6px;right:-6px;bottom:-2px;height:3px;background:var(--red);opacity:.35;border-radius:2px;}
+  .greet-text{flex:1;min-width:0;padding-top:4px;}
+  .greet-text .hello{font-size:30px;line-height:1.15;color:var(--ink-deep);margin-bottom:8px;}
+  .greet-text .hello .hi{color:var(--orange-deep);}
+  .greet-text .hello .hl{position:relative;white-space:nowrap;}
+  .greet-text .hello .hl::after{content:"";position:absolute;left:-2px;right:-2px;bottom:3px;height:10px;background:var(--orange);opacity:.28;z-index:-1;border-radius:2px;}
+  .greet-text .sub{font-size:15px;line-height:1.7;color:var(--ink);}
+  .greet-text .sub b{color:var(--green-deep);font-weight:600;}
+  .greet-text .note{margin-top:12px;font-size:13px;color:var(--ink-faint);line-height:1.6;border-left:3px solid var(--orange);padding-left:10px;font-style:italic;}
+  .lead .cat-mini{margin-top:16px;display:flex;align-items:flex-end;gap:14px;}
+  .lead .cat-mini svg{width:96px;height:auto;flex:0 0 auto;filter:drop-shadow(0 4px 6px rgba(60,45,20,.2));}
+  .lead .cat-mini .cap{font-size:12px;color:var(--ink-faint);line-height:1.7;font-style:italic;}
+
+  /* ===== 今日运势 ===== */
+  .fortune{grid-column:3;position:relative;}
+  .fortune .box{border:1px solid var(--line);background:rgba(250,244,228,.6);padding:14px;position:relative;}
+  .fortune .box .tape{position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-2deg);width:84px;height:20px;background:var(--tape);box-shadow:0 1px 3px rgba(90,70,54,.2);border-left:1px dashed rgba(255,255,255,.4);border-right:1px dashed rgba(255,255,255,.4);}
+  .fortune .f-title{font-size:13px;letter-spacing:.16em;color:var(--ink-deep);margin-bottom:10px;text-align:center;}
+  .f-row{display:flex;justify-content:space-between;align-items:center;padding:7px 2px;border-bottom:1px dotted var(--line);font-size:13px;}
+  .f-row:last-of-type{border-bottom:none;}
+  .f-row .k{color:var(--ink-faint);}
+  .f-row .v{color:var(--ink-deep);font-weight:600;}
+  .f-row .v.heat{color:var(--orange-deep);}
+  .f-row .v.cool{color:var(--green-deep);}
+  .f-row .v.mood{color:var(--red);}
+  .lucky{display:flex;gap:8px;margin-top:12px;}
+  .lucky .cell{flex:1;text-align:center;border:1px dashed var(--line);padding:8px 2px;background:rgba(250,244,228,.4);}
+  .lucky .cell .kk{font-size:10px;color:var(--ink-faint);letter-spacing:.08em;margin-bottom:4px;}
+  .lucky .cell .vv{font-size:15px;color:var(--ink-deep);font-weight:700;}
+  .lucky .cell .swatch{width:20px;height:20px;border-radius:50%;margin:0 auto 2px;border:2px solid var(--ink-deep);}
+
+  /* ===== 章节标题 ===== */
+  .sec-title{display:flex;align-items:center;gap:10px;margin-bottom:14px;font-size:20px;letter-spacing:.08em;color:var(--ink-deep);}
+  .sec-title .mark{width:26px;height:26px;flex:0 0 auto;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;border:2px solid currentColor;}
+  .sec-title .bar{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--line-strong) 0 8px,transparent 8px 16px);}
+  .sec-title .en{font-size:11px;letter-spacing:.22em;color:var(--ink-faint);text-transform:uppercase;}
+
+  /* ===== 日程 ===== */
+  .schedule{grid-column:1 / 3;position:relative;}
+  .task{display:flex;gap:14px;align-items:flex-start;padding:12px 2px;border-bottom:1px dotted var(--line);}
+  .task:last-of-type{border-bottom:none;}
+  .task .time{flex:0 0 auto;width:52px;font-family:'Noto Serif SC',serif;font-size:15px;color:var(--green-deep);font-weight:700;padding-top:2px;position:relative;}
+  .task .time::after{content:"";position:absolute;right:-8px;top:8px;width:4px;height:4px;border-radius:50%;background:var(--orange);}
+  .task .body{flex:1;min-width:0;}
+  .task .name{font-size:15px;line-height:1.4;color:var(--ink-deep);transition:all .3s;}
+  .task .meta{font-size:12px;color:var(--ink-faint);margin-top:3px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+  .tag{font-size:10px;letter-spacing:.05em;border-radius:2px;padding:1px 6px;border:1px solid;}
+  .tag.hi{color:var(--red);border-color:rgba(192,82,59,.5);background:rgba(192,82,59,.06);}
+  .tag.mid{color:var(--orange-deep);border-color:rgba(193,106,28,.5);background:rgba(224,136,46,.08);}
+  .tag.low{color:var(--green-deep);border-color:rgba(64,96,77,.5);background:rgba(64,96,77,.06);}
+  .check{flex:0 0 auto;width:24px;height:24px;margin-top:1px;cursor:pointer;position:relative;}
+  .check input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0;}
+  .check .box{width:24px;height:24px;border-radius:3px;border:2px solid var(--line-strong);background:rgba(250,244,228,.5);transition:all .25s;display:flex;align-items:center;justify-content:center;}
+  .check .box svg{width:14px;height:14px;opacity:0;transform:scale(.4);transition:all .2s;}
+  .check input:checked + .box{background:var(--green);border-color:var(--green-deep);}
+  .check input:checked + .box svg{opacity:1;transform:scale(1);}
+  .task.done .name{color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--red);}
+  .task.done .time{opacity:.5;}
+  .progress{margin-top:14px;padding:12px;background:rgba(250,244,228,.55);border:1px solid var(--line);position:relative;}
+  .progress .bar-row{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-faint);margin-bottom:7px;}
+  .progress .bar-row b{color:var(--green-deep);font-size:15px;}
+  .progress .track{height:9px;border-radius:99px;background:rgba(90,70,54,.12);overflow:hidden;border:1px solid var(--line);}
+  .progress .fill{height:100%;width:0%;border-radius:99px;background:repeating-linear-gradient(45deg,var(--green) 0 8px,var(--green-deep) 8px 16px);transition:width .6s cubic-bezier(.22,1,.36,1);}
+  .pencil-note{position:absolute;top:2px;right:8px;font-size:15px;color:var(--red);transform:rotate(-4deg);opacity:.9;}
+
+  /* ===== 公告栏 ===== */
+  .bulletin{grid-column:3;}
+  .bul-item{position:relative;margin-bottom:14px;padding:14px 12px 12px;background:rgba(250,244,228,.55);border:1px solid var(--line);font-size:13px;line-height:1.6;transition:transform .25s ease, box-shadow .25s ease;}
+  .bul-item:hover{transform:translateY(-2px) rotate(-.3deg);box-shadow:0 6px 14px rgba(120,95,55,.16);}
+  .bul-item .ico{font-size:16px;margin-right:4px;}
+  .bul-item .t{color:var(--ink);}
+  .bul-item .t b{color:var(--ink-deep);font-weight:700;}
+  .bul-item .lab{display:inline-block;margin-top:8px;font-size:10px;letter-spacing:.08em;border-radius:2px;padding:1px 7px;color:#fff;}
+  .lab.urgent{background:var(--red);}
+  .lab.notice{background:var(--green);}
+  .lab.event{background:var(--orange);}
+
+  /* ===== 下午茶倒计时 ===== */
+  .countdown{grid-column:1;position:relative;}
+  .cd-card{border:2px solid var(--green-deep);border-radius:4px;padding:18px 14px;background:rgba(250,244,228,.5);text-align:center;position:relative;}
+  .cd-card .cd-kicker{font-size:11px;letter-spacing:.2em;color:var(--orange-deep);margin-bottom:10px;}
+  .cd-main{display:flex;align-items:center;justify-content:center;gap:6px;}
+  .cd-cell{text-align:center;perspective:200px;}
+  .cd-num{font-family:'ZCOOL QingKe HuangYou',serif;font-size:40px;line-height:1;color:var(--green-deep);display:inline-block;min-width:46px;padding:6px 2px;border-bottom:3px solid var(--orange);}
+  .cd-num.tick{animation:tick .5s ease;}
+  @keyframes tick{0%{transform:translateY(-6px) rotateX(24deg);opacity:.2;}60%{transform:translateY(2px);}100%{transform:translateY(0) rotateX(0);opacity:1;}}
+  .cd-sep{font-size:28px;color:var(--orange-deep);padding-bottom:6px;}
+  .cd-label{font-size:10px;color:var(--ink-faint);margin-top:6px;letter-spacing:.12em;}
+  .cd-meta{margin-top:14px;font-size:12px;color:var(--ink-faint);display:flex;justify-content:space-between;align-items:center;}
+  .cd-meta b{color:var(--orange-deep);}
+  .cd-clock{font-family:'Noto Serif SC',serif;color:var(--ink-deep);font-weight:600;}
+  .tea-cat{margin-top:14px;display:flex;align-items:center;gap:12px;border-top:1px dashed var(--line);padding-top:12px;}
+  .tea-cat svg{width:74px;height:auto;flex:0 0 auto;filter:drop-shadow(0 4px 6px rgba(60,45,20,.2));}
+  .tea-cat .cap{font-size:12px;color:var(--ink-faint);line-height:1.6;font-style:italic;}
+
+  /* ===== 猫语角（便签） ===== */
+  .catcorner{grid-column:2 / 4;position:relative;}
+  .sticky{background:linear-gradient(180deg,#fbf2d0 0%,#f5e9bd 100%);padding:18px 18px 20px;position:relative;box-shadow:0 4px 12px rgba(120,95,55,.22);}
+  .sticky::before{content:"";position:absolute;top:0;left:0;width:0;height:0;border-top:20px solid #efe0ae;border-right:20px solid transparent;}
+  .sticky .tape{position:absolute;top:-10px;left:50%;transform:translateX(-50%) rotate(1deg);width:96px;height:22px;background:var(--tape);box-shadow:0 1px 3px rgba(90,70,54,.22);}
+  .sticky .kicker{font-size:11px;letter-spacing:.2em;color:var(--orange-deep);margin-bottom:8px;}
+  .sticky .fact{font-size:17px;line-height:1.65;color:var(--ink-deep);margin-bottom:12px;}
+  .sticky .fact .q{color:var(--orange-deep);}
+  .dict{border-top:1px dashed var(--line);padding-top:12px;}
+  .dict .d-title{font-size:12px;color:var(--ink-faint);letter-spacing:.1em;margin-bottom:8px;}
+  .dict .entry{display:flex;align-items:baseline;gap:10px;font-size:14px;line-height:1.8;border-bottom:1px dotted var(--line);padding:4px 0;}
+  .dict .entry:last-child{border-bottom:none;}
+  .dict .miao{flex:0 0 auto;color:var(--green-deep);font-weight:700;font-family:'ZCOOL QingKe HuangYou',serif;}
+  .dict .means{color:var(--ink);}
+  .dict .means b{color:var(--orange-deep);font-weight:600;}
+
+  /* ===== 读者来信 ===== */
+  .letters{grid-column:1 / 3;position:relative;}
+  .letter{border:1px solid var(--line);background:rgba(250,244,228,.6);padding:16px;position:relative;margin-bottom:12px;}
+  .letter .tape{position:absolute;top:-9px;left:28px;width:76px;height:20px;background:var(--tape);transform:rotate(-2deg);box-shadow:0 1px 3px rgba(90,70,54,.2);}
+  .letter .l-head{font-size:13px;color:var(--ink-deep);margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+  .letter .l-head .who{color:var(--orange-deep);font-weight:700;}
+  .letter .l-body{font-size:14px;line-height:1.7;color:var(--ink);}
+  .letter .l-body .ask{color:var(--ink-deep);}
+  .letter.reply{border-style:dashed;}
+  .letter .l-body .reply-mark{color:var(--green-deep);font-weight:700;}
+  .letters .submit-box{margin-top:8px;border:2px dashed var(--line-strong);padding:12px;text-align:center;font-size:13px;color:var(--ink-faint);}
+  .letters .submit-box b{color:var(--orange-deep);}
+  .nap-cat{grid-column:3;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;position:relative;}
+  .nap-cat svg{width:120px;height:auto;filter:drop-shadow(0 5px 8px rgba(60,45,20,.2));}
+  .nap-cat .cap{font-size:12px;color:var(--ink-faint);font-style:italic;text-align:center;line-height:1.6;}
+
+  /* ===== 页脚 ===== */
+  footer{grid-column:1 / -1;margin-top:28px;padding-top:16px;border-top:3px double var(--line-strong);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .stamp-seal{width:86px;height:86px;border:3px solid var(--red);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--red);transform:rotate(-8deg);opacity:.9;font-size:12px;line-height:1.15;letter-spacing:.06em;flex:0 0 auto;box-shadow:inset 0 0 0 2px rgba(192,82,59,.4);transition:transform .3s ease;}
+  .stamp-seal:hover{transform:rotate(-2deg) scale(1.04);}
+  .stamp-seal .paw{font-size:16px;}
+  .foot-mid{flex:1;text-align:center;font-size:11px;color:var(--ink-faint);line-height:1.9;}
+  .foot-mid b{color:var(--ink-deep);}
+  .postmark{flex:0 0 auto;border:2px solid var(--ink-faint);border-radius:50%;width:80px;height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ink-faint);font-size:10px;letter-spacing:.12em;transform:rotate(7deg);position:relative;}
+  .postmark::before{content:"";position:absolute;inset:4px;border:1px dashed var(--ink-faint);border-radius:50%;}
+
+  /* ===== 猫咪动画 ===== */
+  .eye{transform-box:fill-box;transform-origin:center;animation:blink 4.6s infinite;}
+  .eye-r{animation-delay:.22s;}
+  @keyframes blink{0%,90%,100%{transform:scaleY(1);}93%{transform:scaleY(.06);}}
+  .breathe{transform-box:fill-box;transform-origin:center bottom;animation:breathe 3.6s ease-in-out infinite;}
+  @keyframes breathe{0%,100%{transform:scaleY(1);}50%{transform:scaleY(1.035);}}
+  .steam{animation:steam 2.6s ease-in-out infinite;}
+  .steam.s2{animation-delay:.5s;}
+  .steam.s3{animation-delay:1s;}
+  @keyframes steam{0%{opacity:0;transform:translateY(4px);}35%{opacity:.75;}100%{opacity:0;transform:translateY(-10px);}}
+  .zzz{font-family:'ZCOOL QingKe HuangYou',serif;animation:zzz 2.8s ease-in-out infinite;}
+  .zzz.z2{animation-delay:.9s;}
+  .zzz.z3{animation-delay:1.7s;}
+  @keyframes zzz{0%{opacity:0;transform:translate(0,0) scale(.7);}30%{opacity:.9;}100%{opacity:0;transform:translate(14px,-20px) scale(1.15);}}
+
+  /* 载入动画 */
+  .reveal{opacity:0;transform:translateY(18px);animation:rise .7s cubic-bezier(.22,1,.36,1) forwards;}
+  @keyframes rise{to{opacity:1;transform:translateY(0);}}
+  .d1{animation-delay:.15s;} .d2{animation-delay:.28s;} .d3{animation-delay:.4s;}
+  .d4{animation-delay:.52s;} .d5{animation-delay:.64s;} .d6{animation-delay:.76s;} .d7{animation-delay:.9s;}
+
+  /* ===== 响应式 ===== */
+  @media (max-width:900px){
+    body{padding:0;}
+    .stage{max-width:none;}
+    .paper{transform:none;padding:20px 18px 26px;border-radius:0;box-shadow:none;animation:none;}
+    .paper-back{display:none;}
+    .paper::before,.paper::after{display:none;}
+    .fold-v,.fold-h{display:none;}
+    .sheet{grid-template-columns:1fr;column-gap:0;}
+    .masthead h1{font-size:52px;}
+    .masthead .name-flank{display:none;}
+    .lead,.fortune,.schedule,.bulletin,.countdown,.catcorner,.letters,.nap-cat,footer{grid-column:1;}
+    .col-line{border-left:none;padding-left:0;}
+    .ruler{grid-column:1;}
+    .cat-wrap{width:104px;}
+    .greet-text .hello{font-size:24px;}
+    .stamp-corner{width:72px;top:-10px;right:0;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;}
+  }
+</style>
+</head>
+<body>
+  <div class="stage">
+    <div class="paper-back"></div>
+    <div class="paper">
+      <div class="sheet">
+        <div class="fold-v"></div>
+        <div class="fold-h"></div>
+
+        <!-- ============ 刊头 ============ -->
+        <header class="masthead reveal d1">
+          <div class="stamp-corner">
+            <div class="stamp">
+              <div class="inner">
+                <svg width="56" height="40" viewBox="0 0 56 40" aria-label="邮票小猫">
+                  <rect width="56" height="40" fill="#f6eddb"/>
+                  <circle cx="28" cy="17" r="12" fill="#c3cad2" stroke="#4a4f55" stroke-width="1.6"/>
+                  <path d="M28 9 L24 13 L26 13 L28 11 L30 13 L32 13 Z" fill="#4a4f55"/>
+                  <path d="M22 8 L28 16 L34 8" fill="none" stroke="#4a4f55" stroke-width="1.4"/>
+                  <ellipse cx="24" cy="17" rx="2" ry="2.6" fill="#7ea05a"/>
+                  <ellipse cx="32" cy="17" rx="2" ry="2.6" fill="#7ea05a"/>
+                  <path d="M28 19 L28 22" stroke="#4a4f55" stroke-width="1.2"/>
+                  <ellipse cx="28" cy="31" rx="10" ry="3" fill="#e8e2d2"/>
+                  <text x="4" y="8" font-size="6" fill="#c16a1c" font-family="serif">8¢</text>
+                </svg>
+                <div class="val">猫咪邮资</div>
+                <div class="who">美短日报·发行</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="topline">
+            <div class="left">
+              <span class="est">创刊 · 2026</span>
+              <span>复古报刊编辑部 · 出品</span>
+            </div>
+            <span class="issue">每日更新 · 猫界第一刊</span>
+          </div>
+
+          <div class="name-row">
+            <span class="name-flank">复古报刊编辑部</span>
+            <h1 class="hand">美短日报</h1>
+            <span class="name-flank">猫咪生活报</span>
+          </div>
+          <div class="en-sub">Meiduan Daily · A Cat's Life Newspaper</div>
+
+          <div class="dateline">
+            <span id="dateLine">--</span>
+            <span class="ed">今日主编 <b>花卷</b> 🐾</span>
+            <span>№ <span id="issueNo">--</span> 期</span>
+            <span class="price">喵币 1 枚 / 份</span>
+          </div>
+        </header>
+
+        <!-- 天气栏 -->
+        <div class="weather reveal d1">
+          <span class="w">☀️ 晴 · <b>22°C</b></span>
+          <span class="dot-sep">·</span>
+          <span class="w">湿度 45%</span>
+          <span class="dot-sep">·</span>
+          <span class="w">西北风 2 级</span>
+          <span class="dot-sep">·</span>
+          <span class="w">🕊️ 宜晾晒猫窝</span>
+          <span class="tip">—— 编辑部天气猫「麻团」播报</span>
+        </div>
+
+        <!-- ============ 主编寄语 ============ -->
+        <section class="lead reveal d2">
+          <div class="kicker">◎ 今日头条 · 主编寄语</div>
+          <div class="greet">
+            <div class="cat-wrap">
+              <svg viewBox="0 0 240 260" xmlns="http://www.w3.org/2000/svg" aria-label="美短猫主编花卷">
+                <!-- 尾巴 -->
+                <g>
+                  <animateTransform attributeName="transform" type="rotate" values="-6 56 214;12 56 214;-6 56 214" dur="3.8s" repeatCount="indefinite"/>
+                  <path d="M52 218 C22 200 22 162 40 150" fill="none" stroke="#8b98a8" stroke-width="18" stroke-linecap="round"/>
+                  <path d="M52 218 C22 200 22 162 40 150" fill="none" stroke="#4a4f55" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 26" opacity=".5"/>
+                </g>
+                <!-- 身体 -->
+                <g class="breathe">
+                  <path d="M70 150 C66 205 92 232 120 236 C148 232 174 205 170 150" fill="#c3cad2" stroke="#4a4f55" stroke-width="6" stroke-linejoin="round"/>
+                  <path d="M96 168 q12 14 24 0 M92 186 q14 14 28 0 M94 204 q14 13 28 0" fill="none" stroke="#4a4f55" stroke-width="4" stroke-linecap="round" opacity=".6"/>
+                  <path d="M120 150 L104 142 L104 158 Z" fill="#e0882e" stroke="#4a4f55" stroke-width="4" stroke-linejoin="round"/>
+                  <path d="M120 150 L136 142 L136 158 Z" fill="#e0882e" stroke="#4a4f55" stroke-width="4" stroke-linejoin="round"/>
+                  <circle cx="120" cy="150" r="6" fill="#c16a1c" stroke="#4a4f55" stroke-width="3"/>
+                </g>
+                <!-- 耳朵 -->
+                <path d="M44 96 L62 40 L96 74 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="6" stroke-linejoin="round"/>
+                <path d="M196 96 L178 40 L144 74 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="6" stroke-linejoin="round"/>
+                <path d="M58 84 L64 52 L86 78 Z" fill="#e8b4b4"/>
+                <path d="M182 84 L176 52 L154 78 Z" fill="#e8b4b4"/>
+                <!-- 头 -->
+                <ellipse cx="120" cy="118" rx="84" ry="76" fill="#c3cad2" stroke="#4a4f55" stroke-width="6"/>
+                <path d="M80 66 L96 90 L106 70 L120 94 L134 70 L144 90 L160 66" fill="none" stroke="#4a4f55" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M54 106 L76 100 M186 106 L164 100" stroke="#4a4f55" stroke-width="4" stroke-linecap="round"/>
+                <!-- 眼睛（带眨眼） -->
+                <g class="eye">
+                  <ellipse cx="88" cy="118" rx="15" ry="17" fill="#8fb06a" stroke="#4a4f55" stroke-width="4"/>
+                  <ellipse cx="88" cy="118" rx="4.5" ry="11" fill="#2f3a2a"/>
+                  <circle cx="84" cy="110" r="3.6" fill="#fff" opacity=".9"/>
+                </g>
+                <g class="eye eye-r">
+                  <ellipse cx="152" cy="118" rx="15" ry="17" fill="#8fb06a" stroke="#4a4f55" stroke-width="4"/>
+                  <ellipse cx="152" cy="118" rx="4.5" ry="11" fill="#2f3a2a"/>
+                  <circle cx="148" cy="110" r="3.6" fill="#fff" opacity=".9"/>
+                </g>
+                <!-- 鼻子嘴巴胡须 -->
+                <path d="M112 140 L128 140 L120 150 Z" fill="#e8a0a0" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+                <path d="M120 150 L120 158 M120 158 Q110 166 101 157 M120 158 Q130 166 139 157" fill="none" stroke="#4a4f55" stroke-width="3" stroke-linecap="round"/>
+                <g stroke="#4a4f55" stroke-width="3" stroke-linecap="round" opacity=".7">
+                  <path d="M64 136 L32 129 M66 148 L32 150 M176 136 L208 129 M174 148 L208 150"/>
+                </g>
+                <ellipse cx="64" cy="150" rx="12" ry="7" fill="#f0a8a8" opacity=".45"/>
+                <ellipse cx="176" cy="150" rx="12" ry="7" fill="#f0a8a8" opacity=".45"/>
+              </svg>
+              <div class="byline hand">—— 花卷 · 主编亲笔</div>
+            </div>
+            <div class="greet-text">
+              <div class="hello hand"><span class="hi" id="greetHi">早上好</span>，正洋大人 <span class="hl">喵</span>～</div>
+              <div class="sub">今天是 <b id="greetDate">--</b>，本主编已把今日的猫生要闻排好版，<span id="greetLine">记得配杯茶慢慢看。</span></div>
+              <div class="note">🐾 头版寄语：把日子过成报纸，每一天都有值得被印成铅字的瞬间。</div>
+            </div>
+          </div>
+          <div class="cat-mini">
+            <svg viewBox="0 0 180 110" xmlns="http://www.w3.org/2000/svg" aria-label="读报猫">
+              <ellipse cx="90" cy="98" rx="78" ry="8" fill="#e8e2d2"/>
+              <g class="breathe">
+                <path d="M64 96 C60 76 64 58 82 54 C104 50 126 54 130 72" fill="#c3cad2" stroke="#4a4f55" stroke-width="4" stroke-linecap="round"/>
+                <path d="M82 70 q8 10 16 0 M80 84 q9 11 18 0" fill="none" stroke="#4a4f55" stroke-width="3" stroke-linecap="round" opacity=".55"/>
+              </g>
+              <circle cx="96" cy="40" r="20" fill="#c3cad2" stroke="#4a4f55" stroke-width="4"/>
+              <path d="M84 32 L90 37 L93 30 L96 39 L99 30 L102 37 L108 32" fill="none" stroke="#4a4f55" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M78 30 L70 18 L88 22 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M114 30 L122 18 L104 22 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+              <g class="eye">
+                <circle cx="90" cy="40" r="3.2" fill="#4a4f55"/>
+              </g>
+              <g class="eye eye-r">
+                <circle cx="103" cy="40" r="3.2" fill="#4a4f55"/>
+              </g>
+              <path d="M96 44 L96 48 M96 48 Q92 51 90 48 M96 48 Q100 51 103 48" fill="none" stroke="#4a4f55" stroke-width="2.4" stroke-linecap="round"/>
+              <!-- 报纸 -->
+              <g transform="rotate(8 96 84)">
+                <rect x="58" y="62" width="78" height="46" rx="2" fill="#f7f0dd" stroke="#4a4f55" stroke-width="2.6"/>
+                <rect x="64" y="68" width="30" height="7" fill="#4a4f55" opacity=".7"/>
+                <line x1="64" y1="80" x2="130" y2="80" stroke="#4a4f55" stroke-width="2" opacity=".35"/>
+                <line x1="64" y1="86" x2="130" y2="86" stroke="#4a4f55" stroke-width="2" opacity=".35"/>
+                <line x1="64" y1="92" x2="114" y2="92" stroke="#4a4f55" stroke-width="2" opacity=".35"/>
+                <line x1="64" y1="98" x2="124" y2="98" stroke="#4a4f55" stroke-width="2" opacity=".35"/>
+                <!-- 按报的爪 -->
+                <ellipse cx="72" cy="104" rx="7" ry="4" fill="#c3cad2" stroke="#4a4f55" stroke-width="2.4"/>
+              </g>
+            </svg>
+            <span class="cap">—— 读报猫「油条」：今日头条已读，满意度五星，喵。</span>
+          </div>
+        </section>
+
+        <!-- ============ 今日运势 ============ -->
+        <aside class="fortune col-line reveal d2">
+          <div class="box">
+            <span class="tape"></span>
+            <div class="f-title">☀ 今日运势 · 速览</div>
+            <div class="f-row"><span class="k">天气</span><span class="v heat">晴 · 22°C</span></div>
+            <div class="f-row"><span class="k">猫运</span><span class="v cool">旺 · 宜晒太阳</span></div>
+            <div class="f-row"><span class="k">心情</span><span class="v mood">松软 · 90%</span></div>
+            <div class="f-row"><span class="k">宜</span><span class="v">打盹 / 摸鱼 / 晒太阳</span></div>
+            <div class="f-row"><span class="k">忌</span><span class="v">赖床过头 / 熬夜改稿</span></div>
+            <div class="lucky">
+              <div class="cell"><div class="kk">幸运色</div><div class="swatch" style="background:#e0882e;"></div><div class="vv">橘黄</div></div>
+              <div class="cell"><div class="kk">幸运数</div><div class="vv">7</div></div>
+              <div class="cell"><div class="kk">幸运食</div><div class="vv">🐟</div></div>
+            </div>
+          </div>
+        </aside>
+
+        <div class="ruler reveal d3"></div>
+
+        <!-- ============ 今日版面 · 日程 ============ -->
+        <section class="schedule reveal d3">
+          <div class="sec-title">
+            <span class="mark hand">版</span>
+            <span>今日版面 · 日程时间表</span>
+            <span class="bar"></span>
+            <span class="en">Today's Edition</span>
+          </div>
+          <span class="pencil-note hand">✎ 铅笔打勾，做完划掉</span>
+
+          <div class="task" data-task>
+            <span class="time">09:00</span>
+            <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></label>
+            <div class="body">
+              <div class="name">晨会 · 编辑部选题会</div>
+              <div class="meta"><span class="tag hi">紧急</span><span>报馆二楼 · 15min</span></div>
+            </div>
+          </div>
+          <div class="task" data-task>
+            <span class="time">11:00</span>
+            <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></label>
+            <div class="body">
+              <div class="name">巡版 · 猫生街头采访</div>
+              <div class="meta"><span class="tag mid">重要</span><span>外出 · 30min</span></div>
+            </div>
+          </div>
+          <div class="task" data-task>
+            <span class="time">15:00</span>
+            <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></label>
+            <div class="body">
+              <div class="name">下午茶 · 小鱼干补给</div>
+              <div class="meta"><span class="tag low">日常</span><span>配一杯热茶</span></div>
+            </div>
+          </div>
+          <div class="task" data-task>
+            <span class="time">18:00</span>
+            <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></label>
+            <div class="body">
+              <div class="name">定稿 · 明日版面排版</div>
+              <div class="meta"><span class="tag mid">重要</span><span>送印刷厂</span></div>
+            </div>
+          </div>
+          <div class="task" data-task>
+            <span class="time">21:00</span>
+            <label class="check"><input type="checkbox"><span class="box"><svg viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></label>
+            <div class="body">
+              <div class="name">收工 · 归档今日稿件</div>
+              <div class="meta"><span class="tag low">日常</span><span>编辑部锁门</span></div>
+            </div>
+          </div>
+
+          <div class="progress">
+            <div class="bar-row"><span>今日交稿进度</span><b><span id="doneCount">0</span> / <span id="totalCount">5</span></b></div>
+            <div class="track"><div class="fill" id="doneBar"></div></div>
+          </div>
+        </section>
+
+        <!-- ============ 编辑部公告栏 ============ -->
+        <section class="bulletin col-line reveal d4">
+          <div class="sec-title">
+            <span class="mark hand">告</span>
+            <span>编辑部公告栏</span>
+          </div>
+          <div class="bul-item">
+            <span class="tape" style="position:absolute;top:-9px;left:50%;transform:translateX(-50%) rotate(-2deg);width:72px;height:18px;background:var(--tape);box-shadow:0 1px 3px rgba(90,70,54,.2);"></span>
+            <div class="t"><span class="ico">⚠️</span><b>紧急启事</b>：楼下的猫爬架今日检修，请全体成员绕行，改走窗台通道。</div>
+            <span class="lab urgent">紧急</span>
+          </div>
+          <div class="bul-item">
+            <div class="t"><span class="ico">📮</span><b>征稿通知</b>：本期「猫生百态」专栏征稿中，欢迎投喂猫片与生活小记。</div>
+            <span class="lab notice">通知</span>
+          </div>
+          <div class="bul-item">
+            <div class="t"><span class="ico">🧶</span><b>活动预告</b>：本周五编辑部组织「毛线球锦标赛」，冠军奖励一罐小鱼干。</div>
+            <span class="lab event">活动</span>
+          </div>
+          <div class="bul-item">
+            <div class="t"><span class="ico">🍽️</span><b>食堂提醒</b>：今日特供「特制小鱼干·炭烤风味」，限量 50 份，售完即止。</div>
+            <span class="lab notice">提醒</span>
+          </div>
+          <div class="pencil-note hand" style="position:static;margin-top:6px;text-align:right;">✎ 划重点：小鱼干管够！</div>
+        </section>
+
+        <div class="ruler reveal d5"></div>
+
+        <!-- ============ 下午茶倒计时 ============ -->
+        <section class="countdown reveal d5">
+          <div class="sec-title">
+            <span class="mark hand">茶</span>
+            <span>下午茶倒计时</span>
+          </div>
+          <div class="cd-card">
+            <div class="cd-kicker">距离下午茶 · 小鱼干时刻还有</div>
+            <div class="cd-main" id="cdMain">
+              <div class="cd-cell"><span class="cd-num" id="cdH">00</span><div class="cd-label">时</div></div>
+              <span class="cd-sep">:</span>
+              <div class="cd-cell"><span class="cd-num" id="cdM">00</span><div class="cd-label">分</div></div>
+              <span class="cd-sep">:</span>
+              <div class="cd-cell"><span class="cd-num" id="cdS">00</span><div class="cd-label">秒</div></div>
+            </div>
+            <div class="cd-meta">
+              <span>开茶时间 <b>15:00</b></span>
+              <span class="cd-clock" id="cdClock">--:--:--</span>
+            </div>
+          </div>
+          <div class="tea-cat">
+            <svg viewBox="0 0 130 120" xmlns="http://www.w3.org/2000/svg" aria-label="喝茶猫">
+              <ellipse cx="65" cy="112" rx="58" ry="7" fill="#e8e2d2"/>
+              <path d="M46 110 C44 92 50 78 66 74 C84 70 100 74 104 88" fill="#c3cad2" stroke="#4a4f55" stroke-width="4" stroke-linecap="round"/>
+              <circle cx="70" cy="56" r="20" fill="#c3cad2" stroke="#4a4f55" stroke-width="4"/>
+              <path d="M56 48 L50 34 L68 40 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+              <path d="M84 48 L90 34 L72 40 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+              <g class="eye">
+                <circle cx="64" cy="56" r="3.4" fill="#4a4f55"/>
+              </g>
+              <g class="eye eye-r">
+                <circle cx="77" cy="56" r="3.4" fill="#4a4f55"/>
+              </g>
+              <path d="M70 60 L70 64 M70 64 Q66 68 63 64 M70 64 Q74 68 78 64" fill="none" stroke="#4a4f55" stroke-width="2.4" stroke-linecap="round"/>
+              <!-- 茶杯 -->
+              <g>
+                <path d="M52 92 C52 104 58 110 68 110 C78 110 84 104 84 92" fill="#f6efdd" stroke="#4a4f55" stroke-width="3"/>
+                <rect x="50" y="90" width="36" height="7" rx="3" fill="#f6efdd" stroke="#4a4f55" stroke-width="2.4"/>
+                <path d="M84 94 C92 92 92 102 84 102" fill="none" stroke="#4a4f55" stroke-width="2.4"/>
+                <rect x="60" y="94" width="16" height="8" rx="1" fill="#c16a1c" opacity=".5"/>
+                <!-- 蒸汽 -->
+                <path class="steam" d="M62 84 Q59 78 62 72" fill="none" stroke="#4a4f55" stroke-width="2" stroke-linecap="round"/>
+                <path class="steam s2" d="M70 82 Q67 76 70 70" fill="none" stroke="#4a4f55" stroke-width="2" stroke-linecap="round"/>
+                <path class="steam s3" d="M78 84 Q75 78 78 72" fill="none" stroke="#4a4f55" stroke-width="2" stroke-linecap="round"/>
+              </g>
+              <!-- 捧杯爪 -->
+              <ellipse cx="56" cy="100" rx="8" ry="4" fill="#c3cad2" stroke="#4a4f55" stroke-width="2.4"/>
+              <ellipse cx="82" cy="100" rx="8" ry="4" fill="#c3cad2" stroke="#4a4f55" stroke-width="2.4"/>
+            </svg>
+            <span class="cap">—— 下午茶守候员「汤圆」：茶已泡好，就等三点了。</span>
+          </div>
+        </section>
+
+        <!-- ============ 今日猫语角 ============ -->
+        <section class="catcorner reveal d6">
+          <div class="sticky">
+            <span class="tape"></span>
+            <div class="kicker">🧾 今日猫语角 · 猫界冷知识</div>
+            <div class="fact"><span class="q">「</span><span id="factText">--</span><span class="q">」</span></div>
+            <div class="dict">
+              <div class="d-title">🐈 喵语小词典 · 本日精选</div>
+              <div class="entry"><span class="miao">喵～</span><span class="means">—— <b>我在这，想你了。</b></span></div>
+              <div class="entry"><span class="miao">呼噜呼噜</span><span class="means">—— 很舒服，<b>继续别停。</b></span></div>
+              <div class="entry"><span class="miao">喵！喵！</span><span class="means">—— <b>开饭！立刻马上！</b></span></div>
+              <div class="entry"><span class="miao">慢眨眼</span><span class="means">—— 这是猫式的<b>「我爱你」</b>。</span></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="ruler reveal d7"></div>
+
+        <!-- ============ 读者来信 · 投稿箱 ============ -->
+        <section class="letters reveal d7">
+          <div class="sec-title">
+            <span class="mark hand">信</span>
+            <span>读者来信 · 投稿箱</span>
+            <span class="bar"></span>
+            <span class="en">Letters</span>
+          </div>
+          <div class="letter">
+            <span class="tape"></span>
+            <div class="l-head">📮 读者 <span class="who">「被踩键盘的铲屎官」</span> 来信：</div>
+            <div class="l-body"><span class="ask">“小编你好，为什么我家猫总在我打字的时候踩键盘？尤其是赶稿的时候。”</span></div>
+          </div>
+          <div class="letter reply">
+            <span class="tape" style="left:auto;right:28px;transform:rotate(2deg);"></span>
+            <div class="l-head">✍️ 编辑部 <span class="who">花卷</span> 回信：</div>
+            <div class="l-body"><span class="reply-mark">「猫踩键盘，不是捣乱，是想参与你的工作。</span> 它在说“我也要写稿”。建议在桌边放个空纸箱，它立刻就会转场——纸箱才是猫的快乐星球。」</div>
+          </div>
+          <div class="submit-box">📬 <b>投稿箱</b>：欢迎投喂猫片、生活小记、喵语翻译，录用即赠 <b>小鱼干一罐</b> 🐟</div>
+        </section>
+
+        <!-- 打盹猫 -->
+        <aside class="nap-cat reveal d7">
+          <svg viewBox="0 0 160 130" xmlns="http://www.w3.org/2000/svg" aria-label="打盹猫">
+            <ellipse cx="80" cy="118" rx="70" ry="10" fill="#e8e2d2"/>
+            <!-- Zzz -->
+            <text class="zzz" x="108" y="38" font-size="18" fill="#c16a1c">Z</text>
+            <text class="zzz z2" x="120" y="26" font-size="14" fill="#e0882e">z</text>
+            <text class="zzz z3" x="128" y="16" font-size="11" fill="#c16a1c">z</text>
+            <!-- 蜷缩身体 -->
+            <g class="breathe">
+              <path d="M42 108 C36 84 50 62 80 60 C110 62 124 84 118 108" fill="#c3cad2" stroke="#4a4f55" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M56 92 q10 8 20 0 M56 104 q12 8 24 0" fill="none" stroke="#4a4f55" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+            </g>
+            <!-- 头 -->
+            <circle cx="66" cy="74" r="24" fill="#c3cad2" stroke="#4a4f55" stroke-width="4"/>
+            <path d="M46 60 L42 40 L60 48 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M86 60 L90 40 L72 48 Z" fill="#8b98a8" stroke="#4a4f55" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M52 62 L58 70 L62 60 L66 72 L70 60 L74 70 L80 62" fill="none" stroke="#4a4f55" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- 闭眼 -->
+            <path d="M56 74 Q61 78 66 74" fill="none" stroke="#4a4f55" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M70 74 Q75 78 80 74" fill="none" stroke="#4a4f55" stroke-width="2.6" stroke-linecap="round"/>
+            <path d="M66 82 L66 84 M66 84 Q63 86 61 84 M66 84 Q69 86 71 84" fill="none" stroke="#4a4f55" stroke-width="2" stroke-linecap="round"/>
+            <ellipse cx="52" cy="84" rx="7" ry="4" fill="#f0a8a8" opacity=".4"/>
+            <ellipse cx="80" cy="84" rx="7" ry="4" fill="#f0a8a8" opacity=".4"/>
+            <!-- 尾巴卷曲 -->
+            <path d="M120 104 C136 98 138 84 128 76" fill="none" stroke="#8b98a8" stroke-width="10" stroke-linecap="round"/>
+            <path d="M120 104 C136 98 138 84 128 76" fill="none" stroke="#4a4f55" stroke-width="10" stroke-linecap="round" stroke-dasharray="0 16" opacity=".5"/>
+          </svg>
+          <span class="cap">—— 打盹猫「糯米」：稿件已交，先眯五分钟。</span>
+        </aside>
+
+        <!-- ============ 页脚 ============ -->
+        <footer class="reveal d7">
+          <div class="stamp-seal">
+            <span class="paw">🐾</span>
+            <span>已审<br>花卷印</span>
+          </div>
+          <div class="foot-mid">
+            《<b>美短日报</b>》· 复古报刊编辑部 · 每日 00:00 自动更新<br>
+            主编 花卷 · 排版 猫爪印 · 校对 尾巴尖 · 插画 肉垫工作室<br>
+            <span style="letter-spacing:.12em;">A CAT'S LIFE NEWSPAPER · EST. 2026</span>
+          </div>
+          <div class="postmark" id="postmark">
+            <span id="postmarkDate">--</span>
+            <span>邮戳</span>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  var $ = function(id){return document.getElementById(id);};
+  var WEEKS = ['日','一','二','三','四','五','六'];
+  var HOURS_HI = [[5,11,'早上好'],[11,13,'中午好'],[13,18,'下午好'],[18,23,'晚上好']];
+  var GREETINGS = [
+    '记得配杯茶慢慢看。','今天的猫运旺，适合晒太阳。','版面已排好，就差你这一份了。',
+    '本主编亲自给你划了重点，喵。','摸鱼归摸鱼，正事别忘啦。','报纸墨香里，藏着一整天的小确幸。'
+  ];
+  var FACTS = [
+    { f:'猫咪一天要睡 12–16 个小时，其中大部分其实是「浅睡」，随时准备一跃而起。' },
+    { f:'猫咪的呼噜声频率约 25–150Hz，有研究说这个频段有助于骨骼与组织修复。' },
+    { f:'成年猫几乎不会对同类“喵”叫，那一声“喵”基本都是专门留给人类的。' },
+    { f:'每只猫的鼻纹都独一无二，就像人类的指纹一样。' },
+    { f:'美短猫是「工作猫」出身，祖上随船出海，是捕鼠界的劳模。' },
+    { f:'猫咪慢眨眼是在对你示好，相当于人类的微笑，可以回它一个慢眨眼。' },
+    { f:'猫的胡须宽约等于身体宽度，是用来「丈量」自己能不能钻过缝隙的尺子。' }
+  ];
+
+  function pad(n){return n<10?'0'+n:''+n;}
+
+  function refreshClock(){
+    var d = new Date();
+    var h = pad(d.getHours()), m = pad(d.getMinutes()), s = pad(d.getSeconds());
+    $('cdClock').textContent = h+':'+m+':'+s;
+
+    var y = d.getFullYear(), mo = d.getMonth()+1, da = d.getDate();
+    $('dateLine').textContent = y+'年'+mo+'月'+da+'日 · 星期'+WEEKS[d.getDay()];
+    $('greetDate').textContent = mo+'月'+da+'日 · 星期'+WEEKS[d.getDay()];
+    $('postmarkDate').textContent = y+'.'+pad(mo)+'.'+pad(da);
+
+    var start = new Date(y,0,1);
+    $('issueNo').textContent = Math.floor((d - start)/86400000)+1;
+
+    var hh = d.getHours(), hi = '夜深了';
+    for(var i=0;i<HOURS_HI.length;i++){
+      if(hh>=HOURS_HI[i][0] && hh<HOURS_HI[i][1]){hi=HOURS_HI[i][2];break;}
+    }
+    $('greetHi').textContent = hi;
+
+    var target = new Date(y, mo-1, da, 15, 0, 0);
+    if(d >= target){ target = new Date(y, mo-1, da+1, 15, 0, 0); }
+    var diff = Math.max(0, target - d);
+    setCd('cdH', Math.floor(diff/3600000));
+    setCd('cdM', Math.floor(diff%3600000/60000));
+    setCd('cdS', Math.floor(diff%60000/1000));
+  }
+
+  var lastCd = {};
+  function setCd(id, v){
+    var el = $(id);
+    var val = pad(v);
+    if(el.textContent !== val){
+      el.textContent = val;
+      if(lastCd[id] !== undefined){ el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+      lastCd[id] = v;
+    }
+  }
+
+  var daySeed = new Date().getDate();
+  $('greetLine').textContent = GREETINGS[daySeed % GREETINGS.length];
+  $('factText').textContent = FACTS[daySeed % FACTS.length].f;
+
+  /* 日程勾选 + localStorage 持久化（按天存储） */
+  var STORE_KEY = 'meiduan-daily-done-v1';
+  var tasks = document.querySelectorAll('[data-task]');
+  var done = 0;
+  var todayKey = new Date().toDateString();
+  var saved = null;
+  try{ var raw = localStorage.getItem(STORE_KEY); if(raw){ saved = JSON.parse(raw); } }catch(e){ saved = null; }
+  if(!saved || saved.day !== todayKey){ saved = { day: todayKey, checked: [] }; try{ localStorage.setItem(STORE_KEY, JSON.stringify(saved)); }catch(e){} }
+
+  tasks.forEach(function(t, idx){
+    var box = t.querySelector('input');
+    if(saved.checked.indexOf(idx) !== -1){ box.checked = true; t.classList.add('done'); done++; }
+    box.addEventListener('change', function(){
+      if(box.checked){ t.classList.add('done'); done++; saved.checked.push(idx); }
+      else { t.classList.remove('done'); done--; saved.checked = saved.checked.filter(function(v){return v!==idx;}); }
+      try{ localStorage.setItem(STORE_KEY, JSON.stringify(saved)); }catch(e){}
+      updateProgress();
+    });
+  });
+  function updateProgress(){
+    $('doneCount').textContent = done;
+    $('totalCount').textContent = tasks.length;
+    $('doneBar').style.width = Math.round(done/tasks.length*100)+'%';
+  }
+  updateProgress();
+
+  refreshClock();
+  setInterval(refreshClock, 1000);
+})();
+</script>
+</body>
+</html>

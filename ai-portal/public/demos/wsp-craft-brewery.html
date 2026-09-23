@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forge &amp; Grain Brewing Co. — Brewed with purpose. Poured with pride.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/latin-900.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/latin-400-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5/latin-400.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg: 'hsl(30, 7%, 7%)',
+        fg: 'hsl(40, 70%, 87%)',
+        amber: 'hsl(32, 62%, 47%)',
+        copper: 'hsl(30, 68%, 31%)',
+        card: 'hsl(30, 7%, 11%)',
+        soft: 'hsl(40, 20%, 55%)',
+        line: 'hsl(30, 10%, 18%)',
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        sans: ['"Source Sans 3"', '"PingFang SC"', 'system-ui', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: "Source Sans 3", "PingFang SC", system-ui, sans-serif; font-weight: 300; }
+  /* 3D 翻转卡 */
+  .flip-card { perspective: 1000px; }
+  .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform .5s ease; transform-style: preserve-3d; }
+  .flip-card:hover .flip-card-inner, .flip-card.is-flipped .flip-card-inner { transform: rotateY(180deg); }
+  .flip-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .flip-back { transform: rotateY(180deg); background: hsl(32, 62%, 47% / 0.12); border: 1px solid hsl(32, 62%, 47% / 0.3); }
+  /* 注酒条 */
+  .pour { height: 3px; width: 0; background: linear-gradient(to right, hsl(30,68%,31%), hsl(32,62%,47%), hsl(32,62%,47% / .4)); animation: pour 2s ease-in-out .5s forwards; }
+  @keyframes pour { to { width: 100%; } }
+  .reveal { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .reveal.in { opacity: 1; transform: none; }
+  .reveal-x { opacity: 0; transform: translateX(40px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal-x.in { opacity: 1; transform: none; }
+  a, button { transition: all .2s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .pour { animation: none; width: 100%; }
+    .reveal, .reveal-x { opacity: 1; transform: none; transition: none; }
+    .flip-card-inner { transition: none; }
+  }
+</style>
+</head>
+<body class="bg-bg text-fg font-sans font-light antialiased">
+
+<!-- 区块 1: 导航 -->
+<header class="fixed top-0 inset-x-0 z-50 h-20 bg-bg/95 backdrop-blur-sm border-b border-line">
+  <div class="max-w-7xl mx-auto h-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+    <a href="#top" class="leading-none">
+      <span class="flex items-center gap-2 font-serif font-bold text-lg tracking-wide">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="hsl(32, 62%, 47%)" stroke-width="1.8" aria-hidden="true"><path d="M12 2 C8 6 6 10 8 15 C9 18 11 20 12 21 C13 20 15 18 16 15 C18 10 16 6 12 2 Z"/><path d="M9 8 C11 10 13 10 15 8 M8 12 C10 14 14 14 16 12"/></svg>
+        FORGE &amp; GRAIN
+      </span>
+      <span class="block text-[9px] tracking-[0.4em] text-soft font-light mt-0.5">BREWING CO.</span>
+    </a>
+    <nav class="hidden lg:flex items-center gap-8 text-sm font-normal">
+      <a href="#ontap" class="hover:text-white">On Tap</a>
+      <a href="#taproom" class="hover:text-white">Taproom</a>
+      <a href="#story" class="hover:text-white">Our Story</a>
+      <a href="#events" class="hover:text-white">Events</a>
+      <a href="#visit" class="hover:text-white">Visit</a>
+    </nav>
+    <a href="#visit" class="hidden lg:inline-flex bg-amber text-bg font-normal text-sm px-5 py-2.5 rounded-none hover:opacity-85">Visit Us</a>
+    <button id="burger" class="lg:hidden text-sm font-normal uppercase tracking-widest p-2" aria-expanded="false">Menu</button>
+  </div>
+  <div id="mobilemenu" class="hidden lg:hidden absolute top-20 inset-x-0 bg-bg border-b border-line">
+    <div class="px-6 py-5 space-y-3 text-base font-normal">
+      <a class="block" href="#ontap">On Tap</a><a class="block" href="#taproom">Taproom</a>
+      <a class="block" href="#story">Our Story</a><a class="block" href="#events">Events</a>
+      <a class="block" href="#visit">Visit</a>
+      <a href="#visit" class="block text-center bg-amber text-bg font-normal px-5 py-3 rounded-none mt-2">Visit Us</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 区块 2: Hero -->
+  <section class="relative min-h-[100dvh] flex items-center overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.03]" aria-hidden="true">
+      <svg width="100%" height="100%"><filter id="concrete"><feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3"/></filter><rect width="100%" height="100%" filter="url(#concrete)"/></svg>
+    </div>
+    <div class="relative max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-16 grid lg:grid-cols-[60%_40%] gap-10 items-center">
+      <div class="z-10">
+        <p class="text-[12px] font-light uppercase tracking-[0.4em] text-soft" style="animation: fadein .5s ease both">Est. 2018 · Sheffield</p>
+        <h1 class="font-serif font-black text-5xl md:text-[80px] leading-[1.05] mt-5" style="animation: fadein .8s ease .1s both">Brewed with purpose. Poured with pride.</h1>
+        <p class="mt-6 text-lg max-w-lg text-fg/85" style="animation: fadein .8s ease .25s both">Independent craft brewery making real beer for real people. We brew in small batches, use locally sourced malt wherever possible, and we never compromise on flavour. We're based in Sheffield and proud of it.</p>
+        <div class="mt-8 flex flex-wrap gap-4" style="animation: fadein .8s ease .4s both">
+          <a href="#ontap" class="bg-amber text-bg font-normal px-6 py-3 rounded-none hover:opacity-85">See What's On Tap</a>
+          <a href="#visit" class="border border-fg/30 text-fg font-normal px-6 py-3 rounded-none hover:border-amber hover:text-amber">Plan Your Visit</a>
+        </div>
+        <div class="mt-12 overflow-hidden" style="animation: fadein .5s ease .45s both">
+          <div class="h-12 bg-gradient-to-t from-[hsl(32,62%,47%/0.06)] to-transparent"></div>
+          <div class="pour"></div>
+        </div>
+      </div>
+      <div class="hidden lg:block" aria-hidden="true">
+        <svg viewBox="0 0 520 640" class="w-full">
+          <rect width="520" height="640" fill="hsl(30, 7%, 9%)"/>
+          <g stroke="hsl(30, 30%, 28%)" stroke-width="8" fill="hsl(30, 40%, 32%)">
+            <path d="M150 180 a110 110 0 1 0 220 0 a110 110 0 1 0 -220 0" opacity=".9"/>
+            <rect x="140" y="290" width="240" height="180" rx="14"/>
+            <path d="M160 470 v60 M360 470 v60" stroke-width="12"/>
+          </g>
+          <g stroke="hsl(30, 20%, 22%)" stroke-width="4" fill="none">
+            <path d="M150 120 q110 -70 220 0"/>
+          </g>
+          <g fill="hsl(32, 62%, 47%)" opacity=".8">
+            <path d="M120 60 q-14 30 6 52 M150 48 q-10 26 8 44 M180 66 q-6 22 10 36" stroke="hsl(32, 62%, 47%)" stroke-width="5" fill="none" opacity=".4"/>
+          </g>
+          <rect y="560" width="520" height="80" fill="hsl(30, 7%, 5%)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块 3: On Tap Today -->
+  <section id="ontap" class="bg-card py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 reveal">
+        <div>
+          <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal">On Tap Today</p>
+          <h2 class="font-serif font-bold text-5xl md:text-[64px] mt-3">What's On Tap.</h2>
+        </div>
+        <p class="text-soft text-[15px] max-w-xs">Brewed fresh in Sheffield. Rotating seasonal selection.</p>
+      </div>
+      <div id="beers" class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+      <p class="mt-6 text-soft text-sm italic">Tap a card to flip for tasting notes.</p>
+    </div>
+  </section>
+
+  <!-- 区块 4: Taproom -->
+  <section id="taproom" class="py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-16 items-center">
+      <div class="reveal">
+        <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal">The Taproom</p>
+        <h2 class="font-serif font-bold text-5xl md:text-6xl mt-3">The Taproom.</h2>
+        <p class="mt-6 text-fg/85 text-[17px]">Set in a converted Victorian forge in the heart of Sheffield, our taproom is everything a great local should be — honest, welcoming, and smelling faintly of something excellent in the tank. Pull up a stool at the long bar, grab a flight of four to explore the range, or settle into one of the alcoves with a pint and some good company.</p>
+        <p class="mt-4 text-fg/85 text-[17px]">We've got no Wi-Fi password, no background music playlist managed by an algorithm, and no menu that changes every three months to chase trends. We've got six taps, six great beers, and all the time in the world to talk about them.</p>
+        <div class="mt-8 bg-card rounded-xl p-6 text-[15px]">
+          <p class="font-mono text-xs text-soft uppercase tracking-widest mb-3">Opening hours</p>
+          <p>Tue–Thu · 4:00 – 10:00pm</p>
+          <p>Fri · 3:00 – 11:00pm</p>
+          <p>Sat · 12:00 – 11:00pm</p>
+          <p>Sun · 12:00 – 8:00pm</p>
+          <p class="italic text-soft mt-2">Mon — closed (brewing day)</p>
+        </div>
+        <a href="#visit" class="inline-block mt-7 bg-amber text-bg font-normal px-6 py-3 rounded-none hover:opacity-85">Get Directions →</a>
+      </div>
+      <div class="reveal-x" aria-hidden="true">
+        <svg viewBox="0 0 520 560" class="w-full">
+          <rect width="520" height="560" fill="hsl(30, 10%, 12%)"/>
+          <g fill="hsl(30, 30%, 24%)">
+            <rect x="0" y="0" width="520" height="620" opacity=".3"/>
+          </g>
+          <g stroke="hsl(30, 40%, 30%)" stroke-width="2" opacity=".6">
+            <path d="M0 60 h520 M0 120 h520 M0 180 h520 M0 240 h520"/>
+          </g>
+          <rect x="40" y="300" width="440" height="40" rx="6" fill="hsl(30, 45%, 35%)"/>
+          <g stroke="hsl(32, 62%, 47%)" stroke-width="6" fill="none">
+            <path d="M120 240 v60 M200 240 v60 M280 240 v60 M360 240 v60"/>
+          </g>
+          <g fill="hsl(40, 60%, 75%)" opacity=".8">
+            <circle cx="120" cy="220" r="10"/><circle cx="200" cy="220" r="10"/><circle cx="280" cy="220" r="10"/><circle cx="360" cy="220" r="10"/>
+          </g>
+          <g fill="hsl(30, 20%, 26%)">
+            <rect x="90" y="380" width="60" height="16" rx="4"/><rect x="220" y="380" width="60" height="16" rx="4"/><rect x="350" y="380" width="60" height="16" rx="4"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块 5: Our Story -->
+  <section id="story" class="bg-card py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal reveal">Our Story</p>
+      <h2 class="font-serif font-bold text-5xl mt-3 reveal" style="--d:80ms">Sheffield steel meets Sheffield beer.</h2>
+      <blockquote class="mt-10 bg-bg/60 border-l-4 border-amber p-6 reveal" style="--d:150ms">
+        <p class="font-serif font-bold italic text-2xl md:text-3xl">"We wanted to make the kind of beer we actually wanted to drink."</p>
+        <footer class="mt-3 text-soft text-sm">— Tom &amp; Dan, co-founders</footer>
+      </blockquote>
+      <div class="mt-10 space-y-5 text-fg/85 text-[17px] reveal" style="--d:220ms">
+        <p>Forge &amp; Grain was founded in 2018 by two friends — one a former steelworker, one a stubborn home-brewer — convinced that Sheffield deserved beer as good as the city's reputation for making things by hand.</p>
+        <p>Five barrels, one converted forge unit in S3, and a borderline unhealthy attention to process later, the first batch of Ironside Pale Ale was brewed on a freezing January morning. Two hundred batches on, the promise hasn't changed: small batch, full flavour, no shortcuts. It's still the same five-barrel kit.</p>
+        <p>"We don't brew to maximise volume. We brew to maximise flavour." Every recipe is our own, every ingredient earns its place, and every batch is tasted by everyone here before it leaves. Slow, on purpose.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块 6: 酿造流程 -->
+  <section class="py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal reveal">The Process</p>
+      <h2 class="font-serif font-bold text-5xl mt-3 mb-16 reveal" style="--d:80ms">How we brew.</h2>
+      <div class="grid md:grid-cols-3 gap-10">
+        <div class="reveal text-center md:text-left" style="--d:0ms">
+          <div class="w-16 h-16 mx-auto md:mx-0 rounded-full border-2 border-line bg-card flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="hsl(32, 62%, 47%)" stroke-width="1.8" aria-hidden="true"><path d="M12 3 C9 7 8 11 9.5 15 h5 C16 11 15 7 12 3 Z M9.5 15 c-2 2 -2 4 0 6 h5 c2 -2 2 -4 0 -6"/></svg>
+          </div>
+          <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal mt-4">Step One</p>
+          <h3 class="font-serif font-bold italic text-2xl mt-1">Malt</h3>
+          <p class="mt-2 text-fg/80 max-w-xs mx-auto md:mx-0">Malt from a Yorkshire maltings — local barley kilned to each recipe's curve. Every good pint starts here, long before the kettle.</p>
+        </div>
+        <div class="reveal text-center md:text-left" style="--d:200ms">
+          <div class="w-16 h-16 mx-auto md:mx-0 rounded-full border-2 border-line bg-card flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="hsl(32, 62%, 47%)" stroke-width="1.8" aria-hidden="true"><path d="M10 3 v6 L4.5 19 a2 2 0 0 0 1.8 3 h11.4 a2 2 0 0 0 1.8 -3 L14 3 Z"/><path d="M7 15 h10"/></svg>
+          </div>
+          <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal mt-4">Step Two</p>
+          <h3 class="font-serif font-bold italic text-2xl mt-1">Brew</h3>
+          <p class="mt-2 text-fg/80 max-w-xs mx-auto md:mx-0">Every batch since January 2018 has come off the same five-barrel copper. Same kit, same care, same method. If the gravity's wrong, we don't package it. No exceptions.</p>
+        </div>
+        <div class="reveal text-center md:text-left" style="--d:400ms">
+          <div class="w-16 h-16 mx-auto md:mx-0 rounded-full border-2 border-line bg-card flex items-center justify-center">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="hsl(32, 62%, 47%)" stroke-width="1.8" aria-hidden="true"><path d="M12 3 C9 8 7 11 7 14 a5 5 0 0 0 10 0 c0 -3 -2 -6 -5 -11 Z"/></svg>
+          </div>
+          <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal mt-4">Step Three</p>
+          <h3 class="font-serif font-bold italic text-2xl mt-1">Ferment</h3>
+          <p class="mt-2 text-fg/80 max-w-xs mx-auto md:mx-0">Temperature-controlled tanks and the patience to let yeast finish the job. Nothing rushed, nothing force-carbonated before its time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块 7: 活动 -->
+  <section id="events" class="bg-card py-24">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal reveal">Coming Up</p>
+      <h2 class="font-serif font-bold text-5xl mt-3 mb-10 reveal" style="--d:80ms">Coming Up.</h2>
+      <div class="divide-y divide-line">
+        <div class="reveal py-7 flex flex-col md:flex-row gap-5">
+          <div class="shrink-0 w-24 text-center md:text-left">
+            <p class="font-serif font-bold text-5xl text-amber leading-none">15</p>
+            <p class="text-soft text-xs uppercase tracking-widest mt-1">Feb 2025</p>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-serif font-bold text-2xl">Brewery Tour + Guided Tasting</h3>
+            <p class="mt-2 text-fg/80 text-[15px]">45 minutes through the full works — fermenters, copper, conditioning — plus a guided tasting of all six beers on the bar. Hosted by the head brewer. Twelve places per session.</p>
+            <p class="mt-3 text-sm"><span class="font-normal">£18 / person</span> · <span class="text-amber">8 spaces left</span></p>
+          </div>
+          <a href="#visit" class="shrink-0 self-center border border-amber text-amber px-5 py-2.5 rounded-none text-sm hover:bg-amber hover:text-bg">Book Now →</a>
+        </div>
+        <div class="reveal py-7 flex flex-col md:flex-row gap-5" style="--d:120ms">
+          <div class="shrink-0 w-24 text-center md:text-left">
+            <p class="font-serif font-bold text-5xl text-amber leading-none">7</p>
+            <p class="text-soft text-xs uppercase tracking-widest mt-1">Mar 2025</p>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-serif font-bold text-2xl">Beer &amp; Cheese Pairing Evening</h3>
+            <p class="mt-2 text-fg/80 text-[15px]">Six beers, six Yorkshire cheeses from the Courtyard Dairy. Hosted by the brewer and a proper cheese-monger. Our most popular regular night — it sells out.</p>
+            <p class="mt-3 text-sm"><span class="font-normal">£28 / person</span> · <span class="text-amber">4 spaces left</span></p>
+          </div>
+          <a href="#visit" class="shrink-0 self-center border border-amber text-amber px-5 py-2.5 rounded-none text-sm hover:bg-amber hover:text-bg">Book Now →</a>
+        </div>
+        <div class="reveal py-7 flex flex-col md:flex-row gap-5" style="--d:240ms">
+          <div class="shrink-0 w-24 text-center md:text-left">
+            <p class="font-serif font-bold text-5xl text-amber leading-none">12</p>
+            <p class="text-soft text-xs uppercase tracking-widest mt-1">Apr 2025</p>
+          </div>
+          <div class="flex-1">
+            <h3 class="font-serif font-bold text-2xl">Northern Collective Tap Takeover</h3>
+            <p class="mt-2 text-fg/80 text-[15px]">Saturday night: we hand four of our six lines to independent breweries from across the North. Free entry, no booking.</p>
+            <p class="mt-3 text-sm"><span class="font-normal">Free Entry</span></p>
+          </div>
+          <a href="#visit" class="shrink-0 self-center border border-line text-fg px-5 py-2.5 rounded-none text-sm hover:border-amber hover:text-amber">Add to Calendar →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块 8: 周边 -->
+  <section class="py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal reveal">The Shop</p>
+      <h2 class="font-serif font-bold text-5xl mt-3 mb-10 reveal" style="--d:80ms">Take it home.</h2>
+      <div class="grid md:grid-cols-3 gap-5">
+        <article class="reveal bg-card rounded-xl overflow-hidden card-lift" style="--d:0ms">
+          <div class="h-56 overflow-hidden group">
+            <svg viewBox="0 0 400 224" class="w-full h-full transition-transform duration-500 group-hover:scale-105" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="224" fill="hsl(30, 10%, 15%)"/><g fill="hsl(32, 62%, 47%)"><rect x="60" y="60" width="60" height="120" rx="8"/><rect x="170" y="60" width="60" height="120" rx="8"/><rect x="280" y="60" width="60" height="120" rx="8"/></g><g fill="hsl(40, 70%, 87%)" opacity=".8"><rect x="70" y="72" width="40" height="40" rx="4"/><rect x="180" y="72" width="40" height="40" rx="4"/><rect x="290" y="72" width="40" height="40" rx="4"/></g></svg>
+          </div>
+          <div class="p-6">
+            <h3 class="font-serif font-bold text-xl">Mixed Case — 12 Cans</h3>
+            <p class="mt-1 text-amber">£32</p>
+            <p class="mt-2 text-soft text-[15px]">Two cans of each core beer in a branded box. Free delivery over £30.</p>
+            <a href="#visit" class="inline-block mt-4 text-sm font-normal hover:text-amber">Add to Bag →</a>
+          </div>
+        </article>
+        <article class="reveal bg-card rounded-xl overflow-hidden card-lift" style="--d:120ms">
+          <div class="h-56 overflow-hidden group">
+            <svg viewBox="0 0 400 224" class="w-full h-full transition-transform duration-500 group-hover:scale-105" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="224" fill="hsl(30, 10%, 13%)"/><g fill="hsl(40, 30%, 78%)"><path d="M120 40 h70 l-8 120 a10 10 0 0 1 -10 8 h-34 a10 10 0 0 1 -10 -8 Z"/><path d="M230 40 h70 l-8 120 a10 10 0 0 1 -10 8 h-34 a10 10 0 0 1 -10 -8 Z" opacity=".7"/></g></svg>
+          </div>
+          <div class="p-6">
+            <h3 class="font-serif font-bold text-xl">Pint Glasses — Set of 2</h3>
+            <p class="mt-1 text-amber">£14</p>
+            <p class="mt-2 text-soft text-[15px]">Etched-logo pint and conical glasses. Dishwasher safe, laser-etched nucleation point.</p>
+            <a href="#visit" class="inline-block mt-4 text-sm font-normal hover:text-amber">Add to Bag →</a>
+          </div>
+        </article>
+        <article class="reveal bg-card rounded-xl overflow-hidden card-lift" style="--d:240ms">
+          <div class="h-56 overflow-hidden group">
+            <svg viewBox="0 0 400 224" class="w-full h-full transition-transform duration-500 group-hover:scale-105" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="224" fill="hsl(30, 8%, 18%)"/><path d="M130 80 a70 60 0 0 1 140 0 h-30 v100 h-80 v-100 Z" fill="hsl(30, 12%, 26%)"/><path d="M140 80 h120 l-10 40 h-100 Z" fill="hsl(30, 14%, 30%)"/><text x="200" y="150" text-anchor="middle" font-size="16" fill="hsl(32, 62%, 47%)" font-family="Georgia, serif">F&amp;G</text></svg>
+          </div>
+          <div class="p-6">
+            <h3 class="font-serif font-bold text-xl">Forge &amp; Grain Hoodie</h3>
+            <p class="mt-1 text-amber">£45</p>
+            <p class="mt-2 text-soft text-[15px]">Heavyweight charcoal hoodie with amber chest embroidery. 350gsm cotton blend, S–3XL. The one we wear ourselves.</p>
+            <a href="#visit" class="inline-block mt-4 text-sm font-normal hover:text-amber">Add to Bag →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 区块 9: 到访 -->
+  <section id="visit" class="bg-card py-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <p class="text-amber text-xs uppercase tracking-[0.3em] font-normal reveal">Find Us</p>
+      <h2 class="font-serif font-bold text-5xl mt-3 mb-10 reveal" style="--d:80ms">Find Us.</h2>
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div class="reveal">
+          <p class="font-serif font-bold text-2xl">12 Forge Street, Sheffield S3 8LR</p>
+          <ul class="mt-5 space-y-2 text-fg/85 text-[15px]">
+            <li>🚊 Tram: Cathedral stop, 8 min walk</li>
+            <li>🚌 Bus: Routes 7, 8, 52 — Moorfoot stop</li>
+            <li>🅿️ Moorfoot multi-storey, 5 min walk</li>
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-2.5">
+            <span class="text-sm border border-line rounded-full px-4 py-1.5 text-fg/80">Dog friendly ✓</span>
+            <span class="text-sm border border-line rounded-full px-4 py-1.5 text-fg/80">Wheelchair accessible ✓</span>
+            <span class="text-sm border border-line rounded-full px-4 py-1.5 text-fg/80">Card payments only ✓</span>
+            <span class="text-sm border border-line rounded-full px-4 py-1.5 text-fg/80">Outdoor seating ✓</span>
+          </div>
+          <p class="mt-5 italic text-soft text-sm">Please note: we are a cashless venue. Card or contactless only at the bar.</p>
+        </div>
+        <div class="reveal border border-line rounded-xl bg-bg aspect-[4/3] flex flex-col items-center justify-center gap-3 text-center" style="--d:120ms">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="hsl(32, 62%, 47%)" stroke-width="1.8" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+          <p class="text-sm text-fg/80">12 Forge Street, Sheffield S3 8LR</p>
+          <a href="#" class="text-sm text-amber hover:underline">Get directions on Google Maps →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 区块 10: 页脚 -->
+<footer class="border-t border-line py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-3 gap-10">
+    <div>
+      <p class="font-serif font-bold text-lg tracking-wide flex items-center gap-2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="hsl(32, 62%, 47%)" stroke-width="1.8" aria-hidden="true"><path d="M12 2 C8 6 6 10 8 15 C9 18 11 20 12 21 C13 20 15 18 16 15 C18 10 16 6 12 2 Z"/></svg>
+        FORGE &amp; GRAIN
+      </p>
+      <p class="mt-2 text-soft text-sm">Brewed with purpose. Poured with pride.</p>
+      <p class="mt-1 text-soft text-sm">Small batch. Sheffield made. Since 2018.</p>
+    </div>
+    <nav class="text-sm font-normal space-y-2">
+      <a class="block hover:text-amber" href="#ontap">On Tap</a>
+      <a class="block hover:text-amber" href="#taproom">Taproom</a>
+      <a class="block hover:text-amber" href="#story">Our Story</a>
+      <a class="block hover:text-amber" href="#events">Events</a>
+      <a class="block hover:text-amber" href="#visit">Visit Us</a>
+    </nav>
+    <div class="text-sm font-normal">
+      <p>12 Forge Street, Sheffield S3 8LR</p>
+      <p class="mt-2 text-soft">Tue–Thu 4–10pm · Fri 3–11pm<br>Sat 12–11pm · Sun 12–8pm · Mon closed</p>
+      <p class="mt-2">Instagram · Untappd · Facebook</p>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 pt-6 border-t border-line flex flex-col md:flex-row justify-between gap-2 text-sm text-soft">
+    <p>© 2025 Forge &amp; Grain Brewing Co. All rights reserved.</p>
+    <p class="italic">Independently owned. Never compromised.</p>
+  </div>
+</footer>
+
+<style>
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+</style>
+<script>
+(function () {
+  "use strict";
+  // 啤酒数据 + 翻转卡
+  const BEERS = [
+    { name: 'Ironside Pale Ale', style: 'American Pale', abv: '4.8%', ibu: 35, notes: 'Tropical citrus and pine on the nose, a crisp bitter finish with soft stone fruit underneath. Our best seller since day one.' },
+    { name: 'Coal Face Porter', style: 'English Porter', abv: '5.6%', ibu: 28, notes: 'Roasted malt, dark chocolate bitterness, a whisper of vanilla on the way out. Sheffield\'s winter favourite — dark before you even drink it.' },
+    { name: 'Golden Anvil Lager', style: 'Czech Pilsner Style', abv: '4.2%', ibu: 22, notes: 'Clean and crisp. Light floral hops over a smooth malt base — the lager that converts half the porter drinkers at the bar.' },
+    { name: 'Ember Wheat', style: 'Hefeweizen', abv: '4.5%', ibu: 15, notes: 'Classic Bavarian yeast: banana and clove. Hazy gold, naturally cloudy. Brewed the traditional way — no shortcuts, no filtration.' },
+    { name: 'Copper Run IPA', style: 'West Coast IPA', abv: '6.2%', ibu: 65, notes: 'Grapefruit, mango and resin pine. Dry, aggressive, clean bitter finish. Our most divisive beer — you love it or you order something else.' },
+    { name: 'Session Saison', style: 'Belgian Saison', abv: '3.8%', ibu: 20, notes: 'Spicy farmhouse character, light and sparkling. White pepper, lemon peel and fresh hay. Lowest ABV, possibly the most complex — restraint and flavour are not opposites.' },
+  ];
+  const wrap = document.getElementById('beers');
+  BEERS.forEach(function (b) {
+    const card = document.createElement('div');
+    card.className = 'flip-card h-64 reveal';
+    card.innerHTML =
+      '<div class="flip-card-inner">' +
+        '<div class="flip-face bg-bg border border-line rounded-xl p-5 flex flex-col">' +
+          '<p class="text-soft text-xs uppercase tracking-[0.2em]">' + b.style + '</p>' +
+          '<h3 class="font-serif font-bold text-2xl mt-2">' + b.name + '</h3>' +
+          '<p class="mt-auto flex items-end justify-between"><span class="text-soft italic text-sm">Flip for tasting notes →</span><span class="font-serif font-bold text-amber text-4xl">' + b.abv + '</span></p>' +
+        '</div>' +
+        '<div class="flip-face flip-back rounded-xl p-5 flex flex-col">' +
+          '<p class="text-amber text-xs uppercase tracking-[0.25em]">Tasting Notes</p>' +
+          '<p class="mt-2 text-[15px] text-fg/90 leading-relaxed">' + b.notes + '</p>' +
+          '<p class="mt-auto font-mono text-xs text-soft">IBU ' + b.ibu + ' · ABV ' + b.abv + ' · <span class="text-amber">Available at the bar ✓</span></p>' +
+        '</div>' +
+      '</div>';
+    card.addEventListener('click', function () { card.classList.toggle('is-flipped'); });
+    wrap.appendChild(card);
+  });
+
+  // 入场观察器
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal, .reveal-x').forEach(function (el) { io.observe(el); });
+
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+})();
+</script>
+</body>
+</html>

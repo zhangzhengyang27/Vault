@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>丝路互动地图 · 敦煌艺术与丝路文明</title>
+<meta name="description" content="基于 Leaflet 的丝绸之路交互地图，标注 30 个重要节点城市，点击弹出城市卡片。">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .dh-marker { width:14px; height:14px; border-radius:50%; background:var(--ochre); border:2px solid var(--gold-pale); box-shadow:0 0 0 4px rgba(200,162,75,.25), 0 3px 12px rgba(0,0,0,.4); }
+  .dh-marker.major { background:var(--gold); width:18px; height:18px; }
+  .leaflet-popup-content-wrapper { background:rgba(28,26,23,.96); color:#ece4d3; border-radius:12px; border:1px solid var(--line); }
+  .leaflet-popup-content { margin: 12px 14px; }
+  .leaflet-popup-tip { background: rgba(28,26,23,.96); }
+  .leaflet-popup-close-button { color: var(--gold-pale); }
+  #mapFallback { display:none; }
+</style>
+</head>
+<body>
+
+<main class="container" style="padding-top:30px">
+  <div class="section-head reveal" style="text-align:left;margin:10px 0 20px">
+    <div class="section-eyebrow">Leaflet · Interactive Map</div>
+    <h1 class="serif gilt" style="font-size:clamp(2rem,5vw,3.2rem);margin:.2em 0">丝路互动地图</h1>
+    <p class="lede" style="margin:0">30 个节点城市，横跨长安到罗马。点击金色节点，浏览城市历史概况、关联文物与对应章节。</p>
+  </div>
+
+  <div class="map-shell reveal">
+    <div id="map" class="antique"></div>
+    <div class="map-legend">● 敦煌 / 重要都会 &nbsp;&nbsp; ○ 丝路节点（点击查看详情）</div>
+  </div>
+  <div id="mapFallback" class="download-card" style="margin-top:20px"></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  renderShell('map.html');
+  bindReveal();
+
+  function popupHtml(city) {
+    const ch = D.chapterById(city.chapter);
+    return '<div class="city-popup">' +
+      '<h4>' + city.name + '</h4><div class="en">' + city.nameEn + ' · ' + city.era + '</div>' +
+      '<img src="' + ch.muralDetail.image + '" alt="' + ch.muralDetail.title + '" onerror="imgFallback(this,\'' + ch.muralDetail.title + '\')">' +
+      '<p>' + city.desc + '</p>' +
+      '<div style="font-size:.8rem;color:var(--gold-pale)">代表文物：' + ch.muralDetail.title + '</div>' +
+      '<a class="link" href="chapter.html?id=' + city.chapter + '">前往相关章节 →</a>' +
+    '</div>';
+  }
+
+  function renderFallback() {
+    $('#map').style.display = 'none';
+    const fb = $('#mapFallback');
+    fb.style.display = 'block';
+    fb.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:baseline"><h3>地图组件未能加载</h3><a class="btn btn-gold" href="javascript:location.reload()">重试</a></div>' +
+      '<p>可能是 CDN 资源受限。以下为 30 个节点城市列表：</p>' +
+      '<div class="chapter-strip" style="margin-top:16px">' +
+      D.cities.map(c => '<div class="chapter-card" style="cursor:default"><div class="body"><h3 style="font-size:1.05rem">' + c.name + '</h3><div class="era">' + c.era + '</div><p style="font-size:.88rem">' + c.desc + '</p></div></div>').join('') +
+      '</div>';
+  }
+
+  function initMap() {
+    if (typeof L === 'undefined') { renderFallback(); return; }
+    const map = L.map('map', { scrollWheelZoom: true, worldCopyJump: true });
+
+    /* 古董风 OSM 底图 */
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 9, minZoom: 3, attribution: '© OpenStreetMap 贡献者'
+    }).addTo(map);
+
+    const points = [];
+    D.cities.forEach(function (city) {
+      const major = city.id === 'dunhuang' || ['changan', 'rome', 'samarkand'].indexOf(city.id) >= 0;
+      const icon = L.divIcon({ className: '', html: '<span class="dh-marker' + (major ? ' major' : '') + '"></span>', iconSize: [18,18], iconAnchor: [9,9] });
+      const m = L.marker([city.lat, city.lng], { icon: icon, title: city.name, riseOnHover: true }).addTo(map);
+      m.bindPopup(popupHtml(city), { maxWidth: 300 });
+      points.push([city.lat, city.lng]);
+    });
+
+    map.fitBounds(L.latLngBounds(points).pad(0.12));
+    /* 延迟开首个弹窗 */
+    setTimeout(function(){ map.openPopup(popupHtml(D.cities.find(c=>c.id==='dunhuang'))); }, 600);
+  }
+
+  initMap();
+</script>
+</body>
+</html>

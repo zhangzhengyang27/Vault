@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design System 规范模板演示</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-400.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        paper: '#fafaf9',
+        surf: '#f0efec',
+        hairline: '#e2e0da',
+        ink: '#1a1a18',
+        softp: '#75716a',
+        brand: '#2563eb',
+        brandsoft: '#dbeafe',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', '"PingFang SC"', 'Arial', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  body { font-family: "Plus Jakarta Sans", "PingFang SC", Arial, sans-serif; }
+</style>
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<main class="max-w-5xl mx-auto px-6 py-16">
+  <header class="mb-14">
+    <p class="font-mono text-[11px] uppercase tracking-[0.2em] text-softp">Design System · v1.0</p>
+    <h1 class="font-extrabold tracking-[-0.04em] text-4xl md:text-6xl mt-3">Aurora 设计规范</h1>
+    <p class="mt-4 text-softp max-w-xl">本页为「网页 Design System 精确规范模板」的填充演示:以下所有组件严格引用本规范所定义的令牌。</p>
+  </header>
+
+  <!-- 色彩系统 -->
+  <section class="mb-14">
+    <h2 class="font-bold text-2xl mb-5">01 · 色彩系统</h2>
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div><div class="h-20 rounded-lg" style="background:#2563eb"></div><p class="font-mono text-[11px] mt-2">主色 brand<br>#2563eb</p></div>
+      <div><div class="h-20 rounded-lg" style="background:#1e40af"></div><p class="font-mono text-[11px] mt-2">深主色<br>#1e40af</p></div>
+      <div><div class="h-20 rounded-lg" style="background:#dbeafe"></div><p class="font-mono text-[11px] mt-2">辅色浅<br>#dbeafe</p></div>
+      <div><div class="h-20 rounded-lg" style="background:#fafaf9; border:1px solid #e2e0da"></div><p class="font-mono text-[11px] mt-2">背景<br>#fafaf9</p></div>
+      <div><div class="h-20 rounded-lg" style="background:#e2e0da"></div><p class="font-mono text-[11px] mt-2">边框<br>#e2e0da</p></div>
+    </div>
+  </section>
+
+  <!-- 排版系统 -->
+  <section class="mb-14">
+    <h2 class="font-bold text-2xl mb-5">02 · 排版系统</h2>
+    <div class="space-y-4">
+      <div><p class="font-extrabold text-[44px] leading-tight" style="letter-spacing:-0.04em">H1 展示标题 · 44px/1.1</p><p class="font-mono text-[11px] text-softp">Plus Jakarta Sans 800</p></div>
+      <div><p class="font-bold text-[28px]">H2 章节标题 · 28px/1.2</p><p class="font-mono text-[11px] text-softp">Plus Jakarta Sans 700</p></div>
+      <div><p class="font-semibold text-[18px]">H3 组件标题 · 18px/1.4</p><p class="font-mono text-[11px] text-softp">Plus Jakarta Sans 600</p></div>
+      <div><p class="text-[16px] text-softp">正文 16px · 行高 1.7 —— 全站正文以此字号与行高为准,长文阅读的舒适区。</p><p class="font-mono text-[11px] text-softp">Plus Jakarta Sans 400</p></div>
+    </div>
+  </section>
+
+  <!-- 组件质感 -->
+  <section class="mb-14">
+    <h2 class="font-bold text-2xl mb-5">03 · 组件质感</h2>
+    <div class="grid sm:grid-cols-3 gap-4 items-center">
+      <div class="bg-white border border-hairline rounded-lg p-4 text-center shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+        <p class="font-semibold text-sm">按钮 · 主</p><p class="font-mono text-[10px] text-softp mt-1">圆角 6px · 无阴影</p>
+      </div>
+      <div class="bg-white border border-hairline rounded-lg p-4 text-center">
+        <p class="font-semibold text-sm">卡片 · 圆角 12px</p><p class="font-mono text-[10px] text-softp mt-1">border 1.5px #e2e0da</p>
+      </div>
+      <div class="bg-white border border-hairline rounded-lg p-4 text-center shadow-[0_8px_24px_rgba(37,99,235,0.15)]">
+        <p class="font-semibold text-sm">悬浮 · 阴影</p><p class="font-mono text-[10px] text-softp mt-1">0 8px 24px brand/15%</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 间距与栅格 -->
+  <section>
+    <h2 class="font-bold text-2xl mb-5">04 · 间距与栅格</h2>
+    <div class="grid grid-cols-12 gap-3">
+      <div class="col-span-12 md:col-span-8 bg-brandsoft rounded-lg h-10 flex items-center justify-center font-mono text-[11px] text-brand">内容区 8 栏 · 最大宽 1200px</div>
+      <div class="col-span-12 md:col-span-4 bg-surf rounded-lg h-10 flex items-center justify-center font-mono text-[11px] text-softp">侧栏 4 栏</div>
+      <div class="col-span-4 bg-surf rounded h-6"></div><div class="col-span-4 bg-surf rounded h-6"></div><div class="col-span-4 bg-surf rounded h-6"></div>
+    </div>
+    <p class="font-mono text-[11px] text-softp mt-3">间距刻度:4 / 8 / 16 / 24 / 40 / 64(px)· 12 栅格 · gap 12px</p>
+  </section>
+</main>
+</body>
+</html>

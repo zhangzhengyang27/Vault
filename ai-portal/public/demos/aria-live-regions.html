@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ARIA live 区域通知演示</title>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  h1, h2 {
+    color: #333;
+    margin-bottom: 30px;
+  }
+
+  h2 {
+    margin-top: 40px;
+  }
+
+  input, 
+  textarea {
+    font-size: 16px;
+  }
+
+  .controls {
+    margin-bottom: 20px;
+  }
+
+  select {
+    font-size: 16px;
+    padding: 4px;
+    margin-left: 8px;
+  }
+
+  button {
+    background: #0066cc;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    padding: 8px 16px;
+  }
+
+  button:hover {
+    background: #0052a3;
+  }
+
+  #notification {
+    background: #f0f0f0;
+    border-radius: 4px;
+    margin-top: 20px;
+    min-height: 50px;
+    padding: 15px;
+  }
+
+  .instructions {
+    background: #f8f8f8;
+    border-left: 4px solid #0066cc;
+    margin: 20px 0;
+    padding: 20px;
+  }
+
+  .instructions h3 {
+    margin-top: 0;
+  }
+
+  .instructions ol {
+    padding-left: 20px;
+    line-height: 1.5;
+  }
+
+  .instructions li {
+    margin-bottom: 10px;
+  }
+
+  kbd {
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-family: monospace;
+  }
+  </style>
+</head>
+<body>
+  <h1>ARIA live 区域通知演示</h1>
+
+  <section class="instructions">
+    <h3>Testing with VoiceOver on macOS</h3>
+    <ol>
+      <li>按下 <kbd>命令</kbd> + <kbd>F5</kbd> to turn on VoiceOver
+        <ul>
+          <li>如果是触控栏 MacBook,连按三次 Touch ID 按钮</li>
+          <li>如出现提示,在对话框中点击「使用 VoiceOver」</li>
+        </ul>
+      </li>
+      <li>点击下方两个按钮,听听通知效果</li>
+      <li>When finished, press <kbd>命令</kbd> + <kbd>F5</kbd> again to turn off VoiceOver (or triple-press Touch ID)</li>
+    </ol>
+  </section>
+
+  <section class="instructions">
+    <h3>在 iOS 上用 VoiceOver 测试</h3>
+    <ol>
+      <li>进入 设置 → 辅助功能 → VoiceOver</li>
+      <li>Toggle VoiceOver on
+        <ul>
+          <li>你也可以把 VoiceOver 加入辅助功能快捷键:设置 → 辅助功能 → 辅助功能快捷键</li>
+          <li>然后连按三次侧边按钮开关 VoiceOver</li>
+        </ul>
+      </li>
+      <li>VoiceOver 基础手势:
+        <ul>
+          <li>轻点一次选中项目</li>
+          <li>任意位置双击以激活选中项</li>
+          <li>单指左右滑动在相邻项之间移动</li>
+        </ul>
+      </li>
+      <li>使用下方按钮听听通知效果</li>
+      <li>体验完成后,回到 设置 → 辅助功能 → VoiceOver 将其关闭
+        <ul>
+          <li>或使用已配置的辅助功能快捷键</li>
+        </ul>
+      </li>
+    </ol>
+  </section>
+
+  <h2>Demo</h2>
+
+  <div class="controls">
+    <label for="liveType">live 区域类型: </label>
+    <select id="liveType">
+      <option value="assertive">强制(assertive)</option>
+      <option value="polite">礼貌(polite)</option>
+    </select>
+  </div>
+  
+  <div class="demo-buttons">
+    <button id="notifyNow">立即插入通知</button>
+    <button id="notifyLater">十秒后插入通知</button>
+  </div>
+
+  <div id="notification" aria-live="assertive"></div>
+
+  <script type="module">
+const notificationElement = document.getElementById('notification')
+const notifyNowButton = document.getElementById('notifyNow')
+const notifyLaterButton = document.getElementById('notifyLater')
+const liveTypeSelect = document.getElementById('liveType')
+
+liveTypeSelect.addEventListener('change', (event) => {
+  notificationElement.setAttribute('aria-live', event.target.value)
+})
+
+function insertNotification() {
+  const time = new Date().toLocaleTimeString()
+  notificationElement.textContent = `A notification was inserted at ${time}`
+}
+
+notifyNowButton.addEventListener('click', insertNotification)
+
+notifyLaterButton.addEventListener('click', () => {
+  const startTime = new Date().toLocaleTimeString()
+  notificationElement.textContent = 'A notification has been scheduled'
+  
+  setTimeout(() => {
+    insertNotification()
+  }, 10000)
+})
+  </script>
+</body>
+</html>

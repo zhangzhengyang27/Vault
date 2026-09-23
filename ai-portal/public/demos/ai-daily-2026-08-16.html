@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI 精选仪表盘 · 2026-08-11 ~ 08-16</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --bg-grad-1: #eef2ff;
+    --card: #ffffff;
+    --text: #1a2233;
+    --muted: #6b7689;
+    --border: #e3e8f2;
+    --accent: #4f5bff;
+    --accent-soft: #eef0ff;
+    --accent-2: #00b3a4;
+    --shadow: 0 1px 2px rgba(20,30,60,.04), 0 8px 24px rgba(20,30,60,.06);
+    --shadow-hover: 0 4px 10px rgba(20,30,60,.08), 0 16px 40px rgba(20,30,60,.12);
+    --radius: 16px;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(1200px 600px at 80% -10%, var(--bg-grad-1), transparent 60%),
+      radial-gradient(900px 500px at -10% 0%, #eafaf7, transparent 55%),
+      var(--bg);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px 64px; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative; margin: 28px 0 18px; padding: 34px 32px 30px;
+    border-radius: 22px; overflow: hidden; box-shadow: var(--shadow);
+    background: linear-gradient(135deg, #2b357a 0%, #4f5bff 55%, #00b3a4 130%); color: #fff;
+  }
+  .hero::after {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size: 34px 34px;
+    -webkit-mask-image: radial-gradient(420px 240px at 82% 18%, #000, transparent 75%);
+    mask-image: radial-gradient(420px 240px at 82% 18%, #000, transparent 75%);
+    pointer-events: none;
+  }
+  .hero .eyebrow { font-size: 13px; letter-spacing: .22em; text-transform: uppercase; opacity: .82; margin: 0 0 8px; }
+  .hero h1 { margin: 0; font-size: clamp(24px, 4.2vw, 40px); font-weight: 800; letter-spacing: .5px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+  .hero h1 .date { font-variant-numeric: tabular-nums; }
+  .hero .total { display: inline-flex; align-items: baseline; gap: 6px; background: rgba(255,255,255,.16); padding: 4px 14px; border-radius: 999px; font-size: 15px; font-weight: 600; backdrop-filter: blur(4px); }
+  .hero .total b { font-size: 22px; }
+  .stats { position: relative; z-index: 1; margin-top: 22px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .stat { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); border-radius: 14px; padding: 12px 10px; text-align: center; backdrop-filter: blur(4px); }
+  .stat .n { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1.1; }
+  .stat .l { font-size: 12.5px; opacity: .9; margin-top: 4px; }
+
+  /* ===== Nav ===== */
+  nav.toc {
+    position: sticky; top: 12px; z-index: 20; margin: 18px 0 26px; padding: 10px;
+    background: rgba(255,255,255,.82); backdrop-filter: blur(10px);
+    border: 1px solid var(--border); border-radius: 14px;
+    display: flex; gap: 8px; flex-wrap: wrap; box-shadow: var(--shadow);
+  }
+  nav.toc a { text-decoration: none; color: var(--text); font-size: 13.5px; font-weight: 600; padding: 7px 13px; border-radius: 10px; border: 1px solid transparent; display: inline-flex; align-items: center; gap: 7px; transition: .15s; }
+  nav.toc a:hover { background: var(--accent-soft); border-color: var(--border); }
+  nav.toc a .pill { font-size: 11px; font-weight: 700; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--accent); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; }
+  nav.toc a.zero .pill { background: #c4cad8; }
+
+  /* ===== Sections ===== */
+  section.block { scroll-margin-top: 78px; margin-bottom: 34px; }
+  .sec-head { display: flex; align-items: center; gap: 12px; margin: 0 0 16px; }
+  .sec-head .ico { width: 38px; height: 38px; border-radius: 11px; display: grid; place-items: center; font-size: 19px; background: var(--accent-soft); border: 1px solid var(--border); }
+  .sec-head h2 { margin: 0; font-size: 20px; font-weight: 800; }
+  .sec-head .cnt { font-size: 12.5px; font-weight: 700; color: var(--accent); background: var(--accent-soft); border-radius: 999px; padding: 3px 11px; font-variant-numeric: tabular-nums; }
+  .sec-head .more { font-size: 11.5px; font-weight: 600; color: var(--muted); background: #f1f3f9; border-radius: 999px; padding: 3px 9px; }
+  .sec-head .rule { flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+  .card { position: relative; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 20px 18px; box-shadow: var(--shadow); transition: transform .18s ease, box-shadow .18s ease; display: flex; flex-direction: column; }
+  .card:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+  .card .idx { position: absolute; top: -12px; left: 16px; width: 30px; height: 30px; border-radius: 9px; background: linear-gradient(135deg, var(--accent), #7a83ff); color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center; box-shadow: 0 4px 10px rgba(79,91,255,.35); font-variant-numeric: tabular-nums; }
+  .card .meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 6px 0 10px; }
+  .chip { font-size: 12px; font-weight: 600; color: #2b357a; background: var(--accent-soft); border: 1px solid #d9ddff; padding: 3px 10px; border-radius: 999px; white-space: nowrap; }
+  .card .time { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .card h3 { margin: 2px 0 9px; font-size: 16.5px; font-weight: 700; line-height: 1.45; }
+  .card h3 a { color: inherit; text-decoration: none; }
+  .card h3 a:hover { color: var(--accent); text-decoration: underline; }
+  .card .summary { font-size: 14px; color: #384153; margin: 0 0 14px; flex: 1; }
+  .card .read { align-self: flex-start; margin-top: auto; font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--border); padding: 6px 12px; border-radius: 10px; transition: .15s; }
+  .card .read:hover { background: var(--accent-soft); border-color: #d9ddff; }
+
+  .empty { border: 1.5px dashed var(--border); border-radius: var(--radius); padding: 30px 20px; text-align: center; color: var(--muted); background: rgba(255,255,255,.5); }
+  .empty .big { font-size: 15px; font-weight: 600; color: #8893a6; }
+
+  footer { margin-top: 40px; padding: 22px 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; background: rgba(255,255,255,.6); border-radius: 14px; }
+  footer b { color: var(--text); }
+  footer .src { margin-top: 6px; word-break: break-word; }
+
+  @media (max-width: 720px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 26px 22px; }
+    nav.toc { top: 8px; }
+  }
+  @media (max-width: 420px) {
+    .stats { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow">AI HOT · 近 7 天精选</p>
+      <h1>
+        <span class="date" id="hero-date"></span>
+        <span class="total">共 <b id="hero-total">0</b> 条</span>
+      </h1>
+      <div class="stats" id="hero-stats"></div>
+    </header>
+
+    <nav class="toc" id="toc" aria-label="版块导航"></nav>
+
+    <main id="sections"></main>
+
+    <footer>
+      <div>本仪表盘共收录 <b id="foot-total">0</b> 条 AI 资讯，按五大版块分组、全局连续编号（每版块最多展示 6 条）。</div>
+      <div class="src">
+        数据来源：<b>AI HOT</b> 近 7 天精选条目（window=7d，API 精选池）+ 今日 AI HOT 日报 2026-08-16 并入；
+        数据快照时间 2026-08-16 21:05（北京时间）。内容版权归原作者与 AI HOT 所有，详见
+        <a href="https://aihot.virxact.com/terms" target="_blank" rel="noopener noreferrer">AI HOT 条款</a>。
+      </div>
+    </footer>
+  </div>
+
+<script>
+  const REPORT_RANGE = "2026年8月11日 – 8月16日";
+  const SECTIONS = [
+    { id: "model",    name: "模型发布/更新", icon: "🤖" },
+    { id: "product",  name: "产品发布/更新", icon: "🚀" },
+    { id: "industry", name: "行业动态",      icon: "🌐" },
+    { id: "paper",    name: "论文研究",      icon: "📄" },
+    { id: "tips",     name: "技巧与观点",    icon: "💡" },
+  ];
+const ITEMS = [{"section": "model", "title": "Gemini 3.7 Flash 全面上线 Pro 与 Ultra 用户", "source": "X：Gemini (@GeminiApp)", "time": "2026年8月15日 02:06", "summary": "Gemini 3.7 Flash 把多步推理与跨文件整合能力下放到轻量模型，对经常需要合并数十份文件或邮件的用户来说，…", "url": "https://x.com/GeminiApp/status/2088326407730692538"}, {"section": "model", "title": "通义千问开源 Qwen3.8 系列模型", "source": "X：通义千问 / Qwen (@Alibaba_Qwen)", "time": "2026年8月14日 23:02", "summary": "官方称 27B 稠密多模态模型整体表现超过 Qwen3.7-Plus，262K 原生上下文可扩至 1M，Apache …", "url": "https://x.com/Alibaba_Qwen/status/2088280182356611304"}, {"section": "model", "title": "dots3-note Preview 开源：280B 参数轻量模型，主打长程智能体与多模态推理", "source": "公众号：小红书技术（dots.llm）", "time": "2026年8月14日 19:25", "summary": "除开源模型外，TEMPO 让同一智能体在每个宏观步骤切换为 critic，用测试时推理估计回报，给稀疏奖励长程任务的强…", "url": "https://mp.weixin.qq.com/s?__biz=Mzg4OTc2MzczNg%3D%3D&mid=2247496140&idx=1&sn=5239a5fbb115c58d2ae0056bb32789ff"}, {"section": "model", "title": "GLM-5.3 发布：编程能力开源第一，并涌现网络安全能力", "source": "公众号：智谱（GLM）", "time": "2026年8月14日 13:31", "summary": "把网络安全能力作为开源卖点，价值在于让缺乏闭源安全服务的中小团队也能开展漏洞审计，改变防御能力只集中在少数机构的现状。", "url": "https://mp.weixin.qq.com/s?__biz=MzkyMzI3NzQ0Mg%3D%3D&mid=2247494084&idx=1&sn=a2e5cd9a534a4825feb3633ea1b6d492"}, {"section": "model", "title": "DeepSeek V4 Pro 登陆硅基流动，1M 上下文", "source": "X：硅基流动 SiliconFlow (@SiliconFlowAI)", "time": "2026年8月14日 12:55", "summary": "每百万缓存命中 0.44 美元与 1M 上下文组合，使 Agent 工作流在长上下文成本测算上有了更具体参照。", "url": "https://x.com/SiliconFlowAI/status/2088127458558271885"}, {"section": "model", "title": "Google DeepMind 推出 Gemini 3.7 Flash：面向编程与智能体的最强工作模型", "source": "Google DeepMind：Blog（RSS）", "time": "2026年8月14日 01:04", "summary": "相比 3.6 Flash，价格减半且 FrontierCode 和 DeepSWE 分数提升，让成本敏感型编码智能体团…", "url": "https://deepmind.google/blog/introducing-gemini-3-7-flash"}, {"section": "product", "title": "Google Sheets 推出 Sheets canvas：用 Gemini 将表格数据变为交互式迷你应用", "source": "Google Blog：AI（RSS）", "time": "2026年8月14日 00:45", "summary": "与单独 BI 工具不同，Sheets canvas 直接在原表上生成可读写界面，临时仪表盘能沿用表格的共享和权限体系，…", "url": "https://blog.google/products-and-platforms/products/workspace/sheets-canvas-for-google-sheets-spreadsheets"}, {"section": "product", "title": "Qwen3.8-2.4T-A95B 开源，硅基流动即日上线", "source": "X：硅基流动 SiliconFlow (@SiliconFlowAI)", "time": "2026年8月13日 22:04", "summary": "缓存输入每百万 token 0.25 美元，让需要反复读取长上下文的 agent 工作流更接近可长期运行，而非只看单次…", "url": "https://x.com/SiliconFlowAI/status/2087903227224412222"}, {"section": "product", "title": "DeepSeek Harness v0.1 开发者预览版发布", "source": "X：DeepSeek (@deepseek_ai)", "time": "2026年8月13日 21:02", "summary": "插件化把模型、工具、会话拆成可替换单元，影响在于选择智能体框架时可以从整体选型转为逐组件比较，降低被单一编排方案绑定的…", "url": "https://x.com/deepseek_ai/status/2087887408440164663"}, {"section": "product", "title": "Cursor 推出 builds：云智能体启动速度提升至 3 倍", "source": "Cursor Blog", "time": "2026年8月13日 20:00", "summary": "把环境准备从每次会话冷启动改为后台持续快照，云代理长任务的启动成本和中断风险降低，为把更多工程流程交给自动代理提供了更…", "url": "https://cursor.com/blog/builds"}, {"section": "product", "title": "WorkBuddy上线远程控制，国内也有了最丝滑的Agent工作方式", "source": "公众号：数字生命卡兹克", "time": "2026年8月13日 12:32", "summary": "远程控制把 Agent 任务从电脑旁解放到手机上，连接和多设备切换比 Codex 更省事，对国内依赖 Agent 处理…", "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685179&idx=1&sn=4cbee32b677b57a9dc6ec2a79d6f72c7"}, {"section": "product", "title": "Meta 开源 Muse Glimmer 登陆 OpenRouter", "source": "X：OpenRouter (@OpenRouter)", "time": "2026年8月12日 20:00", "summary": "Apache 2.0许可和两项代理基准得分，为评估30B规模本地开源模型是否达到生产可用提供了直接参照，分数分别指向工…", "url": "https://x.com/OpenRouter/status/2087509478480765218"}, {"section": "industry", "title": "Cursor 正式被 SpaceX 收购", "source": "Hacker News 热门（buzzing.cc 中文翻译）", "time": "2026年8月16日 04:05", "summary": "收购把 Cursor 的模型能力放到 SpaceX 的算力规模上，Grok 4.6 的发布提示编码模型的能力和运行成本…", "url": "https://cursor.com/blog/joining-spacex"}, {"section": "industry", "title": "OpenAI and Anthropic in price war as Chinese AI rivals gain ground", "source": "Ars Technica：AI（RSS）", "time": "2026年8月14日 22:27", "summary": "价格战让模型API的成本弹性成为现实，原先因账单压力转向中国厂商的用户，可能在OpenAI和Anthropic降价后重…", "url": "https://arstechnica.com/ai/2026/08/openai-and-anthropic-in-price-war-as-chinese-ai-rivals-gain-ground"}, {"section": "industry", "title": "Claude 文本水印机制如何运作", "source": "Anthropic：Newsroom（网页）", "time": "2026年8月14日 00:00", "summary": "SynthID-Text 只改变等概率候选词的随机来源，不影响生成质量，却能用密钥校验文本与 Claude 的关联概率…", "url": "https://www.anthropic.com/news/claude-text-watermark"}, {"section": "industry", "title": "Research Gold 号称\"100%人类撰写、绝不使用AI\"，实则全程由AI驱动", "source": "Hacker News 热门（buzzing.cc 中文翻译）", "time": "2026年8月12日 13:41", "summary": "把AI滥用从学术论文延伸到服务链全程，从伪造博士到AI销售话术，暴露了当前学术外包中身份验证的脆弱性。", "url": "https://www.404media.co/company-offering-100-human-written-never-ai-peer-review-is-entirely-ai"}, {"section": "industry", "title": "ChatGPT 与 Gemini 双双突破 10 亿用户", "source": "The Verge：AI（RSS）", "time": "2026年8月12日 03:41", "summary": "用户里程碑背后，ChatGPT 增长放缓而 Gemini 在安卓端的集成优势正加速追赶，竞争焦点从品牌认知转向平台生态…", "url": "https://www.theverge.com/ai-artificial-intelligence/978113/chatgpt-gemini-1-billion-users"}, {"section": "industry", "title": "研究人员发现可读取ChatGPT等模型加密推理过程的API漏洞", "source": "The Decoder：AI News（RSS）", "time": "2026年8月12日 01:38", "summary": "不是另一个理论漏洞，而是真实可复现的推理链提取，它直接揭示了模型在「想什么」与「说什么」之间的断裂，让密码泄露和欺骗意…", "url": "https://the-decoder.com/but-marinade-and-leaked-passwords-are-what-researchers-found-in-chatgpts-hidden-reasoning"}, {"section": "paper", "title": "新兴多智能体系统的模式与问题", "source": "Hacker News 热门（buzzing.cc 中文翻译）", "time": "2026年8月16日 19:17", "summary": "相较单智能体基准，这组实验把价格串谋、任务冲突与信息共享失败做成可观测案例，为评估智能体协作系统提供了此前很少被量化的…", "url": "https://www.anthropic.com/research/multiagent-systems"}, {"section": "paper", "title": "AI生成书籍正淹没亚马逊，并拉低人类作者的单书收入", "source": "The Decoder：AI News（RSS）", "time": "2026年8月15日 19:00", "summary": "这项研究把市场稀释从推测变成可量化证据，版权诉讼中此前缺少的经验性数据可能由此补上，并影响合理使用的判断。", "url": "https://the-decoder.com/ai-generated-books-are-flooding-amazon-and-tanking-sales-for-human-authors"}, {"section": "paper", "title": "AMIE 研究医疗 AI 系统首次展示实时临床视频问诊能力", "source": "Google Blog：AI（RSS）", "time": "2026年8月12日 01:00", "summary": "AMIE 在视频中融合视觉与听觉线索进行诊断，展示了多模态临床推理的可行性，对远程医疗产品方向有参考价值。", "url": "https://blog.google/innovation-and-ai/models-and-research/google-research/amie-video-consultations"}, {"section": "paper", "title": "Apple Silicon 与 macOS 虚拟机：借助 Llama.cpp 实现 11-16 倍的 LLM 推理加速", "source": "Hacker News 热门（buzzing.cc 中文翻译）", "time": "2026年8月12日 00:41", "summary": "通过进程级 Metal 能力注入，macOS 虚拟机中 llm 推理速度提升一个数量级，为在隔离环境运行大模型提供了此…", "url": "https://github.com/trycua/cua/blob/main/blog/gpu-passthrough-macos-vms.md"}, {"section": "paper", "title": "空货架还是丢钥匙？Google 研究：Recall 是参数化事实性的瓶颈", "source": "Google Research：Blog（网页）", "time": "2026年8月12日 00:00", "summary": "知识画像把事实错误拆成编码失败与召回失败，显示前沿模型问题主要在已存知识不稳定调用，思考更多恢复已编码事实而非补全缺失…", "url": "https://research.google/blog/empty-shelves-or-lost-keys-recall-is-the-bottleneck-for-parametric-factuality"}, {"section": "tips", "title": "蚂蚁百灵与 ASystem 团队打通单机 Agentic RL 后训练闭环", "source": "公众号：蚂蚁百灵（Ling）", "time": "2026年8月14日 12:00", "summary": "真正可复用的不是井字棋，而是把可复现错误、可验证反馈、本地训练和同环境复测串成的轻量后训练闭环，适合为本地小模型稳定工…", "url": "https://mp.weixin.qq.com/s?__biz=MzkyODk2MDQwNw%3D%3D&mid=2247487525&idx=1&sn=b9def9117e34b45fce50ab76eeed726c"}, {"section": "tips", "title": "2026年夏季开源模型生态观察：中国前沿模型规模领先，AMD与NVIDIA主导发布量", "source": "Hugging Face：Blog（RSS）", "time": "2026年8月14日 08:00", "summary": "下载量与点赞量分别记录实际依赖和社区兴奋点，把两者混为同一个热度指标是评估开源模型生态时最常见的偏差。", "url": "https://huggingface.co/blog/state-of-open-models-summer-2026"}, {"section": "tips", "title": "从0到1带你速通DeepSeek Harness。", "source": "公众号：数字生命卡兹克", "time": "2026年8月14日 07:58", "summary": "文章把Harness定位为插件化基建而非单一Agent，Cordis内核的时间与空间可组合性解释了Agent如何在运行…", "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685238&idx=1&sn=c3159dba0dd5a141f8dd726fd474e6e2"}, {"section": "tips", "title": "Claude 接管应用日常维护：388 个 PR 的实践", "source": "X：Boris Cherny (@bcherny)", "time": "2026年8月14日 05:27", "summary": "这套做法的增量在于把日常维护拆成可复用的定时例程，并通过当日 PR 反馈迭代提示词，使机械性代码改动从逐条审查转向批量…", "url": "https://x.com/bcherny/status/2088014489438621990"}, {"section": "tips", "title": "GPT-5.6 构建者指南：如何以更低成本实现前沿智能体性能", "source": "OpenAI：官网动态（RSS · 排除企业/客户案例）", "time": "2026年8月13日 19:00", "summary": "最实际的改变在 API 原语，让同一模型在 ARC-AGI-3 上用约六分之一输出 token 拿到近三倍分数，影响开…", "url": "https://openai.com/index/builders-guide-to-gpt-5-6"}, {"section": "tips", "title": "DeepSeek V4 Pro与Grok 4.6同日发布，双双逼近Claude Fable 5体验", "source": "公众号：数字生命卡兹克", "time": "2026年8月13日 06:22", "summary": "把准 Fable 级 Agent 能力压到输出百万 token 0.87 美元，与 50 美元的 Fable 5 形成…", "url": "https://mp.weixin.qq.com/s?__biz=MzIyMzA5NjEyMA%3D%3D&mid=2647685175&idx=1&sn=64c383b5b757945397894270c5f38301"}];
+const SEC_ALL = {"model": 13, "product": 11, "industry": 7, "paper": 5, "tips": 12};
+
+  // 把 API 返回内容视为不可信，渲染前做 HTML 转义
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  // 仅允许 http/https 链接，避免 javascript: 等注入
+  function sanitizeUrl(u) {
+    return /^https?:\/\//i.test(u) ? u : "#";
+  }
+
+  (function render() {
+    const counts = {};
+    SECTIONS.forEach(function (s) { counts[s.id] = 0; });
+    ITEMS.forEach(function (it) { if (counts[it.section] != null) counts[it.section]++; });
+    const total = ITEMS.length;
+
+    document.getElementById("hero-date").textContent = REPORT_RANGE;
+    document.getElementById("hero-total").textContent = total;
+    document.getElementById("foot-total").textContent = total;
+
+    document.getElementById("hero-stats").innerHTML = SECTIONS.map(function (s) {
+      return '<div class="stat"><div class="n">' + counts[s.id] + '</div><div class="l">' + escapeHtml(s.name) + '</div></div>';
+    }).join("");
+
+    document.getElementById("toc").innerHTML = SECTIONS.map(function (s) {
+      const zero = counts[s.id] === 0 ? " zero" : "";
+      return '<a class="' + zero + '" href="#sec-' + s.id + '">' + s.icon + ' ' + escapeHtml(s.name) + '<span class="pill">' + counts[s.id] + '</span></a>';
+    }).join("");
+
+    let globalSeq = 0;
+    document.getElementById("sections").innerHTML = SECTIONS.map(function (s) {
+      const items = ITEMS.filter(function (it) { return it.section === s.id; });
+      const all = (typeof SEC_ALL !== "undefined" && SEC_ALL[s.id]) || 0;
+      const truncated = all > items.length;
+      const moreNote = truncated ? ' <span class="more">近7天共 ' + all + ' 条</span>' : '';
+      const body = items.length
+        ? '<div class="grid">' + items.map(function (it) {
+            globalSeq++;
+            const url = sanitizeUrl(it.url);
+            return (
+              '<article class="card">' +
+                '<span class="idx">' + globalSeq + '</span>' +
+                '<div class="meta">' +
+                  '<span class="chip">' + escapeHtml(it.source) + '</span>' +
+                  '<span class="time">🕒 ' + escapeHtml(it.time) + '</span>' +
+                '</div>' +
+                '<h3><a href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(it.title) + '</a></h3>' +
+                '<p class="summary">' + escapeHtml(it.summary) + '</p>' +
+                '<a class="read" href="' + escapeHtml(url) + '" target="_blank" rel="noopener noreferrer">阅读原文 ↗</a>' +
+              '</article>'
+            );
+          }).join("") + '</div>'
+        : '<div class="empty"><div class="big">该版块暂无 AI HOT 精选收录</div></div>';
+      return (
+        '<section class="block" id="sec-' + s.id + '">' +
+          '<div class="sec-head">' +
+            '<span class="ico">' + s.icon + '</span>' +
+            '<h2>' + escapeHtml(s.name) + '</h2>' +
+            '<span class="cnt">' + items.length + ' 条' + moreNote + '</span>' +
+            '<span class="rule"></span>' +
+          '</div>' +
+          body +
+        '</section>'
+      );
+    }).join("");
+  })();
+</script>
+</body>
+</html>

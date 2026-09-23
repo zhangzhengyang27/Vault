@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>现代化后台管理系统 - 首页</title>
+    <style>
+      /* ========== 全局样式与CSS变量 ========== */
+      :root {
+        /* 主色调 - 科技蓝渐变 */
+        --primary-blue: #1890ff;
+        --primary-blue-light: #40a9ff;
+        --primary-blue-dark: #096dd9;
+        --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --gradient-tech: linear-gradient(135deg, #1890ff 0%, #36cfc9 100%);
+
+        /* 中性灰色系 */
+        --gray-50: #fafafa;
+        --gray-100: #f5f5f5;
+        --gray-200: #e8e8e8;
+        --gray-300: #d9d9d9;
+        --gray-400: #bfbfbf;
+        --gray-500: #8c8c8c;
+        --gray-600: #595959;
+        --gray-700: #434343;
+        --gray-800: #262626;
+        --gray-900: #1a1a1a;
+
+        /* 辅助色 */
+        --success-green: #52c41a;
+        --warning-orange: #fa8c16;
+        --error-red: #ff4d4f;
+        --info-blue: #1890ff;
+
+        /* 背景色 */
+        --bg-primary: #f0f2f5;
+        --bg-secondary: #ffffff;
+        --bg-dark: #001529;
+        --bg-glass: rgba(255, 255, 255, 0.7);
+
+        /* 阴影 */
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        --shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.15);
+
+        /* 圆角 */
+        --radius-sm: 4px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+
+        /* 过渡 */
+        --transition-fast: 0.2s ease;
+        --transition-base: 0.3s ease;
+        --transition-slow: 0.5s ease;
+
+        /* 布局尺寸 */
+        --sidebar-width: 240px;
+        --sidebar-collapsed-width: 64px;
+        --header-height: 64px;
+        --footer-height: 48px;
+      }
+
+      /* 重置样式 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        background: var(--bg-primary);
+        color: var(--gray-800);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      /* ========== 主布局容器 ========== */
+      .admin-container {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* ========== 左侧导航栏 ========== */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: var(--bg-dark);
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 1000;
+        transition: width var(--transition-base);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+      }
+
+      .sidebar.collapsed {
+        width: var(--sidebar-collapsed-width);
+      }
+
+      .sidebar-logo {
+        height: var(--header-height);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .logo-text {
+        font-size: 20px;
+        font-weight: 600;
+        background: var(--gradient-tech);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        white-space: nowrap;
+        opacity: 1;
+        transition: opacity var(--transition-fast);
+      }
+
+      .sidebar.collapsed .logo-text {
+        opacity: 0;
+        width: 0;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        background: var(--gradient-tech);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 18px;
+        margin-right: 12px;
+        flex-shrink: 0;
+      }
+
+      .sidebar.collapsed .logo-icon {
+        margin-right: 0;
+      }
+
+      /* 导航菜单 */
+      .nav-menu {
+        list-style: none;
+        padding: 16px 8px;
+      }
+
+      .nav-item {
+        margin-bottom: 4px;
+      }
+
+      .nav-link {
+        display: flex;
+        align-items: center;
+        padding: 12px 16px;
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        border-radius: var(--radius-md);
+        transition: all var(--transition-fast);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-link::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 3px;
+        height: 100%;
+        background: var(--primary-blue);
+        transform: scaleY(0);
+        transition: transform var(--transition-fast);
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        background: rgba(24, 144, 255, 0.15);
+        color: white;
+      }
+
+      .nav-link.active::before {
+        transform: scaleY(1);
+      }
+
+      .nav-icon {
+        width: 20px;
+        height: 20px;
+        margin-right: 12px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .sidebar.collapsed .nav-icon {
+        margin-right: 0;
+      }
+
+      .nav-text {
+        white-space: nowrap;
+        opacity: 1;
+        transition: opacity var(--transition-fast);
+      }
+
+      .sidebar.collapsed .nav-text {
+        opacity: 0;
+        width: 0;
+      }
+
+      .nav-arrow {
+        margin-left: auto;
+        transition: transform var(--transition-fast);
+      }
+
+      .nav-item.expanded .nav-arrow {
+        transform: rotate(90deg);
+      }
+
+      /* 子菜单 */
+      .sub-menu {
+        list-style: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height var(--transition-base);
+      }
+
+      .nav-item.expanded .sub-menu {
+        max-height: 300px;
+      }
+
+      .sub-menu .nav-link {
+        padding-left: 48px;
+        font-size: 14px;
+      }
+
+      /* ========== 主内容区 ========== */
+      .main-content {
+        margin-left: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+        transition: all var(--transition-base);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .sidebar.collapsed ~ .main-content {
+        margin-left: var(--sidebar-collapsed-width);
+        width: calc(100% - var(--sidebar-collapsed-width));
+      }
+
+      /* ========== 顶部栏 ========== */
+      .header {
+        height: var(--header-height);
+        background: var(--bg-secondary);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        padding: 0 24px;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        backdrop-filter: blur(10px);
+        background: var(--bg-glass);
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .toggle-btn {
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: var(--radius-md);
+        transition: all var(--transition-fast);
+        color: var(--gray-600);
+      }
+
+      .toggle-btn:hover {
+        background: var(--gray-100);
+        color: var(--primary-blue);
+      }
+
+      .breadcrumb {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--gray-500);
+        font-size: 14px;
+      }
+
+      .breadcrumb-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .breadcrumb-item.active {
+        color: var(--gray-800);
+        font-weight: 500;
+      }
+
+      .header-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .search-box {
+        position: relative;
+      }
+
+      .search-input {
+        width: 240px;
+        height: 36px;
+        padding: 0 40px 0 16px;
+        border: 1px solid var(--gray-300);
+        border-radius: var(--radius-lg);
+        font-size: 14px;
+        transition: all var(--transition-fast);
+        background: white;
+      }
+
+      .search-input:focus {
+        outline: none;
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.1);
+        width: 280px;
+      }
+
+      .search-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--gray-400);
+      }
+
+      .header-icon-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: all var(--transition-fast);
+        color: var(--gray-600);
+      }
+
+      .header-icon-btn:hover {
+        background: var(--gray-100);
+        color: var(--primary-blue);
+      }
+
+      .badge {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 18px;
+        height: 18px;
+        background: var(--error-red);
+        border-radius: 50%;
+        color: white;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+      }
+
+      .user-panel {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 12px;
+        border-radius: var(--radius-lg);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+      }
+
+      .user-panel:hover {
+        background: var(--gray-100);
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--gradient-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+      .user-info {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .user-name {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--gray-800);
+      }
+
+      .user-role {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      /* ========== 内容主体区域 ========== */
+      .content-wrapper {
+        flex: 1;
+        padding: 24px;
+      }
+
+      /* 欢迎卡片 */
+      .welcome-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: var(--radius-xl);
+        padding: 32px;
+        color: white;
+        margin-bottom: 24px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: var(--shadow-md);
+      }
+
+      .welcome-card::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+      }
+
+      .welcome-content {
+        position: relative;
+        z-index: 1;
+      }
+
+      .welcome-title {
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 8px;
+      }
+
+      .welcome-subtitle {
+        font-size: 16px;
+        opacity: 0.9;
+        margin-bottom: 24px;
+      }
+
+      .welcome-stats {
+        display: flex;
+        gap: 48px;
+      }
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        opacity: 0.8;
+      }
+
+      /* 快捷入口 */
+      .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .quick-action-item {
+        background: white;
+        border-radius: var(--radius-lg);
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        cursor: pointer;
+        transition: all var(--transition-base);
+        box-shadow: var(--shadow-sm);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .quick-action-item::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--gradient-tech);
+        opacity: 0;
+        transition: opacity var(--transition-base);
+      }
+
+      .quick-action-item:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .quick-action-item:hover::before {
+        opacity: 0.05;
+      }
+
+      .quick-action-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-bottom: 12px;
+        position: relative;
+        z-index: 1;
+        transition: all var(--transition-base);
+      }
+
+      .quick-action-item:hover .quick-action-icon {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .quick-action-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--gray-800);
+        position: relative;
+        z-index: 1;
+      }
+
+      /* 数据卡片网格 */
+      .card-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        margin-bottom: 24px;
+      }
+
+      .data-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 24px;
+        box-shadow: var(--shadow-sm);
+        transition: all var(--transition-base);
+        backdrop-filter: blur(10px);
+        background: var(--bg-glass);
+      }
+
+      .data-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-hover);
+      }
+
+      .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .card-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--gray-800);
+      }
+
+      .card-icon {
+        width: 32px;
+        height: 32px;
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+      }
+
+      .card-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--gray-900);
+        margin-bottom: 8px;
+      }
+
+      .card-trend {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 14px;
+      }
+
+      .trend-up {
+        color: var(--success-green);
+      }
+
+      .trend-down {
+        color: var(--error-red);
+      }
+
+      /* 图表卡片 */
+      .chart-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 24px;
+        box-shadow: var(--shadow-sm);
+        backdrop-filter: blur(10px);
+        background: var(--bg-glass);
+      }
+
+      .chart-container {
+        width: 100%;
+        height: 300px;
+        margin-top: 20px;
+        position: relative;
+      }
+
+      /* 简单的柱状图 */
+      .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        height: 100%;
+        gap: 12px;
+      }
+
+      .bar-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .bar {
+        width: 100%;
+        background: var(--gradient-tech);
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+        position: relative;
+        transition: all var(--transition-base);
+        animation: barGrow 1s ease-out;
+      }
+
+      @keyframes barGrow {
+        from {
+          height: 0;
+        }
+      }
+
+      .bar:hover {
+        opacity: 0.8;
+        transform: translateY(-4px);
+      }
+
+      .bar-label {
+        font-size: 12px;
+        color: var(--gray-600);
+      }
+
+      /* 活动记录 */
+      .activity-list {
+        list-style: none;
+      }
+
+      .activity-item {
+        display: flex;
+        gap: 16px;
+        padding: 16px 0;
+        border-bottom: 1px solid var(--gray-200);
+        transition: all var(--transition-fast);
+      }
+
+      .activity-item:last-child {
+        border-bottom: none;
+      }
+
+      .activity-item:hover {
+        background: var(--gray-50);
+        margin: 0 -12px;
+        padding: 16px 12px;
+        border-radius: var(--radius-md);
+      }
+
+      .activity-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .activity-content {
+        flex: 1;
+      }
+
+      .activity-title {
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--gray-800);
+        margin-bottom: 4px;
+      }
+
+      .activity-time {
+        font-size: 12px;
+        color: var(--gray-500);
+      }
+
+      /* ========== 底部栏 ========== */
+      .footer {
+        height: var(--footer-height);
+        background: white;
+        border-top: 1px solid var(--gray-200);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        color: var(--gray-500);
+      }
+
+      /* ========== 响应式设计 ========== */
+      @media (max-width: 1440px) {
+        .card-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      @media (max-width: 1280px) {
+        .sidebar {
+          width: var(--sidebar-collapsed-width);
+        }
+
+        .main-content {
+          margin-left: var(--sidebar-collapsed-width);
+          width: calc(100% - var(--sidebar-collapsed-width));
+        }
+
+        .card-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .welcome-stats {
+          flex-wrap: wrap;
+          gap: 24px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header-right .search-box {
+          display: none;
+        }
+
+        .breadcrumb {
+          display: none;
+        }
+
+        .quick-actions {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* ========== 动画效果 ========== */
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+
+      .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+      }
+
+      /* 涟漪效果 */
+      .ripple {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.6);
+        transform: scale(0);
+        animation: ripple 0.6s ease-out;
+        pointer-events: none;
+      }
+
+      /* 加载动画 */
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid var(--gray-200);
+        border-top-color: var(--primary-blue);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* 滚动条美化 */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--gray-100);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--gray-400);
+        border-radius: 4px;
+      }
+
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--gray-500);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-container">
+      <!-- 左侧导航栏 -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+          <div class="logo-icon">D</div>
+          <div class="logo-text">DashBoard</div>
+        </div>
+
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a class="nav-link active" href="#dashboard">
+              <span class="nav-icon">📊</span>
+              <span class="nav-text">仪表盘</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="toggleSubMenu(event)">
+              <span class="nav-icon">👥</span>
+              <span class="nav-text">用户管理</span>
+              <span class="nav-arrow">›</span>
+            </a>
+            <ul class="sub-menu">
+              <li><a class="nav-link" href="#users">用户列表</a></li>
+              <li><a class="nav-link" href="#roles">角色管理</a></li>
+              <li><a class="nav-link" href="#permissions">权限设置</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#" onclick="toggleSubMenu(event)">
+              <span class="nav-icon">📦</span>
+              <span class="nav-text">内容管理</span>
+              <span class="nav-arrow">›</span>
+            </a>
+            <ul class="sub-menu">
+              <li><a class="nav-link" href="#articles">文章管理</a></li>
+              <li><a class="nav-link" href="#media">媒体库</a></li>
+              <li><a class="nav-link" href="#categories">分类标签</a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#data">
+              <span class="nav-icon">📈</span>
+              <span class="nav-text">数据分析</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#finance">
+              <span class="nav-icon">💰</span>
+              <span class="nav-text">财务中心</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#system">
+              <span class="nav-icon">⚙️</span>
+              <span class="nav-text">系统设置</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#logs">
+              <span class="nav-icon">📋</span>
+              <span class="nav-text">操作日志</span>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="#help">
+              <span class="nav-icon">❓</span>
+              <span class="nav-text">帮助中心</span>
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- 主内容区 -->
+      <div class="main-content">
+        <!-- 顶部栏 -->
+        <header class="header">
+          <div class="header-left">
+            <button class="toggle-btn" onclick="toggleSidebar()">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M2 5h16M2 10h16M2 15h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <nav class="breadcrumb">
+              <span class="breadcrumb-item">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <path d="M7 1l6 5v7H9V9H5v4H1V6l6-5z" />
+                </svg>
+                首页
+              </span>
+              <span>›</span>
+              <span class="breadcrumb-item active">仪表盘</span>
+            </nav>
+          </div>
+
+          <div class="header-right">
+            <div class="search-box">
+              <input type="text" class="search-input" placeholder="搜索功能、数据..." />
+              <span class="search-icon">🔍</span>
+            </div>
+
+            <button class="header-icon-btn" onclick="showNotification()">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M10 2a6 6 0 016 6v3.586l1.707 1.707A1 1 0 0117 15H3a1 1 0 01-.707-1.707L4 11.586V8a6 6 0 016-6zM8 16h4a2 2 0 11-4 0z"
+                  fill="currentColor" />
+              </svg>
+              <span class="badge">5</span>
+            </button>
+
+            <button class="header-icon-btn">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 110-12 6 6 0 010 12z" fill="currentColor" />
+                <path d="M10 5v5l3 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </button>
+
+            <div class="user-panel" onclick="toggleUserMenu()">
+              <div class="user-avatar">ZY</div>
+              <div class="user-info">
+                <div class="user-name">张振阳</div>
+                <div class="user-role">超级管理员</div>
+              </div>
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              </svg>
+            </div>
+          </div>
+        </header>
+
+        <!-- 内容主体 -->
+        <main class="content-wrapper">
+          <!-- 欢迎卡片 -->
+          <div class="welcome-card fade-in-up">
+            <div class="welcome-content">
+              <h1 class="welcome-title">早上好，张振阳！👋</h1>
+              <p class="welcome-subtitle">今天是 2025年10月24日 星期五，祝您工作愉快</p>
+              <div class="welcome-stats">
+                <div class="stat-item">
+                  <div class="stat-value">1,258</div>
+                  <div class="stat-label">总用户数</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">847</div>
+                  <div class="stat-label">今日活跃</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">¥28,560</div>
+                  <div class="stat-label">今日营收</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 快捷操作 -->
+          <div class="quick-actions fade-in-up" style="animation-delay: 0.1s">
+            <div class="quick-action-item" onclick="createRipple(event)">
+              <div class="quick-action-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)">➕</div>
+              <div class="quick-action-text">新建用户</div>
+            </div>
+
+            <div class="quick-action-item" onclick="createRipple(event)">
+              <div class="quick-action-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)">📝</div>
+              <div class="quick-action-text">发布内容</div>
+            </div>
+
+            <div class="quick-action-item" onclick="createRipple(event)">
+              <div class="quick-action-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)">📊</div>
+              <div class="quick-action-text">数据报表</div>
+            </div>
+
+            <div class="quick-action-item" onclick="createRipple(event)">
+              <div class="quick-action-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)">💳</div>
+              <div class="quick-action-text">财务统计</div>
+            </div>
+
+            <div class="quick-action-item" onclick="createRipple(event)">
+              <div class="quick-action-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%)">⚙️</div>
+              <div class="quick-action-text">系统配置</div>
+            </div>
+
+            <div class="quick-action-item" onclick="createRipple(event)">
+              <div class="quick-action-icon" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%)">🔒</div>
+              <div class="quick-action-text">安全设置</div>
+            </div>
+          </div>
+
+          <!-- 数据卡片 -->
+          <div class="card-grid fade-in-up" style="animation-delay: 0.2s">
+            <div class="data-card">
+              <div class="card-header">
+                <h3 class="card-title">总访问量</h3>
+                <div class="card-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white">👁️</div>
+              </div>
+              <div class="card-value">126,483</div>
+              <div class="card-trend trend-up">↑ 12.5% 较上周</div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-header">
+                <h3 class="card-title">新增用户</h3>
+                <div class="card-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white">👤</div>
+              </div>
+              <div class="card-value">2,847</div>
+              <div class="card-trend trend-up">↑ 8.3% 较上周</div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-header">
+                <h3 class="card-title">订单数量</h3>
+                <div class="card-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white">🛒</div>
+              </div>
+              <div class="card-value">1,456</div>
+              <div class="card-trend trend-down">↓ 2.1% 较上周</div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-header">
+                <h3 class="card-title">销售额</h3>
+                <div class="card-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white">💵</div>
+              </div>
+              <div class="card-value">¥485,360</div>
+              <div class="card-trend trend-up">↑ 15.8% 较上周</div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-header">
+                <h3 class="card-title">转化率</h3>
+                <div class="card-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); color: white">📈</div>
+              </div>
+              <div class="card-value">68.5%</div>
+              <div class="card-trend trend-up">↑ 3.2% 较上周</div>
+            </div>
+
+            <div class="data-card">
+              <div class="card-header">
+                <h3 class="card-title">客单价</h3>
+                <div class="card-icon" style="background: linear-gradient(135deg, #30cfd0 0%, #330867 100%); color: white">💰</div>
+              </div>
+              <div class="card-value">¥333</div>
+              <div class="card-trend trend-up">↑ 5.4% 较上周</div>
+            </div>
+          </div>
+
+          <!-- 图表与活动 -->
+          <div class="card-grid fade-in-up" style="animation-delay: 0.3s">
+            <div class="chart-card" style="grid-column: span 2">
+              <div class="card-header">
+                <h3 class="card-title">近7日数据趋势</h3>
+                <div style="display: flex; gap: 16px; font-size: 12px">
+                  <span style="color: var(--primary-blue)">● 访问量</span>
+                  <span style="color: var(--success-green)">● 订单量</span>
+                </div>
+              </div>
+              <div class="chart-container">
+                <div class="bar-chart">
+                  <div class="bar-item">
+                    <div class="bar" style="height: 60%"></div>
+                    <div class="bar-label">周一</div>
+                  </div>
+                  <div class="bar-item">
+                    <div class="bar" style="height: 75%"></div>
+                    <div class="bar-label">周二</div>
+                  </div>
+                  <div class="bar-item">
+                    <div class="bar" style="height: 85%"></div>
+                    <div class="bar-label">周三</div>
+                  </div>
+                  <div class="bar-item">
+                    <div class="bar" style="height: 70%"></div>
+                    <div class="bar-label">周四</div>
+                  </div>
+                  <div class="bar-item">
+                    <div class="bar" style="height: 95%"></div>
+                    <div class="bar-label">周五</div>
+                  </div>
+                  <div class="bar-item">
+                    <div class="bar" style="height: 55%"></div>
+                    <div class="bar-label">周六</div>
+                  </div>
+                  <div class="bar-item">
+                    <div class="bar" style="height: 50%"></div>
+                    <div class="bar-label">周日</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="card-header">
+                <h3 class="card-title">最近活动</h3>
+              </div>
+              <ul class="activity-list">
+                <li class="activity-item">
+                  <div class="activity-icon" style="background: rgba(24, 144, 255, 0.1); color: var(--primary-blue)">👤</div>
+                  <div class="activity-content">
+                    <div class="activity-title">新用户注册</div>
+                    <div class="activity-time">5分钟前</div>
+                  </div>
+                </li>
+                <li class="activity-item">
+                  <div class="activity-icon" style="background: rgba(82, 196, 26, 0.1); color: var(--success-green)">✓</div>
+                  <div class="activity-content">
+                    <div class="activity-title">订单完成</div>
+                    <div class="activity-time">12分钟前</div>
+                  </div>
+                </li>
+                <li class="activity-item">
+                  <div class="activity-icon" style="background: rgba(250, 140, 22, 0.1); color: var(--warning-orange)">⚠️</div>
+                  <div class="activity-content">
+                    <div class="activity-title">系统告警</div>
+                    <div class="activity-time">1小时前</div>
+                  </div>
+                </li>
+                <li class="activity-item">
+                  <div class="activity-icon" style="background: rgba(118, 75, 162, 0.1); color: #764ba2">📝</div>
+                  <div class="activity-content">
+                    <div class="activity-title">内容发布</div>
+                    <div class="activity-time">2小时前</div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </main>
+
+        <!-- 底部栏 -->
+        <footer class="footer">
+          <p>© 2025 现代化后台管理系统. All rights reserved. | Design by Senior UI/UX Designer</p>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      // 侧边栏折叠/展开
+      function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar")
+        sidebar.classList.toggle("collapsed")
+      }
+
+      // 子菜单展开/折叠
+      function toggleSubMenu(event) {
+        event.preventDefault()
+        const navItem = event.currentTarget.parentElement
+        navItem.classList.toggle("expanded")
+      }
+
+      // 涟漪效果
+      function createRipple(event) {
+        const button = event.currentTarget
+        const ripple = document.createElement("span")
+        const rect = button.getBoundingClientRect()
+        const size = Math.max(rect.width, rect.height)
+        const x = event.clientX - rect.left - size / 2
+        const y = event.clientY - rect.top - size / 2
+
+        ripple.style.width = ripple.style.height = size + "px"
+        ripple.style.left = x + "px"
+        ripple.style.top = y + "px"
+        ripple.classList.add("ripple")
+
+        button.appendChild(ripple)
+
+        ripple.addEventListener("animationend", () => {
+          ripple.remove()
+        })
+      }
+
+      // 通知提示
+      function showNotification() {
+        alert("您有5条新消息！\n\n1. 系统更新通知\n2. 新用户注册提醒\n3. 订单完成通知\n4. 评论回复提醒\n5. 系统维护公告")
+      }
+
+      // 用户菜单
+      function toggleUserMenu() {
+        alert("用户菜单功能：\n\n• 个人资料\n• 账号设置\n• 主题切换\n• 退出登录")
+      }
+
+      // 平滑滚动
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          const href = this.getAttribute("href")
+          if (href !== "#") {
+            e.preventDefault()
+            // 添加活动状态
+            document.querySelectorAll(".nav-link").forEach((link) => {
+              link.classList.remove("active")
+            })
+            this.classList.add("active")
+          }
+        })
+      })
+
+      // 搜索功能
+      const searchInput = document.querySelector(".search-input")
+      searchInput.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          alert("搜索功能：" + this.value)
+        }
+      })
+
+      // 页面加载动画
+      window.addEventListener("load", () => {
+        document.querySelectorAll(".fade-in-up").forEach((element, index) => {
+          element.style.opacity = "0"
+          setTimeout(() => {
+            element.style.opacity = "1"
+          }, index * 100)
+        })
+      })
+
+      // 实时时间更新
+      function updateTime() {
+        const now = new Date()
+        const options = {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+          weekday: "long"
+        }
+        const dateStr = now.toLocaleDateString("zh-CN", options)
+        const welcomeSubtitle = document.querySelector(".welcome-subtitle")
+        if (welcomeSubtitle) {
+          const hour = now.getHours()
+          let greeting = "早上好"
+          if (hour >= 12 && hour < 18) {
+            greeting = "下午好"
+          } else if (hour >= 18) {
+            greeting = "晚上好"
+          }
+          welcomeSubtitle.textContent = `今天是 ${dateStr}，祝您工作愉快`
+          document.querySelector(".welcome-title").textContent = `${greeting}，张振阳！👋`
+        }
+      }
+
+      updateTime()
+
+      // 模拟数据刷新
+      setInterval(() => {
+        // 随机更新一些数值
+        const cards = document.querySelectorAll(".card-value")
+        cards.forEach((card) => {
+          if (Math.random() > 0.7) {
+            card.style.color = "var(--primary-blue)"
+            setTimeout(() => {
+              card.style.color = "var(--gray-900)"
+            }, 300)
+          }
+        })
+      }, 5000)
+    </script>
+  </body>
+</html>

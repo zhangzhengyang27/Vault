@@ -1,0 +1,290 @@
+[
+  {
+    "type": "skill",
+    "slug": "frontend-design",
+    "name": "Frontend Design",
+    "description": "打造独具辨识度的生产级前端界面，强调大胆美学选择与精细实现，涵盖网页组件、落地页、仪表盘等各类 UI 构建需求，通过定制化排版、色彩系统、动效编排与空间构成，规避千篇一律的 AI 设计风格，确保每个产出都具备强烈视觉记忆点和上下文适配性。",
+    "endpoint": "~/.claude/skills/frontend-design",
+    "tags": [
+      "效率工具",
+      "软件开发",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "pdf",
+    "name": "PDF",
+    "description": "提供对 PDF 文档的完整处理能力，包括文本与表格提取、文档合并拆分、内容生成及表单操作，支持通过程序自动化实现文档分析、数据抽取与批量修改，适用于需要深度干预 PDF 内容的场景。",
+    "endpoint": "~/.claude/skills/pdf",
+    "tags": [
+      "效率工具",
+      "文档处理",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "docx",
+    "name": "Docx",
+    "description": "支持专业级 Word 文档的全生命周期处理，包括从零创建结构化文档、精准编辑内容、管理修订痕迹与批注、提取纯文本或原始 XML 数据、转换为 PDF 或图像用于视觉分析，适用于法律、学术及企业场景下的高保真文档协作与自动化处理。",
+    "endpoint": "~/.claude/skills/docx",
+    "tags": [
+      "效率工具",
+      "文档处理",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "pptx",
+    "name": "PPTX",
+    "description": "支持从零创建、基于模板生成或编辑现有 PowerPoint 演示文稿，涵盖内容生成、布局调整、主题配色分析、演讲者备注与批注处理，并通过 HTML 转换、XML 级精细编辑及可视化校验实现高保真设计还原。",
+    "endpoint": "~/.claude/skills/pptx",
+    "tags": [
+      "文档处理",
+      "内容与媒体",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "xlsx",
+    "name": "XLSX",
+    "description": "支持创建、编辑和分析各类电子表格文件，具备公式计算、格式设置、数据透视与图表生成能力，确保公式零错误并严格遵循财务建模规范，包括蓝黑绿红四色文本标注、标准化数字格式及可追溯的数据源注释。",
+    "endpoint": "~/.claude/skills/xlsx",
+    "tags": [
+      "效率工具",
+      "文档处理",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "java-dev",
+    "name": "Java Dev",
+    "description": "提供 Java 项目开发全流程的标准化指导，涵盖代码风格、异常与空值处理、并发编程、单元测试、Spring Boot 实践及性能优化等核心环节，确保团队协作一致性与工程可维护性。",
+    "endpoint": "~/.claude/skills/java-dev",
+    "tags": [
+      "软件开发"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "java-best-practices",
+    "name": "Java Best Practices",
+    "description": "提供 Java 开发全流程的规范指导与实践支持，涵盖命名约定、主流设计模式应用、Stream 链式处理、健壮异常管理、线程安全并发控制及空值安全的 Optional 用法，助力编写可读性强、可维护性高、符合工业标准的 Java 代码。",
+    "endpoint": "~/.claude/skills/java-best-practices",
+    "tags": [
+      "软件开发"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "vue",
+    "name": "Vue",
+    "description": "提供 Vue 3 单文件组件开发、组合式函数编写、客户端工具函数设计及单元测试的完整实践指南，涵盖响应式模式、Props/Emits 规范、VueUse 集成、类型安全配置与路由类型化等核心能力。",
+    "endpoint": "~/.claude/skills/vue",
+    "tags": [
+      "软件开发"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "codex-skill",
+    "name": "Codex Skill",
+    "description": "通过自动化代码执行能力，实现从需求分析到代码修改的端到端编程任务处理，支持在隔离环境中读取文件、编写代码、运行测试并输出结构化结果，适用于代码重构、功能实现与缺陷修复等场景。",
+    "endpoint": "~/.codex/skills/codex-skill",
+    "tags": [
+      "效率工具",
+      "数据与分析"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "claude-skill",
+    "name": "Claude Skill",
+    "description": "提供无需人工干预的自动化代码处理能力，支持代码分析、缺陷修复、功能实现、安全审查等任务，通过预设权限模式与工具集限制，在保障安全的前提下实现端到端自主执行。",
+    "endpoint": "~/.claude/skills/claude-skill",
+    "tags": [
+      "效率工具",
+      "数据与分析"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "codex-review",
+    "name": "Codex Review",
+    "description": "通过集成专用代码审查模型实现自动化代码缺陷检测，支持在开发流程中识别安全漏洞、性能问题及代码异味，并可嵌入 CI/CD 流水线执行静态分析，提供结构化输出以供后续处理，适用于保障代码质量与维护安全合规的软件交付场景。",
+    "endpoint": "~/.codex/skills/codex-review",
+    "tags": [
+      "效率工具",
+      "数据与分析"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "skill-creator",
+    "name": "Skill Creator",
+    "description": "指导创建高效技能模块，通过封装专用工作流、工具集成与领域知识，将通用模型转化为特定任务专家，支持按需加载资源以优化上下文使用。",
+    "endpoint": "~/.claude/skills/skill-creator",
+    "tags": [
+      "效率工具",
+      "文档处理",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "skill-writer",
+    "name": "Skill Writer",
+    "description": "提供从零构建 Claude Code Agent 技能的全流程指导，涵盖需求分析、目录结构搭建、SKILL.md 前置元数据编写、描述文案优化、内容组织规范、多文件协同设计及验证测试方法，确保技能可被准确识别、安全调用且符合工程实践标准。",
+    "endpoint": "~/.claude/skills/skill-writer",
+    "tags": [
+      "效率工具",
+      "文档处理"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "skill-lookup",
+    "name": "Skill Lookup",
+    "description": "支持在技能生态中发现、获取和安装可复用的 AI 能力组件，涵盖按关键词或分类检索技能、查看详细文档与文件结构、下载完整技能包并部署到本地 Claude 环境等全流程操作。",
+    "endpoint": "~/.claude/skills/skill-lookup",
+    "tags": [
+      "效率工具",
+      "数据与分析"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "prompt-lookup",
+    "name": "Prompt Lookup",
+    "description": "专注于 AI 提示词的发现、获取与优化，支持按关键词、类型、领域和标签检索高质量提示模板，可提取指定提示并自动补全变量，还能基于目标输出格式智能增强提示效果，帮助用户高效构建更精准有效的 AI 交互指令。",
+    "endpoint": "~/.claude/skills/prompt-lookup",
+    "tags": [
+      "数据与分析"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "doc-coauthoring",
+    "name": "Doc Coauthoring",
+    "description": "协助用户系统化地协同撰写各类结构化文档，涵盖技术规范、决策说明、产品提案等场景，通过分阶段引导完成背景梳理、内容迭代与读者验证，确保文档逻辑清晰、信息完整且对目标读者真正有效。",
+    "endpoint": "~/.claude/skills/doc-coauthoring",
+    "tags": [
+      "效率工具",
+      "文档处理",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "webnovel-write",
+    "name": "Webnovel Write",
+    "description": "实现网络小说章节的全流程自动化创作与质量管控，涵盖上下文智能聚合、符合设定的纯文本生成、多维度并行审查、基于 AI 检测的精细化润色、实体与场景的自动识别归档，以及版本化备份，确保每章内容在情节、人设、节奏和世界观层面高度自洽。",
+    "endpoint": "~/.claude/skills/webnovel-write",
+    "tags": [
+      "数据与分析",
+      "软件开发"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "mcp-builder",
+    "name": "MCP Builder",
+    "description": "指导构建高质量的 MCP 服务器，通过合理设计工具使 LLM 能高效调用外部服务，涵盖从协议理解、框架选择到工具实现与评估的全流程，支持跨语言部署并确保良好的可发现性、错误处理与系统集成能力。",
+    "endpoint": "~/.claude/skills/mcp-builder",
+    "tags": [
+      "软件开发",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  },
+  {
+    "type": "skill",
+    "slug": "ui-ux-pro-max",
+    "name": "UI/UX Pro Max",
+    "description": "提供面向产品全生命周期的 UI/UX 设计智能支持，覆盖风格选择、色彩系统、字体搭配、交互规范、可访问性保障及多技术栈实现方案，能根据项目类型与行业特征自动生成定制化设计体系，并支持分层覆盖与上下文感知的精准检索。",
+    "endpoint": "~/.claude/skills/ui-ux-pro-max",
+    "tags": [
+      "商业与营销",
+      "软件开发"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill"
+  },
+  {
+    "type": "skill",
+    "slug": "frontend-code-review",
+    "name": "Frontend Code Review",
+    "description": "执行前端代码审查，覆盖 React 与 Next.js 项目的类型安全、组件结构及性能优化，检查命名规范、hooks 使用、服务端客户端标记、列表渲染键值、图片加载策略等，确保代码可维护性与无障碍访问合规性，并输出分级问题报告。",
+    "endpoint": "~/.claude/skills/frontend-code-review",
+    "tags": [
+      "测试与安全"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "web-design-guidelines",
+    "name": "Web Design Guidelines",
+    "description": "提供网页界面规范合规性审查能力，自动获取最新设计指南并扫描指定代码文件，识别违反可访问性、用户体验及最佳实践的问题，以简洁的文件行号格式输出检查结果。",
+    "endpoint": "~/.claude/skills/web-design-guidelines",
+    "tags": [
+      "测试与安全",
+      "效率工具"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/vercel-labs/web-interface-guidelines"
+  },
+  {
+    "type": "skill",
+    "slug": "ghostty-config",
+    "name": "Ghostty Config",
+    "description": "提供 Ghostty 终端的完整配置能力，涵盖主题配色、字体渲染、快捷键绑定、性能调优及 Shell 集成，支持按需生成符合 XDG 规范的配置文件，适用于新环境初始化、个性化定制或行为调试场景。",
+    "endpoint": "~/.claude/skills/ghostty-config",
+    "tags": [
+      "效率工具"
+    ],
+    "phase": "v1"
+  },
+  {
+    "type": "skill",
+    "slug": "brand-guidelines",
+    "name": "Brand Guidelines",
+    "description": "为各类文档或可视化成果自动应用 Anthropic 官方品牌规范，包括精确匹配的深灰、浅米、橙蓝绿等主辅色系，以及 Poppins 和 Lora 字体的智能分级应用，确保输出内容在不同系统中保持统一专业的视觉风格。",
+    "endpoint": "~/.claude/skills/brand-guidelines",
+    "tags": [
+      "效率工具",
+      "Claude 官方"
+    ],
+    "phase": "v1",
+    "sourceUrl": "https://github.com/anthropics/skills"
+  }
+]

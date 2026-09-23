@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成器</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            color: #1565c0;
+            margin-bottom: 24px;
+        }
+        .input-wrap {
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            resize: vertical;
+            min-height: 80px;
+            outline: none;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        textarea:focus { border-color: #1976d2; }
+        .color-options {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .color-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .color-btn.active { border-color: #333; }
+        .qr-area {
+            min-height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 24px 0;
+        }
+        .qr-area #qrcode { display: inline-block; }
+        .qr-area #qrcode img, .qr-area #qrcode canvas { border-radius: 8px; }
+        .placeholder { color: #bbb; font-size: 16px; }
+        .btn-group { display: flex; gap: 10px; }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-generate { background: #1976d2; color: #fff; }
+        .btn-download { background: #43a047; color: #fff; }
+        .btn-clear { background: #eceff1; color: #546e7a; flex: 0.5; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🔲 二维码生成器</h1>
+        <div class="input-wrap">
+            <textarea id="textInput" placeholder="输入文字或链接，点击生成二维码"></textarea>
+        </div>
+        <div class="color-options">
+            <button class="color-btn active" style="background:#000" onclick="setColor('#000000', this)"></button>
+            <button class="color-btn" style="background:#1976d2" onclick="setColor('#1976d2', this)"></button>
+            <button class="color-btn" style="background:#e53935" onclick="setColor('#e53935', this)"></button>
+            <button class="color-btn" style="background:#2e7d32" onclick="setColor('#2e7d32', this)"></button>
+            <button class="color-btn" style="background:#6a1b9a" onclick="setColor('#6a1b9a', this)"></button>
+        </div>
+        <div class="qr-area">
+            <span class="placeholder" id="placeholder">二维码将在此处显示</span>
+            <div id="qrcode"></div>
+        </div>
+        <div class="btn-group">
+            <button class="btn btn-generate" onclick="generateQR()">生成</button>
+            <button class="btn btn-download" onclick="downloadQR()">下载</button>
+            <button class="btn btn-clear" onclick="clearAll()">清空</button>
+        </div>
+    </div>
+    <script>
+        let qrColor = '#000000';
+        let qr = null;
+        function setColor(color, btn) {
+            qrColor = color;
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const text = document.getElementById('textInput').value.trim();
+            if (text) generateQR();
+        }
+        function generateQR() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) return;
+            document.getElementById('placeholder').style.display = 'none';
+            const container = document.getElementById('qrcode');
+            container.innerHTML = '';
+            qr = new QRCode(container, {
+                text: text,
+                width: 200,
+                height: 200,
+                colorDark: qrColor,
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        }
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            const img = document.querySelector('#qrcode img');
+            if (canvas) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL();
+                link.click();
+            } else if (img) {
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = img.src;
+                link.click();
+            }
+        }
+        function clearAll() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('qrcode').innerHTML = '';
+            document.getElementById('placeholder').style.display = '';
+            qr = null;
+        }
+    </script>
+</body>
+</html>

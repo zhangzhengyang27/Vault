@@ -1,0 +1,44 @@
+[
+  {
+    "name": "OpenAI 官方博客",
+    "url": "https://openai.com/blog/rss.xml",
+    "sourceType": "news",
+    "crawlInterval": "daily",
+    "description": "OpenAI 官方动态与产品发布"
+  },
+  {
+    "name": "Google AI 博客",
+    "url": "https://blog.google/technology/ai/rss/",
+    "sourceType": "news",
+    "crawlInterval": "daily",
+    "description": "Google AI 技术进展与产品更新"
+  },
+  {
+    "name": "Hugging Face 博客",
+    "url": "https://huggingface.co/blog/feed.xml",
+    "sourceType": "knowledge",
+    "crawlInterval": "weekly",
+    "description": "Hugging Face 技术文章与开源模型动态"
+  },
+  {
+    "name": "Anthropic 新闻",
+    "url": "https://www.anthropic.com/news/rss.xml",
+    "sourceType": "news",
+    "crawlInterval": "daily",
+    "description": "Anthropic / Claude 产品与安全研究动态"
+  },
+  {
+    "name": "GitHub 官方博客",
+    "url": "https://github.blog/feed/",
+    "sourceType": "github",
+    "crawlInterval": "weekly",
+    "description": "GitHub 平台更新与开发者生态资讯"
+  },
+  {
+    "name": "机器学习周刊",
+    "url": "https://machinelearningmastery.com/blog/feed/",
+    "sourceType": "knowledge",
+    "crawlInterval": "weekly",
+    "description": "机器学习技术教程与最佳实践"
+  }
+]

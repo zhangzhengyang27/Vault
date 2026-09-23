@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户信息收集表单</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .form-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 520px;
+            box-shadow: 0 8px 32px rgba(25, 118, 210, 0.12);
+        }
+        h1 {
+            font-size: 24px;
+            color: #1565c0;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #78909c;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-size: 14px;
+            color: #37474f;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+        label .required {
+            color: #e53935;
+            margin-left: 2px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #cfd8dc;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus, select:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(25,118,210,0.1);
+        }
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background: #1565c0;
+        }
+        .toast {
+            display: none;
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #43a047;
+            color: #fff;
+            padding: 14px 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            box-shadow: 0 4px 16px rgba(67,160,71,0.3);
+            z-index: 999;
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { opacity: 0; top: 0; }
+            to { opacity: 1; top: 30px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast" id="toast">✓ 提交成功</div>
+    <div class="form-card">
+        <h1>📋 客户信息收集</h1>
+        <p class="subtitle">请填写以下信息，我们会尽快与您联系</p>
+        <form id="customerForm" onsubmit="return handleSubmit(event)">
+            <div class="form-group">
+                <label>姓名 <span class="required">*</span></label>
+                <input type="text" id="name" required placeholder="请输入您的姓名">
+            </div>
+            <div class="form-group">
+                <label>电话 <span class="required">*</span></label>
+                <input type="tel" id="phone" required placeholder="请输入联系电话">
+            </div>
+            <div class="form-group">
+                <label>公司</label>
+                <input type="text" id="company" placeholder="请输入公司名称（选填）">
+            </div>
+            <div class="form-group">
+                <label>需求描述</label>
+                <textarea id="description" placeholder="请描述您的需求（选填）"></textarea>
+            </div>
+            <button type="submit" class="submit-btn">提交信息</button>
+        </form>
+    </div>
+    <script>
+        const STORAGE_KEY = 'customer_form_data';
+        function handleSubmit(e) {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                company: document.getElementById('company').value,
+                description: document.getElementById('description').value,
+                time: new Date().toLocaleString()
+            };
+            const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            list.push(data);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            document.getElementById('customerForm').reset();
+            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+            return false;
+        }
+    </script>
+</body>
+</html>

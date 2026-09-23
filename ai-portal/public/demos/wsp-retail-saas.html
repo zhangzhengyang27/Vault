@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flore — The operating system for physical retail</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-400.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        paper: 'hsl(36, 25%, 97%)',
+        sand: 'hsl(36, 20%, 95%)',
+        hairline: 'hsl(36, 18%, 88%)',
+        ink: 'hsl(36, 12%, 10%)',
+        soft: 'hsl(36, 8%, 47%)',
+        teal: 'hsl(172, 80%, 26%)',
+        tealight: 'hsl(172, 45%, 94%)',
+        teamute: 'hsl(172, 38%, 78%)',
+        amber: 'hsl(38, 90%, 52%)',
+      },
+      fontFamily: {
+        sans: ['"Plus Jakarta Sans"', '"PingFang SC"', 'Arial', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: "Plus Jakarta Sans", "PingFang SC", Arial, sans-serif; }
+  .stagger { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .stagger.in { opacity: 1; transform: none; }
+  .dash-float { animation: dashfloat 5s ease-in-out infinite; }
+  @keyframes dashfloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .card-lift { transition: transform .18s ease, box-shadow .18s ease; }
+  .card-lift:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -18px hsl(36 20% 30% / .45); }
+  .faq-a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+  .faq-a > div { overflow: hidden; }
+  .faq-item.open .faq-a { grid-template-rows: 1fr; }
+  .faq-item.open .faq-chevron { transform: rotate(180deg); }
+  .faq-chevron { transition: transform .3s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .stagger { opacity: 1; transform: none; transition: none; }
+    .dash-float { animation: none; }
+  }
+</style>
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- 1. 导航栏 -->
+<header class="sticky top-0 z-50 bg-paper/85 backdrop-blur-[12px] border-b border-hairline">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2 font-extrabold text-lg">
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><rect width="9" height="9" rx="2" fill="hsl(172,80%,26%)"/><rect x="11" width="9" height="9" rx="2" fill="hsl(172,80%,26%)" opacity=".55"/><rect y="11" width="9" height="9" rx="2" fill="hsl(172,80%,26%)" opacity=".55"/><rect x="11" y="11" width="9" height="9" rx="2" fill="hsl(172,80%,26%)"/></svg>
+      Flore
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-medium text-soft">
+      <a href="#features" class="hover:text-ink">Features</a>
+      <a href="#integrations" class="hover:text-ink">Integrations</a>
+      <a href="#pricing" class="hover:text-ink">Pricing</a>
+      <a href="#customers" class="hover:text-ink">Customers</a>
+    </nav>
+    <div class="hidden md:flex items-center gap-4">
+      <a href="#" class="text-sm font-medium text-soft hover:text-ink">Sign in</a>
+      <a href="#pricing" class="bg-teal text-white text-sm font-semibold px-4 py-2 rounded-lg hover:brightness-110">Start free →</a>
+    </div>
+    <button id="burger" class="md:hidden p-2" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden border-t border-hairline px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm font-medium text-soft">
+      <a href="#features" class="py-1">Features</a><a href="#integrations" class="py-1">Integrations</a>
+      <a href="#pricing" class="py-1">Pricing</a><a href="#customers" class="py-1">Customers</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. Hero -->
+  <section class="max-w-6xl mx-auto px-5 pt-16 pb-20 grid lg:grid-cols-2 gap-12 items-center">
+    <div>
+      <h1 class="font-extrabold tracking-[-0.04em] leading-[1.1] text-4xl md:text-[56px] stagger" style="--d:0ms">
+        Your store, <span class="text-teal">finally</span> running itself.
+      </h1>
+      <p class="mt-5 text-soft text-lg max-w-md stagger" style="--d:100ms">Flore puts inventory, checkout, analytics and staff schedules in one calm dashboard — built for the people actually behind the counter.</p>
+      <div class="mt-7 flex flex-wrap gap-3 stagger" style="--d:200ms">
+        <a href="#pricing" class="bg-teal text-white font-semibold px-5 py-3 rounded-lg hover:brightness-110">Start free →</a>
+        <a href="#features" class="border border-hairline bg-white font-semibold px-5 py-3 rounded-lg hover:border-teamute">See how it works</a>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-x-8 gap-y-2 text-sm text-soft stagger" style="--d:300ms">
+        <span><b class="font-semibold text-ink">12k+</b> stores</span>
+        <span><b class="font-semibold text-ink">40</b> countries</span>
+        <span><b class="font-semibold text-ink">4.9★</b> average rating</span>
+      </div>
+    </div>
+    <!-- 仪表盘 Mockup -->
+    <div class="stagger" style="--d:200ms">
+      <div class="dash-float bg-white rounded-2xl border border-hairline shadow-[0_24px_60px_-30px_rgba(26,22,16,.35)] p-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="font-semibold">The Bloom Room</p>
+            <p class="font-mono text-xs text-soft">Tuesday, Sep 13 · Open 8am–6pm</p>
+          </div>
+          <span class="font-mono text-[11px] bg-tealight text-teal px-2 py-1 rounded-md">SYNCED</span>
+        </div>
+        <div class="mt-4 grid grid-cols-2 gap-3">
+          <div class="rounded-xl bg-sand p-3"><p class="font-mono text-[11px] text-soft">TODAY'S SALES</p><p class="text-xl font-extrabold" data-count="3412" data-prefix="$">$0</p></div>
+          <div class="rounded-xl bg-sand p-3"><p class="font-mono text-[11px] text-soft">ORDERS</p><p class="text-xl font-extrabold" data-count="87">0</p></div>
+          <div class="rounded-xl bg-sand p-3"><p class="font-mono text-[11px] text-soft">LOW STOCK</p><p class="text-xl font-extrabold text-amber" data-count="5">0</p></div>
+          <div class="rounded-xl bg-sand p-3"><p class="font-mono text-[11px] text-soft">FOOTFALL</p><p class="text-xl font-extrabold" data-count="164">0</p></div>
+        </div>
+        <div class="mt-4 flex items-end gap-2 h-24">
+          <div class="flex-1 bg-teamute/60 rounded-t-md h-[35%]"></div><div class="flex-1 bg-teamute/60 rounded-t-md h-[55%]"></div>
+          <div class="flex-1 bg-teal rounded-t-md h-[80%]"></div><div class="flex-1 bg-teamute/60 rounded-t-md h-[62%]"></div>
+          <div class="flex-1 bg-teal rounded-t-md h-[95%]"></div><div class="flex-1 bg-teamute/60 rounded-t-md h-[48%]"></div>
+          <div class="flex-1 bg-teamute/60 rounded-t-md h-[70%]"></div>
+        </div>
+        <div class="mt-4 border-t border-hairline pt-3 space-y-2 text-sm">
+          <p class="font-mono text-[11px] text-soft">TO DO</p>
+          <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-teal"> Reorder peonies (below 10 stems)</label>
+          <label class="flex items-center gap-2"><input type="checkbox" class="accent-teal"> Count register 2 before close</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 集成 logo 条 -->
+  <section id="integrations" class="border-y border-hairline bg-sand">
+    <div class="max-w-6xl mx-auto px-5 py-8">
+      <p class="text-center font-mono text-[11px] text-soft mb-4">PLAYS NICE WITH YOUR STACK</p>
+      <div class="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm font-semibold text-soft">
+        <span>Shopify</span><span>Square</span><span>Stripe</span><span>Xero</span><span>Lightspeed</span><span>QuickBooks</span><span>WooCommerce</span><span>Clover</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 数据条 -->
+  <section class="max-w-6xl mx-auto px-5 py-14 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+    <div class="stagger"><p class="text-3xl md:text-4xl font-extrabold text-teal" data-count="12000" data-suffix="+">0</p><p class="text-sm text-soft mt-1">store owners</p></div>
+    <div class="stagger" style="--d:80ms"><p class="text-3xl md:text-4xl font-extrabold text-teal" data-count="40">0</p><p class="text-sm text-soft mt-1">countries</p></div>
+    <div class="stagger" style="--d:160ms"><p class="text-3xl md:text-4xl font-extrabold text-teal" data-count="99.9" data-suffix="%">0</p><p class="text-sm text-soft mt-1">uptime</p></div>
+    <div class="stagger" style="--d:240ms"><p class="text-3xl md:text-4xl font-extrabold text-teal" data-count="4.9" data-suffix="★">0</p><p class="text-sm text-soft mt-1">avg rating</p></div>
+  </section>
+
+  <!-- 5. 功能概览 -->
+  <section id="features" class="max-w-6xl mx-auto px-5 py-16">
+    <h2 class="font-extrabold tracking-[-0.04em] text-3xl md:text-5xl">Everything the counter needs. <span class="text-soft">Nothing it doesn't.</span></h2>
+    <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6"><p class="text-2xl">📦</p><h3 class="font-semibold mt-2">Live inventory</h3><p class="text-soft text-sm mt-1">Every shelf, back room and pop-up in sync.</p></div>
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:80ms"><p class="text-2xl">🧾</p><h3 class="font-semibold mt-2">Checkout &amp; POS</h3><p class="text-soft text-sm mt-1">Fast on the best days, still works on the worst.</p></div>
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:160ms"><p class="text-2xl">📈</p><h3 class="font-semibold mt-2">Sales analytics</h3><p class="text-soft text-sm mt-1">Know your Tuesday from your Saturday.</p></div>
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:240ms"><p class="text-2xl">🫶</p><h3 class="font-semibold mt-2">Customer profiles</h3><p class="text-soft text-sm mt-1">Regulars remembered, even the difficult ones.</p></div>
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:320ms"><p class="text-2xl">🗓️</p><h3 class="font-semibold mt-2">Staff scheduling</h3><p class="text-soft text-sm mt-1">Rotas your team actually checks.</p></div>
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:400ms"><p class="text-2xl">🔌</p><h3 class="font-semibold mt-2">Integrations</h3><p class="text-soft text-sm mt-1">Your existing tools, finally on speaking terms.</p></div>
+    </div>
+  </section>
+
+  <!-- 6-8. 深度功能行 -->
+  <section class="max-w-6xl mx-auto px-5 py-10 space-y-6">
+    <div class="stagger grid md:grid-cols-2 gap-8 items-center bg-white border border-hairline rounded-2xl p-8">
+      <div><h3 class="font-extrabold text-2xl tracking-[-0.03em]">Inventory that warns before you run out</h3>
+      <p class="mt-3 text-soft text-[15px]">Low-stock alerts, one-tap reorder with supplier price comparison, barcode scanning and CSV import for the back-catalogue.</p></div>
+      <div class="bg-tealight rounded-xl p-5 font-mono text-sm">
+        <p class="text-teal">⚠️ Peony (white) — 8 stems left</p>
+        <p class="text-teal/70 mt-2">→ Reorder from: Northway Farms · $2.10/stem</p>
+        <p class="text-teal/70">→ Northgate Wholesale · $2.40/stem</p>
+      </div>
+    </div>
+    <div class="stagger grid md:grid-cols-2 gap-8 items-center bg-white border border-hairline rounded-2xl p-8">
+      <div class="order-2 md:order-1 bg-tealight rounded-xl p-5 font-mono text-sm">
+        <p class="text-teal">OFFLINE MODE — queueing 3 sales</p>
+        <p class="text-teal/70 mt-2">↻ will sync automatically · £412.80 pending</p>
+      </div>
+      <div><h3 class="font-extrabold text-2xl tracking-[-0.03em]">A POS that survives the internet</h3>
+      <p class="mt-3 text-soft text-[15px]">Card, cash and split bills. Receipt printers welcome. Wi-Fi down? Keep selling — everything syncs when you're back.</p></div>
+    </div>
+    <div class="stagger grid md:grid-cols-2 gap-8 items-center bg-white border border-hairline rounded-2xl p-8">
+      <div><h3 class="font-extrabold text-2xl tracking-[-0.03em]">Analytics in plain English</h3>
+      <p class="mt-3 text-soft text-[15px]">Hourly and daily sales charts, best and worst sellers, staff performance, and a Monday morning email that sums up the week before you've finished your coffee.</p></div>
+      <div class="bg-sand rounded-xl p-5 font-mono text-sm space-y-2">
+        <p><span class="text-teal">▲</span> Best seller: Oat flat white (214/wk)</p>
+        <p><span class="text-soft">▼</span> Slow mover: Chai concentrate — reorder off</p>
+        <p class="text-soft">📧 Monday digest: 8:00am, your inbox</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. 用户评价 -->
+  <section id="customers" class="bg-sand border-y border-hairline">
+    <div class="max-w-6xl mx-auto px-5 py-16">
+      <h2 class="font-extrabold tracking-[-0.04em] text-3xl md:text-5xl">Shopkeepers, <span class="text-teal">relieved</span></h2>
+      <div class="mt-10 grid md:grid-cols-3 gap-5">
+        <blockquote class="stagger card-lift bg-white border border-hairline rounded-2xl p-6"><p class="text-teal">★★★★★</p><p class="mt-3 text-[15px]">"Stocktake went from Sunday nightmare to Tuesday coffee-break."</p><footer class="mt-3 font-mono text-xs text-soft">The Bloom Room · Florist</footer></blockquote>
+        <blockquote class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:100ms"><p class="text-teal">★★★★★</p><p class="mt-3 text-[15px]">"We kept the deli, ditched the three spreadsheets. Nobody misses them."</p><footer class="mt-3 font-mono text-xs text-soft">Okonkwo &amp; Sons Deli</footer></blockquote>
+        <blockquote class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:200ms"><p class="text-teal">★★★★★</p><p class="mt-3 text-[15px]">"The Monday email is basically my manager now. It's fine."</p><footer class="mt-3 font-mono text-xs text-soft">Spice Route Grocery</footer></blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. 定价 -->
+  <section id="pricing" class="max-w-6xl mx-auto px-5 py-20">
+    <div class="text-center">
+      <h2 class="font-extrabold tracking-[-0.04em] text-3xl md:text-5xl">Pricing that respects <span class="text-teal">margins</span></h2>
+      <div class="mt-6 inline-flex items-center gap-3 text-sm">
+        <span id="lblMo" class="font-semibold">Monthly</span>
+        <button id="billToggle" role="switch" aria-checked="false" class="w-12 h-7 rounded-full bg-teamute relative"><span class="absolute top-1 left-1 w-5 h-5 rounded-full bg-white shadow transition-all"></span></button>
+        <span id="lblYr" class="text-soft">Yearly <span class="text-teal font-semibold">save 20%</span></span>
+      </div>
+    </div>
+    <div class="mt-10 grid md:grid-cols-3 gap-5 items-start">
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6">
+        <h3 class="font-semibold">Starter</h3><p class="font-mono text-xs text-soft mt-1">for the one-shop life</p>
+        <p class="mt-4 text-4xl font-extrabold">$<span class="price" data-mo="0" data-yr="0">0</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-soft"><li>✓ POS + basic inventory</li><li>✓ 1 location, 2 staff</li><li>✓ Community support</li></ul>
+        <a href="#" class="mt-6 block text-center border border-hairline rounded-lg py-2.5 font-semibold text-sm hover:border-teamute">Start free</a>
+      </div>
+      <div class="stagger card-lift bg-white rounded-2xl p-6 border-2 border-teal shadow-[0_20px_50px_-25px_rgba(13,122,110,.5)]" style="--d:100ms">
+        <div class="flex items-center justify-between"><h3 class="font-semibold">Pro</h3><span class="font-mono text-[11px] bg-teal text-white px-2 py-1 rounded-md">MOST POPULAR</span></div>
+        <p class="font-mono text-xs text-soft mt-1">for growing shops</p>
+        <p class="mt-4 text-4xl font-extrabold">$<span class="price" data-mo="49" data-yr="39">49</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-soft"><li>✓ Everything in Starter</li><li>✓ Analytics + staff scheduling</li><li>✓ Integrations &amp; low-stock AI reorder</li><li>✓ Priority support</li></ul>
+        <a href="#" class="mt-6 block text-center bg-teal text-white rounded-lg py-2.5 font-semibold text-sm hover:brightness-110">Start free →</a>
+      </div>
+      <div class="stagger card-lift bg-white border border-hairline rounded-2xl p-6" style="--d:200ms">
+        <h3 class="font-semibold">Scale</h3><p class="font-mono text-xs text-soft mt-1">multi-store operations</p>
+        <p class="mt-4 text-4xl font-extrabold">$<span class="price" data-mo="119" data-yr="95">119</span></p>
+        <ul class="mt-4 space-y-2 text-sm text-soft"><li>✓ Everything in Pro</li><li>✓ Unlimited locations &amp; staff</li><li>✓ API + dedicated onboarding</li></ul>
+        <a href="#" class="mt-6 block text-center border border-hairline rounded-lg py-2.5 font-semibold text-sm hover:border-teamute">Talk to us</a>
+      </div>
+    </div>
+    <p class="mt-6 text-center text-sm text-soft">Every plan includes free migration from your current tools — and a 60-day, no-questions refund guarantee.</p>
+  </section>
+
+  <!-- 11. FAQ -->
+  <section class="max-w-3xl mx-auto px-5 pb-20">
+    <h2 class="font-extrabold tracking-[-0.04em] text-3xl md:text-5xl text-center">Questions, answered</h2>
+    <div class="mt-10 space-y-3" id="faq">
+      <div class="faq-item bg-white border border-hairline rounded-xl"><button class="w-full flex items-center justify-between px-5 py-4 text-left font-semibold">Does it work offline?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="faq-a"><div class="px-5 pb-4 text-soft text-[15px]">Yes. Sales queue locally and sync when the connection returns — you'll never turn a customer away because the router blinked.</div></div></div>
+      <div class="faq-item bg-white border border-hairline rounded-xl"><button class="w-full flex items-center justify-between px-5 py-4 text-left font-semibold">How long does setup take?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="faq-a"><div class="px-5 pb-4 text-soft text-[15px]">Most shops are live in a day. Migration from Shopify, Square or spreadsheets is free and done with you on a call.</div></div></div>
+      <div class="faq-item bg-white border border-hairline rounded-xl"><button class="w-full flex items-center justify-between px-5 py-4 text-left font-semibold">Which integrations are supported?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="faq-a"><div class="px-5 pb-4 text-soft text-[15px]">Shopify, Square, Stripe, Xero, Lightspeed, QuickBooks, WooCommerce and Clover — plus an API for everything else.</div></div></div>
+      <div class="faq-item bg-white border border-hairline rounded-xl"><button class="w-full flex items-center justify-between px-5 py-4 text-left font-semibold">What hardware do I need?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="faq-a"><div class="px-5 pb-4 text-soft text-[15px]">Any iPad or Android tablet. Existing receipt printers and card readers usually just work.</div></div></div>
+      <div class="faq-item bg-white border border-hairline rounded-xl"><button class="w-full flex items-center justify-between px-5 py-4 text-left font-semibold">Are there contracts?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="faq-a"><div class="px-5 pb-4 text-soft text-[15px]">No. Monthly, cancel anytime. Yearly billing exists only if you like saving 20%.</div></div></div>
+      <div class="faq-item bg-white border border-hairline rounded-xl"><button class="w-full flex items-center justify-between px-5 py-4 text-left font-semibold">What happens when my trial ends?<svg class="faq-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></button><div class="faq-a"><div class="px-5 pb-4 text-soft text-[15px]">You drop to the free Starter plan automatically. Your data stays exactly where you left it.</div></div></div>
+    </div>
+  </section>
+
+  <!-- 12. CTA 横幅 -->
+  <section class="bg-teal text-white">
+    <div class="max-w-6xl mx-auto px-5 py-16 text-center">
+      <h2 class="font-extrabold tracking-[-0.04em] text-3xl md:text-5xl">Your store deserves better software.</h2>
+      <div class="mt-8 flex flex-wrap justify-center gap-4">
+        <a href="#pricing" class="bg-white text-teal font-semibold px-6 py-3 rounded-lg hover:bg-tealight">Start free →</a>
+        <a href="#customers" class="border border-white/60 px-6 py-3 rounded-lg font-semibold hover:bg-white/10">Talk to a human</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 13. 页脚 -->
+<footer class="bg-[hsl(36,12%,8%)] text-white/70">
+  <div class="max-w-6xl mx-auto px-5 py-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm">
+    <div>
+      <p class="font-extrabold text-white text-lg flex items-center gap-2"><svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><rect width="9" height="9" rx="2" fill="hsl(172,80%,26%)"/><rect x="11" width="9" height="9" rx="2" fill="hsl(172,60%,40%)"/><rect y="11" width="9" height="9" rx="2" fill="hsl(172,60%,40%)"/><rect x="11" y="11" width="9" height="9" rx="2" fill="hsl(172,80%,26%)"/></svg>Flore</p>
+      <p class="mt-3">The operating system for physical retail.</p>
+    </div>
+    <div><p class="text-white font-semibold mb-3">Product</p><ul class="space-y-1"><li>Features</li><li>Pricing</li><li>Integrations</li><li>Changelog</li></ul></div>
+    <div><p class="text-white font-semibold mb-3">Company</p><ul class="space-y-1"><li>About</li><li>Customers</li><li>Careers</li><li>Press</li></ul></div>
+    <div><p class="text-white font-semibold mb-3">Resources</p><ul class="space-y-1"><li>Help centre</li><li>Migration guide</li><li>Status</li><li>Contact</li></ul></div>
+  </div>
+  <div class="border-t border-white/10"><p class="max-w-6xl mx-auto px-5 py-4 text-xs">© 2026 Flore. Demo page generated from the retail SaaS prompt.</p></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+
+  // stagger 入场
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('in');
+      en.target.querySelectorAll('[data-count]').forEach(countUp);
+      if (en.target.hasAttribute('data-count')) countUp(en.target);
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('.stagger').forEach(function (el) { io.observe(el); });
+
+  function countUp(el) {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+    const target = parseFloat(el.dataset.count);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const isMoney = prefix === '$';
+    const DUR = 1400, t0 = performance.now();
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / DUR);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = target * eased;
+      const text = prefix + (isMoney ? Math.round(v).toLocaleString() : v.toFixed(target % 1 ? 1 : 0)) + suffix;
+      el.textContent = text;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // 账单切换
+  const toggle = document.getElementById('billToggle');
+  toggle.addEventListener('click', function () {
+    const yearly = toggle.getAttribute('aria-checked') !== 'true';
+    toggle.setAttribute('aria-checked', String(yearly));
+    toggle.firstElementChild.style.left = yearly ? '1.5rem' : '0.25rem';
+    toggle.classList.toggle('bg-teal', yearly);
+    toggle.classList.toggle('bg-teamute', !yearly);
+    document.getElementById('lblMo').classList.toggle('font-semibold', !yearly);
+    document.getElementById('lblYr').classList.toggle('font-semibold', yearly);
+    document.querySelectorAll('.price').forEach(function (p) {
+      p.textContent = yearly ? p.dataset.yr : p.dataset.mo;
+    });
+  });
+
+  // FAQ 手风琴
+  document.querySelectorAll('#faq .faq-item button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      btn.closest('.faq-item').classList.toggle('open');
+    });
+  });
+})();
+</script>
+</body>
+</html>

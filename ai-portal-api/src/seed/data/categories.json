@@ -1,0 +1,74 @@
+[
+  {
+    "slug": "chat",
+    "name": "对话助手"
+  },
+  {
+    "slug": "image",
+    "name": "图像生成"
+  },
+  {
+    "slug": "audio",
+    "name": "音频生成"
+  },
+  {
+    "slug": "office",
+    "name": "办公效率"
+  },
+  {
+    "slug": "dev",
+    "name": "开发工具"
+  },
+  {
+    "slug": "agent",
+    "name": "智能体生态"
+  },
+  {
+    "slug": "search",
+    "name": "搜索问答"
+  },
+  {
+    "slug": "workplace",
+    "name": "职场办公"
+  },
+  {
+    "slug": "pm",
+    "name": "产品经理"
+  },
+  {
+    "slug": "content",
+    "name": "内容营销"
+  },
+  {
+    "slug": "prompt-eng",
+    "name": "提示词工程"
+  },
+  {
+    "slug": "edu",
+    "name": "教育"
+  },
+  {
+    "slug": "tutorial",
+    "name": "技术教程"
+  },
+  {
+    "slug": "best-practice",
+    "name": "最佳实践"
+  },
+  {
+    "slug": "selection",
+    "name": "选型指南"
+  },
+  {
+    "slug": "concept",
+    "name": "概念科普"
+  },
+  {
+    "slug": "compliance",
+    "name": "合规"
+  },
+  {
+    "slug": "video",
+    "name": "视频生成"
+  }
+]

@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>大鱼吃小鱼 · Feeding Frenzy</title>
+
+  <!-- ============ 依赖引入（全部走 CDN，无需构建） ============ -->
+  <!-- Tailwind CSS（可选增强；UI 主要靠下方自定义 CSS，CDN 不可用时仍可正常渲染） -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- 设计字体：Fontsource + jsDelivr CDN；加载失败时自动降级为系统字体栈 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/press-start-2p@5/index.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/baloo-2@5/index.css" />
+
+  <style>
+    /* ============================================================
+     * 自定义 UI 样式（不依赖 Tailwind / 字体 CDN，保证任何环境可渲染）
+     * ============================================================ */
+
+    :root {
+      /* 字体栈：像素英文 → 圆润英文 → 中文 → 系统 → emoji 兜底 */
+      --font-display: 'Press Start 2P', 'Baloo 2', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+      --font-body: 'Baloo 2', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', Arial, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+      --c-text: #e2e8f0;
+      --c-text-strong: #ffffff;
+      --c-accent: #facc15;
+      --c-accent-2: #38bdf8;
+      --c-accent-3: #34d399;
+      --c-danger: #f87171;
+    }
+
+    /* ===== 基础 ===== */
+    html, body {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      background: #06142e;
+      color: var(--c-text);
+      font-family: var(--font-body);
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: none;
+    }
+    .font-display { font-family: var(--font-display); }
+
+    /* ===== Canvas ===== */
+    canvas#game {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: none;
+    }
+    /* 自绘鼠标光标 */
+    #cursor {
+      position: fixed;
+      left: 0; top: 0;
+      width: 14px; height: 14px;
+      border-radius: 9999px;
+      background: radial-gradient(circle at 35% 35%, #93c5fd, #2563eb);
+      box-shadow: 0 0 0 2px rgba(255,255,255,.75), 0 0 12px rgba(59,130,246,.8);
+      pointer-events: none;
+      z-index: 40;
+      transform: translate(-50%, -50%);
+    }
+    @media (hover: none) {
+      #cursor { display: none; }
+      canvas#game { cursor: default; }
+    }
+
+    /* ===== 通用 .hidden 兜底（不依赖 Tailwind） ===== */
+    .hidden { display: none !important; }
+
+    /* ===== HUD 顶部信息条 ===== */
+    #hud {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 18px;
+      pointer-events: none;
+      font-weight: 700;
+    }
+    .hud-card {
+      background: rgba(8, 22, 54, .55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(148, 187, 255, .25);
+      border-radius: 14px;
+      padding: 8px 16px;
+      color: var(--c-text);
+      font-size: 15px;
+      letter-spacing: .5px;
+      white-space: nowrap;
+    }
+    #progress-card { flex: 0 1 260px; text-align: center; }
+    .hud-score { color: var(--c-text-strong); font-size: 18px; margin-left: 4px; display: inline-block; }
+    .hud-level { color: var(--c-text-strong); margin-left: 4px; }
+    #level-dot {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border-radius: 9999px;
+      margin-right: 6px;
+      vertical-align: -1px;
+      box-shadow: 0 0 8px currentColor;
+    }
+    #progress-track {
+      height: 8px;
+      border-radius: 9999px;
+      background: rgba(255,255,255,.15);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    #progress-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 9999px;
+      background: linear-gradient(90deg, #34d399, #facc15);
+      transition: width .25s ease;
+    }
+    @keyframes pop {
+      0%   { transform: scale(1); }
+      40%  { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+    .pop { animation: pop .28s ease; }
+
+    /* ===== 遮罩（开始 / 结束 / 胜利） ===== */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(4, 12, 32, .58);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    @keyframes panelIn {
+      from { opacity: 0; transform: translateY(14px) scale(.97); }
+      to   { opacity: 1; transform: none; }
+    }
+    .panel {
+      width: min(92%, 440px);
+      text-align: center;
+      padding: 38px 28px 32px;
+      border-radius: 24px;
+      border: 1px solid rgba(125, 211, 252, .25);
+      background: rgba(7, 20, 48, .78);
+      box-shadow: 0 24px 80px rgba(0,0,0,.55);
+      animation: panelIn .38s cubic-bezier(.2, .9, .3, 1.2) both;
+      color: var(--c-text);
+    }
+    .ov-emoji {
+      font-size: 64px;
+      line-height: 1;
+      margin-bottom: 18px;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.5));
+    }
+    .ov-title {
+      font-family: var(--font-display);
+      font-size: clamp(20px, 4.5vw, 30px);
+      color: var(--c-text-strong);
+      letter-spacing: 2px;
+      text-shadow: 0 4px 16px rgba(0,0,0,.5);
+      line-height: 1.4;
+    }
+    .ov-sub {
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(226, 232, 240, .92);
+    }
+    .ov-sub .hl-sky { color: #38bdf8; font-weight: 700; }
+    .ov-sub .hl-yellow { color: #facc15; font-weight: 700; }
+    .ov-stats {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 22px;
+      padding: 10px 20px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      color: #e2e8f0;
+      font-size: 14px;
+    }
+    .ov-stats b { font-size: 17px; margin-left: 4px; }
+    .ov-stats .b-score { color: #facc15; }
+    .ov-stats .b-level { color: #38bdf8; }
+    .ov-stats .b-pct { color: #34d399; }
+    .ov-stats .sep { color: rgba(148,163,184,.6); }
+    .ov-btn-wrap { margin-top: 30px; }
+
+    /* ===== 大按钮（自定义，CDN 不可用也完美） ===== */
+    .btn-play {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding: 16px 44px;
+      border-radius: 9999px;
+      color: #fff;
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      box-shadow: 0 10px 28px rgba(37, 99, 235, .45), inset 0 1px 0 rgba(255,255,255,.3);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-play:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 16px 36px rgba(37, 99, 235, .6);
+      filter: brightness(1.08);
+    }
+    .btn-play:active { transform: scale(.96); }
+
+    .ov-hint {
+      margin-top: 26px;
+      font-size: 12px;
+      color: rgba(148, 163, 184, .9);
+      line-height: 1.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ==================== 游戏画布 ==================== -->
+  <canvas id="game"></canvas>
+
+  <!-- 自绘鼠标光标（跟随指针的小圆点） -->
+  <div id="cursor" aria-hidden="true"></div>
+
+  <!-- ==================== HUD：实时分数 / 等级 / 体型进度 ==================== -->
+  <div id="hud" class="hidden">
+    <!-- 分数 -->
+    <div class="hud-card">
+      <span style="margin-right:4px">🐟</span>分数<span id="score" class="hud-score">0</span>
+    </div>
+
+    <!-- 中央：体型进度条（占屏幕 20% 获胜） -->
+    <div id="progress-card" class="hud-card">
+      <div>体型 <span id="size-pct" style="color:#facc15">0%</span></div>
+      <div id="progress-track"><div id="progress-bar"></div></div>
+    </div>
+
+    <!-- 等级 -->
+    <div class="hud-card">
+      <span id="level-dot" style="background:#22c55e;color:#22c55e"></span>
+      等级<span id="level" class="hud-level">1</span>
+    </div>
+  </div>
+
+  <!-- ==================== 半透明遮罩：开始 / Game Over / You Win ==================== -->
+  <div id="overlay">
+    <div class="panel">
+      <!-- 状态表情 -->
+      <div id="ov-emoji" class="ov-emoji">🐟</div>
+
+      <!-- 主标题（JS 按状态切换） -->
+      <h1 id="ov-title" class="ov-title">大鱼吃小鱼</h1>
+
+      <!-- 副标题 / 玩法说明（JS 按状态切换） -->
+      <p id="ov-sub" class="ov-sub">点击下方按钮开始</p>
+
+      <!-- 结算数据（Game Over / 胜利时显示） -->
+      <div id="ov-stats" class="ov-stats hidden">
+        <span>分数<b id="ov-score" class="b-score">0</b></span>
+        <span class="sep">|</span>
+        <span>等级 Lv.<b id="ov-level" class="b-level">1</b></span>
+        <span class="sep">|</span>
+        <span>体型<b id="ov-pct" class="b-pct">0%</b></span>
+      </div>
+
+      <!-- 开始 / 重玩按钮 -->
+      <div class="ov-btn-wrap">
+        <button id="ov-btn" class="btn-play">开始游戏</button>
+      </div>
+
+      <!-- 操作提示 -->
+      <p class="ov-hint">⌨️ 方向键 / WASD 或 🖱️ 鼠标操控蓝色大鱼<br>吃掉比自己小的鱼，躲开比自己大的鱼</p>
+    </div>
+  </div>
+
+  <script>
+    'use strict';
+
+    /* ================================================================
+     * 大鱼吃小鱼（Feeding Frenzy 风格）
+     * ----------------------------------------------------------------
+     * 玩法：
+     *   1. 鼠标 / 触屏拖动控制蓝色玩家鱼（Lerp 平滑惯性跟随）
+     *   2. 碰触比自己小的鱼 → 吃掉、变大、加分
+     *   3. 碰触比自己更大的鱼 → Game Over
+     *   4. 玩家体型覆盖屏幕面积 20% → You Win!
+     * ================================================================ */
+
+    /* ==================== 一、配置 ==================== */
+    const CONFIG = {
+      player: {
+        startRadius: 15,   // 初始半径（px）
+        lerpRate: 9,       // 鼠标跟随的指数平滑速率（越大越跟手）
+        body: '#3b82f6',   // 玩家鱼身体蓝
+        belly: '#93c5fd',  // 玩家鱼肚皮浅蓝
+      },
+      enemy: {
+        count: 20,         // 场上常驻敌鱼数量
+        spawnMargin: 90,   // 在屏幕外多远处生成
+        killMargin: 360,   // 游出屏幕多远处回收重生
+      },
+      growth: 0.8,         // 吃掉一条鱼后继承对方面积的比例（成长速率）
+      winRatio: 0.2,       // 玩家面积 ≥ 屏幕面积 × 20% 即胜利
+      levelMax: 10,        // 最大等级
+      // 体型接近保护：敌人更大时，若比值 < 1.15 视为"势均力敌"，互不伤害（避免贴脸暴毙）
+      closeRatio: 1.15,
+    };
+
+    /* ==================== 二、全局状态 ==================== */
+    const state = {
+      status: 'menu',        // menu | playing | over | win
+      score: 0,
+      player: null,          // 玩家鱼对象
+      enemies: [],           // 敌鱼数组
+      bubbles: [],           // 背景气泡
+      particles: [],         // 粒子特效（吃鱼爆开 / 胜利彩带）
+      rings: [],             // 吃鱼涟漪
+      pointer: { x: 0, y: 0 }, // 鼠标/触屏目标位置
+      keys: { up: false, down: false, left: false, right: false }, // 方向键按下状态
+      shake: 0,              // 屏幕震动剩余秒数
+      hud: { score: -1, level: -1, pct: -1 }, // HUD 上次渲染值（用于去重）
+    };
+
+    /* ==================== 三、DOM 引用 ==================== */
+    const canvas = document.getElementById('game');
+    const ctx = canvas.getContext('2d');
+    const overlayEl = document.getElementById('overlay');
+    const hudEl = document.getElementById('hud');
+    const cursorEl = document.getElementById('cursor');
+    const ovEmoji = document.getElementById('ov-emoji');
+    const ovTitle = document.getElementById('ov-title');
+    const ovSub = document.getElementById('ov-sub');
+    const ovStats = document.getElementById('ov-stats');
+    const ovScore = document.getElementById('ov-score');
+    const ovLevel = document.getElementById('ov-level');
+    const ovPct = document.getElementById('ov-pct');
+    const ovBtn = document.getElementById('ov-btn');
+    const scoreEl = document.getElementById('score');
+    const levelEl = document.getElementById('level');
+    const levelDotEl = document.getElementById('level-dot');
+    const sizePctEl = document.getElementById('size-pct');
+    const progressBarEl = document.getElementById('progress-bar');
+
+    /* ==================== 四、画布尺寸 ==================== */
+    let W = 0, H = 0;          // 逻辑尺寸（CSS 像素）
+    let WIN_AREA = 0;          // 胜利所需面积 = 屏幕面积 × 20%
+
+    /** 自适应窗口尺寸 + 高分屏（devicePixelRatio）适配 */
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      W = window.innerWidth;
+      H = window.innerHeight;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // 之后所有绘制都用逻辑坐标
+      WIN_AREA = W * H * CONFIG.winRatio;
+    }
+    window.addEventListener('resize', resize);
+
+    /* ==================== 五、工具函数 ==================== */
+    const rand = (min, max) => min + Math.random() * (max - min);
+    const randInt = (min, max) => Math.floor(rand(min, max + 1));
+    const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+    const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const areaOf = (r) => Math.PI * r * r;                 // 圆面积
+    const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+    /** 角度插值（自动处理 ±π 环绕，避免反向转圈） */
+    function lerpAngle(a, b, t) {
+      let d = (b - a) % (Math.PI * 2);
+      if (d > Math.PI) d -= Math.PI * 2;
+      if (d < -Math.PI) d += Math.PI * 2;
+      return a + d * t;
+    }
+
+    /* ==================== 六、等级体系 ==================== */
+    /** 预生成 10 个等级的半径阈值：从初始半径开始等比放大 */
+    const LEVELS = (() => {
+      const arr = [];
+      let r = CONFIG.player.startRadius;
+      for (let i = 0; i < CONFIG.levelMax; i++) { arr.push(r); r *= 1.28; }
+      return arr;
+    })();
+
+    /** 根据半径计算等级（1 ~ 10） */
+    function levelOf(radius) {
+      let lv = 1;
+      for (const t of LEVELS) { if (radius >= t) lv++; }
+      return clamp(lv, 1, CONFIG.levelMax);
+    }
+
+    /** 等级徽章颜色：低→绿，中→黄，高→红 */
+    const LEVEL_COLORS = ['#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444'];
+    function levelColor(lv) {
+      return LEVEL_COLORS[Math.min(LEVEL_COLORS.length - 1, Math.floor((lv - 1) / 2))];
+    }
+
+    /* ==================== 七、敌鱼 ==================== */
+
+    /** 敌鱼配色与分值：小鱼绿 / 中鱼黄 / 大鱼红 */
+    function enemyStyle(radius) {
+      if (radius < 18) return { body: '#22c55e', belly: '#bbf7d0', score: 10 };  // 小鱼 · 绿
+      if (radius < 31) return { body: '#eab308', belly: '#fef08a', score: 25 };  // 中鱼 · 黄
+      return { body: '#ef4444', belly: '#fecaca', score: 50 };                    // 大鱼 · 红
+    }
+
+    /** 随机敌鱼半径：60% 小鱼 / 30% 中鱼 / 10% 大鱼 */
+    function randomEnemyRadius() {
+      const roll = Math.random();
+      if (roll < 0.6) return rand(10, 17);
+      if (roll < 0.9) return rand(18, 30);
+      return rand(31, 46);
+    }
+
+    /** 在屏幕四周外生成一条敌鱼，朝屏幕内游动 */
+    function createEnemy() {
+      const radius = randomEnemyRadius();
+      const style = enemyStyle(radius);
+      const m = CONFIG.enemy.spawnMargin;
+      const side = randInt(0, 3); // 0 上 / 1 右 / 2 下 / 3 左
+      let x, y, angle;
+      if (side === 0) {                 // 从上方出现 → 往下游
+        x = rand(0, W); y = -m; angle = rand(0.3, Math.PI - 0.3);
+      } else if (side === 1) {          // 从右侧出现 → 往左游
+        x = W + m; y = rand(0, H); angle = rand(Math.PI / 2 + 0.3, Math.PI * 1.5 - 0.3);
+      } else if (side === 2) {          // 从下方出现 → 往上游
+        x = rand(0, W); y = H + m; angle = rand(Math.PI + 0.3, Math.PI * 2 - 0.3);
+      } else {                          // 从左侧出现 → 往右游
+        x = -m; y = rand(0, H); angle = rand(-Math.PI / 2 + 0.3, Math.PI / 2 - 0.3);
+      }
+      return {
+        x, y,
+        radius,
+        angle,
+        speed: rand(50, 140) * clamp(1.6 - radius / 40, 0.55, 1.35), // 小鱼快、大鱼慢
+        wag: rand(0, Math.PI * 2),      // 尾巴摆动相位（随机起步）
+        body: style.body,
+        belly: style.belly,
+        score: style.score,
+      };
+    }
+
+    /** 敌鱼逻辑更新（帧独立，dt 单位秒） */
+    function updateEnemies(dt) {
+      for (const e of state.enemies) {
+        e.x += Math.cos(e.angle) * e.speed * dt;
+        e.y += Math.sin(e.angle) * e.speed * dt;
+        e.wag += (3 + e.speed * 0.05) * dt; // 尾巴摆动相位推进
+        // 游出太远 → 回收重生（保持常驻数量恒定）
+        if (e.x < -CONFIG.enemy.killMargin || e.x > W + CONFIG.enemy.killMargin ||
+            e.y < -CONFIG.enemy.killMargin || e.y > H + CONFIG.enemy.killMargin) {
+          Object.assign(e, createEnemy());
+        }
+      }
+    }
+
+    /* ==================== 八、玩家鱼 ==================== */
+    function createPlayer() {
+      return {
+        x: W / 2, y: H / 2,
+        radius: CONFIG.player.startRadius,
+        angle: 0,
+        wag: 0,
+        body: CONFIG.player.body,    // 玩家鱼身体蓝（drawFish 渐变需要）
+        belly: CONFIG.player.belly,  // 玩家鱼肚皮浅蓝
+      };
+    }
+
+    /**
+     * 玩家逻辑：Lerp 平滑跟随鼠标（帧独立指数平滑，任意帧率手感一致），
+     * 身体朝向移动方向，尾巴摆动频率随速度变化。
+     */
+    function updatePlayer(dt) {
+      const p = state.player;
+      const t = 1 - Math.exp(-CONFIG.player.lerpRate * dt); // 指数平滑系数
+      const nx = p.x + (state.pointer.x - p.x) * t;
+      const ny = p.y + (state.pointer.y - p.y) * t;
+      const dx = nx - p.x, dy = ny - p.y;
+      const spd = Math.hypot(dx, dy); // 本帧移动距离 ≈ 瞬时速度
+
+      // 限制在画布内（不瞬移、不越界）
+      p.x = clamp(nx, p.radius, W - p.radius);
+      p.y = clamp(ny, p.radius, H - p.radius);
+
+      // 有位移时让鱼头朝向移动方向（平滑转向）
+      if (spd > 1) {
+        const target = Math.atan2(dy, dx);
+        p.angle = lerpAngle(p.angle, target, 1 - Math.exp(-8 * dt));
+      }
+      p.wag += (2.5 + spd * 0.14) * dt; // 游得越快尾巴摆得越快
+      return spd;
+    }
+
+    /**
+     * 键盘控制（↑ ↓ ← → / W A S D）：按住方向键时持续朝该方向
+     * 平移"目标指针"，玩家鱼继续用同一套 Lerp 逻辑平滑追随——
+     * 因此键盘与鼠标天然共存：鼠标一动直接接管目标位置，松键即停。
+     */
+    function applyKeyboard(dt) {
+      const k = state.keys;
+      // 合成方向向量（左右 / 上下取差）
+      let dx = (k.right ? 1 : 0) - (k.left ? 1 : 0);
+      let dy = (k.down ? 1 : 0) - (k.up ? 1 : 0);
+      if (dx === 0 && dy === 0) return; // 无按键
+
+      // 斜向移动归一化，保证对角线速度不叠加（等速移动）
+      const len = Math.hypot(dx, dy);
+      const speed = 720; // 键盘移动速度（px/s）
+      state.pointer.x += (dx / len) * speed * dt;
+      state.pointer.y += (dy / len) * speed * dt;
+      // 目标限制在画布内（玩家位置由 updatePlayer 的 clamp 最终兜底）
+      state.pointer.x = clamp(state.pointer.x, 0, W);
+      state.pointer.y = clamp(state.pointer.y, 0, H);
+    }
+
+    /* ==================== 九、碰撞判定（吃 / 被吃） ==================== */
+    function handleCollision() {
+      const p = state.player;
+      for (let i = state.enemies.length - 1; i >= 0; i--) {
+        // 结算过程中若已结束（例如吃最后一条时恰好触发胜利）则停止
+        if (state.status !== 'playing') return;
+
+        const e = state.enemies[i];
+        if (dist(p, e) > p.radius + e.radius) continue; // 身体未接触
+
+        if (p.radius > e.radius) {
+          // 玩家更大 → 碰到即吃掉（并立即补充一条新鱼，保持数量恒定）
+          eatEnemy(e);
+          state.enemies[i] = createEnemy();
+        } else {
+          // 敌人更大：体型接近（比值 < 1.15）时视为"势均力敌"，
+          // 双方互不伤害，避免差一像素就被秒杀的挫败感；差距明显则 Game Over
+          if (e.radius / p.radius < CONFIG.closeRatio) continue;
+          gameOver();
+          return;
+        }
+      }
+    }
+
+    /** 吃掉一条鱼：加分 + 面积制成长 + 特效 + 胜利检测 */
+    function eatEnemy(e) {
+      const p = state.player;
+      state.score += e.score;
+      // 面积制成长：新面积 = 原面积 + 被吃鱼面积 × 成长系数
+      const newArea = areaOf(p.radius) + areaOf(e.radius) * CONFIG.growth;
+      p.radius = Math.sqrt(newArea / Math.PI);
+
+      // 特效：同色粒子爆开 + 扩散涟漪
+      spawnParticles(e.x, e.y, e.body, 12, e.radius);
+      spawnRing(e.x, e.y, e.radius);
+
+      // 胜利检测：覆盖屏幕 20%
+      if (areaOf(p.radius) >= WIN_AREA) youWin();
+    }
+
+    /* ==================== 十、特效系统 ==================== */
+
+    /** 生成爆裂粒子 */
+    function spawnParticles(x, y, color, n, size) {
+      for (let i = 0; i < n; i++) {
+        const a = rand(0, Math.PI * 2), sp = rand(40, 180);
+        state.particles.push({
+          x, y,
+          vx: Math.cos(a) * sp,
+          vy: Math.sin(a) * sp,
+          life: rand(0.3, 0.7),
+          maxLife: 0.7,
+          color,
+          size: rand(2, size * 0.18 + 1.5),
+          gravity: 0,
+        });
+      }
+    }
+
+    /** 胜利彩带：从屏幕底部向上喷射的彩色粒子 */
+    function spawnCelebration() {
+      const colors = ['#f87171', '#facc15', '#4ade80', '#60a5fa', '#c084fc', '#fb923c'];
+      state.particles.push({
+        x: rand(0, W), y: H + 20,
+        vx: rand(-130, 130), vy: rand(-460, -220),
+        life: rand(0.8, 1.7), maxLife: 1.7,
+        color: pick(colors), size: rand(3, 6.5),
+        gravity: 320,
+      });
+    }
+
+    /** 粒子更新：位移 + 衰减 + 重力（胜利彩带用） */
+    function updateParticles(dt) {
+      for (let i = state.particles.length - 1; i >= 0; i--) {
+        const pt = state.particles[i];
+        pt.x += pt.vx * dt;
+        pt.y += pt.vy * dt;
+        pt.vx *= 0.92;
+        pt.vy *= 0.92;
+        pt.vy += pt.gravity * dt;
+        pt.life -= dt;
+        if (pt.life <= 0) state.particles.splice(i, 1);
+      }
+    }
+
+    /** 生成吃鱼涟漪 */
+    function spawnRing(x, y, r) {
+      state.rings.push({ x, y, r, maxR: r * 3.2, t: 0, dur: 0.45 });
+    }
+    function updateRings(dt) {
+      for (let i = state.rings.length - 1; i >= 0; i--) {
+        state.rings[i].t += dt;
+        if (state.rings[i].t >= state.rings[i].dur) state.rings.splice(i, 1);
+      }
+    }
+
+    /* ==================== 十一、背景气泡 ==================== */
+    function spawnBubble() {
+      state.bubbles.push({
+        x: rand(0, W), y: H + 10,
+        r: rand(2, 7), speed: rand(15, 40), wob: rand(0, Math.PI * 2),
+      });
+    }
+    function updateBubbles(dt) {
+      while (state.bubbles.length < 24) spawnBubble(); // 保持气泡数量
+      for (let i = state.bubbles.length - 1; i >= 0; i--) {
+        const b = state.bubbles[i];
+        b.y -= b.speed * dt;
+        b.wob += dt * 2;
+        if (b.y < -20) state.bubbles.splice(i, 1);
+      }
+    }
+
+    /* ==================== 十二、绘制 ==================== */
+
+    /**
+     * 绘制一条几何鱼形（流线型身体 + 摆动尾鳍 + 背鳍 + 眼睛）。
+     * 鱼头朝向 +x 方向，由调用方通过 rotate 决定朝向。
+     */
+    function drawFish(f, isPlayer) {
+      const { x, y, radius: r, angle, wag } = f;
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(angle);
+
+      // 尾巴摆动：速度由 wag 相位驱动；体型越大摆动越缓
+      const wagAmp = 0.32 * clamp(1 - r / 130, 0.16, 1);
+      const w = Math.sin(wag) * wagAmp;
+
+      const L = r * 2.3;         // 体长
+      const tailLen = r * 1.05;  // 尾鳍长度
+      const halfH = r * 0.85;    // 躯干半高
+      const bx = -L * 0.32;      // 尾根 x 坐标
+
+      // ---- 身体：上下渐变（背部深、肚皮浅），尖嘴流线型 ----
+      const grad = ctx.createLinearGradient(0, -halfH, 0, halfH);
+      grad.addColorStop(0, f.body);
+      grad.addColorStop(0.55, f.body);
+      grad.addColorStop(1, f.belly);
+      ctx.fillStyle = grad;
+      ctx.strokeStyle = 'rgba(0,0,0,0.28)';
+      ctx.lineWidth = Math.max(1, r * 0.06);
+      ctx.beginPath();
+      ctx.moveTo(bx, 0);                                        // 尾根
+      ctx.quadraticCurveTo(-L * 0.15, -halfH, L * 0.55, -halfH * 0.35); // 背线
+      ctx.quadraticCurveTo(L * 0.62, 0, L * 0.55, halfH * 0.35);       // 尖嘴
+      ctx.quadraticCurveTo(-L * 0.15, halfH, bx, 0);                   // 腹线
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // 玩家高亮：描一圈半透明白边，一眼区分
+      if (isPlayer) {
+        ctx.strokeStyle = 'rgba(255,255,255,0.55)';
+        ctx.lineWidth = Math.max(1.2, r * 0.07);
+        ctx.stroke();
+      }
+
+      // ---- 背鳍 ----
+      ctx.fillStyle = f.body;
+      ctx.beginPath();
+      ctx.moveTo(-L * 0.05, -halfH * 0.85);
+      ctx.quadraticCurveTo(-L * 0.3, -halfH * 1.45, -L * 0.46, -halfH * 0.7);
+      ctx.quadraticCurveTo(-L * 0.2, -halfH * 0.55, -L * 0.05, -halfH * 0.85);
+      ctx.closePath();
+      ctx.fill();
+
+      // ---- 尾鳍：菱形，随摆动角旋转 ----
+      ctx.save();
+      ctx.translate(bx, 0);
+      ctx.rotate(w);
+      ctx.fillStyle = f.body;
+      ctx.strokeStyle = 'rgba(0,0,0,0.28)';
+      ctx.lineWidth = Math.max(1, r * 0.05);
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-tailLen, -tailLen * 0.62);
+      ctx.lineTo(-tailLen * 0.55, 0);
+      ctx.lineTo(-tailLen, tailLen * 0.62);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+
+      // ---- 眼睛：白底 + 黑瞳 ----
+      const eyeX = L * 0.28, eyeY = -halfH * 0.28;
+      const er = r * 0.24;
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(eyeX, eyeY, er, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#0f172a';
+      ctx.beginPath(); ctx.arc(eyeX + er * 0.3, eyeY, er * 0.5, 0, Math.PI * 2); ctx.fill();
+
+      ctx.restore();
+    }
+
+    /** 渲染整帧：背景 → 气泡 → 敌鱼 → 玩家 → 涟漪 → 粒子 */
+    function render() {
+      // 海洋渐变背景
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#081c3c');
+      bg.addColorStop(0.6, '#0b2a55');
+      bg.addColorStop(1, '#0d3b66');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // 屏幕震动（Game Over 时）
+      const shaking = state.shake > 0;
+      if (shaking) {
+        ctx.save();
+        ctx.translate(rand(-1, 1) * state.shake * 10, rand(-1, 1) * state.shake * 10);
+      }
+
+      // 背景气泡
+      for (const b of state.bubbles) {
+        ctx.globalAlpha = 0.16;
+        ctx.strokeStyle = '#bfdbfe';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(b.x + Math.sin(b.wob) * 3, b.y, b.r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // 敌鱼
+      for (const e of state.enemies) drawFish(e, false);
+
+      // 玩家（游戏中与胜利后显示；死亡时消失）
+      if (state.player && (state.status === 'playing' || state.status === 'win')) {
+        drawFish(state.player, true);
+      }
+
+      // 吃鱼涟漪
+      for (const rg of state.rings) {
+        const k = rg.t / rg.dur;
+        ctx.globalAlpha = (1 - k) * 0.5;
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(rg.x, rg.y, rg.r + (rg.maxR - rg.r) * k, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // 粒子（吃鱼爆裂 / 胜利彩带）
+      for (const pt of state.particles) {
+        ctx.globalAlpha = clamp(pt.life / pt.maxLife, 0, 1);
+        ctx.fillStyle = pt.color;
+        ctx.beginPath();
+        ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+
+      if (shaking) ctx.restore();
+    }
+
+    /* ==================== 十三、游戏流程控制 ==================== */
+
+    /** 重置整个世界（清空敌人 / 特效 / 分数，重建玩家与鱼群） */
+    function resetWorld() {
+      state.score = 0;
+      state.enemies = [];
+      state.particles = [];
+      state.rings = [];
+      state.shake = 0;
+      state.player = createPlayer();
+      while (state.enemies.length < CONFIG.enemy.count) state.enemies.push(createEnemy());
+      state.hud = { score: -1, level: -1, pct: -1 }; // 强制刷新 HUD
+    }
+
+    /** 开始游戏（也用于"再来一局"） */
+    function startGame() {
+      resetWorld();
+      state.status = 'playing';
+      overlayEl.classList.add('hidden');
+      hudEl.classList.remove('hidden');
+      // 把指针移到玩家当前位置，避免开局鱼瞬移
+      state.pointer.x = state.player.x;
+      state.pointer.y = state.player.y;
+      cursorEl.style.left = state.player.x + 'px';
+      cursorEl.style.top = state.player.y + 'px';
+    }
+
+    /** Game Over：震动 + 玩家位置爆裂特效 + 结算遮罩 */
+    function gameOver() {
+      const p = state.player;
+      if (!p) return;
+      state.status = 'over';
+      state.shake = 0.35;
+      spawnParticles(p.x, p.y, CONFIG.player.body, 26, p.radius);
+      showOverlay('over');
+    }
+
+    /** 胜利：喷射彩带 + 结算遮罩 */
+    function youWin() {
+      if (state.status === 'win') return; // 防止重复触发
+      state.status = 'win';
+      for (let i = 0; i < 70; i++) spawnCelebration();
+      showOverlay('win');
+    }
+
+    /** 按状态切换遮罩内容 */
+    function showOverlay(mode) {
+      if (mode === 'menu') {
+        ovEmoji.textContent = '🐟';
+        ovTitle.textContent = '大鱼吃小鱼';
+        ovSub.innerHTML = '<span class="hl-sky">方向键 / WASD</span> 或移动鼠标操控 <span class="hl-sky">蓝色大鱼</span>，<br>' +
+          '吃掉比自己小的鱼不断成长，躲开比自己大的鱼！<br>' +
+          '体型覆盖屏幕 <span class="hl-yellow">20%</span> 即可获胜。';
+        ovStats.classList.add('hidden');
+        ovBtn.textContent = '开始游戏';
+      } else if (mode === 'over') {
+        ovEmoji.textContent = '💀';
+        ovTitle.textContent = '游戏结束';
+        ovSub.innerHTML = '你被一条更大的鱼吃掉了……<br>下次先躲开红色的大鱼！';
+        ovStats.classList.remove('hidden');
+        ovScore.textContent = state.score;
+        ovLevel.textContent = levelOf(state.player.radius);
+        ovPct.textContent = Math.round(areaOf(state.player.radius) / WIN_AREA * 100) + '%';
+        ovBtn.textContent = '再来一局';
+      } else { // win
+        ovEmoji.textContent = '👑';
+        ovTitle.textContent = 'YOU WIN!';
+        ovSub.innerHTML = '你的体型已覆盖屏幕 <span class="hl-yellow">20%</span>，<br>你统治了整片海域！';
+        ovStats.classList.remove('hidden');
+        ovScore.textContent = state.score;
+        ovLevel.textContent = levelOf(state.player.radius);
+        ovPct.textContent = '100%';
+        ovBtn.textContent = '再玩一次';
+      }
+      overlayEl.classList.remove('hidden'); // 重新显示 → 面板动画自动重播
+    }
+
+    /* ==================== 十四、HUD 更新（仅在值变化时写 DOM） ==================== */
+    function updateHUD() {
+      const s = state;
+      // 分数
+      if (s.hud.score !== s.score) {
+        s.hud.score = s.score;
+        scoreEl.textContent = s.score;
+        scoreEl.classList.remove('pop');
+        void scoreEl.offsetWidth; // 强制 reflow 以重启动画
+        scoreEl.classList.add('pop');
+      }
+      // 等级（与颜色徽章）
+      const lv = s.player ? levelOf(s.player.radius) : 1;
+      if (s.hud.level !== lv) {
+        s.hud.level = lv;
+        levelEl.textContent = lv;
+        const c = levelColor(lv);
+        levelDotEl.style.background = c;
+        levelDotEl.style.color = c;
+      }
+      // 体型进度（相对胜利面积）
+      const pct = s.player ? Math.min(100, Math.round(areaOf(s.player.radius) / WIN_AREA * 100)) : 0;
+      if (s.hud.pct !== pct) {
+        s.hud.pct = pct;
+        sizePctEl.textContent = pct + '%';
+        progressBarEl.style.width = pct + '%';
+        // 接近满格时进度条变金色
+        progressBarEl.style.background =
+          pct >= 80 ? 'linear-gradient(90deg,#facc15,#f87171)'
+                    : 'linear-gradient(90deg,#34d399,#facc15)';
+      }
+    }
+
+    /* ==================== 十五、主循环 ==================== */
+    function update(dt) {
+      updateBubbles(dt);
+      if (state.shake > 0) state.shake -= dt;
+
+      // 敌鱼始终游动（菜单 / 结算时作为背景动画也很生动）
+      updateEnemies(dt);
+
+      // 仅在游戏中更新玩家与碰撞
+      if (state.status === 'playing' && state.player) {
+        applyKeyboard(dt); // 方向键驱动目标指针（无按键时零开销返回）
+        updatePlayer(dt);
+        handleCollision();
+      }
+
+      updateParticles(dt);
+      updateRings(dt);
+    }
+
+    let last = performance.now();
+    function loop(now) {
+      // dt 上限 50ms：切后台 / 掉帧时防止逻辑跳跃
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      // try/catch 保护：单帧渲染/逻辑错误不至于让游戏整体死掉
+      try { update(dt); render(); } catch (err) { console.error('[Frame error]', err); }
+      updateHUD();
+      requestAnimationFrame(loop);
+    }
+
+    /* ==================== 十六、输入 ==================== */
+    window.addEventListener('mousemove', (e) => {
+      state.pointer.x = e.clientX;
+      state.pointer.y = e.clientY;
+      cursorEl.style.left = e.clientX + 'px';
+      cursorEl.style.top = e.clientY + 'px';
+    });
+    // 触屏支持
+    window.addEventListener('touchmove', (e) => {
+      const t = e.touches[0];
+      if (!t) return;
+      state.pointer.x = t.clientX;
+      state.pointer.y = t.clientY;
+    }, { passive: true });
+
+    // ===== 键盘方向控制（↑ ↓ ← → 与 W A S D）=====
+    // e.code 与键盘布局无关，物理键位固定；同时阻止方向键滚动页面
+    const KEY_MAP = {
+      ArrowUp: 'up', KeyW: 'up',
+      ArrowDown: 'down', KeyS: 'down',
+      ArrowLeft: 'left', KeyA: 'left',
+      ArrowRight: 'right', KeyD: 'right',
+    };
+    window.addEventListener('keydown', (e) => {
+      const dir = KEY_MAP[e.code];
+      if (!dir) return;
+      e.preventDefault();          // 阻止方向键/空格引起的页面滚动
+      if (e.repeat) return;        // 长按时忽略重复触发，避免状态抖动
+      state.keys[dir] = true;
+    });
+    window.addEventListener('keyup', (e) => {
+      const dir = KEY_MAP[e.code];
+      if (!dir) return;
+      e.preventDefault();
+      state.keys[dir] = false;
+    });
+
+    // 开始 / 重玩按钮
+    ovBtn.addEventListener('click', startGame);
+
+    /* ==================== 十七、启动 ==================== */
+    resize();
+    // 初始填充敌鱼（作为菜单背景动画），初始化指针位置
+    while (state.enemies.length < CONFIG.enemy.count) state.enemies.push(createEnemy());
+    state.pointer.x = W / 2;
+    state.pointer.y = H / 2;
+    cursorEl.style.left = W / 2 + 'px';
+    cursorEl.style.top = H / 2 + 'px';
+    showOverlay('menu');
+    requestAnimationFrame(loop);
+  </script>
+</body>
+</html>

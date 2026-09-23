@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>欢乐连连看</title>
+    <style>
+        :root {
+            --primary-color: #FF9A9E;
+            --secondary-color: #FECFEF;
+            --bg-color: #F6F9FC;
+            --card-bg: #FFFFFF;
+            --text-color: #4A4A4A;
+            --accent-color: #84FAB0;
+            --grid-gap: 8px;
+            --card-size: 60px;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 0;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .timer {
+            color: #FF6B6B;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .score {
+            color: #4ECDC4;
+        }
+
+        .game-container {
+            position: relative;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: var(--grid-gap);
+        }
+
+        .card {
+            width: var(--card-size);
+            height: var(--card-size);
+            background: var(--card-bg);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 2px solid transparent;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .card.selected {
+            border-color: var(--primary-color);
+            background-color: #FFF0F0;
+            transform: scale(1.05);
+        }
+
+        .card.matched {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0);
+            transition: transform 0.3s ease-in, opacity 0.2s ease-in;
+        }
+
+        .card.shake {
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            border-color: #FF6B6B;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+
+        /* 连接线 Canvas */
+        #line-canvas {
+            position: absolute;
+            top: 15px; /* 对应 game-container padding */
+            left: 15px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-restart {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            width: 80%;
+            max-width: 400px;
+            transform: translateY(20px);
+            transition: transform 0.3s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-overlay.visible .modal {
+            transform: translateY(0);
+        }
+
+        .modal h2 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 2rem;
+        }
+
+        .modal p {
+            font-size: 1.2rem;
+            margin: 20px 0;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 600px) {
+            :root {
+                --card-size: 11vw; /* 自适应宽度 */
+                --grid-gap: 4px;
+            }
+            
+            body {
+                padding: 10px;
+            }
+
+            .game-container {
+                padding: 10px;
+            }
+            
+            #line-canvas {
+                top: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1 class="title">连连看</h1>
+        <div class="stats">
+            <div class="score">得分: <span id="score-val">0</span></div>
+            <div class="timer">⏰ <span id="time-val">60</span>s</div>
+        </div>
+    </div>
+
+    <div class="game-container">
+        <div class="grid" id="grid">
+            <!-- 卡片由 JS 生成 -->
+        </div>
+        <canvas id="line-canvas"></canvas>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-restart" onclick="game.init()">
+            🔄 重新开始
+        </button>
+    </div>
+
+    <!-- 游戏结束/胜利 模态框 -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title">游戏结束</h2>
+            <p id="modal-message">时间到了！</p>
+            <button class="btn btn-restart" onclick="game.init(); document.getElementById('modal-overlay').classList.remove('visible')">
+                再玩一次
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 音效管理器
+        const AudioSys = {
+            ctx: null,
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+            playTone(freq, type, duration) {
+                if (!this.ctx) this.init();
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+                gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(this.ctx.currentTime + duration);
+            },
+            playSelect() { this.playTone(440, 'sine', 0.1); },
+            playMatch() { 
+                this.playTone(523.25, 'sine', 0.1); 
+                setTimeout(() => this.playTone(659.25, 'sine', 0.1), 100);
+            },
+            playError() { 
+                this.playTone(150, 'sawtooth', 0.2); 
+            },
+            playGameOver() {
+                this.playTone(300, 'triangle', 0.3);
+                setTimeout(() => this.playTone(200, 'triangle', 0.4), 200);
+            },
+            playWin() {
+                [523, 659, 783, 1046].forEach((freq, i) => {
+                    setTimeout(() => this.playTone(freq, 'sine', 0.2), i * 150);
+                });
+            }
+        };
+
+        // 游戏逻辑
+        const game = {
+            rows: 6,
+            cols: 8,
+            icons: ['🍎', '🍌', '🍇', '🍓', '🍒', '🍑', '🍍', '🥝', '🥑', '🍔', '🍕', '🍦'],
+            gridData: [], // 存储图标索引，-1 表示空
+            selected: null, // 当前选中的坐标 {r, c}
+            score: 0,
+            timer: 60,
+            timerInterval: null,
+            isPlaying: false,
+            
+            init() {
+                this.gridData = [];
+                this.selected = null;
+                this.score = 0;
+                this.timer = 60;
+                this.isPlaying = true;
+                
+                document.getElementById('score-val').textContent = this.score;
+                document.getElementById('time-val').textContent = this.timer;
+                document.getElementById('modal-overlay').classList.remove('visible');
+                
+                this.generateGrid();
+                this.renderGrid();
+                this.resizeCanvas();
+                this.startTimer();
+                
+                // 确保音频上下文已创建（需要用户交互）
+                AudioSys.init();
+            },
+
+            generateGrid() {
+                const totalPairs = (this.rows * this.cols) / 2;
+                let cards = [];
+                // 填充配对数据
+                for (let i = 0; i < totalPairs; i++) {
+                    const iconIdx = i % this.icons.length;
+                    cards.push(iconIdx, iconIdx);
+                }
+                // 洗牌
+                for (let i = cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cards[i], cards[j]] = [cards[j], cards[i]];
+                }
+                
+                // 填充网格
+                this.gridData = [];
+                for (let r = 0; r < this.rows; r++) {
+                    let row = [];
+                    for (let c = 0; c < this.cols; c++) {
+                        row.push(cards[r * this.cols + c]);
+                    }
+                    this.gridData.push(row);
+                }
+            },
+
+            renderGrid() {
+                const gridEl = document.getElementById('grid');
+                gridEl.innerHTML = '';
+                
+                for (let r = 0; r < this.rows; r++) {
+                    for (let c = 0; c < this.cols; c++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'card';
+                        cell.dataset.r = r;
+                        cell.dataset.c = c;
+                        
+                        const val = this.gridData[r][c];
+                        if (val !== -1) {
+                            cell.textContent = this.icons[val];
+                            cell.onclick = () => this.handleCardClick(r, c);
+                        } else {
+                            cell.classList.add('matched');
+                        }
+                        gridEl.appendChild(cell);
+                    }
+                }
+            },
+
+            getCardEl(r, c) {
+                return document.querySelector(`.card[data-r="${r}"][data-c="${c}"]`);
+            },
+
+            handleCardClick(r, c) {
+                if (!this.isPlaying || this.gridData[r][c] === -1) return;
+                
+                const el = this.getCardEl(r, c);
+                
+                // 取消选中
+                if (this.selected && this.selected.r === r && this.selected.c === c) {
+                    this.selected = null;
+                    el.classList.remove('selected');
+                    return;
+                }
+
+                AudioSys.playSelect();
+
+                // 第一次选中
+                if (!this.selected) {
+                    this.selected = {r, c};
+                    el.classList.add('selected');
+                    return;
+                }
+
+                // 第二次选中，判断是否匹配
+                const prevR = this.selected.r;
+                const prevC = this.selected.c;
+                const prevEl = this.getCardEl(prevR, prevC);
+
+                // 图案不同
+                if (this.gridData[r][c] !== this.gridData[prevR][prevC]) {
+                    this.triggerError(el, prevEl);
+                    this.selected = null;
+                    return;
+                }
+
+                // 判断是否可连
+                const path = this.findPath(prevR, prevC, r, c);
+                if (path) {
+                    this.matchSuccess(path, prevR, prevC, r, c);
+                } else {
+                    this.triggerError(el, prevEl);
+                }
+                
+                this.selected = null;
+                prevEl.classList.remove('selected');
+            },
+
+            triggerError(el1, el2) {
+                AudioSys.playError();
+                el1.classList.add('shake');
+                el2.classList.add('shake');
+                setTimeout(() => {
+                    el1.classList.remove('shake');
+                    el2.classList.remove('shake');
+                    el2.classList.remove('selected'); // 清除之前的选中状态
+                }, 400);
+            },
+
+            matchSuccess(path, r1, c1, r2, c2) {
+                AudioSys.playMatch();
+                this.score += 10;
+                document.getElementById('score-val').textContent = this.score;
+                
+                this.drawPath(path);
+                
+                // 消除数据
+                this.gridData[r1][c1] = -1;
+                this.gridData[r2][c2] = -1;
+                
+                // 视觉消除
+                const el1 = this.getCardEl(r1, c1);
+                const el2 = this.getCardEl(r2, c2);
+                
+                // 延迟一点消除，让用户看到连线
+                setTimeout(() => {
+                    el1.classList.add('matched');
+                    el1.textContent = '';
+                    el1.onclick = null;
+                    
+                    el2.classList.add('matched');
+                    el2.textContent = '';
+                    el2.onclick = null;
+                    
+                    this.checkWin();
+                }, 200);
+            },
+
+            // 核心算法：寻路
+            findPath(r1, c1, r2, c2) {
+                // 如果是同一个点，不能连
+                if (r1 === r2 && c1 === c2) return null;
+
+                // 0转弯（直线）
+                if (this.checkLine(r1, c1, r2, c2)) return [{r:r1, c:c1}, {r:r2, c:c2}];
+
+                // 1转弯
+                // 寻找一个拐点 C，使得 A-C 和 C-B 都是直线且为空
+                // 拐点可以是 (r1, c2) 或 (r2, c1)
+                if (this.gridData[r1][c2] === -1 && 
+                    this.checkLine(r1, c1, r1, c2) && 
+                    this.checkLine(r1, c2, r2, c2)) {
+                    return [{r:r1, c:c1}, {r:r1, c:c2}, {r:r2, c:c2}];
+                }
+                if (this.gridData[r2][c1] === -1 && 
+                    this.checkLine(r1, c1, r2, c1) && 
+                    this.checkLine(r2, c1, r2, c2)) {
+                    return [{r:r1, c:c1}, {r:r2, c:c1}, {r:r2, c:c2}];
+                }
+
+                // 2转弯
+                // 遍历水平线和垂直线上的所有可能点作为第一个拐点
+                // 优化：其实就是从 A 向四个方向扫描，找到所有能直线到达的空点 P，
+                // 看 P 是否能用 0或1 转弯到达 B。
+                // 这里我们简化：遍历所有行和列的“中转线”
+                
+                // 尝试横向扫描：从 (r1, c1) 左右移动找到空点 (r1, k)
+                // 检查 (r1, k) 能否 1转弯 到 (r2, c2)
+                for (let k = 0; k < this.cols; k++) {
+                    if (k === c1) continue;
+                    // 如果 (r1, k) 不是空且不是起点终点，跳过 (但在本逻辑中起点终点有值，中间路径必须空)
+                    // 注意：checkLine 检查的是开区间 (start, end)，不包含端点
+                    // 这里我们需要 (r1, k) 这个点本身是空的
+                    if (this.gridData[r1][k] !== -1) continue;
+                    
+                    if (this.checkLine(r1, c1, r1, k) && // 第一段直线
+                        this.checkLine(r1, k, r2, k) &&  // 第二段直线（垂直）
+                        this.checkLine(r2, k, r2, c2)) { // 第三段直线
+                        return [{r:r1, c:c1}, {r:r1, c:k}, {r:r2, c:k}, {r:r2, c:c2}];
+                    }
+                }
+                
+                // 尝试纵向扫描
+                for (let k = 0; k < this.rows; k++) {
+                    if (k === r1) continue;
+                    if (this.gridData[k][c1] !== -1) continue;
+                    
+                    if (this.checkLine(r1, c1, k, c1) && 
+                        this.checkLine(k, c1, k, c2) && 
+                        this.checkLine(k, c2, r2, c2)) {
+                        return [{r:r1, c:c1}, {r:k, c:c1}, {r:k, c:c2}, {r:r2, c:c2}];
+                    }
+                }
+                
+                // 边界检测：是否可以通过外围连线？
+                // 为了简化，我们假设没有外围，或者网格数据本身不包含外围。
+                // 经典连连看通常允许绕出边界。
+                // 为了支持绕出边界，我们可以扩充逻辑网格，或者在上面的循环中允许 k = -1 或 k = cols
+                
+                // 扩充检测：水平边界外
+                if (this.checkLine(r1, c1, r1, -1) && this.checkLine(r2, c2, r2, -1)) { // 左侧外部
+                     return [{r:r1, c:c1}, {r:r1, c:-1}, {r:r2, c:-1}, {r:r2, c:c2}];
+                }
+                if (this.checkLine(r1, c1, r1, this.cols) && this.checkLine(r2, c2, r2, this.cols)) { // 右侧外部
+                     return [{r:r1, c:c1}, {r:r1, c:this.cols}, {r:r2, c:this.cols}, {r:r2, c:c2}];
+                }
+                // 垂直边界外
+                if (this.checkLine(r1, c1, -1, c1) && this.checkLine(r2, c2, -1, c2)) { // 上方外部
+                     return [{r:r1, c:c1}, {r:-1, c:c1}, {r:-1, c:c2}, {r:r2, c:c2}];
+                }
+                if (this.checkLine(r1, c1, this.rows, c1) && this.checkLine(r2, c2, this.rows, c2)) { // 下方外部
+                     return [{r:r1, c:c1}, {r:this.rows, c:c1}, {r:this.rows, c:c2}, {r:r2, c:c2}];
+                }
+
+                return null;
+            },
+
+            // 检查两点间是否直线可达（不包含端点，中间必须为空）
+            checkLine(r1, c1, r2, c2) {
+                if (r1 === r2) { // 水平
+                    const min = Math.min(c1, c2);
+                    const max = Math.max(c1, c2);
+                    for (let c = min + 1; c < max; c++) {
+                        if (c >= 0 && c < this.cols && this.gridData[r1][c] !== -1) return false;
+                    }
+                    return true;
+                } else if (c1 === c2) { // 垂直
+                    const min = Math.min(r1, r2);
+                    const max = Math.max(r1, r2);
+                    for (let r = min + 1; r < max; r++) {
+                        if (r >= 0 && r < this.rows && this.gridData[r][c1] !== -1) return false;
+                    }
+                    return true;
+                }
+                return false;
+            },
+
+            // 绘制连线
+            drawPath(path) {
+                const canvas = document.getElementById('line-canvas');
+                const ctx = canvas.getContext('2d');
+                const gridEl = document.getElementById('grid');
+                const rect = gridEl.getBoundingClientRect();
+                
+                // 获取每个格子的尺寸
+                const card = document.querySelector('.card');
+                const cardSize = card.offsetWidth;
+                const gap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-gap')) || 8;
+                
+                // 计算坐标辅助函数
+                const getCoord = (pt) => {
+                    // pt.r, pt.c 可能是 -1 或 cols/rows (边界外)
+                    // 卡片中心坐标
+                    // left = c * (size + gap) + size/2
+                    const x = pt.c * (cardSize + gap) + cardSize/2;
+                    const y = pt.r * (cardSize + gap) + cardSize/2;
+                    return {x, y};
+                };
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.strokeStyle = '#FF6B6B';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                const start = getCoord(path[0]);
+                ctx.moveTo(start.x, start.y);
+
+                for (let i = 1; i < path.length; i++) {
+                    const pt = getCoord(path[i]);
+                    ctx.lineTo(pt.x, pt.y);
+                }
+
+                ctx.stroke();
+
+                // 300ms 后清除连线
+                setTimeout(() => {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }, 300);
+            },
+            
+            resizeCanvas() {
+                const canvas = document.getElementById('line-canvas');
+                const grid = document.getElementById('grid');
+                const card = document.querySelector('.card');
+                
+                if (!card) return;
+
+                const cardSize = card.offsetWidth;
+                const extraMargin = cardSize + 20; // 留出足够空间绘制边界连线
+
+                canvas.width = grid.offsetWidth + extraMargin * 2;
+                canvas.height = grid.offsetHeight + extraMargin * 2;
+                
+                // game-container padding is 15px
+                // We want canvas (0,0) to be at (-extraMargin, -extraMargin) relative to grid (0,0)
+                // grid (0,0) is at (15, 15) inside game-container
+                canvas.style.left = (15 - extraMargin) + 'px';
+                canvas.style.top = (15 - extraMargin) + 'px';
+                
+                this.canvasOffset = extraMargin;
+            },
+
+            // 覆盖 drawPath 中的坐标计算，加入 padding
+            drawPath(path) {
+                const canvas = document.getElementById('line-canvas');
+                const ctx = canvas.getContext('2d');
+                
+                const card = document.querySelector('.card');
+                if (!card) return;
+                
+                const cardSize = card.offsetWidth;
+                const gap = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--grid-gap')) || 8;
+                const offset = this.canvasOffset || 0;
+
+                const getCoord = (pt) => {
+                    // grid (0,0) is at offset inside the canvas
+                    const x = offset + pt.c * (cardSize + gap) + cardSize/2;
+                    const y = offset + pt.r * (cardSize + gap) + cardSize/2;
+                    return {x, y};
+                };
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.strokeStyle = '#FF6B6B';
+                ctx.lineWidth = 5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.shadowColor = 'rgba(255, 107, 107, 0.5)';
+                ctx.shadowBlur = 10;
+
+                const start = getCoord(path[0]);
+                ctx.moveTo(start.x, start.y);
+
+                for (let i = 1; i < path.length; i++) {
+                    const pt = getCoord(path[i]);
+                    ctx.lineTo(pt.x, pt.y);
+                }
+
+                ctx.stroke();
+                setTimeout(() => ctx.clearRect(0, 0, canvas.width, canvas.height), 300);
+            },
+
+            startTimer() {
+                if (this.timerInterval) clearInterval(this.timerInterval);
+                this.timerInterval = setInterval(() => {
+                    this.timer--;
+                    document.getElementById('time-val').textContent = this.timer;
+                    
+                    if (this.timer <= 10) {
+                        document.querySelector('.timer').style.color = 'red';
+                        if (this.timer > 0) AudioSys.playTone(800, 'square', 0.05); // 倒计时滴答
+                    } else {
+                        document.querySelector('.timer').style.color = '#FF6B6B';
+                    }
+
+                    if (this.timer <= 0) {
+                        this.gameOver();
+                    }
+                }, 1000);
+            },
+
+            checkWin() {
+                // 检查是否全空
+                let hasItems = false;
+                for (let r = 0; r < this.rows; r++) {
+                    for (let c = 0; c < this.cols; c++) {
+                        if (this.gridData[r][c] !== -1) {
+                            hasItems = true;
+                            break;
+                        }
+                    }
+                }
+                if (!hasItems) {
+                    this.gameWin();
+                }
+            },
+
+            gameWin() {
+                clearInterval(this.timerInterval);
+                this.isPlaying = false;
+                AudioSys.playWin();
+                document.getElementById('modal-title').textContent = "恭喜过关！";
+                document.getElementById('modal-message').textContent = `最终得分：${this.score}`;
+                document.getElementById('modal-overlay').classList.add('visible');
+            },
+
+            gameOver() {
+                clearInterval(this.timerInterval);
+                this.isPlaying = false;
+                AudioSys.playGameOver();
+                document.getElementById('modal-title').textContent = "游戏结束";
+                document.getElementById('modal-message').textContent = `时间耗尽，得分：${this.score}`;
+                document.getElementById('modal-overlay').classList.add('visible');
+            }
+        };
+
+        // 窗口大小改变时重绘 canvas 尺寸
+        window.addEventListener('resize', () => {
+            game.resizeCanvas();
+        });
+
+        // 初始化
+        window.onload = () => game.init();
+
+    </script>
+</body>
+</html>

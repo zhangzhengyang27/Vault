@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>番茄钟 APP UI 设计 · 双屏方案</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>
+tailwind.config = {
+  theme: { extend: {
+    fontFamily: { sans: ['"Plus Jakarta Sans"', '"PingFang SC"', 'Arial', 'sans-serif'] },
+  } },
+};
+</script>
+<style>
+  body { font-family: "Plus Jakarta Sans", "PingFang SC", Arial, sans-serif; }
+  .phone {
+    width: 375px; height: 812px; border: 12px solid #111; border-radius: 40px;
+    overflow: hidden; position: relative; box-shadow: 0 40px 80px -30px rgba(0,0,0,.45);
+    flex-shrink: 0;
+  }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { scrollbar-width: none; }
+  @keyframes ringpulse { 0%,100% { opacity: .55; transform: scale(1); } 50% { opacity: .8; transform: scale(1.04); } }
+  .ring-glow { animation: ringpulse 3.2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  .press:active { transform: scale(.96); }
+  .press { transition: transform .15s ease, box-shadow .2s ease, background-color .2s ease; }
+  .task-done { opacity: .6; }
+  .task-done .task-name { text-decoration: line-through; }
+  @media (prefers-reduced-motion: reduce) { .ring-glow { animation: none; } }
+</style>
+</head>
+<body class="bg-[hsl(222,14%,96%)] min-h-screen flex items-center justify-center gap-14 py-16 px-6 flex-wrap">
+
+<div class="text-center w-full mb-2">
+  <h1 class="text-3xl font-bold text-slate-800 tracking-tight">番茄钟 APP · UI 设计方案</h1>
+  <p class="text-slate-500 mt-2 text-sm">极简美学 · 粉紫渐变 · 毛玻璃质感 —— 双屏交互展示(可操作)</p>
+</div>
+
+<!-- ═══ 屏幕 1:计时器主页 ═══ -->
+<div class="phone bg-gradient-to-br from-[#f093fb] to-[#f5576c]">
+  <div class="h-full flex flex-col px-6 pt-14 pb-8 text-white no-scrollbar overflow-y-auto">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.25em] text-white/70 font-semibold">Focus Mode</p>
+        <h2 class="text-xl font-bold mt-1">专注时钟</h2>
+      </div>
+      <button class="press w-10 h-10 rounded-full bg-white/20 backdrop-blur flex items-center justify-center"><i class="fa-solid fa-gear"></i></button>
+    </div>
+
+    <!-- 进度环 -->
+    <div class="relative mx-auto mt-10 w-[260px] h-[260px]">
+      <svg viewBox="0 0 260 260" class="w-full h-full -rotate-90">
+        <circle cx="130" cy="130" r="116" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="12"/>
+        <circle id="ring" cx="130" cy="130" r="116" fill="none" stroke="#fff" stroke-width="12"
+                stroke-linecap="round" stroke-dasharray="728.6" stroke-dashoffset="0"
+                style="transition: stroke-dashoffset .4s linear"/>
+      </svg>
+      <div class="absolute inset-0 flex flex-col items-center justify-center">
+        <p id="clock" class="text-[56px] font-extrabold leading-none tabular-nums">25:00</p>
+        <p id="phase" class="text-xs tracking-[0.3em] uppercase mt-3 text-white/75">专注中</p>
+      </div>
+      <div class="ring-glow absolute inset-6 rounded-full" style="background: radial-gradient(circle, rgba(255,255,255,.14), transparent 70%)" aria-hidden="true"></div>
+    </div>
+
+    <!-- 主操作 -->
+    <div class="mt-10 flex items-center justify-center gap-4">
+      <button id="modeBtn" class="press w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center" title="切换休息模式">
+        <i class="fa-solid fa-mug-hot"></i>
+      </button>
+      <button id="startBtn" class="press h-16 px-10 rounded-full bg-white text-[#e7557c] font-bold text-lg shadow-[0_16px_36px_-12px_rgba(0,0,0,.4)]">
+        开始专注
+      </button>
+      <button id="resetBtn" class="press w-14 h-14 rounded-full bg-white/20 backdrop-blur flex items-center justify-center" title="重置">
+        <i class="fa-solid fa-rotate-left"></i>
+      </button>
+    </div>
+
+    <!-- 今日统计 -->
+    <div class="mt-10 grid grid-cols-3 gap-3">
+      <div class="rounded-2xl bg-white/20 backdrop-blur p-4 text-center">
+        <p class="text-2xl font-extrabold" id="statDone">3</p>
+        <p class="text-[11px] text-white/75 mt-0.5">已完成</p>
+      </div>
+      <div class="rounded-2xl bg-white/20 backdrop-blur p-4 text-center">
+        <p class="text-2xl font-extrabold">125<span class="text-sm font-semibold">min</span></p>
+        <p class="text-[11px] text-white/75 mt-0.5">专注时长</p>
+      </div>
+      <div class="rounded-2xl bg-white/20 backdrop-blur p-4 text-center">
+        <p class="text-2xl font-extrabold">5</p>
+        <p class="text-[11px] text-white/75 mt-0.5">连续天数</p>
+      </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="mt-auto pt-6">
+      <div class="rounded-full bg-white/20 backdrop-blur px-2 py-2 flex items-center justify-around text-sm">
+        <span class="w-10 h-10 rounded-full bg-white text-[#e7557c] flex items-center justify-center"><i class="fa-solid fa-clock"></i></span>
+        <span class="w-10 h-10 rounded-full flex items-center justify-center text-white/70"><i class="fa-solid fa-list-check"></i></span>
+        <span class="w-10 h-10 rounded-full flex items-center justify-center text-white/70"><i class="fa-solid fa-chart-simple"></i></span>
+        <span class="w-10 h-10 rounded-full flex items-center justify-center text-white/70"><i class="fa-solid fa-user"></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 屏幕 2:任务列表页 ═══ -->
+<div class="phone bg-gradient-to-b from-slate-50 to-slate-100">
+  <div class="h-full flex flex-col px-5 pt-14 pb-8 text-slate-800">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-[11px] uppercase tracking-[0.25em] text-slate-400 font-semibold">Tasks</p>
+        <h2 class="text-xl font-bold mt-1">今日任务</h2>
+      </div>
+      <button class="press w-10 h-10 rounded-full bg-violet-500 text-white flex items-center justify-center shadow-lg shadow-violet-300"><i class="fa-solid fa-plus"></i></button>
+    </div>
+
+    <!-- 今日进度 -->
+    <div class="mt-5 rounded-3xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white p-5 flex items-center gap-5 shadow-xl shadow-violet-200">
+      <svg viewBox="0 0 84 84" class="w-[84px] h-[84px] -rotate-90 shrink-0">
+        <circle cx="42" cy="42" r="36" fill="none" stroke="rgba(255,255,255,.3)" stroke-width="8"/>
+        <circle cx="42" cy="42" r="36" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round"
+                stroke-dasharray="226.2" stroke-dashoffset="141.4"/>
+      </svg>
+      <div>
+        <p class="text-2xl font-extrabold leading-none">3 / 8</p>
+        <p class="text-sm text-white/80 mt-1">今日番茄钟完成</p>
+        <p class="text-[11px] text-white/60 mt-0.5">比昨天多 1 个,继续保持</p>
+      </div>
+    </div>
+
+    <!-- 进行中 -->
+    <div class="mt-6 flex-1 overflow-y-auto no-scrollbar">
+      <div class="flex items-center justify-between">
+        <h3 class="font-bold text-sm">进行中 <span class="text-slate-400 font-medium">(2)</span></h3>
+        <span class="text-[11px] text-slate-400">按截止时间</span>
+      </div>
+      <div class="mt-3 space-y-2.5">
+        <div class="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm border border-slate-100">
+          <button class="press w-6 h-6 rounded-full border-2 border-violet-400 shrink-0 check"></button>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-sm truncate task-name">完成季度分析报告</p>
+            <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>今天 18:00 · <span class="text-pink-500 font-medium">🍅 ×4</span></p>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-pink-100 text-pink-600 shrink-0">工作</span>
+        </div>
+        <div class="bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm border border-slate-100">
+          <button class="press w-6 h-6 rounded-full border-2 border-violet-400 shrink-0 check"></button>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-sm truncate task-name">背 50 个单词</p>
+            <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>明天 09:00 · <span class="text-violet-500 font-medium">🍅 ×2</span></p>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-violet-100 text-violet-600 shrink-0">学习</span>
+        </div>
+      </div>
+
+      <h3 class="font-bold text-sm mt-6">已完成 <span class="text-slate-400 font-medium">(1)</span></h3>
+      <div class="mt-3 space-y-2.5">
+        <div class="task-done bg-white rounded-2xl p-4 flex items-center gap-3 shadow-sm border border-slate-100">
+          <button class="press w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 check done"><i class="fa-solid fa-check text-[10px]"></i></button>
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-sm truncate task-name">晨跑 5 公里</p>
+            <p class="text-[11px] text-slate-400 mt-0.5">已完成 · <span class="text-emerald-500 font-medium">🍅 ×2</span></p>
+          </div>
+          <span class="text-[10px] font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-600 shrink-0">健康</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="mt-6 pt-4 border-t border-slate-200/80">
+      <div class="rounded-full bg-white shadow-[0_-8px_24px_-16px_rgba(0,0,0,.2)] px-2 py-2 flex items-center justify-around text-sm">
+        <span class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-clock"></i></span>
+        <span class="w-10 h-10 rounded-full bg-slate-800 text-white flex items-center justify-center"><i class="fa-solid fa-list-check"></i></span>
+        <span class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-chart-simple"></i></span>
+        <span class="w-10 h-10 rounded-full flex items-center justify-center text-slate-400"><i class="fa-solid fa-user"></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="text-center w-full text-xs text-slate-400 mt-4">番茄钟 APP UI 设计 · 演示页面(计时器可真实运行)</p>
+
+<script>
+(function () {
+  "use strict";
+  // 计时器:25 分钟专注 / 5 分钟休息,环形进度实时联动
+  var FOCUS = 25 * 60, BREAK = 5 * 60;
+  var total = FOCUS, left = FOCUS, running = false, isBreak = false, timer = null, doneCount = 3;
+  var clock = document.getElementById('clock');
+  var ring = document.getElementById('ring');
+  var startBtn = document.getElementById('startBtn');
+  var phaseEl = document.getElementById('phase');
+  var CIRC = 728.6;
+
+  function render() {
+    var m = String(Math.floor(left / 60)).padStart(2, '0');
+    var s = String(left % 60).padStart(2, '0');
+    clock.textContent = m + ':' + s;
+    ring.style.strokeDashoffset = String(CIRC * (1 - left / total));
+  }
+  function tick() {
+    if (left > 0) { left -= 1; render(); return; }
+    // 一个周期结束
+    clearInterval(timer); running = false;
+    if (!isBreak) { doneCount += 1; document.getElementById('statDone').textContent = doneCount; }
+    isBreak = !isBreak;
+    total = isBreak ? BREAK : FOCUS;
+    left = total;
+    phaseEl.textContent = isBreak ? '休息一下' : '专注中';
+    startBtn.textContent = isBreak ? '开始休息' : '开始专注';
+    render();
+  }
+  startBtn.addEventListener('click', function () {
+    running = !running;
+    if (running) {
+      startBtn.textContent = '暂停';
+      timer = setInterval(tick, 1000);
+    } else {
+      startBtn.textContent = isBreak ? '继续休息' : '继续专注';
+      clearInterval(timer);
+    }
+  });
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    clearInterval(timer); running = false;
+    isBreak = false; total = FOCUS; left = FOCUS;
+    phaseEl.textContent = '专注中';
+    startBtn.textContent = '开始专注';
+    render();
+  });
+  document.getElementById('modeBtn').addEventListener('click', function () {
+    clearInterval(timer); running = false;
+    isBreak = !isBreak;
+    total = isBreak ? BREAK : FOCUS; left = total;
+    phaseEl.textContent = isBreak ? '休息模式' : '专注中';
+    startBtn.textContent = isBreak ? '开始休息' : '开始专注';
+    render();
+  });
+  render();
+
+  // 任务勾选切换
+  document.querySelectorAll('.check').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var item = btn.closest('.bg-white');
+      var done = btn.classList.toggle('done');
+      item.classList.toggle('task-done', done);
+      if (done) {
+        btn.classList.add('bg-emerald-500', 'text-white');
+        btn.classList.remove('border-violet-400');
+        btn.innerHTML = '<i class="fa-solid fa-check text-[10px]"></i>';
+      } else {
+        btn.classList.remove('bg-emerald-500', 'text-white');
+        btn.classList.add('border-violet-400');
+        btn.innerHTML = '';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

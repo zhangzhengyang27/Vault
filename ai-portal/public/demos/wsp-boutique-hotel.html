@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Aldwick — Boutique Hotel &amp; Restaurant · Cotswolds</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-700-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-500.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        slate1: 'hsl(215, 16%, 9%)',
+        slate2: 'hsl(215, 14%, 13%)',
+        slate3: 'hsl(215, 12%, 17%)',
+        pearl: 'hsl(40, 30%, 94%)',
+        soft: 'hsl(38, 8%, 56%)',
+        hairline: 'hsl(215, 10%, 22%)',
+        gold: 'hsl(38, 46%, 56%)',
+      },
+      fontFamily: {
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['Inter', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: Inter, "PingFang SC", Arial, sans-serif; font-weight: 300; }
+  .tag { font-weight: 500; text-transform: uppercase; font-size: 10px; letter-spacing: 0.14em; }
+  .slidein { opacity: 0; transform: translateX(-24px); transition: opacity .5s ease, transform .5s ease; transition-delay: var(--d, 0ms); }
+  .slidein.in { opacity: 1; transform: none; }
+  .fadeup { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .goldline { transform: scaleX(0); transform-origin: left; transition: transform .5s ease; }
+  .goldline.in { transform: scaleX(1); }
+  .room-row { transition: background-color .2s ease; }
+  .room-row:hover { background-color: hsl(215, 12%, 17%); }
+  .room-row:hover .room-name, .room-row:hover .room-arrow { color: hsl(38, 46%, 56%); }
+  .gal { position: relative; overflow: hidden; }
+  .gal::after { content: ''; position: absolute; inset: 0; background: hsl(215 16% 5% / 0); transition: background .25s ease; }
+  .gal:hover::after { background: hsl(215 16% 5% / 0.55); }
+  .gal .gal-label { opacity: 0; transition: opacity .25s ease; }
+  .gal:hover .gal-label { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .slidein, .fadeup, .goldline { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body class="bg-slate1 text-pearl font-sans antialiased">
+
+<!-- 1. 导航栏 -->
+<header class="sticky top-0 z-50 bg-slate1/85 backdrop-blur-[14px] border-b border-hairline/60">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="font-serif italic font-bold text-2xl text-gold">The Aldwick</a>
+    <nav class="hidden md:flex items-center gap-7 text-sm text-pearl/80">
+      <a href="#rooms" class="hover:text-gold">Rooms</a>
+      <a href="#dining" class="hover:text-gold">Dining</a>
+      <a href="#experiences" class="hover:text-gold">Experiences</a>
+      <a href="#location" class="hover:text-gold">Location</a>
+      <a href="#book" class="border border-gold text-gold px-4 py-1.5 font-medium hover:bg-gold hover:text-slate1">Book a stay →</a>
+    </nav>
+    <button id="burger" class="md:hidden p-2 text-gold" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden border-t border-hairline/60 px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm text-pearl/80">
+      <a href="#rooms" class="py-1">Rooms</a><a href="#dining" class="py-1">Dining</a>
+      <a href="#experiences" class="py-1">Experiences</a><a href="#location" class="py-1">Location</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. 主视觉 -->
+  <section class="relative h-screen">
+    <div class="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <svg class="w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <rect width="1440" height="900" fill="hsl(215, 14%, 13%)"/>
+        <g fill="hsl(215, 12%, 17%)">
+          <rect x="180" y="380" width="500" height="420" fill="hsl(215, 10%, 15%)"/>
+          <path d="M160 380 L430 260 L700 380 Z" fill="hsl(215, 10%, 11%)"/>
+          <rect x="780" y="330" width="480" height="470" fill="hsl(215, 10%, 15%)"/>
+          <path d="M760 330 L1020 210 L1280 330 Z" fill="hsl(215, 10%, 11%)"/>
+        </g>
+        <g fill="hsl(38, 46%, 56%)" opacity=".75">
+          <rect x="240" y="450" width="52" height="72" rx="3"/><rect x="330" y="450" width="52" height="72" rx="3"/>
+          <rect x="420" y="450" width="52" height="72" rx="3"/><rect x="510" y="450" width="52" height="72" rx="3"/>
+          <rect x="850" y="420" width="52" height="72" rx="3"/><rect x="940" y="420" width="52" height="72" rx="3"/>
+          <rect x="1030" y="420" width="52" height="72" rx="3"/><rect x="1120" y="420" width="52" height="72" rx="3"/>
+        </g>
+        <g stroke="hsl(215, 10%, 22%)" stroke-width="2"><path d="M0 780 L1440 780"/></g>
+        <g fill="hsl(120, 12%, 20%)"><ellipse cx="1200" cy="820" rx="180" ry="40"/><ellipse cx="180" cy="840" rx="220" ry="36"/></g>
+      </svg>
+      <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(19,24,31,0.7) 0%, rgba(19,24,31,0.1) 35%, rgba(19,24,31,0.1) 60%, rgba(19,24,31,0.92) 100%)"></div>
+    </div>
+    <div class="relative z-10 h-full flex flex-col items-center justify-end pb-[8vh] text-center px-5">
+      <p class="tag text-gold fadeup" style="--d:0ms">Boutique Hotel · Cotswolds</p>
+      <h1 class="font-serif italic font-bold text-pearl leading-[0.88] mt-5 text-[clamp(52px,9vw,135px)] fadeup" style="--d:150ms">
+        A Place<br><span class="text-gold">Unlike Any Other.</span>
+      </h1>
+      <p class="mt-6 max-w-[520px] text-pearl/75 fadeup" style="--d:300ms">12 individually designed rooms, a restaurant serving seasonal Cotswolds produce, and grounds that change with every season</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4 fadeup" style="--d:450ms">
+        <a href="#book" class="bg-gold text-slate1 font-medium px-6 py-3 hover:brightness-110">Book a stay →</a>
+        <a href="#rooms" class="border border-pearl/70 text-pearl font-medium px-6 py-3 hover:border-gold hover:text-gold">See the rooms</a>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-3" id="chips">
+        <span class="slidein tag text-gold border border-gold/50 rounded-full px-4 py-1.5" style="--d:600ms">12 Rooms</span>
+        <span class="slidein tag text-gold border border-gold/50 rounded-full px-4 py-1.5" style="--d:680ms">Dog Friendly</span>
+        <span class="slidein tag text-gold border border-gold/50 rounded-full px-4 py-1.5" style="--d:760ms">Restaurant</span>
+        <span class="slidein tag text-gold border border-gold/50 rounded-full px-4 py-1.5" style="--d:840ms">Free Parking</span>
+        <span class="slidein tag text-gold border border-gold/50 rounded-full px-4 py-1.5" style="--d:920ms">Cotswolds</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 客房 -->
+  <section id="rooms" class="max-w-6xl mx-auto px-5 py-24">
+    <h2 class="font-serif italic font-bold text-4xl md:text-6xl">The Rooms <span class="block goldline h-[2px] bg-gold mt-4 max-w-[220px]"></span></h2>
+    <div class="mt-10">
+      <a href="#book" class="room-row block border-b border-hairline py-8 px-2 md:px-4">
+        <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-3">
+          <h3 class="room-name font-serif italic font-semibold text-3xl md:text-4xl transition-colors">Classic Rooms</h3>
+          <p class="text-soft text-[15px] max-w-sm md:text-right md:ml-auto md:mr-10">Six rooms, original features, garden views. The quietest corner of the house.</p>
+          <p class="text-gold whitespace-nowrap font-medium">from £180 / night <span class="room-arrow inline-block ml-2">→</span></p>
+        </div>
+      </a>
+      <a href="#book" class="room-row block border-b border-hairline py-8 px-2 md:px-4">
+        <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-3">
+          <h3 class="room-name font-serif italic font-semibold text-3xl md:text-4xl transition-colors">Deluxe Rooms</h3>
+          <p class="text-soft text-[15px] max-w-sm md:text-right md:ml-auto md:mr-10">Four rooms with freestanding baths and windows that frame the valley.</p>
+          <p class="text-gold whitespace-nowrap font-medium">from £240 / night <span class="room-arrow inline-block ml-2">→</span></p>
+        </div>
+      </a>
+      <a href="#book" class="room-row block border-b border-hairline py-8 px-2 md:px-4">
+        <div class="flex flex-col md:flex-row md:items-baseline justify-between gap-3">
+          <h3 class="room-name font-serif italic font-semibold text-3xl md:text-4xl transition-colors">The Suite</h3>
+          <p class="text-soft text-[15px] max-w-sm md:text-right md:ml-auto md:mr-10">The master suite: private terrace, sitting room, and the best sunsets on the hill.</p>
+          <p class="text-gold whitespace-nowrap font-medium">from £380 / night <span class="room-arrow inline-block ml-2">→</span></p>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 4. 画廊 -->
+  <section class="max-w-6xl mx-auto px-5 pb-24">
+    <h2 class="font-serif italic font-bold text-4xl md:text-6xl">The Aldwick in <span class="text-gold">Detail</span></h2>
+    <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-[3px]">
+      <div class="gal"><svg class="w-full aspect-[3/4]" viewBox="0 0 450 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="450" height="600" fill="hsl(215, 12%, 16%)"/><rect x="90" y="140" width="270" height="300" rx="130" fill="hsl(40, 20%, 60%)"/><rect x="90" y="290" width="270" height="150" fill="hsl(38, 30%, 45%)"/><rect x="60" y="80" width="330" height="360" rx="10" fill="none" stroke="hsl(215, 10%, 22%)" stroke-width="8"/></svg><span class="gal-label absolute bottom-4 left-5 font-serif italic text-xl text-pearl">Four-poster room</span></div>
+      <div class="gal"><svg class="w-full aspect-[4/3]" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="600" height="450" fill="hsl(215, 12%, 18%)"/><ellipse cx="300" cy="290" rx="150" ry="60" fill="hsl(40, 25%, 78%)"/><path d="M120 380 h360" stroke="hsl(38, 46%, 56%)" stroke-width="4"/><rect x="430" y="90" width="120" height="160" rx="4" fill="hsl(215, 14%, 30%)"/></svg><span class="gal-label absolute bottom-4 left-5 font-serif italic text-xl text-pearl">Roll-top bath, valley view</span></div>
+      <div class="gal"><svg class="w-full aspect-[4/3]" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="600" height="450" fill="hsl(20, 20%, 14%)"/><g fill="hsl(38, 70%, 55%)" opacity=".8"><circle cx="180" cy="210" r="6"/><circle cx="220" cy="190" r="6"/><circle cx="260" cy="215" r="6"/></g><rect x="240" y="260" width="220" height="90" rx="6" fill="hsl(30, 30%, 40%)"/><rect x="330" y="180" width="60" height="80" rx="6" fill="hsl(15, 40%, 35%)"/></svg><span class="gal-label absolute bottom-4 left-5 font-serif italic text-xl text-pearl">The dining room</span></div>
+      <div class="gal"><svg class="w-full aspect-[3/4]" viewBox="0 0 450 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="450" height="600" fill="hsl(215, 12%, 15%)"/><path d="M120 460 q105 -60 210 0 l0 60 l-210 0 Z" fill="hsl(25, 55%, 45%)"/><rect x="280" y="140" width="110" height="200" rx="8" fill="hsl(215, 10%, 20%)"/><g stroke="hsl(38, 8%, 56%)" stroke-width="3"><path d="M290 160 h90 M290 185 h90 M290 210 h70"/></g></svg><span class="gal-label absolute bottom-4 left-5 font-serif italic text-xl text-pearl">The library fire</span></div>
+      <div class="gal"><svg class="w-full aspect-[3/4]" viewBox="0 0 450 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="450" height="600" fill="hsl(215, 16%, 22%)"/><g fill="hsl(120, 10%, 26%)"><ellipse cx="120" cy="480" rx="90" ry="26"/><ellipse cx="320" cy="520" rx="110" ry="30"/></g><path d="M0 430 L140 380 L290 430 L450 360 L450 600 L0 600 Z" fill="hsl(215, 12%, 16%)"/><circle cx="360" cy="120" r="40" fill="hsl(38, 40%, 70%)" opacity=".5"/></svg><span class="gal-label absolute bottom-4 left-5 font-serif italic text-xl text-pearl">Mist over the grounds</span></div>
+      <div class="gal"><svg class="w-full aspect-[4/3]" viewBox="0 0 600 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="600" height="450" fill="hsl(38, 25%, 78%)"/><rect x="60" y="240" width="200" height="14" rx="7" fill="hsl(215, 12%, 17%)"/><circle cx="380" cy="200" r="42" fill="hsl(22, 60%, 55%)"/><path d="M338 200 h84" stroke="hsl(215, 12%, 17%)" stroke-width="6"/><g fill="hsl(120, 12%, 30%)"><path d="M0 380 L600 330 L600 450 L0 450 Z"/></g></svg><span class="gal-label absolute bottom-4 left-5 font-serif italic text-xl text-pearl">Morning coffee, terrace</span></div>
+    </div>
+  </section>
+
+  <!-- 5. 餐饮 -->
+  <section id="dining" class="border-y border-hairline">
+    <div class="max-w-6xl mx-auto px-5 py-24 grid md:grid-cols-2 gap-12 items-center">
+      <div class="fadeup">
+        <h2 class="font-serif italic font-bold text-4xl md:text-6xl">The Restaurant</h2>
+        <blockquote class="mt-6 font-serif italic font-light text-2xl text-gold leading-snug max-w-md">"Everything on the menu was either grown here, reared locally, or foraged from the surrounding countryside."</blockquote>
+        <p class="mt-6 text-soft text-[15px] max-w-md">Chef James Cole's seasonal tasting menu changes weekly with the walled garden and whatever the morning delivery brings. Breakfast is reserved for residents.</p>
+        <p class="mt-3 text-soft text-[15px]">The restaurant opens to non-residents Thursday to Sunday — book early; seats are few.</p>
+        <div class="mt-6 flex flex-wrap gap-2.5">
+          <span class="tag text-gold border border-gold/50 rounded-full px-4 py-1.5">Seasonal Menu</span>
+          <span class="tag text-gold border border-gold/50 rounded-full px-4 py-1.5">Locally Sourced</span>
+          <span class="tag text-gold border border-gold/50 rounded-full px-4 py-1.5">Open Thu–Sun</span>
+        </div>
+      </div>
+      <div class="fadeup" style="--d:120ms">
+        <svg class="w-full aspect-[4/5] rounded-sm" viewBox="0 0 450 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="450" height="560" fill="hsl(20, 18%, 12%)"/>
+          <ellipse cx="225" cy="420" rx="160" ry="36" fill="hsl(30, 25%, 22%)"/>
+          <rect x="150" y="380" width="150" height="14" rx="7" fill="hsl(40, 30%, 78%)"/>
+          <circle cx="150" cy="300" r="34" fill="hsl(40, 30%, 72%)"/>
+          <g fill="hsl(38, 65%, 48%)"><circle cx="320" cy="200" r="8"/><circle cx="345" cy="230" r="8"/><circle cx="300" cy="245" r="8"/></g>
+          <rect x="280" y="280" width="90" height="60" rx="6" fill="hsl(22, 30%, 28%)"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 体验 -->
+  <section id="experiences" class="max-w-6xl mx-auto px-5 py-24">
+    <h2 class="font-serif italic font-bold text-4xl md:text-6xl">What to Do</h2>
+    <div class="mt-10 grid md:grid-cols-3 gap-5">
+      <div class="fadeup border border-hairline rounded-xl p-6"><h3 class="font-serif italic text-2xl text-gold">Walking &amp; Cycling</h3><p class="mt-2 text-soft text-[15px]">Ordnance Survey maps and two house bicycles, free for guests — the lambs are out in spring.</p></div>
+      <div class="fadeup border border-hairline rounded-xl p-6" style="--d:100ms"><h3 class="font-serif italic text-2xl text-gold">Private Dining</h3><p class="mt-2 text-soft text-[15px]">The wine cellar seats twelve. Take the whole thing — chef and all — for a night to yourself.</p></div>
+      <div class="fadeup border border-hairline rounded-xl p-6" style="--d:200ms"><h3 class="font-serif italic text-2xl text-gold">Spa Treatments</h3><p class="mt-2 text-soft text-[15px]">A local therapist offers in-room massage and facials. Book when you book the room.</p></div>
+    </div>
+  </section>
+
+  <!-- 7. 客户评价 -->
+  <section class="bg-slate2 border-y border-hairline">
+    <div class="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-3 gap-6">
+      <blockquote class="fadeup"><p class="text-gold">★★★★★</p><p class="font-serif italic text-xl mt-3 leading-relaxed">"We stayed for three nights and genuinely didn't want to leave. The food was exceptional and every room detail had been thought about."</p><footer class="tag text-soft mt-4">Charlotte &amp; Ben W. · Deluxe Room</footer></blockquote>
+      <blockquote class="fadeup" style="--d:120ms"><p class="text-gold">★★★★★</p><p class="font-serif italic text-xl mt-3 leading-relaxed">"The suite terrace at sunset is worth the drive alone. Staff remembered how I take my coffee by day two."</p><footer class="tag text-soft mt-4">Priya R. · The Suite</footer></blockquote>
+      <blockquote class="fadeup" style="--d:240ms"><p class="text-gold">★★★★★</p><p class="font-serif italic text-xl mt-3 leading-relaxed">"Brought the dog, left the guilt at home. Walks from the door and a sausage for the best guest in the house."</p><footer class="tag text-soft mt-4">James &amp; Dora · Classic Room</footer></blockquote>
+    </div>
+  </section>
+
+  <!-- 8. 位置 -->
+  <section id="location" class="max-w-6xl mx-auto px-5 py-24">
+    <h2 class="font-serif italic font-bold text-4xl md:text-6xl">Getting Here</h2>
+    <p class="mt-5 text-soft max-w-xl text-[15px]">Two hours from London, five minutes from Bourton-on-the-Water — the heart of the Cotswolds, without the tourist crowds.</p>
+    <div class="mt-10 grid md:grid-cols-2 gap-10">
+      <div><h3 class="tag text-gold">By car</h3><p class="mt-2 text-soft text-[15px]">M40 junction 10, then the A361 through Burford. Free parking behind the house — electric chargers on the wall nearest the kitchen garden.</p></div>
+      <div><h3 class="tag text-gold">By train</h3><p class="mt-2 text-soft text-[15px]">Direct from London Paddington to Kingham (80 minutes). We'll collect you from the platform if you tell us you're coming.</p></div>
+    </div>
+  </section>
+
+  <!-- 9. 预订 CTA -->
+  <section id="book" class="bg-gold text-slate1">
+    <div class="max-w-6xl mx-auto px-5 py-20 text-center">
+      <h2 class="font-serif italic font-bold text-4xl md:text-6xl">Is Your Date Available?</h2>
+      <p class="mt-4 max-w-xl mx-auto text-slate1/80 text-[15px]">We take a limited number of bookings each month — check availability and reserve your room directly for our best rate</p>
+      <a href="#" class="inline-block mt-8 bg-slate1 text-pearl px-7 py-3.5 font-medium hover:opacity-90">Check availability →</a>
+      <p class="tag mt-5 text-slate1/70">Best rate direct · Dog friendly · Free parking</p>
+    </div>
+  </section>
+</main>
+
+<!-- 10. 页脚 -->
+<footer class="bg-slate1 border-t border-hairline">
+  <div class="max-w-6xl mx-auto px-5 py-12">
+    <p class="font-serif italic font-bold text-3xl text-gold">The Aldwick</p>
+    <div class="mt-4 flex flex-wrap gap-x-8 gap-y-2 text-sm text-soft">
+      <a href="#" class="hover:text-gold">Instagram</a><a href="#" class="hover:text-gold">Pinterest</a><a href="#" class="hover:text-gold">TripAdvisor</a>
+    </div>
+    <p class="mt-6 text-xs text-soft">© 2026 The Aldwick · Boutique Hotel &amp; Restaurant · Bourton-on-the-Water, Cotswolds GL54 · +44 1451 123 456</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+
+  // 入场动画
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.fadeup, .slidein, .goldline').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

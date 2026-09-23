@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>上海开发者大会 2026 · 智驱未来 | SH DevCon 2026</title>
+<meta name="description" content="SH DevCon 2026 上海开发者大会，11 月 14–15 日 · 上海世博中心。3000 名开发者、50+ 嘉宾、40+ 议题，AI 原生时代的工程实践。早鸟票限时 ¥399，立即报名。" />
+<meta property="og:title" content="上海开发者大会 2026 · 智驱未来" />
+<meta property="og:description" content="3000 名开发者 · 50+ 嘉宾 · 2 天 40+ 议题。早鸟票 ¥399 限时抢购。" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+/* ============ 变量与基础 ============ */
+:root{
+  --bg0:#05070f;
+  --bg1:#080b17;
+  --bg2:#0c1220;
+  --panel:rgba(255,255,255,.028);
+  --panel-2:rgba(255,255,255,.05);
+  --ink:#eaf2ff;
+  --ink-dim:#9fb0c8;
+  --ink-faint:#6b7a93;
+  --line:rgba(148,180,255,.12);
+  --line-strong:rgba(148,180,255,.24);
+  --cyan:#2dd4ff;
+  --cyan-dim:rgba(45,212,255,.14);
+  --violet:#8b7bff;
+  --violet-dim:rgba(139,123,255,.16);
+  --pink:#ff6ad5;
+  --green:#3ddc97;
+  --grad:linear-gradient(120deg,#2dd4ff 0%,#8b7bff 55%,#ff6ad5 120%);
+  --mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+  --display:"Chakra Petch","PingFang SC","Microsoft YaHei",sans-serif;
+  --sans:"PingFang SC","Microsoft YaHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --radius:16px;
+  --shadow:0 20px 60px -20px rgba(0,0,0,.7);
+  --nav-h:68px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-h) + 16px)}
+body{
+  background:var(--bg0);
+  color:var(--ink);
+  font-family:var(--sans);
+  line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:rgba(45,212,255,.28);color:#fff}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+section{position:relative}
+
+/* 背景层 */
+.bg{position:fixed;inset:0;z-index:-3;background:var(--bg0);overflow:hidden}
+.bg::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(900px 520px at 16% -8%,rgba(45,212,255,.16),transparent 60%),
+    radial-gradient(820px 560px at 86% 6%,rgba(139,123,255,.20),transparent 62%),
+    radial-gradient(720px 520px at 50% 108%,rgba(176,107,255,.13),transparent 60%);
+}
+.bg::after{
+  content:"";position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(148,180,255,.05) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(148,180,255,.05) 1px,transparent 1px);
+  background-size:56px 56px;
+  mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 78%);
+  -webkit-mask-image:radial-gradient(ellipse 90% 60% at 50% 0%,#000 0%,transparent 78%);
+}
+#net{position:fixed;inset:0;z-index:-2;pointer-events:none}
+.grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* ============ 导航 ============ */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;height:var(--nav-h);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  background:rgba(5,7,15,.62);
+  border-bottom:1px solid var(--line);
+  transition:background .3s;
+}
+.nav.scrolled{background:rgba(5,7,15,.86)}
+.nav-inner{max-width:1180px;margin:0 auto;height:100%;padding:0 24px;display:flex;align-items:center;gap:28px}
+.brand{display:flex;align-items:center;gap:11px;flex-shrink:0}
+.brand .mark{width:34px;height:34px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-family:var(--mono);font-weight:700;color:#06121f;font-size:15px;box-shadow:0 0 22px rgba(45,212,255,.45)}
+.brand .name{font-family:var(--display);font-weight:700;letter-spacing:.5px;font-size:16px}
+.brand .name small{display:block;font-family:var(--mono);font-size:10px;color:var(--ink-faint);letter-spacing:2px;font-weight:500}
+.nav-links{display:flex;gap:6px;margin-left:auto}
+.nav-links a{padding:8px 13px;font-size:14px;color:var(--ink-dim);border-radius:9px;transition:.2s;white-space:nowrap}
+.nav-links a:hover{color:var(--ink);background:var(--panel-2)}
+.nav-cta{margin-left:6px;flex-shrink:0}
+.nav-burger{display:none;margin-left:auto;width:40px;height:40px;border-radius:10px;border:1px solid var(--line);place-items:center;flex-direction:column;gap:5px}
+.nav-burger span{display:block;width:18px;height:2px;background:var(--ink);border-radius:2px;transition:.25s}
+.nav-burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger.open span:nth-child(2){opacity:0}
+.nav-burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* 按钮 */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-weight:600;border-radius:12px;transition:.22s;white-space:nowrap}
+.btn-primary{background:var(--grad);color:#06121f;padding:13px 26px;font-size:15px;box-shadow:0 8px 30px -8px rgba(45,212,255,.55);position:relative;overflow:hidden}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 40px -8px rgba(139,123,255,.65)}
+.btn-primary::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.5) 50%,transparent 70%);transform:translateX(-120%);transition:.6s}
+.btn-primary:hover::after{transform:translateX(120%)}
+.btn-ghost{background:transparent;color:var(--ink);border:1px solid var(--line-strong);padding:12px 24px;font-size:15px}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-dim)}
+.btn-sm{padding:9px 17px;font-size:13.5px;border-radius:10px}
+.btn-block{width:100%}
+
+/* 区块标题 */
+.sec{padding:96px 0}
+.sec-head{margin-bottom:52px;max-width:720px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--cyan);margin-bottom:18px}
+.eyebrow::before{content:"";width:22px;height:1px;background:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.sec-title{font-family:var(--display);font-size:clamp(28px,4.4vw,44px);font-weight:700;line-height:1.18;letter-spacing:.3px}
+.sec-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sec-desc{color:var(--ink-dim);font-size:16px;margin-top:16px;line-height:1.75}
+
+/* ============ Hero ============ */
+.hero{min-height:100svh;display:flex;align-items:center;padding:calc(var(--nav-h) + 40px) 0 60px;position:relative}
+.hero-grid{display:grid;grid-template-columns:1.25fr .95fr;gap:56px;align-items:center}
+.hero .tag{display:inline-flex;align-items:center;gap:9px;padding:7px 15px;border-radius:99px;border:1px solid var(--line-strong);background:var(--panel);font-family:var(--mono);font-size:12.5px;letter-spacing:1px;color:var(--ink-dim)}
+.hero .tag .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-family:var(--display);font-size:clamp(40px,6.4vw,72px);font-weight:700;line-height:1.05;letter-spacing:.5px;margin:22px 0 8px}
+.hero h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .sub{font-size:clamp(16px,2vw,19px);color:var(--ink-dim);max-width:520px;margin-top:16px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:12px 26px;margin-top:30px}
+.hero-meta .m{display:flex;align-items:center;gap:10px}
+.hero-meta .m .ico{width:34px;height:34px;border-radius:9px;background:var(--panel-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--cyan);flex-shrink:0}
+.hero-meta .m .k{font-size:12px;color:var(--ink-faint)}
+.hero-meta .m .v{font-size:14.5px;font-weight:600;font-family:var(--display);letter-spacing:.3px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:14px;margin-top:36px}
+.hero-actions .note{width:100%;font-size:12.5px;color:var(--ink-faint);margin-top:2px}
+
+/* 倒计时卡 */
+.countdown{position:relative;border-radius:22px;padding:28px;background:linear-gradient(160deg,rgba(45,212,255,.08),rgba(139,123,255,.08));border:1px solid var(--line-strong);overflow:hidden}
+.countdown::before{content:"";position:absolute;top:-40%;right:-20%;width:300px;height:300px;background:radial-gradient(circle,rgba(45,212,255,.22),transparent 65%);filter:blur(20px)}
+.countdown .cd-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.countdown .cd-label{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--cyan)}
+.countdown .cd-badge{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:6px;background:rgba(255,106,213,.15);color:var(--pink);border:1px solid rgba(255,106,213,.3)}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.cd-cell{background:rgba(0,0,0,.35);border:1px solid var(--line);border-radius:12px;padding:14px 6px;text-align:center}
+.cd-cell b{font-family:var(--display);font-size:clamp(26px,3vw,34px);font-weight:700;color:#fff;display:block;line-height:1;font-variant-numeric:tabular-nums}
+.cd-cell span{font-size:11px;color:var(--ink-faint);letter-spacing:1px;margin-top:7px;display:block}
+.cd-foot{margin-top:20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.cd-price{font-family:var(--display);font-weight:700}
+.cd-price .cur{font-size:15px;color:var(--cyan)}
+.cd-price .num{font-size:34px}
+.cd-price .was{font-size:14px;color:var(--ink-faint);text-decoration:line-through;margin-left:8px}
+
+/* 数据条 */
+.stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(255,255,255,.015)}
+.stats-inner{display:grid;grid-template-columns:repeat(4,1fr)}
+.stat{padding:30px 20px;text-align:center;position:relative}
+.stat + .stat::before{content:"";position:absolute;left:0;top:24%;height:52%;width:1px;background:var(--line)}
+.stat b{font-family:var(--display);font-size:clamp(28px,3.6vw,40px);font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{display:block;color:var(--ink-faint);font-size:13px;margin-top:6px;letter-spacing:1px}
+
+/* ============ 主题 ============ */
+.theme-banner{border:1px solid var(--line-strong);border-radius:24px;padding:44px;background:linear-gradient(150deg,rgba(45,212,255,.07),rgba(139,123,255,.07));position:relative;overflow:hidden;margin-bottom:48px}
+.theme-banner::after{content:"//</>";position:absolute;right:26px;bottom:-22px;font-family:var(--mono);font-size:120px;font-weight:700;color:rgba(148,180,255,.06);line-height:1}
+.theme-banner h3{font-family:var(--display);font-size:clamp(22px,3vw,30px);font-weight:700;margin-bottom:14px;line-height:1.4;max-width:760px}
+.theme-banner p{color:var(--ink-dim);max-width:820px;font-size:16px}
+.track-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.track-card{position:relative;padding:26px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);transition:.3s;overflow:hidden}
+.track-card:hover{transform:translateY(-5px);border-color:var(--line-strong);background:var(--panel-2)}
+.track-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);opacity:0;transition:.3s}
+.track-card:hover::before{opacity:1}
+.track-card .idx{font-family:var(--mono);font-size:12px;color:var(--cyan);letter-spacing:2px}
+.track-card h4{font-size:18px;font-weight:700;margin:12px 0 10px}
+.track-card p{font-size:14px;color:var(--ink-dim);line-height:1.7}
+
+/* ============ 嘉宾 ============ */
+.speakers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.speaker{border-radius:var(--radius);overflow:hidden;background:var(--panel);border:1px solid var(--line);transition:.3s;position:relative}
+.speaker:hover{transform:translateY(-6px);border-color:var(--line-strong);box-shadow:var(--shadow)}
+.speaker .ava{height:170px;position:relative;display:grid;place-items:center;overflow:hidden}
+.speaker .ava b{font-family:var(--display);font-size:58px;font-weight:700;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;position:relative;z-index:2}
+.speaker .ava .grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(148,180,255,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(148,180,255,.07) 1px,transparent 1px);background-size:22px 22px}
+.speaker .ava .glow{position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,255,.25),transparent 65%);filter:blur(12px)}
+.speaker .ava .ava-img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:3;padding:10px}
+.speaker .info{padding:20px;border-top:1px solid var(--line)}
+.speaker .info h4{font-size:17px;font-weight:700}
+.speaker .info .role{font-size:12.5px;color:var(--cyan);margin-top:3px;font-family:var(--mono);letter-spacing:.3px}
+.speaker .info .talk{font-size:13.5px;color:var(--ink-dim);margin-top:10px;line-height:1.6}
+.more-speakers{text-align:center;margin-top:34px;color:var(--ink-faint);font-size:14px}
+
+/* ============ 日程 ============ */
+.tabs{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px;gap:4px;margin-bottom:40px}
+.tab{padding:10px 22px;border-radius:9px;font-weight:600;font-size:14.5px;color:var(--ink-dim);transition:.2s}
+.tab.active{background:var(--grad);color:#06121f}
+.tab:hover:not(.active){color:var(--ink);background:var(--panel-2)}
+.agenda-panel{display:none}
+.agenda-panel.active{display:block;animation:fade .4s}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* 时间轴 */
+.timeline{position:relative;padding-left:0}
+.tl-row{display:grid;grid-template-columns:120px 1fr;gap:24px;padding:20px 0;border-bottom:1px solid var(--line);align-items:start}
+.tl-time{font-family:var(--mono);font-size:13px;color:var(--cyan);padding-top:4px;font-variant-numeric:tabular-nums}
+.tl-body h4{font-size:16.5px;font-weight:700}
+.tl-body .speaker-name{font-size:13px;color:var(--ink-dim);margin-top:4px}
+.tl-body .kind{display:inline-block;margin-top:9px;font-size:11px;font-family:var(--mono);letter-spacing:1px;padding:3px 9px;border-radius:6px;background:var(--cyan-dim);color:var(--cyan)}
+.tl-body .kind.break{background:rgba(148,180,255,.12);color:var(--ink-dim)}
+/* 分会场 */
+.track-col{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.tc{border:1px solid var(--line);border-radius:14px;background:var(--panel);overflow:hidden}
+.tc-head{padding:14px 16px;border-bottom:1px solid var(--line);background:var(--panel-2)}
+.tc-head .t{font-weight:700;font-size:15px}
+.tc-head .d{font-size:12px;color:var(--ink-faint);font-family:var(--mono);margin-top:2px}
+.tc-session{padding:14px 16px;border-bottom:1px solid var(--line)}
+.tc-session:last-child{border-bottom:none}
+.tc-session .tm{font-family:var(--mono);font-size:11.5px;color:var(--cyan)}
+.tc-session .tt{font-size:13.5px;font-weight:600;margin:4px 0;line-height:1.45}
+.tc-session .sp{font-size:12px;color:var(--ink-faint)}
+
+/* ============ 票种 ============ */
+.ticket-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;align-items:stretch}
+.ticket{position:relative;display:flex;flex-direction:column;border-radius:18px;background:var(--panel);border:1px solid var(--line);padding:28px;transition:.3s}
+.ticket:hover{transform:translateY(-6px);border-color:var(--line-strong)}
+.ticket.featured{border-color:transparent;background:linear-gradient(160deg,rgba(45,212,255,.1),rgba(139,123,255,.1));position:relative}
+.ticket.featured::before{content:"";position:absolute;inset:0;border-radius:18px;padding:1.5px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+.ticket .flag{position:absolute;top:-11px;left:24px;background:var(--grad);color:#06121f;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:1px;padding:3px 11px;border-radius:6px}
+.ticket .tname{font-size:15px;font-weight:700;letter-spacing:.5px}
+.ticket .tdesc{font-size:12.5px;color:var(--ink-dim);margin-top:6px;min-height:36px}
+.ticket .price{margin:18px 0 4px;font-family:var(--display);font-weight:700}
+.ticket .price .cur{font-size:16px;color:var(--cyan)}
+.ticket .price .num{font-size:38px}
+.ticket .price .unit{font-size:13px;color:var(--ink-faint);margin-left:4px}
+.ticket .was{font-size:13px;color:var(--ink-faint);text-decoration:line-through}
+.ticket ul{list-style:none;margin:20px 0 26px;flex:1}
+.ticket li{display:flex;gap:9px;align-items:flex-start;font-size:13.5px;color:var(--ink-dim);padding:6px 0;line-height:1.55}
+.ticket li svg{flex-shrink:0;margin-top:3px;color:var(--green)}
+.ticket li.off{color:var(--ink-faint);opacity:.55}
+.ticket li.off svg{color:var(--ink-faint)}
+.soldout .btn-primary{background:var(--panel-2);color:var(--ink-faint);box-shadow:none;cursor:not-allowed}
+.soldout .btn-primary::after{display:none}
+
+/* 权益对比表 */
+.compare-wrap{margin-top:56px;overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+.compare{width:100%;border-collapse:collapse;min-width:680px}
+.compare th,.compare td{padding:15px 18px;text-align:center;font-size:14px;border-bottom:1px solid var(--line)}
+.compare thead th{background:var(--panel-2);font-weight:700;font-size:14px}
+.compare thead th:first-child,.compare tbody td:first-child{text-align:left;color:var(--ink-dim)}
+.compare tbody tr:last-child td{border-bottom:none}
+.compare .yes{color:var(--green)}
+.compare .no{color:var(--ink-faint)}
+.compare tbody tr:hover{background:var(--panel)}
+
+/* ============ 赞助商 ============ */
+.sponsor-tier{margin-bottom:44px}
+.sponsor-tier h4{font-family:var(--mono);font-size:12.5px;letter-spacing:2.5px;text-transform:uppercase;color:var(--ink-faint);margin-bottom:18px;display:flex;align-items:center;gap:12px}
+.sponsor-tier h4::after{content:"";flex:1;height:1px;background:var(--line)}
+.logo-grid{display:grid;gap:16px}
+.logo-grid.diamond{grid-template-columns:repeat(3,1fr)}
+.logo-grid.gold{grid-template-columns:repeat(5,1fr)}
+.logo-grid.silver{grid-template-columns:repeat(6,1fr)}
+.logo-grid.community{grid-template-columns:repeat(6,1fr)}
+.logo-item{height:92px;border-radius:14px;background:var(--panel);border:1px solid var(--line);display:grid;place-items:center;padding:0 18px;transition:.3s;text-align:center}
+.logo-item:hover{border-color:var(--line-strong);background:var(--panel-2);transform:translateY(-3px)}
+.logo-item .lg{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:1px}
+.logo-item .lg small{display:block;font-family:var(--mono);font-size:10px;font-weight:500;color:var(--ink-faint);letter-spacing:1.5px;margin-top:3px}
+.logo-grid.community .logo-item{height:64px}
+.logo-grid.community .lg{font-size:14px}
+
+/* ============ 交通 ============ */
+.venue-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.map-box{position:relative;height:100%;min-height:340px;border-radius:18px;border:1px solid var(--line);overflow:hidden;background:var(--panel)}
+.map-box .map-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(148,180,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(148,180,255,.06) 1px,transparent 1px);background-size:28px 28px}
+.map-pin{position:absolute;top:46%;left:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px}
+.map-pin .pulse-ring{width:56px;height:56px;border-radius:50%;border:2px solid var(--cyan);display:grid;place-items:center;position:relative}
+.map-pin .pulse-ring::after{content:"";position:absolute;inset:-6px;border-radius:50%;border:1px solid rgba(45,212,255,.4);animation:ring 2.2s infinite}
+@keyframes ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(1.6);opacity:0}}
+.map-pin .pin-dot{width:16px;height:16px;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px var(--cyan)}
+.map-pin span{font-family:var(--mono);font-size:12px;color:var(--ink-dim);background:rgba(5,7,15,.8);padding:3px 10px;border-radius:6px;border:1px solid var(--line)}
+.venue-info .addr{font-size:20px;font-weight:700;margin-bottom:6px}
+.venue-info .addr-sub{color:var(--ink-dim);margin-bottom:28px}
+.transport-list{display:flex;flex-direction:column;gap:16px}
+.transport{border:1px solid var(--line);border-radius:14px;padding:20px;background:var(--panel);display:flex;gap:16px;transition:.25s}
+.transport:hover{border-color:var(--line-strong);background:var(--panel-2)}
+.transport .t-ico{width:44px;height:44px;flex-shrink:0;border-radius:11px;background:var(--cyan-dim);display:grid;place-items:center;color:var(--cyan)}
+.transport .t-body h5{font-size:15px;font-weight:700;margin-bottom:5px}
+.transport .t-body p{font-size:13.5px;color:var(--ink-dim);line-height:1.6}
+
+/* ============ 退票政策 ============ */
+.policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.policy-card{border:1px solid var(--line);border-radius:16px;background:var(--panel);padding:26px}
+.policy-card h4{font-size:16px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.policy-card h4 .dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+.refund-list{list-style:none}
+.refund-list li{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--line);font-size:14px}
+.refund-list li:last-child{border-bottom:none}
+.refund-list .when{color:var(--ink-dim)}
+.refund-list .rate{font-family:var(--display);font-weight:700;color:var(--cyan)}
+.faq-list{list-style:none}
+.faq-item{padding:12px 0;border-bottom:1px solid var(--line)}
+.faq-item:last-child{border-bottom:none}
+.faq-item .q{font-weight:600;font-size:14.5px;display:flex;gap:9px}
+.faq-item .q::before{content:"Q";font-family:var(--mono);color:var(--cyan);font-weight:700}
+.faq-item .a{font-size:13.5px;color:var(--ink-dim);margin-top:6px;padding-left:25px;line-height:1.7}
+.policy-note{margin-top:28px;padding:18px 22px;border-radius:12px;background:rgba(61,220,151,.07);border:1px solid rgba(61,220,151,.22);font-size:13.5px;color:var(--ink-dim);line-height:1.7}
+.policy-note b{color:var(--green)}
+
+/* ============ CTA 大区 ============ */
+.cta-zone{position:relative;overflow:hidden;border-radius:26px;padding:64px 40px;text-align:center;border:1px solid var(--line-strong);background:linear-gradient(150deg,rgba(45,212,255,.1),rgba(139,123,255,.12))}
+.cta-zone::before{content:"";position:absolute;top:-60%;left:50%;transform:translateX(-50%);width:640px;height:640px;background:radial-gradient(circle,rgba(45,212,255,.2),transparent 60%);filter:blur(30px)}
+.cta-zone h3{font-family:var(--display);font-size:clamp(26px,4vw,40px);font-weight:700;position:relative}
+.cta-zone p{color:var(--ink-dim);margin:16px 0 30px;position:relative}
+.cta-zone .btn{position:relative}
+
+/* ============ 底部固定栏 ============ */
+.sticky-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;transform:translateY(110%);transition:transform .35s cubic-bezier(.22,1,.36,1);display:none}
+.sticky-bar.show{transform:translateY(0)}
+.sticky-bar .bar-inner{max-width:1180px;margin:0 auto;padding:10px 16px calc(10px + env(safe-area-inset-bottom))}
+.sticky-bar .bar-card{display:flex;align-items:center;gap:16px;background:rgba(8,11,23,.92);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--line-strong);border-radius:16px;padding:12px 16px;box-shadow:0 -10px 40px rgba(0,0,0,.5)}
+.sticky-bar .bar-info{flex:1;min-width:0}
+.sticky-bar .bar-info .p{font-family:var(--display);font-weight:700;font-size:20px;line-height:1.1}
+.sticky-bar .bar-info .p .cur{font-size:13px;color:var(--cyan);vertical-align:2px}
+.sticky-bar .bar-info .t{font-size:11.5px;color:var(--ink-faint);margin-top:3px}
+
+/* ============ 弹窗 ============ */
+.modal-mask{position:fixed;inset:0;z-index:100;background:rgba(3,5,10,.7);backdrop-filter:blur(6px);display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-mask.open{display:flex;animation:maskin .3s}
+@keyframes maskin{from{opacity:0}to{opacity:1}}
+.modal{width:100%;max-width:560px;max-height:92vh;overflow-y:auto;background:var(--bg2);border:1px solid var(--line-strong);border-radius:22px 22px 0 0;padding:28px;animation:slideup .4s cubic-bezier(.22,1,.36,1)}
+@keyframes slideup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+.modal-head h3{font-family:var(--display);font-size:22px;font-weight:700}
+.modal-close{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);display:grid;place-items:center;transition:.2s}
+.modal-close:hover{border-color:var(--cyan);color:var(--cyan)}
+.ticket-select{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.t-opt{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid var(--line);border-radius:13px;cursor:pointer;transition:.2s;background:var(--panel)}
+.t-opt:hover{border-color:var(--line-strong)}
+.t-opt.selected{border-color:var(--cyan);background:var(--cyan-dim)}
+.t-opt .radio{width:18px;height:18px;border-radius:50%;border:2px solid var(--line-strong);flex-shrink:0;display:grid;place-items:center;transition:.2s}
+.t-opt.selected .radio{border-color:var(--cyan)}
+.t-opt.selected .radio::after{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan)}
+.t-opt .t-main{flex:1}
+.t-opt .t-main .tn{font-weight:700;font-size:15px;display:block}
+.t-opt .t-main .td{font-size:12px;color:var(--ink-faint);margin-top:4px;display:block}
+.t-opt .t-price{font-family:var(--display);font-weight:700;font-size:18px;color:var(--cyan)}
+.qty-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;padding:14px 16px;border:1px solid var(--line);border-radius:13px}
+.qty-row .lbl{font-size:14px;font-weight:600}
+.qty-row .qty{display:flex;align-items:center;gap:14px}
+.qty-row .qty button{width:32px;height:32px;border-radius:9px;border:1px solid var(--line-strong);display:grid;place-items:center;font-size:18px;transition:.15s}
+.qty-row .qty button:hover{border-color:var(--cyan);color:var(--cyan)}
+.qty-row .qty b{font-family:var(--display);font-size:18px;min-width:22px;text-align:center}
+.form-field{margin-bottom:16px}
+.form-field label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+.form-field input{width:100%;padding:13px 15px;border-radius:11px;border:1px solid var(--line-strong);background:var(--panel);color:var(--ink);font-size:14.5px;font-family:inherit;transition:.2s;outline:none}
+.form-field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px var(--cyan-dim)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.modal-total{display:flex;align-items:center;justify-content:space-between;padding:16px;border-radius:13px;background:var(--panel-2);border:1px solid var(--line);margin:6px 0 20px}
+.modal-total .lt{font-size:14px;color:var(--ink-dim)}
+.modal-total .rt{font-family:var(--display);font-weight:700;font-size:24px;color:var(--cyan)}
+.modal-legal{font-size:11.5px;color:var(--ink-faint);text-align:center;margin-top:14px;line-height:1.6}
+
+/* 成功态 */
+.success-box{text-align:center;padding:30px 0 14px}
+.success-box .check{width:74px;height:74px;margin:0 auto 22px;border-radius:50%;background:rgba(61,220,151,.14);border:1px solid rgba(61,220,151,.4);display:grid;place-items:center;color:var(--green)}
+.success-box h4{font-size:22px;font-weight:700;margin-bottom:8px}
+.success-box p{color:var(--ink-dim);font-size:14px;line-height:1.7}
+.success-box .order{display:inline-block;margin-top:18px;padding:6px 16px;border-radius:8px;background:var(--panel-2);border:1px solid var(--line);font-family:var(--mono);font-size:13px;color:var(--cyan)}
+
+/* ============ Footer ============ */
+footer{border-top:1px solid var(--line);padding:48px 0 40px;background:rgba(255,255,255,.01)}
+.foot-grid{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;flex-wrap:wrap}
+.foot-brand .brand{display:flex;align-items:center;gap:11px;margin-bottom:14px}
+.foot-brand p{color:var(--ink-faint);font-size:13px;max-width:340px;line-height:1.7}
+.foot-links{display:flex;gap:20px;flex-wrap:wrap}
+.foot-links a{font-size:13.5px;color:var(--ink-dim);transition:.2s}
+.foot-links a:hover{color:var(--cyan)}
+.foot-bottom{margin-top:34px;padding-top:22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-faint)}
+.foot-bottom .mono{font-family:var(--mono)}
+
+/* ============ 响应式 ============ */
+@media (max-width:1024px){
+  .hero-grid{grid-template-columns:1fr;gap:44px}
+  .countdown{max-width:560px}
+  .track-grid{grid-template-columns:repeat(2,1fr)}
+  .speakers-grid{grid-template-columns:repeat(3,1fr)}
+  .ticket-grid{grid-template-columns:repeat(2,1fr)}
+  .track-col{grid-template-columns:repeat(2,1fr)}
+  .logo-grid.gold,.logo-grid.silver,.logo-grid.community{grid-template-columns:repeat(3,1fr)}
+}
+@media (max-width:768px){
+  .nav-links{display:none}
+  .nav-burger{display:grid}
+  .nav.menu-open .nav-links{display:flex;position:absolute;top:var(--nav-h);left:0;right:0;flex-direction:column;background:rgba(5,7,15,.97);border-bottom:1px solid var(--line);padding:14px 20px 20px;gap:2px}
+  .nav.menu-open .nav-links a{padding:13px 8px;border-bottom:1px solid var(--line)}
+  .sec{padding:64px 0}
+  .hero{padding-top:calc(var(--nav-h) + 20px)}
+  .hero-meta{gap:10px 18px}
+  .stats-inner{grid-template-columns:repeat(2,1fr)}
+  .stat:nth-child(3)::before{display:none}
+  .stat{border-bottom:1px solid var(--line)}
+  .stat:nth-child(3),.stat:nth-child(4){border-bottom:none}
+  .track-grid{grid-template-columns:1fr}
+  .speakers-grid{grid-template-columns:repeat(2,1fr)}
+  .speaker .ava{height:130px}
+  .speaker .ava b{font-size:44px}
+  .ticket-grid{grid-template-columns:1fr}
+  .venue-grid{grid-template-columns:1fr}
+  .map-box{min-height:260px}
+  .policy-grid{grid-template-columns:1fr}
+  .track-col{grid-template-columns:1fr}
+  .tl-row{grid-template-columns:82px 1fr;gap:14px}
+  .cta-zone{padding:48px 22px}
+  .logo-grid.diamond{grid-template-columns:repeat(3,1fr)}
+  .logo-grid.gold,.logo-grid.silver,.logo-grid.community{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .sticky-bar{display:block}
+  .hero-actions .btn{flex:1}
+}
+@media (min-width:769px){
+  .modal-mask{align-items:center;padding:30px}
+  .modal{border-radius:22px}
+}
+</style>
+</head>
+<body>
+<div class="bg"></div>
+<canvas id="net"></canvas>
+<div class="grain"></div>
+
+<!-- ============ 导航 ============ -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark">&gt;_</span>
+      <span class="name">SH DevCon 2026<small>SHANGHAI · 11.14-15</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#theme">大会主题</a>
+      <a href="#speakers">嘉宾</a>
+      <a href="#agenda">日程</a>
+      <a href="#tickets">票种</a>
+      <a href="#sponsors">赞助商</a>
+      <a href="#venue">交通</a>
+      <a href="#policy">退票政策</a>
+    </nav>
+    <a href="#tickets" class="btn btn-primary btn-sm nav-cta">立即报名</a>
+    <button class="nav-burger" id="burger" aria-label="菜单"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<!-- ============ Hero ============ -->
+<section class="hero" id="top">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="tag"><span class="dot"></span>早鸟票火热抢购中 · 10.10 截止</div>
+        <h1>上海开发者大会<br><span class="grad">智驱未来</span></h1>
+        <p class="sub">AI 原生时代的工程实践。3000 名开发者、50+ 位一线嘉宾、2 天 40+ 场深度议题，11 月 14–15 日相约上海世博中心，一起 Code the Next Decade。</p>
+        <div class="hero-meta">
+          <div class="m"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 11h18"/></svg></span><div><div class="k">日期</div><div class="v">2026.11.14–15</div></div></div>
+          <div class="m"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s7-5.5 7-11a7 7 0 1 0-14 0c0 5.5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg></span><div><div class="k">地点</div><div class="v">上海世博中心</div></div></div>
+          <div class="m"><span class="ico"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6"/></svg></span><div><div class="k">规模</div><div class="v">3000 人</div></div></div>
+        </div>
+        <div class="hero-actions">
+          <a href="#tickets" class="btn btn-primary">立即报名 · 早鸟 ¥399</a>
+          <a href="#agenda" class="btn btn-ghost">查看日程</a>
+          <span class="note">早鸟票限时 5 折 · 团队购票更优惠</span>
+        </div>
+      </div>
+      <div class="countdown" id="countdown">
+        <div class="cd-top">
+          <span class="cd-label">早鸟票截止倒计时</span>
+          <span class="cd-badge">SAVE 50%</span>
+        </div>
+        <div class="cd-grid">
+          <div class="cd-cell"><b id="cd-d">--</b><span>天</span></div>
+          <div class="cd-cell"><b id="cd-h">--</b><span>时</span></div>
+          <div class="cd-cell"><b id="cd-m">--</b><span>分</span></div>
+          <div class="cd-cell"><b id="cd-s">--</b><span>秒</span></div>
+        </div>
+        <div class="cd-foot">
+          <div class="cd-price"><span class="cur">¥</span><span class="num">399</span><span class="was">¥799</span></div>
+          <a href="#tickets" class="btn btn-primary btn-sm">抢早鸟票</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 数据条 -->
+<div class="stats">
+  <div class="wrap stats-inner">
+    <div class="stat"><b>3000+</b><span>参会开发者</span></div>
+    <div class="stat"><b>50+</b><span>一线嘉宾</span></div>
+    <div class="stat"><b>40+</b><span>深度议题</span></div>
+    <div class="stat"><b>2 天</b><span>沉浸式日程</span></div>
+  </div>
+</div>
+
+<!-- ============ 主题 ============ -->
+<section class="sec" id="theme">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Theme</span>
+      <h2 class="sec-title">今年，我们聊什么</h2>
+      <p class="sec-desc">当 AI 重新定义「写代码」这件事，工程师的价值在迁移、在重塑。大会围绕 AI 原生时代最真实的工程挑战，拆解可落地、可复用的实践。</p>
+    </div>
+    <div class="theme-banner">
+      <h3>「智驱未来」—— 当大模型成为新的开发基础设施，工程实践如何被重写？</h3>
+      <p>从 Copilot 到自主 Agent，从 RAG 到推理优化，从云原生到智能前端。我们不谈空泛的概念，只谈上了生产、踩过坑、验证过收益的真实经验。</p>
+    </div>
+    <div class="track-grid">
+      <div class="track-card"><div class="idx">TRACK · 01</div><h4>AI 工程</h4><p>大模型应用落地、Agent 编排、RAG 架构、推理加速与成本治理。</p></div>
+      <div class="track-card"><div class="idx">TRACK · 02</div><h4>云原生</h4><p>Kubernetes 演进、Serverless、可观测性、AI 时代的基础设施底座。</p></div>
+      <div class="track-card"><div class="idx">TRACK · 03</div><h4>前端体验</h4><p>AI 辅助编码、新一代渲染引擎、智能交互与极致体验工程。</p></div>
+      <div class="track-card"><div class="idx">TRACK · 04</div><h4>数据与安全</h4><p>向量数据库、数据管道、LLM 供应链安全与合规治理。</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 嘉宾 ============ -->
+<section class="sec" id="speakers" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Speakers</span>
+      <h2 class="sec-title">与一线实践者<em>面对面</em></h2>
+      <p class="sec-desc">来自大模型公司、开源社区、头部互联网与独角兽的 50+ 位讲师，分享正在发生的工程实践。</p>
+    </div>
+    <div class="speakers-grid" id="speakersGrid">
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">林</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=LinYuan" alt="林远" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>林远</h4><div class="role">远见智能 · CTO</div><p class="talk">主题演讲：大模型驱动的下一代开发范式</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">陈</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=ChenXi" alt="陈曦" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>陈曦</h4><div class="role">云原生基金会 · 董事</div><p class="talk">云原生 × AI 的工程落地路径</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">王</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=WangShu" alt="王澍" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>王澍</h4><div class="role">星核实验室 · 首席科学家</div><p class="talk">多模态模型的能力边界与应用</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">张</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=ZhangMo" alt="张墨" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>张墨</h4><div class="role">前端框架 · 核心贡献者</div><p class="talk">面向 AI 的前端工程新范式</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">苏</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=SuQin" alt="苏秦" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>苏秦</h4><div class="role">资深安全研究员</div><p class="talk">LLM 供应链安全：从模型到部署</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">何</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=HeRuo" alt="何若" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>何若</h4><div class="role">分布式数据库专家</div><p class="talk">AI 时代的数据底座演进</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">K</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=KevinLin" alt="Kevin Lin" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>Kevin Lin</h4><div class="role">国际开源社区 · 领袖</div><p class="talk">全球开发者生态的最新趋势</p></div></div>
+      <div class="speaker"><div class="ava"><div class="grid-bg"></div><div class="glow"></div><b class="fallback">沈</b><img class="ava-img" src="https://api.dicebear.com/9.x/adventurer/svg?seed=ShenZhixing" alt="沈知行" loading="lazy" onerror="this.remove()" /></div><div class="info"><h4>沈知行</h4><div class="role">脉冲科技 · 产品副总裁</div><p class="talk">AI 产品的增长与商业化实践</p></div></div>
+    </div>
+    <p class="more-speakers">更多嘉宾持续更新中，最终名单以现场为准</p>
+  </div>
+</section>
+
+<!-- ============ 日程 ============ -->
+<section class="sec" id="agenda">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Agenda</span>
+      <h2 class="sec-title">分会场<em>日程</em></h2>
+      <p class="sec-desc">首日主论坛聚焦行业大势，次日四大分会场并行，覆盖 AI 工程、云原生、前端、数据安全。</p>
+    </div>
+    <div class="tabs" id="agendaTabs">
+      <button class="tab active" data-day="d1">11.14 主论坛</button>
+      <button class="tab" data-day="d2">11.15 分会场</button>
+    </div>
+
+    <!-- Day 1 -->
+    <div class="agenda-panel active" id="d1">
+      <div class="timeline">
+        <div class="tl-row"><div class="tl-time">09:00–09:30</div><div class="tl-body"><h4>开幕 · 主题演讲「智驱未来」</h4><div class="speaker-name">大会组委会</div><span class="kind">KEYNOTE</span></div></div>
+        <div class="tl-row"><div class="tl-time">09:30–10:20</div><div class="tl-body"><h4>大模型驱动的下一代开发范式</h4><div class="speaker-name">林远 · 远见智能 CTO</div><span class="kind">KEYNOTE</span></div></div>
+        <div class="tl-row"><div class="tl-time">10:20–10:40</div><div class="tl-body"><h4>茶歇 & 交流</h4><span class="kind break">BREAK</span></div></div>
+        <div class="tl-row"><div class="tl-time">10:40–11:30</div><div class="tl-body"><h4>云原生 × AI 的工程落地路径</h4><div class="speaker-name">陈曦 · 云原生基金会董事</div><span class="kind">KEYNOTE</span></div></div>
+        <div class="tl-row"><div class="tl-time">11:30–12:00</div><div class="tl-body"><h4>圆桌：AI 时代开发者的核心竞争力</h4><div class="speaker-name">多位嘉宾</div><span class="kind">PANEL</span></div></div>
+        <div class="tl-row"><div class="tl-time">12:00–13:30</div><div class="tl-body"><h4>午餐 & 展区互动</h4><span class="kind break">BREAK</span></div></div>
+        <div class="tl-row"><div class="tl-time">13:30–17:00</div><div class="tl-body"><h4>深度工作坊（并行）</h4><div class="speaker-name">AI Agent 实战 / 可观测性 / 智能前端 / 向量检索</div><span class="kind">WORKSHOP</span></div></div>
+        <div class="tl-row"><div class="tl-time">18:00–20:00</div><div class="tl-body"><h4>开发者之夜 Party</h4><div class="speaker-name">全体参会者 · 含轻食与酒水</div><span class="kind">NETWORKING</span></div></div>
+      </div>
+    </div>
+
+    <!-- Day 2 -->
+    <div class="agenda-panel" id="d2">
+      <div class="track-col">
+        <div class="tc">
+          <div class="tc-head"><div class="t">Track A · AI 工程</div><div class="d">ROOM · 星云厅</div></div>
+          <div class="tc-session"><div class="tm">09:30–10:20</div><div class="tt">生产级 Agent 的编排与容错设计</div><div class="sp">王澍 · 星核实验室</div></div>
+          <div class="tc-session"><div class="tm">10:40–11:30</div><div class="tt">RAG 从入门到高可用</div><div class="sp">何若 · 数据库专家</div></div>
+          <div class="tc-session"><div class="tm">14:00–14:50</div><div class="tt">大模型推理成本优化实战</div><div class="sp">林远 · 远见智能</div></div>
+          <div class="tc-session"><div class="tm">15:10–16:00</div><div class="tt">LLMOps 与模型治理</div><div class="sp">特邀讲师</div></div>
+        </div>
+        <div class="tc">
+          <div class="tc-head"><div class="t">Track B · 云原生</div><div class="d">ROOM · 星河厅</div></div>
+          <div class="tc-session"><div class="tm">09:30–10:20</div><div class="tt">Kubernetes 面向 AI 负载的演进</div><div class="sp">陈曦 · 云原生基金会</div></div>
+          <div class="tc-session"><div class="tm">10:40–11:30</div><div class="tt">Serverless 的成本与弹性平衡</div><div class="sp">特邀讲师</div></div>
+          <div class="tc-session"><div class="tm">14:00–14:50</div><div class="tt">可观测性：从告警到智能诊断</div><div class="sp">特邀讲师</div></div>
+          <div class="tc-session"><div class="tm">15:10–16:00</div><div class="tt">GPU 集群调度与混合云</div><div class="sp">特邀讲师</div></div>
+        </div>
+        <div class="tc">
+          <div class="tc-head"><div class="t">Track C · 前端体验</div><div class="d">ROOM · 星晖厅</div></div>
+          <div class="tc-session"><div class="tm">09:30–10:20</div><div class="tt">面向 AI 的前端工程新范式</div><div class="sp">张墨 · 框架核心贡献者</div></div>
+          <div class="tc-session"><div class="tm">10:40–11:30</div><div class="tt">新一代渲染引擎实战</div><div class="sp">特邀讲师</div></div>
+          <div class="tc-session"><div class="tm">14:00–14:50</div><div class="tt">AI 辅助编码的工程化落地</div><div class="sp">特邀讲师</div></div>
+          <div class="tc-session"><div class="tm">15:10–16:00</div><div class="tt">智能交互与体验度量</div><div class="sp">特邀讲师</div></div>
+        </div>
+        <div class="tc">
+          <div class="tc-head"><div class="t">Track D · 数据与安全</div><div class="d">ROOM · 星耀厅</div></div>
+          <div class="tc-session"><div class="tm">09:30–10:20</div><div class="tt">向量数据库选型与性能</div><div class="sp">特邀讲师</div></div>
+          <div class="tc-session"><div class="tm">10:40–11:30</div><div class="tt">LLM 供应链安全</div><div class="sp">苏秦 · 安全研究员</div></div>
+          <div class="tc-session"><div class="tm">14:00–14:50</div><div class="tt">实时数据管道新架构</div><div class="sp">特邀讲师</div></div>
+          <div class="tc-session"><div class="tm">15:10–16:00</div><div class="tt">AI 合规与数据隐私治理</div><div class="sp">特邀讲师</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 票种 ============ -->
+<section class="sec" id="tickets">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Tickets</span>
+      <h2 class="sec-title">票种与<em>权益</em></h2>
+      <p class="sec-desc">早鸟限时 5 折，团队购票更优惠。所有票种均支持电子票入场，报名成功后 24 小时内发送至邮箱。</p>
+    </div>
+    <div class="ticket-grid">
+      <div class="ticket soldout">
+        <span class="flag" style="background:var(--panel-2);color:var(--ink-faint)">已售罄</span>
+        <div class="tname">极客票</div>
+        <div class="tdesc">限量 300 张 · 已抢空</div>
+        <div class="price"><span class="cur">¥</span><span class="num">199</span></div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>大会全程通行证</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>议题回放</li>
+          <li class="off"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>午餐</li>
+          <li class="off"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg>开发者之夜 Party</li>
+        </ul>
+        <button class="btn btn-primary btn-block" disabled>已售罄</button>
+      </div>
+      <div class="ticket featured">
+        <span class="flag">早鸟 · 5 折</span>
+        <div class="tname">早鸟票</div>
+        <div class="tdesc">限时抢购 · 10.10 截止</div>
+        <div class="price"><span class="cur">¥</span><span class="num">399</span></div>
+        <div class="was">原价 ¥799</div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>大会全程通行证</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>全部议题回放</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>两日午餐</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>开发者之夜 Party</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>大会专属礼包</li>
+        </ul>
+        <button class="btn btn-primary btn-block" data-ticket="早鸟票" data-price="399">立即抢购</button>
+      </div>
+      <div class="ticket">
+        <div class="tname">标准票</div>
+        <div class="tdesc">全价票 · 随时可购</div>
+        <div class="price"><span class="cur">¥</span><span class="num">799</span></div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>大会全程通行证</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>全部议题回放</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>两日午餐</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>开发者之夜 Party</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>大会专属礼包</li>
+        </ul>
+        <button class="btn btn-ghost btn-block" data-ticket="标准票" data-price="799">购买标准票</button>
+      </div>
+      <div class="ticket">
+        <div class="tname">VIP 票</div>
+        <div class="tdesc">尊享服务 · 名额有限</div>
+        <div class="price"><span class="cur">¥</span><span class="num">1999</span></div>
+        <ul>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>含早鸟票全部权益</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>前排预留座位</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>嘉宾交流专属场</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>VIP 晚宴</li>
+          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6L9 17l-5-5"/></svg>升级版礼包</li>
+        </ul>
+        <button class="btn btn-ghost btn-block" data-ticket="VIP 票" data-price="1999">购买 VIP 票</button>
+      </div>
+    </div>
+
+    <div class="compare-wrap">
+      <table class="compare">
+        <thead><tr><th>权益</th><th>极客票</th><th>早鸟票</th><th>标准票</th><th>VIP 票</th></tr></thead>
+        <tbody>
+          <tr><td>大会全程通行证</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>全部议题回放</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>两日午餐</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>开发者之夜 Party</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>大会专属礼包</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+          <tr><td>前排预留座位</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>嘉宾交流专属场</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+          <tr><td>VIP 晚宴</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="text-align:center;margin-top:22px;color:var(--ink-faint);font-size:13.5px">团队购票（5 人及以上）享 85 折，请联系 <span style="color:var(--cyan)">biz@shdevcon.cn</span> 获取企业通道</p>
+  </div>
+</section>
+
+<!-- ============ 赞助商 ============ -->
+<section class="sec" id="sponsors">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Sponsors</span>
+      <h2 class="sec-title">合作伙伴</h2>
+      <p class="sec-desc">感谢以下伙伴对大会的支持。成为赞助商，请邮件至 <span style="color:var(--cyan)">sponsor@shdevcon.cn</span>。</p>
+    </div>
+    <div class="sponsor-tier">
+      <h4>战略赞助 · Diamond</h4>
+      <div class="logo-grid diamond">
+        <div class="logo-item"><span class="lg">深擎科技<small>DEEPDRIVE</small></span></div>
+        <div class="logo-item"><span class="lg">量子云<small>QUANCLOUD</small></span></div>
+        <div class="logo-item"><span class="lg">元启智能<small>METAORIGIN</small></span></div>
+      </div>
+    </div>
+    <div class="sponsor-tier">
+      <h4>金牌赞助 · Gold</h4>
+      <div class="logo-grid gold">
+        <div class="logo-item"><span class="lg">星云数据库<small>NEBULADB</small></span></div>
+        <div class="logo-item"><span class="lg">极光网络<small>AURORANET</small></span></div>
+        <div class="logo-item"><span class="lg">向量科技<small>VECTORX</small></span></div>
+        <div class="logo-item"><span class="lg">码栈<small>CODESTACK</small></span></div>
+        <div class="logo-item"><span class="lg">天工智造<small>TIANGONG</small></span></div>
+      </div>
+    </div>
+    <div class="sponsor-tier">
+      <h4>银牌赞助 · Silver</h4>
+      <div class="logo-grid silver">
+        <div class="logo-item"><span class="lg">云梯<small>CLOUDLADDER</small></span></div>
+        <div class="logo-item"><span class="lg">像素引擎<small>PIXELENGINE</small></span></div>
+        <div class="logo-item"><span class="lg">段栈<small>SEGMENTSTACK</small></span></div>
+        <div class="logo-item"><span class="lg">智链<small>SMARTCHAIN</small></span></div>
+        <div class="logo-item"><span class="lg">数域<small>DATAFIELD</small></span></div>
+        <div class="logo-item"><span class="lg">光年计算<small>LIGHTYEAR</small></span></div>
+      </div>
+    </div>
+    <div class="sponsor-tier">
+      <h4>社区 & 媒体伙伴</h4>
+      <div class="logo-grid community">
+        <div class="logo-item"><span class="lg">开源社区<small>OPENCOMMUNITY</small></span></div>
+        <div class="logo-item"><span class="lg">极客周刊<small>GEEKWEEKLY</small></span></div>
+        <div class="logo-item"><span class="lg">码农咖啡<small>CODERCOFFEE</small></span></div>
+        <div class="logo-item"><span class="lg">技术雷达<small>TECHRADAR</small></span></div>
+        <div class="logo-item"><span class="lg">云原生圈<small>CLOUDNATIVECLUB</small></span></div>
+        <div class="logo-item"><span class="lg">AI 研习社<small>AILAB</small></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 交通 ============ -->
+<section class="sec" id="venue">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Venue</span>
+      <h2 class="sec-title">交通<em>指引</em></h2>
+      <p class="sec-desc">大会地点：上海世博中心 · 浦东新区博成路 850 号。</p>
+    </div>
+    <div class="venue-grid">
+      <div class="map-box">
+        <div class="map-bg"></div>
+        <div class="map-pin">
+          <div class="pulse-ring"><div class="pin-dot"></div></div>
+          <span>上海世博中心</span>
+        </div>
+      </div>
+      <div class="venue-info">
+        <div class="addr">上海世博中心</div>
+        <div class="addr-sub">上海市浦东新区博成路 850 号</div>
+        <div class="transport-list">
+          <div class="transport"><span class="t-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M4 10h16M9 4v6M15 4v6"/></svg></span><div class="t-body"><h5>地铁（推荐）</h5><p>8 号线「中华艺术宫」站 4 号口，步行约 5 分钟；7/8 号线「耀华路」站亦可到达。</p></div></div>
+          <div class="transport"><span class="t-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16V6a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v10M4 16h2m12 0h2M4 16a3 3 0 0 0 6 0m6 0a3 3 0 0 0 6 0M8 8h5"/></svg></span><div class="t-body"><h5>公交</h5><p>1098 路、浦东 45 路等多条线路经停「世博大道博成路」站。</p></div></div>
+          <div class="transport"><span class="t-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="17" r="3"/><circle cx="17" cy="17" r="3"/><path d="M7 17H3V9a1 1 0 0 1 1-1h9"/><path d="M10 8h6a1 1 0 0 1 1 1v5"/></svg></span><div class="t-body"><h5>驾车 / 停车</h5><p>导航「上海世博中心」，场馆配有地下停车场，建议绿色出行。</p></div></div>
+          <div class="transport"><span class="t-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15l6 6-9-1 3-5zM21 9l-6-6 1 9-5 3z"/></svg></span><div class="t-body"><h5>铁路 / 航空</h5><p>虹桥枢纽乘地铁约 50 分钟直达；浦东机场乘地铁约 60 分钟到达。</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 退票政策 ============ -->
+<section class="sec" id="policy">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">Policy</span>
+      <h2 class="sec-title">退票<em>政策</em></h2>
+      <p class="sec-desc">我们理解计划可能变化，特制定清晰透明的退票与转让规则。</p>
+    </div>
+    <div class="policy-grid">
+      <div class="policy-card">
+        <h4><span class="dot"></span>退款规则</h4>
+        <ul class="refund-list">
+          <li><span class="when">开场前 30 天以上</span><span class="rate">100% 退款</span></li>
+          <li><span class="when">开场前 15–30 天</span><span class="rate">70% 退款</span></li>
+          <li><span class="when">开场前 7–14 天</span><span class="rate">50% 退款</span></li>
+          <li><span class="when">开场前 7 天内</span><span class="rate">不予退款</span></li>
+          <li><span class="when">大会取消（主办方原因）</span><span class="rate">全额退款</span></li>
+        </ul>
+      </div>
+      <div class="policy-card">
+        <h4><span class="dot"></span>常见问题</h4>
+        <ul class="faq-list">
+          <li class="faq-item"><div class="q">可以转让门票吗？</div><p class="a">每张门票可在开场前免费转让 1 次，需在报名系统内完成实名变更。</p></li>
+          <li class="faq-item"><div class="q">退款多久到账？</div><p class="a">提交申请并审核通过后，款项将在 5–10 个工作日内原路退回。</p></li>
+          <li class="faq-item"><div class="q">遇到不可抗力怎么办？</div><p class="a">如遇不可抗力导致大会延期或取消，我们将全额退款或顺延名额。</p></li>
+          <li class="faq-item"><div class="q">可以开发票吗？</div><p class="a">支持开具增值税电子发票，报名成功后可在订单页自助申请。</p></li>
+        </ul>
+      </div>
+    </div>
+    <div class="policy-note"><b>温馨提示：</b>所有退票申请请通过报名确认邮件中的链接或联系 support@shdevcon.cn 提交；转让票不享受再次退款。早鸟票退款以实付金额为准。</div>
+  </div>
+</section>
+
+<!-- ============ CTA 大区 ============ -->
+<section class="sec" style="padding-top:0">
+  <div class="wrap">
+    <div class="cta-zone">
+      <h3>准备好了吗？与 3000 名开发者一起<br>Code the Next Decade</h3>
+      <p>早鸟票 5 折倒计时中，席位有限，先到先得。</p>
+      <a href="#tickets" class="btn btn-primary">立即报名 · 早鸟 ¥399</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Footer ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top"><span class="mark">&gt;_</span><span class="name">SH DevCon 2026<small>SHANGHAI · 11.14-15</small></span></a>
+        <p>上海开发者大会，聚焦 AI 原生时代的工程实践。技术由社区驱动，社区由每一位开发者组成。</p>
+      </div>
+      <div class="foot-links">
+        <a href="#theme">大会主题</a><a href="#speakers">嘉宾</a><a href="#agenda">日程</a><a href="#tickets">票种</a><a href="#sponsors">赞助商</a><a href="#venue">交通</a><a href="#policy">退票政策</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 上海开发者大会组委会 · 保留所有权利</span>
+      <span class="mono">support@shdevcon.cn</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ 底部固定报名栏 ============ -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="bar-inner">
+    <div class="bar-card">
+      <div class="bar-info">
+        <div class="p"><span class="cur">¥</span>399 <span style="font-size:12px;color:var(--ink-faint);text-decoration:line-through;margin-left:4px">¥799</span></div>
+        <div class="t">早鸟票 · 10.10 截止 · 余票不多</div>
+      </div>
+      <a href="#tickets" class="btn btn-primary">立即报名</a>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 购票弹窗 ============ -->
+<div class="modal-mask" id="modal">
+  <div class="modal" role="dialog" aria-modal="true">
+    <div class="modal-head">
+      <h3>报名购票</h3>
+      <button class="modal-close" id="modalClose" aria-label="关闭"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+
+    <div id="modalForm">
+      <div class="ticket-select" id="ticketSelect">
+        <div class="t-opt selected" data-ticket="早鸟票" data-price="399">
+          <span class="radio"></span>
+          <span class="t-main"><span class="tn">早鸟票</span><span class="td">限时 5 折 · 10.10 截止</span></span>
+          <span class="t-price">¥399</span>
+        </div>
+        <div class="t-opt" data-ticket="标准票" data-price="799">
+          <span class="radio"></span>
+          <span class="t-main"><span class="tn">标准票</span><span class="td">全价票 · 随时可购</span></span>
+          <span class="t-price">¥799</span>
+        </div>
+        <div class="t-opt" data-ticket="VIP 票" data-price="1999">
+          <span class="radio"></span>
+          <span class="t-main"><span class="tn">VIP 票</span><span class="td">尊享服务 · 名额有限</span></span>
+          <span class="t-price">¥1999</span>
+        </div>
+      </div>
+
+      <div class="qty-row">
+        <span class="lbl">购票数量</span>
+        <div class="qty"><button id="qtyMinus">−</button><b id="qtyNum">1</b><button id="qtyPlus">+</button></div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field"><label>姓名</label><input id="fName" type="text" placeholder="请输入姓名" /></div>
+        <div class="form-field"><label>手机号</label><input id="fPhone" type="tel" placeholder="用于接收入场凭证" /></div>
+      </div>
+      <div class="form-field"><label>邮箱</label><input id="fEmail" type="email" placeholder="接收电子票与订单信息" /></div>
+      <div class="form-row">
+        <div class="form-field"><label>公司</label><input id="fCompany" type="text" placeholder="选填" /></div>
+        <div class="form-field"><label>职位</label><input id="fTitle" type="text" placeholder="选填" /></div>
+      </div>
+
+      <div class="modal-total">
+        <span class="lt">应付总额（含税）</span>
+        <span class="rt" id="totalPrice">¥399</span>
+      </div>
+      <button class="btn btn-primary btn-block" id="submitBtn">提交报名</button>
+      <p class="modal-legal">提交即表示同意《大会服务条款》与《隐私政策》。支付将在提交后通过安全通道完成。</p>
+    </div>
+
+    <div class="success-box" id="modalSuccess" style="display:none">
+      <div class="check"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h4>报名成功！</h4>
+      <p>我们已收到你的报名申请，电子票与支付信息将发送至你的邮箱。<br>请留意查收。</p>
+      <span class="order" id="orderNo">订单号：--</span>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ 粒子网络背景 ============ */
+(function(){
+  var c = document.getElementById('net'), ctx = c.getContext('2d'), w, h, pts = [], N = 70;
+  function resize(){ w = c.width = innerWidth; h = c.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+  for(var i=0;i<N;i++) pts.push({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35});
+  function loop(){
+    ctx.clearRect(0,0,w,h);
+    for(var i=0;i<N;i++){
+      var p = pts[i];
+      p.x += p.vx; p.y += p.vy;
+      if(p.x<0||p.x>w) p.vx*=-1; if(p.y<0||p.y>h) p.vy*=-1;
+      ctx.beginPath(); ctx.arc(p.x,p.y,1.3,0,Math.PI*2);
+      ctx.fillStyle = 'rgba(139,160,220,.5)'; ctx.fill();
+      for(var j=i+1;j<N;j++){
+        var q = pts[j], dx = p.x-q.x, dy = p.y-q.y, d = dx*dx+dy*dy;
+        if(d < 12000){
+          ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle = 'rgba(90,160,255,'+(0.14*(1-d/12000))+')'; ctx.lineWidth = .6; ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+})();
+
+/* ============ 导航 ============ */
+var nav = document.getElementById('nav');
+addEventListener('scroll', function(){ nav.classList.toggle('scrolled', scrollY > 20); });
+var burger = document.getElementById('burger'), navLinks = document.getElementById('navLinks');
+burger.addEventListener('click', function(){ nav.classList.toggle('menu-open'); burger.classList.toggle('open'); });
+navLinks.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ nav.classList.remove('menu-open'); burger.classList.remove('open'); }); });
+
+/* ============ 倒计时 ============ */
+(function(){
+  var target = new Date('2026-10-10T23:59:59+08:00').getTime();
+  function pad(n){ return n < 10 ? '0'+n : ''+n; }
+  function tick(){
+    var diff = target - Date.now();
+    if(diff <= 0){ ['cd-d','cd-h','cd-m','cd-s'].forEach(function(id){ document.getElementById(id).textContent = '00'; }); return; }
+    var d = Math.floor(diff/864e5), h = Math.floor(diff%864e5/36e5), m = Math.floor(diff%36e5/6e4), s = Math.floor(diff%6e4/1e3);
+    document.getElementById('cd-d').textContent = pad(d);
+    document.getElementById('cd-h').textContent = pad(h);
+    document.getElementById('cd-m').textContent = pad(m);
+    document.getElementById('cd-s').textContent = pad(s);
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+/* ============ 日程 Tab ============ */
+var tabs = document.getElementById('agendaTabs');
+tabs.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    tabs.querySelectorAll('.tab').forEach(function(x){ x.classList.remove('active'); });
+    t.classList.add('active');
+    document.querySelectorAll('.agenda-panel').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById(t.dataset.day).classList.add('active');
+  });
+});
+
+/* ============ 滚动出现动画 ============ */
+var revealEls = document.querySelectorAll('.track-card,.speaker,.ticket,.tc,.transport,.policy-card,.logo-item,.stat');
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.style.opacity = '1'; e.target.style.transform = 'none'; io.unobserve(e.target); }
+  });
+},{threshold:.08});
+revealEls.forEach(function(el){ el.style.transition = 'opacity .6s ease, transform .6s ease'; el.style.opacity = '0'; el.style.transform = 'translateY(24px)'; io.observe(el); });
+
+/* ============ 底部固定栏 ============ */
+var stickyBar = document.getElementById('stickyBar');
+var heroEl = document.querySelector('.hero');
+var footerEl = document.querySelector('footer');
+function updateSticky(){
+  var pastHero = heroEl.getBoundingClientRect().bottom < innerHeight * 0.15;
+  var inFooter = footerEl.getBoundingClientRect().top < innerHeight * 0.55;
+  stickyBar.classList.toggle('show', pastHero && !inFooter);
+}
+updateSticky();
+addEventListener('scroll', updateSticky);
+addEventListener('resize', updateSticky);
+
+/* ============ 购票弹窗 ============ */
+var modal = document.getElementById('modal');
+var modalForm = document.getElementById('modalForm');
+var modalSuccess = document.getElementById('modalSuccess');
+var sel = { ticket:'早鸟票', price:399, qty:1 };
+
+function openModal(ticket, price){
+  sel.ticket = ticket || '早鸟票';
+  sel.price = price || 399;
+  sel.qty = 1;
+  document.getElementById('qtyNum').textContent = '1';
+  document.getElementById('totalPrice').textContent = '¥' + (sel.price * sel.qty);
+  document.querySelectorAll('#ticketSelect .t-opt').forEach(function(o){
+    o.classList.toggle('selected', o.dataset.ticket === sel.ticket);
+  });
+  modalForm.style.display = 'block';
+  modalSuccess.style.display = 'none';
+  document.getElementById('fName').value = ''; document.getElementById('fPhone').value = '';
+  document.getElementById('fEmail').value = ''; document.getElementById('fCompany').value = '';
+  document.getElementById('fTitle').value = '';
+  modal.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){ modal.classList.remove('open'); document.body.style.overflow = ''; }
+document.getElementById('modalClose').addEventListener('click', closeModal);
+modal.addEventListener('click', function(e){ if(e.target === modal) closeModal(); });
+document.querySelectorAll('[data-ticket]').forEach(function(btn){
+  btn.addEventListener('click', function(){ openModal(btn.dataset.ticket, +btn.dataset.price); });
+});
+
+document.querySelectorAll('#ticketSelect .t-opt').forEach(function(o){
+  o.addEventListener('click', function(){
+    document.querySelectorAll('#ticketSelect .t-opt').forEach(function(x){ x.classList.remove('selected'); });
+    o.classList.add('selected');
+    sel.ticket = o.dataset.ticket; sel.price = +o.dataset.price;
+    document.getElementById('totalPrice').textContent = '¥' + (sel.price * sel.qty);
+  });
+});
+document.getElementById('qtyMinus').addEventListener('click', function(){
+  if(sel.qty > 1){ sel.qty--; document.getElementById('qtyNum').textContent = sel.qty; document.getElementById('totalPrice').textContent = '¥' + (sel.price * sel.qty); }
+});
+document.getElementById('qtyPlus').addEventListener('click', function(){
+  if(sel.qty < 20){ sel.qty++; document.getElementById('qtyNum').textContent = sel.qty; document.getElementById('totalPrice').textContent = '¥' + (sel.price * sel.qty); }
+});
+
+document.getElementById('submitBtn').addEventListener('click', function(){
+  var name = document.getElementById('fName').value.trim();
+  var phone = document.getElementById('fPhone').value.trim();
+  var email = document.getElementById('fEmail').value.trim();
+  if(!name){ alert('请填写姓名'); return; }
+  if(!/^1[3-9]\d{9}$/.test(phone)){ alert('请填写正确的手机号'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ alert('请填写正确的邮箱'); return; }
+  var orderNo = 'SD2026-' + Date.now().toString().slice(-8);
+  document.getElementById('orderNo').textContent = '订单号：' + orderNo;
+  modalForm.style.display = 'none';
+  modalSuccess.style.display = 'block';
+});
+addEventListener('keydown', function(e){ if(e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

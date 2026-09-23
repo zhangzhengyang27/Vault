@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="筑光 ZHU·GUANG · 建筑摄影师作品集。以光为笔，记录上海老建筑的岁月、深圳天际线的锋芒与室内空间的氛围。" />
+<title>筑光 ZHU·GUANG — 建筑摄影师作品集</title>
+<link rel="preload" as="image" href="images/hero.jpg" />
+<link href="fonts/google-fonts.css" rel="stylesheet" />
+<style>
+/* ============================================================
+   Design tokens — 深色 · 暖金 · 建筑
+   ============================================================ */
+:root{
+  --bg: oklch(14% 0.012 65);
+  --bg-2: oklch(17% 0.013 65);
+  --surface: oklch(21% 0.014 65);
+  --surface-2: oklch(25% 0.015 65);
+  --line: oklch(30% 0.016 65);
+  --line-soft: oklch(26% 0.015 65);
+
+  --text: oklch(93% 0.012 65);
+  --text-dim: oklch(70% 0.014 65);
+  --text-faint: oklch(58% 0.015 65);
+
+  --accent: oklch(74% 0.12 78);
+  --accent-strong: oklch(82% 0.13 80);
+  --accent-ink: oklch(20% 0.03 70);
+
+  --serif: "Fraunces", "Songti SC", "Noto Serif SC", Georgia, serif;
+  --sans: "Instrument Sans", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 96px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.25, 1, 0.5, 1);
+
+  --nav-h: 72px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+  font-kerning:normal;
+}
+img{display:block;max-width:100%}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+::selection{background:var(--accent);color:var(--accent-ink)}
+
+/* ============================================================
+   Layout helpers
+   ============================================================ */
+.wrap{width:min(1200px, 92vw);margin-inline:auto}
+.section{padding-block:var(--space-8)}
+.section-head{margin-bottom:var(--space-7)}
+.eyebrow{
+  font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin-bottom:var(--space-3);
+  display:inline-flex;align-items:center;gap:var(--space-3);
+}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--accent)}
+.h-display{
+  font-family:var(--serif);
+  font-weight:400;
+  font-size:clamp(2rem, 4.2vw, 3.4rem);
+  line-height:1.08;
+  letter-spacing:-0.01em;
+}
+.lead{
+  margin-top:var(--space-4);
+  max-width:60ch;
+  color:var(--text-dim);
+  font-size:clamp(1rem, 1.4vw, 1.125rem);
+}
+
+/* ============================================================
+   Header / Nav
+   ============================================================ */
+.site-header{
+  position:fixed;inset:0 0 auto 0;z-index:50;height:var(--nav-h);
+  display:flex;align-items:center;
+  transition:background .4s var(--ease-soft),border-color .4s var(--ease-soft);
+  border-bottom:1px solid transparent;
+}
+.site-header.scrolled{
+  background:color-mix(in oklch, var(--bg) 82%, transparent);
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border-bottom-color:var(--line-soft);
+}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:var(--space-5)}
+.brand{display:flex;align-items:baseline;gap:var(--space-3);text-decoration:none}
+.brand-mark{
+  font-family:var(--serif);font-weight:600;font-size:1.35rem;letter-spacing:.02em;
+}
+.brand-sub{font-size:.72rem;letter-spacing:.34em;color:var(--text-dim);text-transform:uppercase}
+.nav-links{display:flex;gap:var(--space-6);list-style:none}
+.nav-links a{
+  text-decoration:none;font-size:.95rem;color:var(--text-dim);
+  position:relative;padding-block:var(--space-2);
+  transition:color .25s var(--ease-soft);
+}
+.nav-links a::after{
+  content:"";position:absolute;left:0;bottom:0;height:1px;width:0;
+  background:var(--accent);transition:width .3s var(--ease-out);
+}
+.nav-links a:hover{color:var(--text)}
+.nav-links a:hover::after{width:100%}
+.nav-cta{
+  padding:.7rem 1.4rem;border:1px solid var(--accent);border-radius:999px;
+  color:var(--accent);font-weight:500;text-decoration:none;font-size:.95rem;
+  transition:background .25s var(--ease-soft),color .25s var(--ease-soft);
+}
+.nav-cta:hover{background:var(--accent);color:var(--accent-ink)}
+.nav-toggle{display:none;width:44px;height:44px;position:relative}
+.nav-toggle span{position:absolute;left:12px;right:12px;height:1.5px;background:var(--text);transition:.3s var(--ease-soft)}
+.nav-toggle span:nth-child(1){top:17px}
+.nav-toggle span:nth-child(2){top:24px}
+.nav-toggle span:nth-child(3){top:31px}
+.nav-toggle.open span:nth-child(1){top:24px;transform:rotate(45deg)}
+.nav-toggle.open span:nth-child(2){opacity:0}
+.nav-toggle.open span:nth-child(3){top:24px;transform:rotate(-45deg)}
+
+/* ============================================================
+   Hero
+   ============================================================ */
+.hero{position:relative;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden}
+.hero-bg{position:absolute;inset:0;z-index:0}
+.hero-bg img{width:100%;height:100%;object-fit:cover;transform:scale(1.06)}
+.hero-bg::after{
+  content:"";position:absolute;inset:0;
+  background:
+    linear-gradient(to top, var(--bg) 4%, transparent 45%),
+    linear-gradient(to bottom, color-mix(in oklch, var(--bg) 55%, transparent), transparent 30%);
+}
+.hero-inner{position:relative;z-index:2;width:min(1200px,92vw);margin-inline:auto;padding-bottom:var(--space-9)}
+.hero-index{
+  font-family:var(--serif);font-style:italic;color:var(--accent);
+  font-size:1rem;letter-spacing:.1em;
+}
+.hero-title{
+  font-family:var(--serif);font-weight:400;
+  font-size:clamp(2.6rem, 8vw, 6.5rem);
+  line-height:1.02;letter-spacing:-0.015em;margin-top:var(--space-4);
+}
+.hero-title em{color:var(--accent);font-style:italic}
+.hero-sub{
+  margin-top:var(--space-5);color:var(--text-dim);
+  max-width:46ch;font-size:clamp(1rem,1.5vw,1.15rem);
+}
+.hero-tags{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-6)}
+.hero-tags span{
+  font-size:.8rem;letter-spacing:.12em;color:var(--text-dim);
+  border:1px solid var(--line);padding:.45rem .9rem;border-radius:999px;
+}
+.scroll-hint{
+  position:absolute;right:var(--space-6);bottom:var(--space-6);z-index:2;
+  display:flex;flex-direction:column;align-items:center;gap:var(--space-3);
+  color:var(--text-faint);font-size:.72rem;letter-spacing:.3em;writing-mode:vertical-rl;
+}
+.scroll-hint::after{content:"";width:1px;height:56px;background:linear-gradient(var(--accent),transparent)}
+
+/* ============================================================
+   Gallery / Filter
+   ============================================================ */
+.filters{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-7)}
+.filter-btn{
+  padding:.6rem 1.2rem;border-radius:999px;border:1px solid var(--line);
+  color:var(--text-dim);font-size:.92rem;transition:.25s var(--ease-soft);
+}
+.filter-btn:hover{border-color:var(--accent);color:var(--text)}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+.gallery{display:grid;grid-template-columns:repeat(12,1fr);gap:var(--space-4)}
+.work{
+  position:relative;border-radius:4px;overflow:hidden;cursor:pointer;
+  grid-column:span 4;aspect-ratio:4/3;opacity:0;transform:translateY(24px);
+  transition:opacity .6s var(--ease-out),transform .6s var(--ease-out),box-shadow .3s var(--ease-soft);
+}
+.work.revealed{opacity:1;transform:none}
+.work[data-cat="shanghai"]{grid-column:span 4;aspect-ratio:4/3}
+.work[data-cat="shenzhen"]{grid-column:span 5;aspect-ratio:3/2}
+.work[data-cat="interior"]{grid-column:span 3;aspect-ratio:3/4}
+.work img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease-out)}
+.work:hover img{transform:scale(1.05)}
+.work::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,.55), transparent 55%);
+  opacity:.7;transition:opacity .3s var(--ease-soft);
+}
+.work:hover::after{opacity:1}
+.work-info{
+  position:absolute;left:0;right:0;bottom:0;z-index:2;padding:var(--space-5);
+  transform:translateY(6px);transition:transform .35s var(--ease-out);
+}
+.work:hover .work-info{transform:none}
+.work-cat{font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--accent)}
+.work-title{font-family:var(--serif);font-weight:500;font-size:1.25rem;margin-top:var(--space-1)}
+.work-meta{color:var(--text-dim);font-size:.85rem;margin-top:var(--space-1)}
+.work-hint{
+  position:absolute;top:var(--space-4);right:var(--space-4);z-index:2;
+  width:34px;height:34px;border:1px solid color-mix(in oklch, #fff 40%, transparent);
+  border-radius:50%;display:grid;place-items:center;color:#fff;font-size:1rem;
+  opacity:0;transform:translateY(-6px);transition:.3s var(--ease-out);
+}
+.work:hover .work-hint{opacity:1;transform:none}
+
+/* ============================================================
+   About
+   ============================================================ */
+.about-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:var(--space-8);align-items:center}
+.about-media{position:relative}
+.about-media img{border-radius:4px;width:100%;aspect-ratio:4/5;object-fit:cover}
+.about-media::before{
+  content:"";position:absolute;inset:auto -14px -14px auto;width:55%;height:55%;
+  border:1px solid var(--line);border-radius:4px;z-index:-1;
+}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4);margin-top:var(--space-7)}
+.stat{display:flex;flex-direction:column}
+.stat b{font-family:var(--serif);font-weight:500;font-size:clamp(1.6rem,3vw,2.2rem);color:var(--accent)}
+.stat span{color:var(--text-dim);font-size:.85rem;margin-top:var(--space-1)}
+.about-copy p+p{margin-top:var(--space-4)}
+
+/* ============================================================
+   Contact
+   ============================================================ */
+.contact-grid{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--space-8)}
+.contact-side p{color:var(--text-dim);max-width:44ch}
+.contact-list{list-style:none;margin-top:var(--space-6);display:grid;gap:var(--space-4)}
+.contact-list li{display:flex;gap:var(--space-4);align-items:baseline;border-bottom:1px solid var(--line-soft);padding-bottom:var(--space-3)}
+.contact-list .k{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text-faint);min-width:64px}
+.contact-list .v{color:var(--text)}
+.contact-list a{color:var(--accent);text-decoration:none}
+.form{display:grid;gap:var(--space-4)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+.field{display:flex;flex-direction:column;gap:var(--space-2)}
+.field label{font-size:.85rem;color:var(--text-dim)}
+.field input,.field select,.field textarea{
+  font-family:inherit;font-size:1rem;color:var(--text);
+  background:var(--bg-2);border:1px solid var(--line);border-radius:4px;
+  padding:.8rem 1rem;transition:border-color .2s var(--ease-soft),box-shadow .2s var(--ease-soft);
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px color-mix(in oklch, var(--accent) 22%, transparent);
+}
+.field textarea{min-height:130px;resize:vertical}
+.field .hint{font-size:.78rem;color:var(--text-faint)}
+.field.error input,.field.error select,.field.error textarea{border-color:oklch(60% 0.18 25)}
+.msg-error{color:oklch(72% 0.16 25);font-size:.85rem;display:none}
+.field.error .msg-error{display:block}
+.form-actions{display:flex;align-items:center;gap:var(--space-4);margin-top:var(--space-2);flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:var(--space-3);
+  background:var(--accent);color:var(--accent-ink);font-weight:600;
+  padding:.9rem 1.8rem;border-radius:999px;font-size:1rem;
+  transition:transform .2s var(--ease-soft),filter .2s var(--ease-soft);
+}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05)}
+.btn:active{transform:scale(.97)}
+.form-status{font-size:.9rem;color:var(--accent);min-height:1.2em}
+.form-status.error{color:oklch(72% 0.16 25)}
+
+/* ============================================================
+   Lightbox
+   ============================================================ */
+.lightbox{position:fixed;inset:0;z-index:100;display:none}
+.lightbox.open{display:block}
+.lb-backdrop{position:absolute;inset:0;background:color-mix(in oklch, var(--bg) 92%, transparent);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:fade .3s var(--ease-soft)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.lb-stage{position:relative;z-index:2;height:100%;display:grid;grid-template-rows:1fr auto;padding:var(--space-5)}
+.lb-main{display:flex;align-items:center;justify-content:center;gap:var(--space-4);min-height:0}
+.lb-img{max-width:min(1200px,100%);max-height:100%;object-fit:contain;border-radius:4px;
+  box-shadow:0 30px 80px rgba(0,0,0,.5);animation:lbIn .45s var(--ease-out)}
+@keyframes lbIn{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+.lb-nav{
+  width:52px;height:52px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;font-size:1.4rem;color:var(--text);
+  transition:.25s var(--ease-soft);flex:none;background:color-mix(in oklch, var(--bg-2) 70%, transparent);
+}
+.lb-nav:hover{border-color:var(--accent);color:var(--accent)}
+.lb-close{position:absolute;top:var(--space-4);right:var(--space-4);z-index:3;
+  width:52px;height:52px;border-radius:50%;border:1px solid var(--line);
+  display:grid;place-items:center;font-size:1.3rem;transition:.25s var(--ease-soft);
+  background:color-mix(in oklch, var(--bg-2) 70%, transparent)}
+.lb-close:hover{border-color:var(--accent);color:var(--accent);transform:rotate(90deg)}
+.lb-caption{max-width:min(1200px,100%);margin:var(--space-4) auto 0;text-align:center}
+.lb-caption .c-cat{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.lb-caption .c-title{font-family:var(--serif);font-weight:500;font-size:clamp(1.3rem,2.4vw,1.8rem);margin-top:var(--space-2)}
+.lb-caption .c-meta{color:var(--text-faint);font-size:.85rem;margin-top:var(--space-1)}
+.lb-caption .c-desc{color:var(--text-dim);max-width:60ch;margin:var(--space-3) auto 0}
+.lb-count{color:var(--text-faint);font-size:.85rem;letter-spacing:.1em}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.site-footer{border-top:1px solid var(--line-soft);padding-block:var(--space-7)}
+.footer-inner{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center;justify-content:space-between;color:var(--text-faint);font-size:.9rem}
+.footer-inner em{font-family:var(--serif);color:var(--text-dim);font-style:normal}
+
+/* ============================================================
+   Reveal on scroll
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease-out),transform .7s var(--ease-out)}
+.reveal.in{opacity:1;transform:none}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 900px){
+  .nav-links,.nav-cta{display:none}
+  .nav-toggle{display:block}
+  .nav-links.mobile{
+    display:flex;flex-direction:column;gap:var(--space-4);
+    position:fixed;top:var(--nav-h);left:0;right:0;z-index:49;
+    background:var(--bg-2);padding:var(--space-6) var(--space-5) var(--space-7);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav-links.mobile a{font-size:1.1rem}
+  .work,.work[data-cat="shanghai"],.work[data-cat="shenzhen"],.work[data-cat="interior"]{grid-column:span 6}
+  .work[data-cat="interior"]{aspect-ratio:3/4}
+  .about-grid,.contact-grid{grid-template-columns:1fr}
+  .scroll-hint{display:none}
+}
+@media (max-width: 560px){
+  .work,.work[data-cat="shanghai"],.work[data-cat="shenzhen"],.work[data-cat="interior"]{grid-column:1/-1}
+  .form-row{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(3,1fr)}
+  .lb-stage{padding:var(--space-4)}
+  .lb-nav{width:44px;height:44px}
+}
+
+/* ============================================================
+   Reduced motion
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+  html{scroll-behavior:auto}
+  .reveal,.work{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ================= Header ================= -->
+<header class="site-header" id="siteHeader">
+  <nav class="wrap nav" aria-label="主导航">
+    <a class="brand" href="#top" aria-label="返回顶部">
+      <span class="brand-mark">筑光</span>
+      <span class="brand-sub">ZHU·GUANG</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#portfolio" data-nav>作品</a></li>
+      <li><a href="#about" data-nav>关于</a></li>
+      <li><a href="#contact" data-nav>询价</a></li>
+    </ul>
+    <a class="nav-cta" href="#contact">商业询价</a>
+    <button class="nav-toggle" id="navToggle" aria-label="打开菜单" aria-expanded="false" aria-controls="navLinks">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<!-- ================= Hero ================= -->
+<section class="hero" id="top">
+  <div class="hero-bg">
+    <img src="images/hero.jpg" alt="上海外滩建筑群黄昏天际线" />
+  </div>
+  <div class="hero-inner">
+    <p class="hero-index">ARCHITECTURAL PHOTOGRAPHER · SHANGHAI</p>
+    <h1 class="hero-title">以<em>光</em>为笔，<br>筑构空间的语言</h1>
+    <p class="hero-sub">我是林栖，一名专注建筑与空间的摄影师。在钢筋与砖石之间寻找光线，为历史街区、城市天际线与室内空间留下被人记住的瞬间。</p>
+    <div class="hero-tags">
+      <span>上海老建筑</span><span>深圳天际线</span><span>室内空间</span>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">SCROLL</div>
+</section>
+
+<!-- ================= Portfolio ================= -->
+<section class="section" id="portfolio">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Selected Works</span>
+      <h2 class="h-display">精选作品</h2>
+      <p class="lead">三组持续拍摄的长期项目。每一张都是关于光、结构与时间的观察。</p>
+    </div>
+
+    <div class="filters reveal" role="tablist" aria-label="按分类筛选作品">
+      <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">全部</button>
+      <button class="filter-btn" data-filter="shanghai" role="tab" aria-selected="false">上海老建筑</button>
+      <button class="filter-btn" data-filter="shenzhen" role="tab" aria-selected="false">深圳天际线</button>
+      <button class="filter-btn" data-filter="interior" role="tab" aria-selected="false">室内空间</button>
+    </div>
+
+    <div class="gallery" id="gallery"><!-- 由 JS 渲染 --></div>
+  </div>
+</section>
+
+<!-- ================= About ================= -->
+<section class="section" id="about" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="about-grid">
+      <div class="about-media reveal">
+        <img src="images/about.jpg" alt="摄影师站在采光中庭中仰头取景" />
+      </div>
+      <div class="about-copy reveal">
+        <span class="eyebrow">About</span>
+        <h2 class="h-display">关于摄影师</h2>
+        <p>我拍摄建筑已有十年。从上海石库门里弄的斑驳砖墙，到深圳玻璃幕墙映射的天际线，再到一间只有一扇窗的安静房间——我始终在寻找同一样东西：光线如何让空间有了情绪。</p>
+        <p>每个项目都始于一次现场勘察，终于一个可以反复观看的瞬间。我服务于地产、设计事务所与文化机构，也接洽个人委托。</p>
+        <div class="stats">
+          <div class="stat"><b>10</b><span>年拍摄经验</span></div>
+          <div class="stat"><b>120+</b><span>完成项目</span></div>
+          <div class="stat"><b>3</b><span>长期系列</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Contact ================= -->
+<section class="section" id="contact">
+  <div class="wrap">
+    <div class="contact-grid">
+      <div class="contact-side reveal">
+        <span class="eyebrow">Commission</span>
+        <h2 class="h-display">商业询价</h2>
+        <p>无论是地产楼书、设计作品集，还是品牌空间的影像记录，告诉我你的项目，我们聊聊如何用光表达它。</p>
+        <ul class="contact-list">
+          <li><span class="k">邮箱</span><span class="v"><a href="mailto:studio@zhuguang.photo">studio@zhuguang.photo</a></span></li>
+          <li><span class="k">电话</span><span class="v">+86 138 0000 0000</span></li>
+          <li><span class="k">坐标</span><span class="v">上海 · 深圳 · 全国</span></li>
+          <li><span class="k">档期</span><span class="v">当前可接 2026 年秋季项目</span></li>
+        </ul>
+      </div>
+
+      <form class="form reveal" id="inquiryForm" novalidate>
+        <div class="form-row">
+          <div class="field">
+            <label for="f-name">姓名</label>
+            <input id="f-name" name="name" type="text" placeholder="如何称呼您" autocomplete="name" />
+            <span class="msg-error">请填写您的姓名。</span>
+          </div>
+          <div class="field">
+            <label for="f-email">邮箱</label>
+            <input id="f-email" name="email" type="email" placeholder="name@example.com" autocomplete="email" />
+            <span class="msg-error">请填写有效的邮箱地址。</span>
+          </div>
+        </div>
+        <div class="field">
+          <label for="f-type">项目类型</label>
+          <select id="f-type" name="type">
+            <option value="">请选择…</option>
+            <option>上海老建筑 / 历史保护</option>
+            <option>深圳天际线 / 城市景观</option>
+            <option>室内空间 / 样板间</option>
+            <option>其他委托</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-budget">预计预算（人民币）</label>
+          <input id="f-budget" name="budget" type="text" placeholder="例如 20,000" />
+        </div>
+        <div class="field">
+          <label for="f-msg">项目说明</label>
+          <textarea id="f-msg" name="message" placeholder="项目地点、类型、期望的拍摄档期与张数…"></textarea>
+          <span class="hint">越具体，回复越快。</span>
+        </div>
+        <div class="form-actions">
+          <button class="btn" type="submit">发送询价</button>
+          <span class="form-status" id="formStatus" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= Footer ================= -->
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <em>筑光 ZHU·GUANG</em>
+    <span>© <span id="year"></span> 林栖 · 建筑摄影</span>
+    <span>SHANGHAI — SHENZHEN</span>
+  </div>
+</footer>
+
+<!-- ================= Lightbox ================= -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="作品大图浏览">
+  <div class="lb-backdrop" data-close></div>
+  <button class="lb-close" id="lbClose" aria-label="关闭预览">✕</button>
+  <div class="lb-stage">
+    <div class="lb-main">
+      <button class="lb-nav" id="lbPrev" aria-label="上一张">‹</button>
+      <img class="lb-img" id="lbImg" src="" alt="" />
+      <button class="lb-nav" id="lbNext" aria-label="下一张">›</button>
+    </div>
+    <div class="lb-caption">
+      <p class="c-cat" id="lbCat"></p>
+      <h3 class="c-title" id="lbTitle"></h3>
+      <p class="c-meta" id="lbMeta"></p>
+      <p class="c-desc" id="lbDesc"></p>
+      <p class="lb-count" id="lbCount"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   Data — 作品数据
+   ============================================================ */
+const LOCAL_IMAGES = ["work-01.jpg","work-02.jpg","work-03.jpg","work-04.jpg","work-05.jpg","work-06.jpg","work-07.jpg","work-08.jpg","work-09.jpg","work-10.jpg","work-11.jpg","work-12.jpg"];
+const enc = encodeURIComponent;
+const CATS = {
+  shanghai: "上海老建筑",
+  shenzhen: "深圳天际线",
+  interior: "室内空间",
+};
+const WORKS = [
+  // ---- 上海老建筑 ----
+  { cat:"shanghai", title:"石库门 · 晨光里的里弄", year:"2025", loc:"上海 · 黄浦",
+    desc:"清晨第一束光斜切进石库门的弄堂，砖墙上的苔痕与晾衣绳投下的影子重叠。我等待了四十分钟，只为让这道光正好落在门楣的雕花上。",
+    size:"landscape_4_3",
+    p:"shanghai shikumen lane house alley at golden morning light, mottled brick walls, warm sunlight raking across cobblestones, laundry lines, nostalgic, photorealistic architectural photography" },
+  { cat:"shanghai", title:"外滩万国建筑 · 蓝调时刻", year:"2024", loc:"上海 · 外滩",
+    desc:"傍晚蓝调时刻的外滩历史建筑群，暖色灯光次第亮起。用长时间曝光压下了人流，只留下建筑自身的轮廓与倒影。",
+    size:"landscape_4_3",
+    p:"the bund shanghai 1920s colonial architecture at blue hour, warm lights glowing, long exposure, calm water reflections, dramatic sky, photorealistic architectural photography" },
+  { cat:"shanghai", title:"武康大楼 · 街角几何", year:"2024", loc:"上海 · 徐汇",
+    desc:"武康大楼的船头造型在街角形成的锐利几何，我用低机位强化了它的压迫感与体量，让这座百年建筑像一艘即将启航的巨轮。",
+    size:"landscape_4_3",
+    p:"wukang building shanghai ship-shaped landmark at street corner, dramatic low angle, morning light on terracotta facade, converging lines, photorealistic architectural photography" },
+  { cat:"shanghai", title:"石库门夕阳 · 砖墙质感", year:"2023", loc:"上海 · 静安",
+    desc:"夕阳把暗红色的墙面染成琥珀色，砖缝的沟壑在侧光下清晰可辨。这组照片记录的是墙面本身，也是时间在墙上留下的年轮。",
+    size:"landscape_4_3",
+    p:"close atmospheric shot of aged shanghai brick wall texture in warm sunset side light, amber tones, deep shadows, photorealistic architectural detail" },
+  // ---- 深圳天际线 ----
+  { cat:"shenzhen", title:"深圳湾 · 天际线长卷", year:"2025", loc:"深圳 · 南山",
+    desc:"从深圳湾公园回望，后海的一排摩天楼在暮色中依次亮起。用接片的方式保住了整条天际线的完整节奏。",
+    size:"landscape_16_9",
+    p:"shenzhen bay skyline panorama at dusk, modern skyscrapers lit up, glass facades reflecting sunset, water foreground, photorealistic cityscape photography" },
+  { cat:"shenzhen", title:"平安金融中心 · 利刃入云", year:"2024", loc:"深圳 · 福田",
+    desc:"低机位仰拍，让平安金融中心利剑般的塔身在云层中直指天空。玻璃幕墙的反射形成层层叠印的抽象光影。",
+    size:"landscape_4_3",
+    p:"ping an finance center shenzhen towering skyscraper blade piercing through clouds, extreme low angle, glass curtain wall reflections, dramatic, photorealistic architecture photography" },
+  { cat:"shenzhen", title:"玻璃幕墙 · 城市镜像", year:"2024", loc:"深圳 · 福田",
+    desc:"相邻两栋楼互为镜像，玻璃幕墙把对面的天际线折叠进画面。我把它当作一幅抽象拼贴来拍，寻找偶然的对称。",
+    size:"landscape_4_3",
+    p:"abstract reflection of shenzhen glass curtain wall towers mirroring each other, geometric kaleidoscope of skyline and sky, symmetric, photorealistic architectural abstraction" },
+  { cat:"shenzhen", title:"后海夜景 · 霓虹长曝", year:"2023", loc:"深圳 · 南山",
+    desc:"雨后的后海，灯光在湿漉漉的路面上拖出长条光带。长时间曝光让城市的运动变成安静的线条。",
+    size:"landscape_16_9",
+    p:"shenzhen houhai night street long exposure, neon lights streaking on wet asphalt, bokeh, cinematic city night, photorealistic nocturnal cityscape" },
+  // ---- 室内空间 ----
+  { cat:"interior", title:"天窗书房 · 一束光", year:"2025", loc:"上海 · 私宅",
+    desc:"一间只有一扇天窗的房间。正午的光束从高处落下，恰好照亮书桌一角。有时候，一束光就足以定义一个空间。",
+    size:"portrait_3_4",
+    p:"minimal interior study with single skylight casting a dramatic shaft of light onto a wooden desk, dust particles in light beam, warm minimal, photorealistic interior photography" },
+  { cat:"interior", title:"旋转楼梯 · 螺旋秩序", year:"2024", loc:"上海 · 展厅",
+    desc:"白色旋转楼梯的螺旋结构在顶光下呈现出递进的秩序感。从正上方的视角俯瞰，楼梯像一朵绽开的几何花朵。",
+    size:"portrait_3_4",
+    p:"spiral staircase seen from above, white minimalist curves forming concentric rings, dramatic top light, elegant geometry, photorealistic architectural interior" },
+  { cat:"interior", title:"清水混凝土 · 材质的沉默", year:"2024", loc:"深圳 · 美术馆",
+    desc:"清水混凝土的质感在漫射光下显得安静而克制。没有多余的装饰，材料本身就是空间的语言。",
+    size:"portrait_3_4",
+    p:"raw concrete museum interior with soft diffused daylight, monolithic material, subtle textures, serene minimalism, photorealistic architectural interior" },
+  { cat:"interior", title:"床边日落 · 温暖一隅", year:"2023", loc:"深圳 · 私宅",
+    desc:"傍晚的余晖透过落地窗洒进卧室，墙面被染成一片暖橘。我想要拍下空间里最柔软的那个时刻。",
+    size:"portrait_3_4",
+    p:"cozy bedroom bathed in warm sunset light through floor to ceiling window, amber wall glow, soft bed linen, calm atmosphere, photorealistic interior photography" },
+];
+
+/* ============================================================
+   Gallery render
+   ============================================================ */
+const gallery = document.getElementById("gallery");
+function imgUrl(work){
+  return "images/" + LOCAL_IMAGES[WORKS.indexOf(work)];
+}
+function workCard(w){
+  const el = document.createElement("article");
+  el.className = "work";
+  el.dataset.cat = w.cat;
+  el.dataset.index = WORKS.indexOf(w);
+  el.tabIndex = 0;
+  el.setAttribute("role","button");
+  el.setAttribute("aria-label", w.title + "，" + CATS[w.cat]);
+  el.innerHTML =
+    '<img src="'+imgUrl(w)+'" alt="'+w.title+'" loading="lazy" />' +
+    '<span class="work-hint" aria-hidden="true">↗</span>' +
+    '<div class="work-info">' +
+      '<p class="work-cat">'+CATS[w.cat]+'</p>' +
+      '<h3 class="work-title">'+w.title+'</h3>' +
+      '<p class="work-meta">'+w.year+' · '+w.loc+'</p>' +
+    '</div>';
+  el.addEventListener("click", ()=> openLightbox(el.dataset.index));
+  el.addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();openLightbox(el.dataset.index);} });
+  return el;
+}
+WORKS.forEach(w=> gallery.appendChild(workCard(w)));
+
+/* ============================================================
+   Filtering
+   ============================================================ */
+const filterBtns = document.querySelectorAll(".filter-btn");
+let activeFilter = "all";
+function applyFilter(){
+  let i = 0;
+  gallery.querySelectorAll(".work").forEach(el=>{
+    const show = activeFilter==="all" || el.dataset.cat===activeFilter;
+    el.style.display = show ? "" : "none";
+    if(show){ el.style.transitionDelay = (i*60)+"ms"; el.classList.add("revealed"); i++; }
+    else el.classList.remove("revealed");
+  });
+}
+filterBtns.forEach(btn=>{
+  btn.addEventListener("click", ()=>{
+    activeFilter = btn.dataset.filter;
+    filterBtns.forEach(b=>{const on=b===btn;b.classList.toggle("active",on);b.setAttribute("aria-selected",on);});
+    applyFilter();
+  });
+});
+applyFilter(); // 初始加载即让全部作品可见
+
+/* ============================================================
+   Lightbox
+   ============================================================ */
+const lightbox = document.getElementById("lightbox");
+const lbImg=document.getElementById("lbImg"), lbCat=document.getElementById("lbCat"),
+      lbTitle=document.getElementById("lbTitle"), lbMeta=document.getElementById("lbMeta"),
+      lbDesc=document.getElementById("lbDesc"), lbCount=document.getElementById("lbCount");
+let current = 0, visible = [];
+function visibleWorks(){
+  return WORKS.filter(w=> activeFilter==="all" || w.cat===activeFilter);
+}
+function renderLightbox(i){
+  const list = visibleWorks();
+  if(!list.length) return;
+  current = (i + list.length) % list.length;
+  const w = list[current];
+  lbImg.src = imgUrl(w); lbImg.alt = w.title;
+  lbCat.textContent = CATS[w.cat];
+  lbTitle.textContent = w.title;
+  lbMeta.textContent = w.year + " · " + w.loc;
+  lbDesc.textContent = w.desc;
+  lbCount.textContent = (current+1) + " / " + list.length;
+}
+function openLightbox(i){
+  visible = visibleWorks();
+  renderLightbox(visible.findIndex(w=> w===WORKS[i])>=0 ? visible.findIndex(w=> w===WORKS[i]) : 0);
+  lightbox.classList.add("open");
+  document.body.style.overflow="hidden";
+  lbClose.focus();
+}
+function closeLightbox(){
+  lightbox.classList.remove("open");
+  document.body.style.overflow="";
+}
+lightbox.querySelector(".lb-backdrop").addEventListener("click", closeLightbox);
+document.getElementById("lbClose").addEventListener("click", closeLightbox);
+document.getElementById("lbPrev").addEventListener("click", ()=>renderLightbox(current-1));
+document.getElementById("lbNext").addEventListener("click", ()=>renderLightbox(current+1));
+document.addEventListener("keydown", e=>{
+  if(!lightbox.classList.contains("open")) return;
+  if(e.key==="Escape") closeLightbox();
+  else if(e.key==="ArrowLeft") renderLightbox(current-1);
+  else if(e.key==="ArrowRight") renderLightbox(current+1);
+});
+
+/* ============================================================
+   Header / Nav
+   ============================================================ */
+const header = document.getElementById("siteHeader");
+const onScroll = ()=> header.classList.toggle("scrolled", window.scrollY>20);
+window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+
+const navToggle = document.getElementById("navToggle"), navLinks = document.getElementById("navLinks");
+navToggle.addEventListener("click", ()=>{
+  const open = navLinks.classList.toggle("mobile");
+  navToggle.classList.toggle("open", open);
+  navToggle.setAttribute("aria-expanded", open);
+  navToggle.setAttribute("aria-label", open?"关闭菜单":"打开菜单");
+});
+document.querySelectorAll("[data-nav]").forEach(a=> a.addEventListener("click", ()=>{
+  navLinks.classList.remove("mobile"); navToggle.classList.remove("open"); navToggle.setAttribute("aria-expanded","false");
+}));
+
+/* ============================================================
+   Reveal on scroll
+   ============================================================ */
+const revealEls = document.querySelectorAll(".reveal");
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
+},{threshold:0.15});
+revealEls.forEach(el=> io.observe(el));
+
+/* ============================================================
+   Contact form
+   ============================================================ */
+const form = document.getElementById("inquiryForm");
+const status = document.getElementById("formStatus");
+const fields = {
+  name: document.getElementById("f-name"),
+  email: document.getElementById("f-email"),
+};
+fields.name.addEventListener("input",()=> fields.name.closest(".field").classList.remove("error"));
+fields.email.addEventListener("input",()=> fields.email.closest(".field").classList.remove("error"));
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  let ok = true;
+  if(!fields.name.value.trim()){ fields.name.closest(".field").classList.add("error"); ok=false; }
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim());
+  if(!emailOk){ fields.email.closest(".field").classList.add("error"); ok=false; }
+  if(!ok){ status.textContent="请先完善标红的必填项。"; status.className="form-status error"; return; }
+  status.textContent = "正在发送…"; status.className="form-status";
+  try{
+    await new Promise(r=>setTimeout(r,900)); // 模拟提交
+    status.textContent = "已收到您的询价，我会在 1 个工作日内回复。";
+    status.className="form-status";
+    form.reset();
+  }catch{
+    status.textContent = "发送失败，请稍后重试或直接邮件联系。"; status.className="form-status error";
+  }
+});
+
+/* Footer year */
+document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

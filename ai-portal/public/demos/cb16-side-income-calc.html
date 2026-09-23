@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>副业收入计算器</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 600px) { .summary-cards { grid-template-columns: 1fr 1fr; } }
+        .s-card {
+            background: #fff; border-radius: 10px; padding: 16px; text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .s-card .val { font-size: 22px; font-weight: 700; }
+        .s-card .lbl { font-size: 12px; color: #78909c; margin-top: 2px; }
+        .s-card.income .val { color: #43a047; }
+        .s-card.cost .val { color: #fb8c00; }
+        .s-card.tax .val { color: #e53935; }
+        .s-card.net .val { color: #1976d2; }
+        .card {
+            background: #fff; border-radius: 12px; padding: 20px;
+            margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; align-items: flex-end; }
+        .form-item { display: flex; flex-direction: column; }
+        .form-item label { font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .form-item input, .form-item select {
+            padding: 8px 12px; border: 1.5px solid #e0e0e0; border-radius: 6px;
+            font-size: 14px; outline: none;
+        }
+        .form-item input:focus { border-color: #1976d2; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+        .btn-primary { background: #1976d2; color: #fff; }
+        .btn-danger { background: #eceff1; color: #546e7a; }
+        .btn-export { background: #43a047; color: #fff; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #eceff1; }
+        th { color: #78909c; font-weight: 600; }
+        .detail-row td { padding: 4px 8px; font-size: 12px; color: #78909c; background: #f9fafb; }
+        .del-btn { color: #e53935; cursor: pointer; border: none; background: none; font-size: 12px; }
+        .monthly-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 8px; margin-top: 12px;
+        }
+        .month-card {
+            background: #f5f7fa; border-radius: 8px; padding: 10px; text-align: center;
+        }
+        .month-card .month { font-size: 12px; color: #78909c; }
+        .month-card .amt { font-size: 16px; font-weight: 700; color: #1976d2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 副业收入计算器</h1>
+        <div class="summary-cards">
+            <div class="s-card income"><div class="val" id="sIncome">¥0</div><div class="lbl">本年度总收入</div></div>
+            <div class="s-card cost"><div class="val" id="sCost">¥0</div><div class="lbl">总成本</div></div>
+            <div class="s-card tax"><div class="val" id="sTax">¥0</div><div class="lbl">总税额</div></div>
+            <div class="s-card net"><div class="val" id="sNet">¥0</div><div class="lbl">税后收入</div></div>
+        </div>
+        <div class="card">
+            <h3>添加收入记录</h3>
+            <div class="form-row">
+                <div class="form-item"><label>收入来源</label><input type="text" id="rSource" placeholder="如：公众号广告" style="width:150px;"></div>
+                <div class="form-item"><label>收入金额</label><input type="number" id="rAmount" step="0.01" style="width:120px;"></div>
+                <div class="form-item"><label>收入类型</label>
+                    <select id="rType" style="width:140px;">
+                        <option value="labor">劳务报酬</option>
+                        <option value="royalty">稿酬所得</option>
+                        <option value="franchise">特许权使用费</option>
+                        <option value="business">经营所得</option>
+                    </select>
+                </div>
+                <div class="form-item"><label>收入日期</label><input type="date" id="rDate"></div>
+                <div class="form-item"><label>成本支出</label><input type="number" id="rCost" value="0" step="0.01" style="width:100px;"></div>
+                <button class="btn btn-primary" onclick="addRecord()">添加</button>
+            </div>
+        </div>
+        <div class="card">
+            <h3>收入记录</h3>
+            <table>
+                <thead><tr><th>来源</th><th>金额</th><th>类型</th><th>日期</th><th>税额</th><th>税后收入</th><th></th></tr></thead>
+                <tbody id="recordBody"></tbody>
+            </table>
+            <div style="margin-top:12px;display:flex;gap:10px;">
+                <button class="btn btn-export" onclick="exportCSV()">导出 CSV</button>
+                <button class="btn btn-danger" onclick="clearAll()">清空数据</button>
+            </div>
+        </div>
+        <div class="card">
+            <h3>月度统计</h3>
+            <div class="monthly-grid" id="monthlyGrid"></div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'side_income_calc';
+        let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
+        document.getElementById('rDate').value = new Date().toISOString().slice(0,10);
+
+        function calcTax(amount, type) {
+            if (type === 'labor') {
+                const deduction = amount <= 4000 ? 800 : amount * 0.2;
+                return Math.max(0, (amount - deduction) * 0.2);
+            } else if (type === 'royalty') {
+                const deduction = amount <= 4000 ? 800 : amount * 0.2;
+                return Math.max(0, (amount - deduction) * 0.2 * 0.7);
+            } else if (type === 'franchise') {
+                const deduction = amount <= 4000 ? 800 : amount * 0.2;
+                return Math.max(0, (amount - deduction) * 0.2);
+            } else if (type === 'business') {
+                const taxable = Math.max(0, amount - amount * 0.2);
+                if (taxable <= 30000) return taxable * 0.05;
+                if (taxable <= 90000) return taxable * 0.1 - 1500;
+                if (taxable <= 300000) return taxable * 0.2 - 10500;
+                if (taxable <= 500000) return taxable * 0.3 - 40500;
+                return taxable * 0.35 - 65500;
+            }
+            return 0;
+        }
+        const typeLabels = { labor: '劳务报酬', royalty: '稿酬所得', franchise: '特许权使用费', business: '经营所得' };
+
+        function addRecord() {
+            const source = document.getElementById('rSource').value.trim();
+            const amount = parseFloat(document.getElementById('rAmount').value);
+            const type = document.getElementById('rType').value;
+            const date = document.getElementById('rDate').value;
+            const cost = parseFloat(document.getElementById('rCost').value) || 0;
+            if (!source || isNaN(amount) || amount <= 0) { alert('请填写完整信息'); return; }
+            const tax = calcTax(amount, type);
+            records.push({ id: Date.now(), source, amount, type, date, cost, tax, net: amount - tax - cost });
+            save();
+            document.getElementById('rSource').value = '';
+            document.getElementById('rAmount').value = '';
+            document.getElementById('rCost').value = '0';
+            render();
+        }
+        function deleteRecord(id) {
+            records = records.filter(r => r.id !== id);
+            save(); render();
+        }
+        function render() {
+            const tbody = document.getElementById('recordBody');
+            tbody.innerHTML = records.map(r => `
+                <tr>
+                    <td>${r.source}</td>
+                    <td style="font-weight:600;">¥${r.amount.toFixed(2)}</td>
+                    <td>${typeLabels[r.type]}</td>
+                    <td>${r.date}</td>
+                    <td style="color:#e53935;">¥${r.tax.toFixed(2)}</td>
+                    <td style="color:#1976d2;font-weight:600;">¥${r.net.toFixed(2)}</td>
+                    <td><button class="del-btn" onclick="deleteRecord(${r.id})">删除</button></td>
+                </tr>
+            `).join('');
+            const totalIncome = records.reduce((s, r) => s + r.amount, 0);
+            const totalCost = records.reduce((s, r) => s + r.cost, 0);
+            const totalTax = records.reduce((s, r) => s + r.tax, 0);
+            const totalNet = records.reduce((s, r) => s + r.net, 0);
+            document.getElementById('sIncome').textContent = '¥' + totalIncome.toFixed(0);
+            document.getElementById('sCost').textContent = '¥' + totalCost.toFixed(0);
+            document.getElementById('sTax').textContent = '¥' + totalTax.toFixed(0);
+            document.getElementById('sNet').textContent = '¥' + totalNet.toFixed(0);
+            // monthly
+            const monthly = {};
+            records.forEach(r => {
+                const m = r.date.slice(0,7);
+                if (!monthly[m]) monthly[m] = { income: 0, tax: 0, net: 0 };
+                monthly[m].income += r.amount;
+                monthly[m].tax += r.tax;
+                monthly[m].net += r.net;
+            });
+            const grid = document.getElementById('monthlyGrid');
+            grid.innerHTML = Object.keys(monthly).sort().map(m => `
+                <div class="month-card">
+                    <div class="month">${m}</div>
+                    <div class="amt">¥${monthly[m].net.toFixed(0)}</div>
+                    <div style="font-size:11px;color:#78909c;">收入 ¥${monthly[m].income.toFixed(0)} | 税 ¥${monthly[m].tax.toFixed(0)}</div>
+                </div>
+            `).join('') || '<p style="color:#78909c;">暂无数据</p>';
+        }
+        function exportCSV() {
+            let csv = '来源,金额,类型,日期,成本,税额,税后收入\n';
+            records.forEach(r => { csv += `${r.source},${r.amount},${typeLabels[r.type]},${r.date},${r.cost},${r.tax.toFixed(2)},${r.net.toFixed(2)}\n`; });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '副业收入记录.csv';
+            link.click();
+        }
+        function clearAll() {
+            if (!confirm('确定清空所有数据？此操作不可恢复。')) return;
+            records = [];
+            save(); render();
+        }
+        render();
+    </script>
+</body>
+</html>

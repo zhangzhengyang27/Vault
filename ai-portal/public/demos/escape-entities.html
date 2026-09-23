@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML 实体转义工具</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 10px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .mode-selector {
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f8f8f8;
+            border-radius: 4px;
+        }
+        .mode-selector label {
+            display: inline;
+            font-weight: normal;
+            margin-left: 5px;
+            margin-right: 15px;
+        }
+        .mode-selector input[type="radio"] {
+            cursor: pointer;
+        }
+        .documentation {
+            background-color: #f0f0f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML 实体转义工具</h1>
+
+    <div class="mode-selector">
+        <strong>模式:</strong>
+        <input type="radio" id="escapeMode" name="mode" value="escape" checked>
+        <label for="escapeMode">转义</label>
+        <input type="radio" id="unescapeMode" name="mode" value="unescape">
+        <label for="unescapeMode">反转义</label>
+    </div>
+
+    <label for="input">输入:</label>
+    <textarea id="input" placeholder="在此粘贴你的文本"></textarea>
+    <label for="output" id="outputLabel">输出(已转义实体):</label>
+    <textarea id="output" readonly></textarea>
+    <button id="copyButton">复制到剪贴板</button>
+
+    <div class="documentation">
+        <h2>这个工具做什么:</h2>
+        <p>这个 HTML 实体工具帮助你在特殊字符与对应 HTML 实体之间相互转换。它有两种工作模式:</p>
+
+        <h3>转义模式(默认):</h3>
+        <p>转义模式:把特殊字符转换为 HTML 实体。当你需要在网页上展示包含 HTML 语法的代码或文本、又不希望它被当作真实 HTML 解析时,这个模式很有用。</p>
+        <ul>
+            <li><code>&</code> 转换为 <code>&amp;amp;</code></li>
+            <li><code><</code> 转换为 <code>&amp;lt;</code></li>
+            <li><code>></code> 转换为 <code>&amp;gt;</code></li>
+            <li><code>"</code> 转换为 <code>&amp;quot;</code></li>
+            <li><code>'</code> 转换为 <code>&amp;#39;</code></li>
+        </ul>
+
+        <h3>反转义模式:</h3>
+        <p>反转义模式:把 HTML 实体还原为原始字符。当你拿到一段 HTML 编码过的文本、需要解码阅读或进一步处理时使用。</p>
+
+        <p><strong>支持的格式:</strong></p>
+        <ul>
+            <li><strong>命名实体:</strong> <code>&amp;amp;</code> → <code>&</code>, <code>&amp;lt;</code> → <code><</code>, <code>&amp;gt;</code> → <code>></code>, <code>&amp;quot;</code> → <code>"</code></li>
+            <li><strong>十进制数字实体:</strong> <code>&amp;#34;</code> → <code>"</code>, <code>&amp;#160;</code> → non-breaking space</li>
+            <li><strong>十六进制数字实体:</strong> <code>&amp;#x22;</code> → <code>"</code>, <code>&amp;#xA0;</code> → non-breaking space</li>
+        </ul>
+
+        <p>本工具支持全部标准 HTML 实体以及任意数字字符引用。</p>
+
+        <p>使用方法:先选择模式(转义或反转义),再把文本粘贴进输入框,输出框会自动出现转换结果,点击「复制到剪贴板」按钮即可带走。</p>
+    </div>
+
+    <script>
+        const input = document.getElementById('input');
+        const output = document.getElementById('output');
+        const outputLabel = document.getElementById('outputLabel');
+        const copyButton = document.getElementById('copyButton');
+        const escapeModeRadio = document.getElementById('escapeMode');
+        const unescapeModeRadio = document.getElementById('unescapeMode');
+
+        function escapeHTML(text) {
+            const entities = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            };
+            return text.replace(/[&<>"']/g, char => entities[char]);
+        }
+
+        function unescapeHTML(text) {
+            const entities = {
+                '&amp;': '&',
+                '&lt;': '<',
+                '&gt;': '>',
+                '&quot;': '"',
+                '&#39;': "'",
+                '&#x27;': "'"
+            };
+            // First handle named entities and hex/decimal entities we know about
+            let result = text.replace(/&amp;|&lt;|&gt;|&quot;|&#39;|&#x27;/g, entity => entities[entity]);
+            // Then handle any decimal numeric entities like &#34;
+            result = result.replace(/&#(\d+);/g, (match, dec) => String.fromCharCode(dec));
+            // Then handle any hexadecimal numeric entities like &#x22;
+            result = result.replace(/&#x([0-9a-fA-F]+);/g, (match, hex) => String.fromCharCode(parseInt(hex, 16)));
+            return result;
+        }
+
+        function processText() {
+            const mode = document.querySelector('input[name="mode"]:checked').value;
+            if (mode === 'escape') {
+                output.value = escapeHTML(input.value);
+                outputLabel.textContent = '输出(已转义实体):';
+            } else {
+                output.value = unescapeHTML(input.value);
+                outputLabel.textContent = '输出(已还原实体):';
+            }
+        }
+
+        input.addEventListener('input', processText);
+        escapeModeRadio.addEventListener('change', processText);
+        unescapeModeRadio.addEventListener('change', processText);
+
+        copyButton.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            copyButton.textContent = 'Copied!';
+            setTimeout(() => {
+                copyButton.textContent = '复制到剪贴板';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>

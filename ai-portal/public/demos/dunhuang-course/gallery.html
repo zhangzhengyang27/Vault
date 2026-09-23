@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数字文物长廊 · 敦煌艺术与丝路文明</title>
+<meta name="description" content="28 件文物瀑布流展陈，点击卡片 360° 翻转查看断代、材质、出土地与故事。">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  /* 瀑布流双面卡片 */
+  .masonry { columns: 4 220px; column-gap: 16px; }
+  .relic-card { break-inside: avoid; margin-bottom: 16px; perspective: 1300px; }
+  .relic-inner { position: relative; width: 100%; aspect-ratio: 4/5; transform-style: preserve-3d; transition: transform .85s var(--ease); border-radius: 14px; }
+  .relic-card.flipped .relic-inner { transform: rotateY(180deg); }
+  .relic-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #fff; }
+  .dark-body .relic-face { background: var(--ink-soft); }
+  .relic-front img { width: 100%; height: 100%; object-fit: cover; }
+  .relic-front .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 14px 12px; background: linear-gradient(180deg, transparent, rgba(20,16,12,.82)); color: #f4efe4; }
+  .relic-front .cap h4 { font-family: var(--serif); margin: 0 0 3px; font-size: 1.08rem; color: #f4efe4; }
+  .relic-front .cap .era { font-size: .78rem; color: var(--gold-pale); }
+  .relic-back { transform: rotateY(180deg); padding: 20px 18px; display: flex; flex-direction: column; overflow: hidden; }
+  .relic-back h4 { font-family: var(--serif); margin: 0 0 10px; font-size: 1.12rem; color: var(--gold-deep); }
+  .dark-body .relic-back h4 { color: var(--gold); }
+  .relic-back dl { margin: 0; font-size: .82rem; }
+  .relic-back dt { color: var(--ochre); letter-spacing: .08em; margin-top: 7px; }
+  .relic-back dd { margin: 0 0 2px; }
+  .relic-back p { margin: 10px 0 0; font-size: .83rem; color: var(--text-muted); line-height: 1.7; }
+  .flip-hint { position: absolute; top: 11px; right: 11px; z-index: 2; background: rgba(28,26,23,.68); color: var(--gold-pale); font-size: .72rem; padding: 4px 10px; border-radius: 999px; }
+  @media (max-width: 760px) { .masonry { columns: 2 160px; } }
+</style>
+</head>
+<body>
+
+<main class="container" style="padding-top:30px">
+  <div class="section-head reveal" style="text-align:left;margin:10px 0 24px">
+    <div class="section-eyebrow">Gallery · 瀑布流展陈</div>
+    <h1 class="serif gilt" style="font-size:clamp(2rem,5vw,3.2rem);margin:.2em 0">数字文物长廊</h1>
+    <p class="lede" style="margin:0">28 件风格化文物插画。点击任意卡片，360° 翻转查看断代、材质、出土地与文物故事。再点一次翻回正面。</p>
+  </div>
+  <div class="masonry reveal" id="masonry"></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script>
+  renderShell('gallery.html');
+  bindReveal();
+
+  (function () {
+    const m = $('#masonry');
+    m.innerHTML = D.relics.map(function (r) {
+      return '<div class="relic-card" id="' + r.id + '">' +
+        '<div class="relic-inner">' +
+          '<div class="relic-face relic-front">' +
+            '<img src="' + r.image + '" alt="' + r.name + '" loading="lazy" onerror="imgFallback(this,\'' + r.name + '\')">' +
+            '<div class="cap"><h4>' + r.name + '</h4><div class="era">' + r.era + ' · ' + r.material + '</div></div>' +
+            '<span class="flip-hint">翻面 ↻</span>' +
+          '</div>' +
+          '<div class="relic-face relic-back">' +
+            '<h4>' + r.name + '</h4>' +
+            '<dl><dt>断代</dt><dd>' + r.era + '</dd>' +
+            '<dt>材质</dt><dd>' + r.material + '</dd>' +
+            '<dt>出土地 / 所在</dt><dd>' + r.site + '</dd></dl>' +
+            '<p>' + r.story + '</p>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+
+    m.addEventListener('click', function (e) {
+      const card = e.target.closest('.relic-card');
+      if (card) card.classList.toggle('flipped');
+    });
+  })();
+</script>
+</body>
+</html>

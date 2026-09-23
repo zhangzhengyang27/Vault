@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="renderer" content="webkit" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=0"
+    />
+    <title>AI 门户管理后台</title>
+    <!-- svg 放在 ico 之后：现代浏览器取最后一个声明的 icon（新 logo）；v 参数破坏缓存 -->
+    <link rel="icon" href="/favicon.ico?v=20260912" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg?v=20260912" />
+    <!-- 不引入第三方统计/字体脚本：管理后台引入的任一第三方脚本被劫持
+         即等于管理员会话被盗（token 存于本页面可达的存储中）。
+         如需访问统计请自托管 Umami 并评估风险后再加回。 -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vance Advisory — Independent Financial Advice · Austin</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-serif-display@5/index.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/plus-jakarta-sans@5/latin-600.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: 'hsl(210, 52%, 10%)',
+        navymid: 'hsl(210, 50%, 14%)',
+        navycard: 'hsl(210, 48%, 12%)',
+        gold: 'hsl(38, 49%, 57%)',
+        goldmuted: 'hsl(38, 40%, 52%)',
+        warm: 'hsl(40, 27%, 96%)',
+        wsoft: 'hsl(40, 20%, 88%)',
+      },
+      fontFamily: {
+        serif: ['"DM Serif Display"', 'Georgia', 'serif'],
+        sans: ['"Plus Jakarta Sans"', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: "Plus Jakarta Sans", "PingFang SC", Arial, sans-serif; font-weight: 300; border-radius: 0; }
+  * { border-radius: 0 !important; }
+  .eyebrow { font-weight: 600; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; }
+  .service-card { border: 1px solid rgba(201,168,90,0.30); transition: border-color .25s ease, box-shadow .25s ease; }
+  .service-card:hover { border: 2px solid rgba(201,168,90,0.75) !important; box-shadow: 0 4px 24px rgba(201,168,90,0.22); padding: 31px; }
+  .hero-blur { filter: blur(10px); opacity: 0; transform: translateY(30px); animation: heroin 1s ease forwards; animation-delay: var(--d, 0ms); }
+  @keyframes heroin { to { filter: blur(0); opacity: 1; transform: none; } }
+  .fadeup { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .testimonial-card { border-left: 3px solid hsl(38, 49%, 57%); border-top: 1px solid rgba(201,168,90,0.25); border-right: 1px solid rgba(201,168,90,0.25); border-bottom: 1px solid rgba(201,168,90,0.25); }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-blur { filter: none; opacity: 1; transform: none; animation: none; }
+    .fadeup { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body class="bg-navy text-warm font-sans antialiased">
+
+<!-- 1. 导航栏 -->
+<header id="nav" class="sticky top-0 z-50 bg-navy">
+  <div class="max-w-7xl mx-auto px-6 h-[72px] flex items-center justify-between">
+    <a href="#top" class="font-serif text-gold text-xl tracking-tight">Vance Advisory</a>
+    <nav class="hidden lg:flex items-center gap-7 text-sm text-warm/70">
+      <a href="#services" class="hover:text-gold">Services</a>
+      <a href="#how" class="hover:text-gold">How It Works</a>
+      <a href="#about" class="hover:text-gold">About</a>
+      <a href="#resources" class="hover:text-gold">Resources</a>
+      <a href="#contact" class="hover:text-gold">Contact</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <a href="#contact" class="hidden sm:inline-block bg-gold text-navy font-semibold text-sm px-5 py-2.5 hover:bg-goldmuted">Free Consultation</a>
+      <button id="burger" class="lg:hidden text-gold p-2" aria-label="Open menu" aria-expanded="false">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="mobilemenu" class="hidden lg:hidden fixed inset-0 bg-navy z-50 px-6 py-6">
+    <div class="flex items-center justify-between mb-8">
+      <span class="font-serif text-gold text-xl">Vance Advisory</span>
+      <button id="menuclose" class="text-gold text-2xl">×</button>
+    </div>
+    <nav class="flex flex-col gap-5 text-lg">
+      <a href="#services" class="hover:text-gold">Services</a>
+      <a href="#how" class="hover:text-gold">How It Works</a>
+      <a href="#about" class="hover:text-gold">About</a>
+      <a href="#resources" class="hover:text-gold">Resources</a>
+      <a href="#contact" class="hover:text-gold">Contact</a>
+      <a href="#contact" class="mt-4 text-center bg-gold text-navy font-semibold text-sm px-5 py-3">Free Consultation</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. Hero 分栏 + VANCE 水印 -->
+  <section class="min-h-screen flex relative">
+    <div class="w-full lg:w-[48%] relative z-10 pt-32 pb-20 pl-6 pr-12" style="padding-left: max(24px, calc((100vw - 1280px)/2 + 48px))">
+      <span class="inline-block border border-gold/70 text-gold eyebrow px-3 py-1.5">Independent Financial Advice</span>
+      <h1 class="font-serif text-warm leading-[1.05] mt-6 text-[clamp(38px,5.5vw,96px)] hero-blur" style="--d:0ms">Your Financial Future,<br>Clarified.</h1>
+      <p class="mt-6 text-lg max-w-[480px] text-warm/70 hero-blur" style="--d:200ms">Independent financial advice — retirement planning, investments, and protection for individuals and families.</p>
+      <div class="mt-8 flex flex-wrap gap-4 hero-blur" style="--d:400ms">
+        <a href="#contact" class="bg-gold text-navy font-semibold text-sm px-5 py-3 hover:bg-goldmuted">Book a Free Consultation</a>
+        <a href="#services" class="border border-gold text-gold font-semibold text-sm px-5 py-3 hover:bg-gold/10">View Our Services →</a>
+      </div>
+      <div class="mt-12 border-t border-gold/20 pt-8 grid grid-cols-3 gap-4 max-w-lg hero-blur" style="--d:550ms">
+        <div><p class="font-serif text-gold text-3xl md:text-4xl"><span class="countup" data-target="500" data-prefix="£" data-suffix="M+">0</span></p><p class="text-xs text-warm/50 mt-1">Assets Advised</p></div>
+        <div><p class="font-serif text-gold text-3xl md:text-4xl"><span class="countup" data-target="200" data-suffix="+">0</span></p><p class="text-xs text-warm/50 mt-1">Clients</p></div>
+        <div><p class="font-serif text-gold text-3xl md:text-4xl"><span class="countup" data-target="18" data-suffix=" Years">0</span></p><p class="text-xs text-warm/50 mt-1">Experience</p></div>
+      </div>
+    </div>
+    <div class="hidden lg:block absolute right-0 top-0 h-full w-[52%]">
+      <svg class="w-full h-full" viewBox="0 0 760 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="760" height="900" fill="hsl(215, 30%, 16%)"/>
+        <rect x="60" y="120" width="640" height="420" fill="hsl(210, 30%, 22%)"/>
+        <g stroke="hsl(40, 20%, 40%)" stroke-width="3" opacity=".5"><path d="M60 120 L700 540"/></g>
+        <rect x="100" y="600" width="560" height="24" rx="4" fill="hsl(25, 25%, 28%)"/>
+        <g fill="hsl(40, 25%, 80%)"><rect x="180" y="560" width="150" height="22" rx="3"/><rect x="360" y="560" width="120" height="22" rx="3"/></g>
+        <g fill="hsl(215, 40%, 30%)"><rect x="180" y="500" width="150" height="48" rx="3" opacity=".6"/><rect x="360" y="500" width="120" height="48" rx="3" opacity=".6"/></g>
+      </svg>
+      <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(13,27,42,1) 0%, rgba(13,27,42,0.92) 30%, rgba(13,27,42,0.5) 60%, transparent 100%)"></div>
+      <span class="absolute top-1/2 -translate-y-1/2 right-[-2%] font-serif text-gold opacity-[0.02] leading-none select-none" style="font-size: clamp(180px, 26vw, 420px)">VANCE</span>
+    </div>
+  </section>
+
+  <!-- 3. 服务 -->
+  <section id="services" class="bg-navy py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="text-center max-w-2xl mx-auto">
+        <p class="eyebrow text-gold">What We Offer</p>
+        <h2 class="font-serif text-warm leading-tight mt-4 text-[clamp(28px,3.5vw,56px)]">Expert Advice Across Every Area of Your Financial Life</h2>
+      </div>
+      <div class="mt-14 grid sm:grid-cols-2 gap-6">
+        <article class="service-card fadeup bg-navycard p-8" style="--d:0ms">
+          <div class="w-12 h-12 border border-gold/60 flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(38, 49%, 57%)" stroke-width="1.8" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>
+          </div>
+          <h3 class="font-serif text-warm text-xl">Retirement Planning</h3>
+          <p class="mt-3 text-warm/70 text-[15px]">Understand exactly how much you need, when you can retire, and how to make your money last. We model multiple scenarios so you retire with confidence, not guesswork.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium">Learn more →</a>
+        </article>
+        <article class="service-card fadeup bg-navycard p-8" style="--d:100ms">
+          <div class="w-12 h-12 border border-gold/60 flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(38, 49%, 57%)" stroke-width="1.8" aria-hidden="true"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>
+          </div>
+          <h3 class="font-serif text-warm text-xl">Investment Management</h3>
+          <p class="mt-3 text-warm/70 text-[15px]">Build a diversified portfolio aligned to your goals, timeline, and attitude to risk. Independent advice means we recommend what's right for you — not what earns us the highest commission.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium">Learn more →</a>
+        </article>
+        <article class="service-card fadeup bg-navycard p-8" style="--d:200ms">
+          <div class="w-12 h-12 border border-gold/60 flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(38, 49%, 57%)" stroke-width="1.8" aria-hidden="true"><path d="M12 3l8 4v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <h3 class="font-serif text-warm text-xl">Protection Insurance</h3>
+          <p class="mt-3 text-warm/70 text-[15px]">Ensure your family and income are protected if the unexpected happens. We review the market to find the right level of cover at the right price.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium">Learn more →</a>
+        </article>
+        <article class="service-card fadeup bg-navycard p-8" style="--d:300ms">
+          <div class="w-12 h-12 border border-gold/60 flex items-center justify-center mb-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="hsl(38, 49%, 57%)" stroke-width="1.8" aria-hidden="true"><path d="M6 2h9l5 5v15H6z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          </div>
+          <h3 class="font-serif text-warm text-xl">Estate Planning</h3>
+          <p class="mt-3 text-warm/70 text-[15px]">Minimise inheritance tax and ensure your assets go exactly where you intend. We work alongside solicitors to make sure your wishes are legally protected.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium">Learn more →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 流程 -->
+  <section id="how" class="bg-navymid py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="font-serif text-warm text-[clamp(28px,3.5vw,56px)] text-center fadeup">A Simple, Transparent Process</h2>
+      <div class="mt-16 grid md:grid-cols-3 gap-10">
+        <div class="fadeup relative" style="--d:0ms">
+          <span class="absolute -top-8 left-0 font-serif text-[100px] leading-none text-gold/5 select-none">01</span>
+          <span class="relative flex w-8 h-8 border-2 border-gold items-center justify-center"><span class="w-2 h-2 bg-gold"></span></span>
+          <h3 class="font-serif text-warm text-[22px] mt-5">Free Initial Consultation</h3>
+          <p class="mt-3 text-warm/70 text-[15px] max-w-[300px]">We spend 30 minutes understanding your goals, current situation, and what's keeping you up at night — no commitment required.</p>
+        </div>
+        <div class="fadeup relative" style="--d:150ms">
+          <span class="absolute -top-8 left-0 font-serif text-[100px] leading-none text-gold/5 select-none">02</span>
+          <span class="relative flex w-8 h-8 border-2 border-gold items-center justify-center"><span class="w-2 h-2 bg-gold"></span></span>
+          <h3 class="font-serif text-warm text-[22px] mt-5">Your Personalised Plan</h3>
+          <p class="mt-3 text-warm/70 text-[15px] max-w-[300px]">We research, model, and build a financial strategy tailored precisely to your situation — not a generic off-the-shelf product.</p>
+        </div>
+        <div class="fadeup relative" style="--d:300ms">
+          <span class="absolute -top-8 left-0 font-serif text-[100px] leading-none text-gold/5 select-none">03</span>
+          <span class="relative flex w-8 h-8 border-2 border-gold items-center justify-center"><span class="w-2 h-2 bg-gold"></span></span>
+          <h3 class="font-serif text-warm text-[22px] mt-5">Ongoing Partnership</h3>
+          <p class="mt-3 text-warm/70 text-[15px] max-w-[300px]">Life changes. We review your plan regularly and adapt it as your circumstances evolve.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 信任数据条 -->
+  <section class="bg-navymid border-y border-gold/10 py-16">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-y-10 text-center md:divide-x md:divide-gold/20">
+      <div class="fadeup"><p class="font-serif text-gold text-4xl md:text-[56px] leading-none"><span class="countup" data-target="500" data-prefix="£" data-suffix="M+">0</span></p><p class="text-xs text-warm/50 mt-2">Assets Advised</p></div>
+      <div class="fadeup" style="--d:100ms"><p class="font-serif text-gold text-4xl md:text-[56px] leading-none"><span class="countup" data-target="200" data-suffix="+">0</span></p><p class="text-xs text-warm/50 mt-2">Clients</p></div>
+      <div class="fadeup" style="--d:200ms"><p class="font-serif text-gold text-4xl md:text-[56px] leading-none"><span class="countup" data-target="18" data-suffix=" Years">0</span></p><p class="text-xs text-warm/50 mt-2">Experience</p></div>
+      <div class="fadeup" style="--d:300ms"><p class="font-serif text-gold text-4xl md:text-[56px] leading-none">FCA</p><p class="text-xs text-warm/50 mt-2">Regulated</p></div>
+    </div>
+  </section>
+
+  <!-- 6. 关于 James Vance -->
+  <section id="about" class="bg-navy py-24">
+    <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 items-center">
+      <div class="fadeup min-h-[400px] md:min-h-[560px] relative">
+        <svg class="absolute inset-0 w-full h-full" viewBox="0 0 480 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="480" height="560" fill="hsl(210, 20%, 14%)"/>
+          <circle cx="240" cy="200" r="66" fill="hsl(35, 25%, 66%)"/>
+          <path d="M150 460 C150 350 330 350 330 460 L330 560 L150 560 Z" fill="hsl(215, 40%, 20%)"/>
+          <path d="M205 460 h70 v100 h-70 Z" fill="hsl(220, 40%, 34%)"/>
+        </svg>
+      </div>
+      <div class="fadeup border-l-[3px] border-gold md:pl-14 mt-10 md:mt-0 md:p-14" style="--d:120ms">
+        <p class="eyebrow text-gold">About Us</p>
+        <h2 class="font-serif text-warm leading-tight mt-4 text-[clamp(28px,3vw,48px)]">Independent Advice.<br>No Conflicts. No Compromises.</h2>
+        <p class="mt-6 text-warm/70 text-[15px] leading-relaxed">James Vance has helped families and individuals build financial security for more than eighteen years. After a decade at Merrill Lynch, he founded Vance Advisory in 2006 to offer genuinely independent advice — no commission bias, no corporate targets.</p>
+        <p class="mt-4 text-warm/70 text-[15px] leading-relaxed">Today he advises on retirement planning, investment management and estate planning, holding the Chartered Financial Planner title and a Fellowship of the Chartered Insurance Institute.</p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <span class="border border-gold/70 text-gold text-xs font-medium px-3 py-1.5">FCA Authorised</span>
+          <span class="border border-gold/70 text-gold text-xs font-medium px-3 py-1.5">Chartered Financial Planner</span>
+          <span class="border border-gold/70 text-gold text-xs font-medium px-3 py-1.5">PFS Member</span>
+          <span class="border border-gold/70 text-gold text-xs font-medium px-3 py-1.5">CII Fellow</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 客户评价 -->
+  <section id="testimonials" class="bg-navymid py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <h2 class="font-serif text-warm text-[clamp(28px,3.5vw,56px)] text-center fadeup">What Our Clients Say</h2>
+      <div class="mt-14 grid md:grid-cols-3 gap-6">
+        <blockquote class="testimonial-card fadeup bg-navycard p-8" style="--d:0ms">
+          <p class="text-gold">★★★★★</p>
+          <p class="font-serif italic text-warm text-lg mt-4 leading-relaxed">"Working with James gave me clarity I didn't think was possible. I finally understand my pension and know exactly when I can retire."</p>
+          <footer class="mt-5 text-sm text-warm/50">David M., 52 · Business Owner</footer>
+        </blockquote>
+        <blockquote class="testimonial-card fadeup bg-navycard p-8" style="--d:120ms">
+          <p class="text-gold">★★★★★</p>
+          <p class="font-serif italic text-warm text-lg mt-4 leading-relaxed">"James helped us navigate a complex inheritance situation. His advice saved us a significant amount in tax and gave us real peace of mind."</p>
+          <footer class="mt-5 text-sm text-warm/50">Sarah &amp; Tom K., 40s · Professional Couple</footer>
+        </blockquote>
+        <blockquote class="testimonial-card fadeup bg-navycard p-8" style="--d:240ms">
+          <p class="text-gold">★★★★★</p>
+          <p class="font-serif italic text-warm text-lg mt-4 leading-relaxed">"I'd put off sorting my finances for years. One conversation with James and I had a clear plan. Wish I'd done it sooner."</p>
+          <footer class="mt-5 text-sm text-warm/50">Rachel P., 38 · Freelance Consultant</footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 资源/博客 -->
+  <section id="resources" class="bg-navy py-24">
+    <div class="max-w-7xl mx-auto px-6">
+      <p class="eyebrow text-gold">Resources</p>
+      <h2 class="font-serif text-warm leading-tight mt-4 text-[clamp(28px,3.5vw,56px)] max-w-2xl">Insights to Help You Make Better Financial Decisions</h2>
+      <div class="mt-12 grid md:grid-cols-3 gap-6">
+        <article class="fadeup service-card group" style="--d:0ms">
+          <div class="overflow-hidden"><svg class="w-full aspect-[16/9] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="320" height="180" fill="hsl(210, 30%, 18%)"/><circle cx="90" cy="110" r="26" fill="hsl(40, 40%, 70%)"/><circle cx="130" cy="115" r="24" fill="hsl(40, 35%, 62%)"/><path d="M0 150 L320 120" stroke="hsl(40, 30%, 45%)" stroke-width="8"/></svg></div>
+          <div class="p-6">
+            <span class="font-mono text-[10px] border border-gold/40 text-gold px-2 py-0.5">Retirement</span>
+            <h3 class="font-serif text-warm text-lg mt-3">How Much Do You Really Need to Retire?</h3>
+            <p class="text-xs text-warm/50 mt-2">March 2025</p>
+            <a href="#" class="inline-block mt-3 text-gold text-sm font-medium">Read →</a>
+          </div>
+        </article>
+        <article class="fadeup service-card group" style="--d:120ms">
+          <div class="overflow-hidden"><svg class="w-full aspect-[16/9] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="320" height="180" fill="hsl(210, 30%, 16%)"/><rect x="60" y="40" width="200" height="110" rx="6" fill="hsl(0, 0%, 12%)"/><path d="M75 130 L120 95 L160 115 L205 75 L245 90" fill="none" stroke="hsl(38, 49%, 57%)" stroke-width="4"/></svg></div>
+          <div class="p-6">
+            <span class="font-mono text-[10px] border border-gold/40 text-gold px-2 py-0.5">Investments</span>
+            <h3 class="font-serif text-warm text-lg mt-3">The Case for Independent Financial Advice in 2025</h3>
+            <p class="text-xs text-warm/50 mt-2">February 2025</p>
+            <a href="#" class="inline-block mt-3 text-gold text-sm font-medium">Read →</a>
+          </div>
+        </article>
+        <article class="fadeup service-card group" style="--d:240ms">
+          <div class="overflow-hidden"><svg class="w-full aspect-[16/9] transition-transform duration-500 group-hover:scale-105" viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="320" height="180" fill="hsl(210, 26%, 20%)"/><rect x="70" y="60" width="180" height="70" rx="4" fill="hsl(40, 20%, 82%)"/><g stroke="hsl(210, 40%, 35%)" stroke-width="3"><path d="M85 85 h150 M85 100 h120"/></g><circle cx="255" cy="115" r="22" fill="hsl(25, 40%, 45%)"/></svg></div>
+          <div class="p-6">
+            <span class="font-mono text-[10px] border border-gold/40 text-gold px-2 py-0.5">Taxes</span>
+            <h3 class="font-serif text-warm text-lg mt-3">5 Common Investment Mistakes (and How to Avoid Them)</h3>
+            <p class="text-xs text-warm/50 mt-2">January 2025</p>
+            <a href="#" class="inline-block mt-3 text-gold text-sm font-medium">Read →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. 联系 -->
+  <section id="contact" class="bg-navymid border-t border-gold/10 py-24">
+    <div class="max-w-3xl mx-auto px-6 text-center fadeup">
+      <p class="eyebrow text-gold">Contact</p>
+      <h2 class="font-serif text-warm text-[clamp(28px,3.5vw,56px)] mt-4">Book Your Free Consultation</h2>
+      <p class="mt-4 text-warm/70 text-[15px] max-w-xl mx-auto">Thirty minutes, no commitment — just a clear conversation about where you are and where you want to be.</p>
+      <div class="mt-8 flex flex-col sm:flex-row justify-center gap-6 text-sm text-warm/70">
+        <span>📞 +44 20 7946 0821</span>
+        <span>✉️ james@vanceadvisory.example</span>
+        <span>📍 Austin, TX &amp; remote nationwide</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 10. 页脚 -->
+<footer class="bg-navy border-t border-gold/20">
+  <div class="max-w-7xl mx-auto px-6 py-12 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-warm/50 font-light">
+    <p class="font-serif text-gold text-lg">Vance Advisory</p>
+    <p>FCA Authorised · Chartered Financial Planner · CII Fellow</p>
+    <p>© 2026 Vance Advisory. Demo page generated from the finance prompt.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () { menu.classList.remove('hidden'); });
+  document.getElementById('menuclose').addEventListener('click', function () { menu.classList.add('hidden'); });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+
+  // 导航滚动边框
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    nav.style.borderBottom = window.scrollY > 60 ? '0.5px solid rgba(201,168,90,0.40)' : 'none';
+  }, { passive: true });
+
+  // 计数动画
+  function countUp(el) {
+    if (el.dataset.counted) return;
+    el.dataset.counted = '1';
+    const raw = el.dataset.target;
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const DUR = 2000, t0 = performance.now();
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / DUR);
+      const eased = 1 - Math.pow(1 - p, 4);
+      el.textContent = prefix + Math.round(raw * eased) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = prefix + raw + suffix;
+    }
+    requestAnimationFrame(tick);
+  }
+  // 直接观察每个计数元素本身（hero 数据条不在 .fadeup 容器内也能触发）
+  const cio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { countUp(en.target); cio.unobserve(en.target); }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.countup').forEach(function (el) { cio.observe(el); });
+
+  // 入场
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.fadeup').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

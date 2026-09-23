@@ -1,0 +1,610 @@
+[
+  {
+    "slug": "langchain",
+    "name": "langchain-ai/langchain",
+    "description": "构建 LLM 应用的主流框架。",
+    "stars": "102k",
+    "lang": "Python",
+    "phase": "mvp"
+  },
+  {
+    "slug": "autogen",
+    "name": "microsoft/autogen",
+    "description": "多智能体对话与协作框架。",
+    "stars": "46k",
+    "lang": "Python",
+    "phase": "mvp"
+  },
+  {
+    "slug": "whisper",
+    "name": "openai/whisper",
+    "description": "通用语音识别模型。",
+    "stars": "78k",
+    "lang": "Python",
+    "phase": "mvp"
+  },
+  {
+    "slug": "vercel-ai",
+    "name": "vercel/ai",
+    "description": "构建 AI 产品的前端 SDK。",
+    "stars": "12k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "mcp-servers",
+    "name": "modelcontextprotocol/servers",
+    "description": "MCP 官方示例服务集合。",
+    "stars": "35k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "prompts-chat",
+    "name": "f/prompts.chat",
+    "description": "原名 Awesome ChatGPT Prompts，全球最大 ChatGPT 提示词合集，支持分享与发现提示词。",
+    "stars": "167.1k",
+    "lang": "Markdown",
+    "phase": "v1"
+  },
+  {
+    "slug": "prompt-engineering-guide",
+    "name": "dair-ai/Prompt-Engineering-Guide",
+    "description": "提示词工程权威指南，含论文、课程、示例与工具。",
+    "stars": "77.5k",
+    "lang": "MDX",
+    "phase": "v1"
+  },
+  {
+    "slug": "awesome-chatgpt-prompts-zh",
+    "name": "PlexPt/awesome-chatgpt-prompts-zh",
+    "description": "ChatGPT 中文调教指南，覆盖各种使用场景。",
+    "stars": "61.6k",
+    "lang": "Markdown",
+    "phase": "v1"
+  },
+  {
+    "slug": "prompt-eng-interactive-tutorial",
+    "name": "anthropics/prompt-eng-interactive-tutorial",
+    "description": "Anthropic 官方提示词工程交互式教程。",
+    "stars": "37.7k",
+    "lang": "Jupyter",
+    "phase": "v1"
+  },
+  {
+    "slug": "brex-prompt-engineering",
+    "name": "brexhq/prompt-engineering",
+    "description": "大语言模型提示词技巧与最佳实践。",
+    "stars": "9.6k",
+    "lang": "Markdown",
+    "phase": "v1"
+  },
+  {
+    "slug": "awesome-prompts",
+    "name": "ai-boost/awesome-prompts",
+    "description": "精选自 GPTs 商店的高分 ChatGPT 提示词列表。",
+    "stars": "8.7k",
+    "lang": "Markdown",
+    "phase": "v1"
+  },
+  {
+    "slug": "transformers",
+    "name": "huggingface/transformers",
+    "description": "最主流的深度学习模型库，提供海量预训练模型与工具。",
+    "stars": "164.1k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "ollama",
+    "name": "ollama/ollama",
+    "description": "本地一键运行大语言模型，支持众多开源模型。",
+    "stars": "178.5k",
+    "lang": "Go",
+    "phase": "v1"
+  },
+  {
+    "slug": "autogpt",
+    "name": "Significant-Gravitas/AutoGPT",
+    "description": "自主 AI 智能体平台，可规划并执行复杂任务。",
+    "stars": "186.6k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "n8n",
+    "name": "n8n-io/n8n",
+    "description": "可扩展的工作流自动化平台，原生集成 AI 能力。",
+    "stars": "200.7k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "dify",
+    "name": "langgenius/dify",
+    "description": "LLM 应用开发平台，支持 RAG 与 Agent 编排。",
+    "stars": "152.5k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "open-webui",
+    "name": "open-webui/open-webui",
+    "description": "开源 AI 对话界面，支持 Ollama 与 OpenAI API。",
+    "stars": "148.8k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "vllm",
+    "name": "vllm-project/vllm",
+    "description": "高吞吐、低显存的 LLM 推理与服务引擎。",
+    "stars": "89.1k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "ragflow",
+    "name": "infiniflow/ragflow",
+    "description": "开源 RAG 引擎，专注检索增强生成。",
+    "stars": "88.4k",
+    "lang": "Go",
+    "phase": "v1"
+  },
+  {
+    "slug": "browser-use",
+    "name": "browser-use/browser-use",
+    "description": "让 AI 智能体操控浏览器完成自动化任务。",
+    "stars": "109.3k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "comfyui",
+    "name": "Comfy-Org/ComfyUI",
+    "description": "模块化的扩散模型工作流 GUI 与后端。",
+    "stars": "127.7k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "stable-diffusion-webui",
+    "name": "AUTOMATIC1111/stable-diffusion-webui",
+    "description": "Stable Diffusion 经典 Web 界面。",
+    "stars": "164.5k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "markitdown",
+    "name": "microsoft/markitdown",
+    "description": "把文件与办公文档转换为 Markdown。",
+    "stars": "173.8k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "firecrawl",
+    "name": "firecrawl/firecrawl",
+    "description": "网页抓取与结构化数据 API。",
+    "stars": "167.5k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "openhands",
+    "name": "OpenHands/OpenHands",
+    "description": "AI 驱动的软件开发智能体。",
+    "stars": "84.1k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "lobehub",
+    "name": "lobehub/lobehub",
+    "description": "Agent 编排与运营平台。",
+    "stars": "81.7k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "llm-course",
+    "name": "mlabonne/llm-course",
+    "description": "LLM 入门课程，含路线图与 Colab 实践。",
+    "stars": "81.7k",
+    "lang": "Unknown",
+    "phase": "v1"
+  },
+  {
+    "slug": "llamafactory",
+    "name": "hiyouga/LlamaFactory",
+    "description": "百种大模型统一微调框架。",
+    "stars": "74.1k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "unsloth",
+    "name": "unslothai/unsloth",
+    "description": "本地 LLM 微调与推理加速工具。",
+    "stars": "71.6k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "metagpt",
+    "name": "FoundationAgents/MetaGPT",
+    "description": "多智能体框架，模拟软件公司协作。",
+    "stars": "69.8k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "anything-llm",
+    "name": "Mintplex-Labs/anything-llm",
+    "description": "私人 LLM 全栈应用，支持多模型。",
+    "stars": "64.7k",
+    "lang": "JavaScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "mem0",
+    "name": "mem0ai/mem0",
+    "description": "AI 智能体的通用记忆层。",
+    "stars": "63.3k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "litellm",
+    "name": "BerriAI/litellm",
+    "description": "统一 LLM 网关，一套 API 调用多家模型。",
+    "stars": "56.4k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "flowise",
+    "name": "FlowiseAI/Flowise",
+    "description": "可视化构建 AI 智能体与工作流。",
+    "stars": "55.4k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "llama-index",
+    "name": "run-llama/llama_index",
+    "description": "文档智能体与 RAG 数据框架。",
+    "stars": "51.6k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "milvus",
+    "name": "milvus-io/milvus",
+    "description": "高性能云原生向量数据库。",
+    "stars": "45.6k",
+    "lang": "Go",
+    "phase": "v1"
+  },
+  {
+    "slug": "langgraph",
+    "name": "langchain-ai/langgraph",
+    "description": "构建弹性、可观测的智能体。",
+    "stars": "39.7k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "diffusers",
+    "name": "huggingface/diffusers",
+    "description": "图像、视频与音频扩散模型库。",
+    "stars": "34.3k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "graphrag",
+    "name": "microsoft/graphrag",
+    "description": "图增强的检索增强生成系统。",
+    "stars": "35.5k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "fastgpt",
+    "name": "labring/FastGPT",
+    "description": "基于 LLM 的知识库问答平台。",
+    "stars": "29.4k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "gpt-researcher",
+    "name": "assafelovic/gpt-researcher",
+    "description": "自主深度研究智能体。",
+    "stars": "29.0k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "langchain-chatchat",
+    "name": "chatchat-space/Langchain-Chatchat",
+    "description": "中文知识库问答框架。",
+    "stars": "38.5k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "langfuse",
+    "name": "langfuse/langfuse",
+    "description": "LLM 可观测、评测与提示管理平台。",
+    "stars": "33.1k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "qwen-code",
+    "name": "QwenLM/qwen-code",
+    "description": "终端里的开源 AI 编程智能体。",
+    "stars": "27.0k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "haystack",
+    "name": "deepset-ai/haystack",
+    "description": "AI 编排框架，构建上下文引擎应用。",
+    "stars": "26.2k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "kotaemon",
+    "name": "Cinnamon/kotaemon",
+    "description": "与文档对话的开源 RAG 工具。",
+    "stars": "25.7k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "activepieces",
+    "name": "activepieces/activepieces",
+    "description": "AI 智能体、MCP 与工作流自动化。",
+    "stars": "23.8k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "maxkb",
+    "name": "1Panel-dev/MaxKB",
+    "description": "企业级知识库问答平台。",
+    "stars": "22.5k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "db-gpt",
+    "name": "eosphoros-ai/DB-GPT",
+    "description": "数据库智能体，用自然语言查询数据。",
+    "stars": "19.7k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "generative-ai-for-beginners",
+    "name": "microsoft/generative-ai-for-beginners",
+    "description": "生成式 AI 入门课程，21 节课。",
+    "stars": "117.8k",
+    "lang": "Jupyter Notebook",
+    "phase": "v1"
+  },
+  {
+    "slug": "llms-from-scratch",
+    "name": "rasbt/LLMs-from-scratch",
+    "description": "用 PyTorch 从零实现类 ChatGPT 大模型。",
+    "stars": "102.7k",
+    "lang": "Jupyter Notebook",
+    "phase": "v1"
+  },
+  {
+    "slug": "agents-course",
+    "name": "huggingface/agents-course",
+    "description": "Hugging Face 智能体课程。",
+    "stars": "31.0k",
+    "lang": "MDX",
+    "phase": "v1"
+  },
+  {
+    "slug": "llm-universe",
+    "name": "datawhalechina/llm-universe",
+    "description": "面向小白的大模型应用开发教程。",
+    "stars": "13.8k",
+    "lang": "Jupyter Notebook",
+    "phase": "v1"
+  },
+  {
+    "slug": "llama-cookbook",
+    "name": "meta-llama/llama-cookbook",
+    "description": "Llama 系列模型开发指南。",
+    "stars": "18.6k",
+    "lang": "Jupyter Notebook",
+    "phase": "v1"
+  },
+  {
+    "slug": "bolt-new",
+    "name": "stackblitz/bolt.new",
+    "description": "用提示词生成、运行并部署全栈应用。",
+    "stars": "16.5k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "botpress",
+    "name": "botpress/botpress",
+    "description": "开源对话机器人与 LLM 智能体平台。",
+    "stars": "14.9k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "langchain4j",
+    "name": "langchain4j/langchain4j",
+    "description": "Java 版 LangChain，构建 LLM 应用。",
+    "stars": "12.9k",
+    "lang": "Java",
+    "phase": "v1"
+  },
+  {
+    "slug": "langgpt",
+    "name": "langgptai/LangGPT",
+    "description": "结构化提示词框架。",
+    "stars": "12.4k",
+    "lang": "Jupyter Notebook",
+    "phase": "v1"
+  },
+  {
+    "slug": "coze-studio",
+    "name": "coze-dev/coze-studio",
+    "description": "可视化 AI 智能体开发平台。",
+    "stars": "21.4k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "composio",
+    "name": "ComposioHQ/composio",
+    "description": "智能体工具集成与上下文管理平台。",
+    "stars": "29.7k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "scrapegraph-ai",
+    "name": "ScrapeGraphAI/Scrapegraph-ai",
+    "description": "基于 AI 的网页爬虫。",
+    "stars": "29.6k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "graphiti",
+    "name": "getzep/graphiti",
+    "description": "为 AI 智能体构建实时知识图谱。",
+    "stars": "29.9k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "gpt-sovits",
+    "name": "RVC-Boss/GPT-SoVITS",
+    "description": "少样本语音克隆与文本转语音。",
+    "stars": "60.9k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "tts",
+    "name": "coqui-ai/TTS",
+    "description": "深度学习文本转语音工具包。",
+    "stars": "45.9k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "openvoice",
+    "name": "myshell-ai/OpenVoice",
+    "description": "即时语音克隆基础模型。",
+    "stars": "37.1k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "cosyvoice",
+    "name": "QwenAudio/CosyVoice",
+    "description": "多语言语音生成模型。",
+    "stars": "22.8k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "chattts",
+    "name": "2noise/ChatTTS",
+    "description": "面向日常对话的生成式语音模型。",
+    "stars": "39.8k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "invokeai",
+    "name": "invoke-ai/InvokeAI",
+    "description": "Stable Diffusion 创作引擎。",
+    "stars": "27.9k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "moneyprinterturbo",
+    "name": "harry0703/MoneyPrinterTurbo",
+    "description": "AI 一键生成高清短视频。",
+    "stars": "103.7k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "promptflow",
+    "name": "microsoft/promptflow",
+    "description": "LLM 应用开发、测试与部署工具。",
+    "stars": "11.2k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "outlines",
+    "name": "dottxt-ai/outlines",
+    "description": "让 LLM 输出结构化数据。",
+    "stars": "15.6k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "phoenix",
+    "name": "Arize-ai/phoenix",
+    "description": "AI 可观测与评测平台。",
+    "stars": "11.1k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "quivr",
+    "name": "QuivrHQ/quivr",
+    "description": "个人 RAG 知识库。",
+    "stars": "39.4k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "khoj",
+    "name": "khoj-ai/khoj",
+    "description": "自托管的 AI 第二大脑。",
+    "stars": "36.5k",
+    "lang": "Python",
+    "phase": "v1"
+  },
+  {
+    "slug": "jan",
+    "name": "janhq/jan",
+    "description": "开源离线 ChatGPT 替代品。",
+    "stars": "44.0k",
+    "lang": "TypeScript",
+    "phase": "v1"
+  },
+  {
+    "slug": "weknora",
+    "name": "Tencent/WeKnora",
+    "description": "开源 LLM 知识平台，文档秒变可问答。",
+    "stars": "19.9k",
+    "lang": "Go",
+    "phase": "v1"
+  }
+]

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PR0TO·DEV — 独立游戏开发者 / Indie Game Developer</title>
+  <meta name="description" content="独立游戏开发者 PR0TO 的作品集：2 款 Steam 游戏、Game Jam 原型与技术博客。Portfolio of indie game developer PR0TO: 2 Steam games, Game Jam prototypes and a tech blog.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230a0e17'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='%235ee8c8' font-family='monospace'%3EP%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main" data-i18n="a11y.skip">跳到主要内容</a>
+
+  <!-- ============ 顶部导航 ============ -->
+  <header class="site-header" id="site-header">
+    <nav class="container nav" aria-label="主导航">
+      <a class="nav__brand" href="#top" data-scroll>
+        <span class="nav__brand-mark" aria-hidden="true">PR0TO</span><span class="nav__brand-dot">::</span><span class="nav__brand-sub">DEV</span>
+      </a>
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#games" data-i18n="nav.games" data-scroll>游戏</a></li>
+        <li><a href="#jam" data-i18n="nav.jam" data-scroll>Game Jam</a></li>
+        <li><a href="#blog" data-i18n="nav.blog" data-scroll>博客</a></li>
+        <li><a href="#about" data-i18n="nav.about" data-scroll>关于</a></li>
+      </ul>
+      <div class="nav__actions">
+        <button class="nav__burger" id="nav-burger" type="button" aria-label="打开菜单" aria-expanded="false" aria-controls="nav-links">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============ Hero ============ -->
+    <section class="hero" id="top">
+      <div class="hero__grid" aria-hidden="true"></div>
+      <div class="hero__glow hero__glow--cyan" aria-hidden="true"></div>
+      <div class="hero__glow hero__glow--magenta" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <p class="hero__kicker mono" data-i18n="hero.kicker">/ 独立游戏开发者 · SOLO INDIE DEV</p>
+        <h1 class="hero__title">
+          <span data-i18n="hero.title.line1">你好，我是</span>
+          <span class="hero__name">PR0TO<span class="hero__caret" aria-hidden="true">_</span></span>
+        </h1>
+        <p class="hero__sub" data-i18n="hero.sub">
+          我用代码、像素与合成器音效造世界。做过 2 款上线 Steam 的游戏，沉迷 48 小时 Game Jam，
+          也把踩过的坑写进技术博客。现在专注于「小而锋利」的独立游戏。
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#games" data-i18n="hero.cta.primary" data-scroll>看我的游戏</a>
+          <a class="btn btn--ghost" href="https://github.com/yourname" target="_blank" rel="noopener" data-i18n="hero.cta.secondary">GitHub 仓库</a>
+        </div>
+        <div class="hero__stats" role="list">
+          <div class="stat" role="listitem">
+            <span class="stat__num mono">2</span>
+            <span class="stat__label" data-i18n="hero.stat1">款 Steam 游戏</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat__num mono">14</span>
+            <span class="stat__label" data-i18n="hero.stat2">次 Game Jam</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat__num mono">25k+</span>
+            <span class="stat__label" data-i18n="hero.stat3">Steam 愿望单</span>
+          </div>
+          <div class="stat" role="listitem">
+            <span class="stat__num mono">30+</span>
+            <span class="stat__label" data-i18n="hero.stat4">篇技术博客</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero__scroll" aria-hidden="true">
+        <span class="mono" data-i18n="hero.scroll">SCROLL</span>
+        <span class="hero__scroll-line"></span>
+      </div>
+    </section>
+
+    <!-- ============ Steam 游戏 ============ -->
+    <section class="section" id="games">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__tag mono" data-i18n="games.tag">// 01 · 已发售作品</p>
+          <h2 class="section__title" data-i18n="games.title">Steam 上的游戏</h2>
+          <p class="section__desc" data-i18n="games.desc">两段完整的开发旅程 —— 从引擎选型、原型验证到 EA 发布与社区运营。</p>
+        </header>
+        <div class="games" id="games-list"><!-- 由 app.js 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ============ Game Jam ============ -->
+    <section class="section section--alt" id="jam">
+      <div class="container">
+        <header class="section__head">
+          <p class="section__tag mono" data-i18n="jam.tag">// 02 · 限时创造</p>
+          <h2 class="section__title" data-i18n="jam.title">Game Jam 原型</h2>
+          <p class="section__desc" data-i18n="jam.desc">48 小时的肾上腺素与第一性原理。每个原型都包含可玩的在线 Demo 与源码。</p>
+        </header>
+        <div class="jam-grid" id="jam-list"><!-- 由 app.js 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ============ 技术博客 ============ -->
+    <section class="section" id="blog">
+      <div class="container">
+        <header class="section__head section__head--row">
+          <div>
+            <p class="section__tag mono" data-i18n="blog.tag">// 03 · 工程笔记</p>
+            <h2 class="section__title" data-i18n="blog.title">技术博客</h2>
+          </div>
+          <a class="text-link mono" href="https://blog.example.com" target="_blank" rel="noopener" data-i18n="blog.all">查看全部文章 →</a>
+        </header>
+        <div class="blog-list" id="blog-list"><!-- 由 app.js 渲染 --></div>
+      </div>
+    </section>
+
+    <!-- ============ 关于 ============ -->
+    <section class="section section--alt" id="about">
+      <div class="container about">
+        <div class="about__panel">
+          <p class="section__tag mono" data-i18n="about.tag">// 04 · 关于我</p>
+          <h2 class="section__title" data-i18n="about.title">一人工作室，十年游戏梦</h2>
+          <p class="about__text" data-i18n="about.p1">
+            曾是一名全栈工程师，2019 年裸辞开始做独立游戏。白天写引擎、调光照、录音效，晚上回复玩家评论、
+            改平衡性数值。我相信「小而锋利」：与其做平庸的大作，不如把一个小循环做到让人上瘾。
+          </p>
+          <p class="about__text" data-i18n="about.p2">
+            日常栈：Unity · C# · Godot · Rust · GLSL · WebGL · FMOD。最近在折腾把经典 Roguelike
+            机制移植到 3D 世界，并持续用博客记录实验过程。
+          </p>
+          <div class="about__stack mono" aria-label="技术栈">
+            <span>Unity</span><span>C#</span><span>Godot</span><span>Rust</span>
+            <span>GLSL</span><span>WebGL</span><span>FMOD</span><span>Blender</span>
+          </div>
+        </div>
+        <aside class="about__aside">
+          <h3 class="about__aside-title" data-i18n="about.contact">联系方式 / Contact</h3>
+          <ul class="contact-list">
+            <li><a href="mailto:hello@protodev.games" rel="noopener"><span class="contact-list__ico" aria-hidden="true">✉</span> hello@protodev.games</a></li>
+            <li><a href="https://github.com/yourname" target="_blank" rel="noopener"><span class="contact-list__ico" aria-hidden="true">⌥</span> GitHub <span class="mono muted">/yourname</span></a></li>
+            <li><a href="https://store.steampowered.com/developer/protodev" target="_blank" rel="noopener"><span class="contact-list__ico" aria-hidden="true">▶</span> Steam <span class="mono muted">/protodev</span></a></li>
+            <li><a href="https://yourname.itch.io" target="_blank" rel="noopener"><span class="contact-list__ico" aria-hidden="true">◎</span> itch.io <span class="mono muted">/yourname</span></a></li>
+            <li><a href="https://bsky.app/profile/yourname" target="_blank" rel="noopener"><span class="contact-list__ico" aria-hidden="true">◇</span> Bluesky <span class="mono muted">@yourname</span></a></li>
+          </ul>
+          <p class="about__availability mono" data-i18n="about.available">STATUS: 接受外包 & 联合开发邀约</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="site-footer__brand mono">PR0TO::DEV <span class="muted">© 2026</span></p>
+      <p class="site-footer__note" data-i18n="footer.note">独立制作 · 用爱发电 · 开箱即用</p>
+      <a class="site-footer__top mono" href="#top" data-scroll data-i18n="footer.top">BACK TO TOP ↑</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

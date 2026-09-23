@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+*.sql
+# 版库化的迁移 SQL 需要保留（此前 !migrations/*.sql 只匹配仓库根目录，
+# ai-portal-api/migrations/ 下的迁移文件会被静默忽略）
+!**/migrations/*.sql
+# 人工数据迁移留档同样保留
+!**/sql/*.sql
+# 全量基线 dump（结构+种子数据+migrations 记录），DEPLOYMENT.md 的从零建库入口
+!ai-portal-api/ai_portal_dump.sql
+
+# Uploads
+uploads/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache
+.cache/
+.temp/
+.eslintcache
+
+# Workbuddy
+.workbuddy/
+.workbuddy-ai/
+
+# Playwright MCP screenshots
+.playwright-mcp/
+
+# ai-portal-admin：build/ 目录是 vite 构建配置源码，不能被根级 build/ 规则误伤
+!ai-portal-admin/build/

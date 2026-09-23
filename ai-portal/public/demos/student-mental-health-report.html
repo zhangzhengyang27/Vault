@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学生心理健康与在线学习分析报告</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      body {
+        font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+        background-color: #f0f9ff;
+      }
+      .card {
+        background: white;
+        border-radius: 1rem;
+        box-shadow:
+          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        transition: transform 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+          0 10px 15px -3px rgba(0, 0, 0, 0.1),
+          0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      }
+      .gradient-text {
+        background: linear-gradient(to right, #0ea5e9, #2563eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      /* Loading Spinner */
+      .loader {
+        border: 4px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 4px solid #3498db;
+        width: 40px;
+        height: 40px;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="text-slate-800">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+          <div class="flex items-center gap-3">
+            <i class="fa-solid fa-brain text-blue-500 text-2xl"></i>
+            <h1 class="text-xl font-bold text-slate-800">学生心理健康分析看板</h1>
+          </div>
+          <div class="text-sm text-slate-500">数据来源: Online Learning Survey</div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Loading State -->
+      <div
+        id="loading"
+        class="fixed inset-0 bg-white/80 z-[60] flex flex-col items-center justify-center">
+        <div class="loader mb-4"></div>
+        <p class="text-slate-500">正在加载并解析数据...</p>
+      </div>
+
+      <!-- Error State -->
+      <div
+        id="error-message"
+        class="hidden fixed inset-0 bg-white z-[60] flex flex-col items-center justify-center p-4 text-center">
+        <i class="fa-solid fa-circle-exclamation text-rose-500 text-5xl mb-4"></i>
+        <h2 class="text-2xl font-bold text-slate-800 mb-2">数据加载失败</h2>
+        <p class="text-slate-500 mb-4" id="error-text">无法读取 CSV 文件。</p>
+        <button
+          onclick="location.reload()"
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+          重试
+        </button>
+      </div>
+
+      <!-- 核心指标卡片 -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="card p-6 border-l-4 border-blue-500">
+          <div class="text-slate-500 text-sm font-medium mb-1">总样本数</div>
+          <div class="text-3xl font-bold text-slate-800" id="total-students">0</div>
+          <div class="text-xs text-green-600 mt-2">
+            <i class="fa-solid fa-check"></i> 数据有效性 100%
+          </div>
+        </div>
+        <div class="card p-6 border-l-4 border-indigo-500">
+          <div class="text-slate-500 text-sm font-medium mb-1">平均屏幕时间</div>
+          <div class="text-3xl font-bold text-slate-800">
+            <span id="avg-screen-time">0</span>
+            <span class="text-sm font-normal text-slate-500">小时/天</span>
+          </div>
+          <div class="text-xs text-slate-400 mt-2">建议: < 8小时</div>
+        </div>
+        <div class="card p-6 border-l-4 border-rose-500">
+          <div class="text-slate-500 text-sm font-medium mb-1">高压力群体占比</div>
+          <div class="text-3xl font-bold text-slate-800" id="high-stress-rate">
+            0%
+          </div>
+          <div class="text-xs text-rose-500 mt-2" id="stress-trend">需要关注</div>
+        </div>
+        <div class="card p-6 border-l-4 border-emerald-500">
+          <div class="text-slate-500 text-sm font-medium mb-1">平均睡眠时长</div>
+          <div class="text-3xl font-bold text-slate-800">
+            <span id="avg-sleep">0</span>
+            <span class="text-sm font-normal text-slate-500">小时</span>
+          </div>
+          <div class="text-xs text-slate-400 mt-2">推荐: 7-9小时</div>
+        </div>
+      </div>
+
+      <!-- 过滤器 -->
+      <div
+        class="bg-white p-4 rounded-lg shadow-sm mb-8 flex flex-wrap gap-4 items-center border border-slate-200">
+        <div class="font-bold text-slate-700">
+          <i class="fa-solid fa-filter mr-2"></i>筛选数据:
+        </div>
+        <select
+          id="filter-gender"
+          class="border border-slate-300 rounded px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">全部性别</option>
+        </select>
+        <select
+          id="filter-education"
+          class="border border-slate-300 rounded px-3 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="all">全部学历</option>
+        </select>
+        <button
+          onclick="resetFilters()"
+          class="text-sm text-blue-500 hover:text-blue-700 underline">
+          重置筛选
+        </button>
+      </div>
+
+      <!-- 图表区域 -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <!-- 压力分布 -->
+        <div class="card p-6">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-pie text-blue-500"></i> 压力等级分布
+          </h3>
+          <div class="relative h-64 w-full">
+            <canvas id="chart-stress"></canvas>
+          </div>
+        </div>
+
+        <!-- 屏幕时间 vs 睡眠 -->
+        <div class="card p-6">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-scatter text-indigo-500"></i>
+            屏幕时间与睡眠关系
+          </h3>
+          <div class="relative h-64 w-full">
+            <canvas id="chart-scatter"></canvas>
+          </div>
+          <p class="text-xs text-center text-slate-400 mt-2">
+            横轴: 屏幕时间 (h) / 纵轴: 睡眠时间 (h)
+          </p>
+        </div>
+
+        <!-- 学历与运动量 -->
+        <div class="card p-6">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-bar text-emerald-500"></i> 各学历平均运动量
+            (小时/周)
+          </h3>
+          <div class="relative h-64 w-full">
+            <canvas id="chart-education"></canvas>
+          </div>
+        </div>
+
+        <!-- 学业表现变化 -->
+        <div class="card p-6">
+          <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-chart-column text-rose-500"></i>
+            考前焦虑对学业的影响
+          </h3>
+          <div class="relative h-64 w-full">
+            <canvas id="chart-performance"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- 数据明细 -->
+      <div class="card overflow-hidden">
+        <div
+          class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+          <h3 class="font-bold text-slate-700">数据明细列表</h3>
+          <span class="text-xs text-slate-500">仅显示前 100 条筛选结果</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm text-left">
+            <thead class="text-xs text-slate-500 uppercase bg-slate-50">
+              <tr>
+                <th class="px-6 py-3">姓名</th>
+                <th class="px-6 py-3">性别</th>
+                <th class="px-6 py-3">学历</th>
+                <th class="px-6 py-3">屏幕时间</th>
+                <th class="px-6 py-3">睡眠时长</th>
+                <th class="px-6 py-3">压力等级</th>
+                <th class="px-6 py-3">学业变化</th>
+              </tr>
+            </thead>
+            <tbody id="data-table-body" class="text-slate-600">
+              <!-- JS 填充 -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8">
+      <div class="max-w-7xl mx-auto px-4 text-center text-slate-400 text-sm">
+        <p>&copy; 2026 Student Mental Health Analysis. Generated by Trae.</p>
+      </div>
+    </footer>
+
+    <script>
+      // CSV 文件路径
+      const csvUrl = "Student Mental Health Analysis During Online Learning.csv"
+      let rawData = []
+      let charts = {}
+
+      // 初始化
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchData()
+      })
+
+      // 使用 fetch 获取 CSV 并用 PapaParse 解析
+      function fetchData() {
+        fetch(csvUrl)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            return response.text()
+          })
+          .then((csvText) => {
+            Papa.parse(csvText, {
+              header: true,
+              skipEmptyLines: true,
+              complete: function (results) {
+                processData(results.data)
+                document.getElementById("loading").classList.add("hidden")
+                initFilters()
+                updateDashboard()
+              },
+              error: function (error) {
+                showError("CSV 解析失败: " + error.message)
+              }
+            })
+          })
+          .catch((error) => {
+            showError(
+              "数据加载失败: " +
+                error.message +
+                "<br>请确保使用了本地服务器 (如 live-server) 来运行此文件。"
+            )
+          })
+      }
+
+      function showError(msg) {
+        document.getElementById("loading").classList.add("hidden")
+        document.getElementById("error-message").classList.remove("hidden")
+        document.getElementById("error-text").innerHTML = msg
+      }
+
+      // 数据清洗与转换
+      function processData(data) {
+        rawData = data
+          .map((row) => {
+            try {
+              return {
+                Name: row["Name"] || "Unknown",
+                Gender: row["Gender"] || "Unknown",
+                Age: parseInt(row["Age"]) || 0,
+                Education: row["Education Level"] || "Unknown",
+                ScreenTime: parseFloat(row["Screen Time (hrs/day)"]) || 0.0,
+                SleepDuration: parseFloat(row["Sleep Duration (hrs)"]) || 0.0,
+                PhysicalActivity:
+                  parseFloat(row["Physical Activity (hrs/week)"]) || 0.0,
+                StressLevel: row["Stress Level"] || "Unknown",
+                Anxious: row["Anxious Before Exams"] || "No",
+                Performance: row["Academic Performance Change"] || "Unknown"
+              }
+            } catch (e) {
+              return null
+            }
+          })
+          .filter((item) => item !== null)
+
+        console.log(`Processed ${rawData.length} records.`)
+      }
+
+      function initFilters() {
+        const genders = [...new Set(rawData.map((d) => d.Gender))].filter(Boolean)
+        const educations = [...new Set(rawData.map((d) => d.Education))].filter(
+          Boolean
+        )
+
+        const genderSelect = document.getElementById("filter-gender")
+        genders.forEach((g) => {
+          const opt = document.createElement("option")
+          opt.value = g
+          opt.textContent = g
+          genderSelect.appendChild(opt)
+        })
+
+        const eduSelect = document.getElementById("filter-education")
+        educations.forEach((e) => {
+          const opt = document.createElement("option")
+          opt.value = e
+          opt.textContent = e
+          eduSelect.appendChild(opt)
+        })
+
+        genderSelect.addEventListener("change", updateDashboard)
+        eduSelect.addEventListener("change", updateDashboard)
+      }
+
+      function resetFilters() {
+        document.getElementById("filter-gender").value = "all"
+        document.getElementById("filter-education").value = "all"
+        updateDashboard()
+      }
+
+      function getFilteredData() {
+        const gFilter = document.getElementById("filter-gender").value
+        const eFilter = document.getElementById("filter-education").value
+
+        return rawData.filter((item) => {
+          const matchG = gFilter === "all" || item.Gender === gFilter
+          const matchE = eFilter === "all" || item.Education === eFilter
+          return matchG && matchE
+        })
+      }
+
+      function updateDashboard() {
+        const data = getFilteredData()
+        updateMetrics(data)
+        renderCharts(data)
+        renderTable(data)
+      }
+
+      function updateMetrics(data) {
+        document.getElementById("total-students").textContent = data.length
+
+        if (data.length === 0) return
+
+        const avgScreen = data.reduce((s, i) => s + i.ScreenTime, 0) / data.length
+        document.getElementById("avg-screen-time").textContent = avgScreen.toFixed(1)
+
+        const avgSleep = data.reduce((s, i) => s + i.SleepDuration, 0) / data.length
+        document.getElementById("avg-sleep").textContent = avgSleep.toFixed(1)
+
+        const highStressCount = data.filter((i) => i.StressLevel === "High").length
+        const highStressRate = ((highStressCount / data.length) * 100).toFixed(1)
+        document.getElementById("high-stress-rate").textContent =
+          highStressRate + "%"
+      }
+
+      function renderCharts(data) {
+        // 1. 压力分布 (Pie)
+        renderChart("chart-stress", "pie", {
+          labels: ["Low", "Medium", "High"],
+          datasets: [
+            {
+              data: [
+                data.filter((i) => i.StressLevel === "Low").length,
+                data.filter((i) => i.StressLevel === "Medium").length,
+                data.filter((i) => i.StressLevel === "High").length
+              ],
+              backgroundColor: ["#4ade80", "#fbbf24", "#f43f5e"]
+            }
+          ]
+        })
+
+        // 2. 屏幕 vs 睡眠 (Scatter) - 采样以提升性能
+        const scatterData = data.slice(0, 500).map((i) => ({
+          x: i.ScreenTime,
+          y: i.SleepDuration
+        }))
+        renderChart(
+          "chart-scatter",
+          "scatter",
+          {
+            datasets: [
+              {
+                label: "学生样本",
+                data: scatterData,
+                backgroundColor: "rgba(59, 130, 246, 0.5)"
+              }
+            ]
+          },
+          {
+            scales: {
+              x: { title: { display: true, text: "屏幕时间 (h)" } },
+              y: { title: { display: true, text: "睡眠时间 (h)" } }
+            }
+          }
+        )
+
+        // 3. 学历 vs 运动 (Bar)
+        const eduGroups = {}
+        data.forEach((i) => {
+          if (!eduGroups[i.Education]) eduGroups[i.Education] = { sum: 0, count: 0 }
+          eduGroups[i.Education].sum += i.PhysicalActivity
+          eduGroups[i.Education].count++
+        })
+        const eduLabels = Object.keys(eduGroups)
+        const eduValues = eduLabels.map((k) =>
+          (eduGroups[k].sum / eduGroups[k].count).toFixed(2)
+        )
+
+        renderChart("chart-education", "bar", {
+          labels: eduLabels,
+          datasets: [
+            {
+              label: "平均每周运动时长",
+              data: eduValues,
+              backgroundColor: "#10b981",
+              borderRadius: 4
+            }
+          ]
+        })
+
+        // 4. 焦虑与成绩 (Stacked Bar or Grouped Bar)
+        // 分组：焦虑(Yes/No) -> 成绩(Declined/Same/Improved)
+        const anxiousStatus = ["Yes", "No"]
+        const perfTypes = ["Declined", "Same", "Improved"]
+
+        const datasets = perfTypes.map((perf, index) => {
+          return {
+            label: perf,
+            data: anxiousStatus.map((status) => {
+              return data.filter(
+                (i) => i.Anxious === status && i.Performance === perf
+              ).length
+            }),
+            backgroundColor:
+              index === 0 ? "#f43f5e" : index === 1 ? "#94a3b8" : "#22c55e"
+          }
+        })
+
+        renderChart(
+          "chart-performance",
+          "bar",
+          {
+            labels: ["考前焦虑: 是", "考前焦虑: 否"],
+            datasets: datasets
+          },
+          {
+            scales: {
+              x: { stacked: true },
+              y: { stacked: true }
+            }
+          }
+        )
+      }
+
+      function renderChart(canvasId, type, data, options = {}) {
+        const ctx = document.getElementById(canvasId).getContext("2d")
+
+        if (charts[canvasId]) {
+          charts[canvasId].destroy()
+        }
+
+        charts[canvasId] = new Chart(ctx, {
+          type: type,
+          data: data,
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: "bottom" }
+            },
+            ...options
+          }
+        })
+      }
+
+      function renderTable(data) {
+        const tbody = document.getElementById("data-table-body")
+        tbody.innerHTML = ""
+
+        // 仅显示前 100 条
+        data.slice(0, 100).forEach((row) => {
+          const tr = document.createElement("tr")
+          tr.className = "bg-white border-b hover:bg-slate-50 transition"
+
+          // 简单的颜色标记
+          const stressClass =
+            row.StressLevel === "High"
+              ? "text-rose-500 font-bold"
+              : row.StressLevel === "Medium"
+                ? "text-amber-500"
+                : "text-green-500"
+
+          tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-slate-900">${row.Name}</td>
+                    <td class="px-6 py-4">${row.Gender}</td>
+                    <td class="px-6 py-4">${row.Education}</td>
+                    <td class="px-6 py-4">${row.ScreenTime} h</td>
+                    <td class="px-6 py-4">${row.SleepDuration} h</td>
+                    <td class="px-6 py-4 ${stressClass}">${row.StressLevel}</td>
+                    <td class="px-6 py-4">${row.Performance}</td>
+                `
+          tbody.appendChild(tr)
+        })
+      }
+    </script>
+  </body>
+</html>

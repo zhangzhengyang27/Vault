@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bento Grid 模板演示 · 森林绿主题</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc@5/chinese-simplified-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc@5/chinese-simplified-700.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        forest: '#1d3b2a',
+        forestlight: '#2a5540',
+        goldw: '#c4a35a',
+        cream: '#f4f1e8',
+        inkp: '#16241d',
+      },
+      fontFamily: {
+        sans: ['"Noto Sans SC"', '"PingFang SC"', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  body { font-family: "Noto Sans SC", "PingFang SC", sans-serif; }
+  .bento { transition: transform .25s ease, box-shadow .25s ease; }
+  .bento:hover { transform: translateY(-3px); box-shadow: 0 18px 40px -20px rgba(29,59,42,.5); }
+</style>
+</head>
+<body class="bg-forest text-cream font-sans">
+
+<main class="min-h-screen flex items-center justify-center p-6 md:p-10">
+  <!-- 模板演示:占位符已填充 设计颜色=森林绿+暖金 · 宽高比=3:4 桌面适配 -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 w-full max-w-[900px] aspect-[3/4]">
+    <!-- 主卡 -->
+    <div class="bento col-span-2 row-span-2 bg-goldw text-inkp rounded-2xl p-6 flex flex-col justify-between">
+      <span class="material-icons text-3xl">explore</span>
+      <div>
+        <p class="text-5xl md:text-6xl font-bold leading-none">48<span class="text-2xl align-top ml-1">小时</span></p>
+        <p class="mt-3 text-lg font-bold">城市微度假指南</p>
+        <p class="text-sm opacity-70 mt-1">周末两日,重新认识你住的城市</p>
+      </div>
+    </div>
+    <!-- 数据卡 -->
+    <div class="bento col-span-2 bg-forestlight rounded-2xl p-5 flex flex-col justify-center">
+      <p class="text-xs tracking-[0.3em] opacity-60 mb-2">第 01 章</p>
+      <p class="text-2xl font-bold">清晨 · 六点的市场</p>
+      <p class="text-sm opacity-70 mt-1">城市醒得比你早</p>
+    </div>
+    <div class="bento bg-forestlight rounded-2xl p-5 flex flex-col justify-between">
+      <span class="material-icons text-goldw">ramen_dining</span>
+      <div><p class="text-3xl font-bold">12</p><p class="text-xs opacity-60">家老字号小吃</p></div>
+    </div>
+    <div class="bento bg-forestlight rounded-2xl p-5 flex flex-col justify-between">
+      <span class="material-icons text-goldw">temple_buddhist</span>
+      <div><p class="text-3xl font-bold">4</p><p class="text-xs opacity-60">座 quiet 庙宇</p></div>
+    </div>
+    <div class="bento col-span-2 bg-goldw/15 border border-goldw/40 rounded-2xl p-5 flex items-center gap-4">
+      <span class="material-icons text-goldw text-2xl">tips_and_updates</span>
+      <p class="text-sm leading-relaxed">避开网红清单,跟着买菜的阿姨走——<span class="text-goldw font-bold">这是唯一的秘诀</span>。</p>
+    </div>
+    <div class="bento bg-forestlight rounded-2xl p-5 flex flex-col justify-between">
+      <span class="material-icons text-goldw">photo_camera</span>
+      <div><p class="text-3xl font-bold">27</p><p class="text-xs opacity-60">个机位坐标</p></div>
+    </div>
+    <div class="bento bg-forestlight rounded-2xl p-5 flex flex-col justify-between">
+      <span class="material-icons text-goldw">directions_subway</span>
+      <div><p class="text-3xl font-bold">0</p><p class="text-xs opacity-60">次打车</p></div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

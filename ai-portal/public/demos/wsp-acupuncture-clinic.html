@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zen Point Acupuncture Clinic | London TCM</title>
+<meta name="description" content="Contemporary acupuncture and Traditional Chinese Medicine in the Harley Street area, London. Dr. Mei Lin Zhang MBBAcC — 14 years of clinical experience.">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif@5/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-serif@5/latin-400-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/latin-500.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cream: 'hsl(40, 33%, 97%)',
+        oat: 'hsl(40, 22%, 93%)',
+        forest: 'hsl(155, 27%, 18%)',
+        forestd: 'hsl(155, 27%, 14%)',
+        gold: 'hsl(40, 52%, 52%)',
+        inkp: 'hsl(140, 8%, 16%)',
+        softp: 'hsl(140, 6%, 42%)',
+        hairline: 'hsl(140, 8%, 88%)',
+      },
+      fontFamily: {
+        serif: ['"Noto Serif"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: light; }
+  html { scroll-behavior: smooth; }
+  body { font-family: "DM Sans", "PingFang SC", Arial, sans-serif; font-weight: 300; }
+
+  .breathe-wrap { position: absolute; inset: 0; overflow: hidden; }
+  .breathe-circle {
+    position: absolute; left: 50%; top: 50%; width: 350px; height: 350px; border-radius: 9999px;
+    background: radial-gradient(hsl(155 27% 18% / 0.12), transparent 70%);
+    transform: translate(-50%, -50%);
+    animation: breathe 6s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: .6; }
+    50%      { transform: translate(-50%, -50%) scale(1.12); opacity: .9; }
+  }
+  .pulse-ring { animation: pulsering 3s ease-out infinite; transform-origin: center; transform-box: fill-box; }
+  @keyframes pulsering { 0%,100% { transform: scale(1); opacity: .4; } 50% { transform: scale(1.6); opacity: 0; } }
+
+  .fadein { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .fadein.visible { opacity: 1; transform: none; }
+  .fadeup { opacity: 0; transform: translateY(20px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in-view { opacity: 1; transform: translateY(0); }
+
+  .cond-pill { transition: all .2s ease; }
+  .cond-pill:hover { background: hsl(155, 27%, 18%); color: #fff; transform: scale(1.04); }
+
+  .point-dot { cursor: pointer; }
+  .acupoint-tip { position: absolute; z-index: 30; width: 18rem; background: #fff; border: 1px solid hsl(140,8%,88%); border-radius: 12px; padding: 12px 14px; box-shadow: 0 18px 40px -20px rgba(0,0,0,.25); display: none; }
+  .acupoint-tip.show { display: block; }
+
+  .faq-panel { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+  .faq-item.open .faq-panel { max-height: 320px; }
+  .faq-item.open .faq-x { transform: rotate(45deg); }
+  .faq-x { transition: transform .3s ease; }
+
+  a, button { transition: all .2s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .breathe-circle, .pulse-ring { animation: none; }
+    .fadein, .fadeup { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body class="bg-cream text-inkp font-sans antialiased">
+
+<!-- 1. 导航栏 -->
+<header id="nav" class="fixed top-0 inset-x-0 z-50 bg-cream/95 backdrop-blur-[8px] border-b border-hairline">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="hsl(40, 52%, 52%)" stroke-width="1.4" aria-hidden="true">
+        <path d="M14 3 C11 8 11 12 14 16 C17 12 17 8 14 3 Z"/>
+        <path d="M4 9 C10 10 13 13 14 16 C9 16 6 13 4 9 Z"/>
+        <path d="M24 9 C18 10 15 13 14 16 C19 16 22 13 24 9 Z"/>
+        <path d="M6 20 C10 18 13 18 14 17 C15 18 18 18 22 20"/>
+      </svg>
+      <span class="font-serif font-bold text-xl">ZEN POINT</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm text-softp">
+      <a href="#treatments" class="hover:text-forest">Treatments</a>
+      <a href="#conditions" class="hover:text-forest">Conditions</a>
+      <a href="#about" class="hover:text-forest">About</a>
+      <a href="#faq" class="hover:text-forest">FAQ</a>
+      <a href="#book" class="hover:text-forest">Book</a>
+    </nav>
+    <a href="#book" class="hidden md:inline-flex bg-forest text-white text-sm font-medium px-4 py-2 rounded-full hover:opacity-90">Book Appointment</a>
+    <button id="burger" class="md:hidden p-2" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden border-t border-hairline px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm text-softp">
+      <a href="#treatments" class="py-1">Treatments</a><a href="#conditions" class="py-1">Conditions</a>
+      <a href="#about" class="py-1">About</a><a href="#faq" class="py-1">FAQ</a>
+      <a href="#book" class="py-1 col-span-2 text-forest font-medium">Book Appointment →</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. Hero -->
+  <section class="relative min-h-screen flex items-center">
+    <div class="breathe-wrap" aria-hidden="true"><div class="breathe-circle"></div></div>
+    <div class="relative z-10 max-w-4xl mx-auto px-5 text-center pt-24 pb-16">
+      <div class="fadein visible w-10 h-px bg-gold mx-auto mb-6"></div>
+      <p class="text-[10px] uppercase tracking-[0.35em] text-softp mb-6 fadein visible" style="--d:100ms">Traditional Chinese Medicine · London</p>
+      <h1 class="font-serif font-bold text-[36px] md:text-[48px] lg:text-[64px] leading-tight fadein visible" style="--d:200ms">Restore your body's<br>natural balance.</h1>
+      <p class="mt-6 text-softp max-w-xl mx-auto fadein visible" style="--d:300ms">Contemporary acupuncture and Traditional Chinese Medicine, practised with fourteen years of clinical care and a quietly modern approach.</p>
+      <p class="mt-4 font-serif italic text-softp fadein visible" style="--d:380ms">breathe in · breathe out</p>
+      <div class="mt-8 flex flex-wrap justify-center gap-4 fadein visible" style="--d:460ms">
+        <a href="#book" class="bg-forest text-white font-medium px-6 py-3 rounded-full hover:opacity-90">Book Your First Session</a>
+        <a href="#conditions" class="text-gold font-serif italic text-lg hover:underline">What We Treat →</a>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-3 fadein visible" style="--d:560ms">
+        <span class="text-xs border border-hairline bg-white/70 rounded-full px-4 py-1.5">BAcC Registered</span>
+        <span class="text-xs border border-hairline bg-white/70 rounded-full px-4 py-1.5">Fully Insured</span>
+        <span class="text-xs border border-hairline bg-white/70 rounded-full px-4 py-1.5">1,800+ treatments delivered</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 治疗项目 -->
+  <section id="treatments" class="bg-white py-24">
+    <div class="max-w-6xl mx-auto px-5">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">Our treatments.</h2>
+      <div class="mt-12 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <article class="fadeup bg-oat border border-hairline rounded-2xl p-8 hover:border-gold" style="--d:0ms">
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 2v14M8 6l4-4 4 4M5 16c2 3 12 3 14 0M7 20h10"/></svg>
+          <h3 class="font-serif font-bold text-xl mt-4">Acupuncture</h3>
+          <p class="text-gold font-medium text-sm mt-1">From £65 / session · 60 min</p>
+          <p class="mt-3 text-softp text-[15px]">Ultra-fine, single-use sterile needles at precise points to restore the flow of qi — for pain, fatigue, anxiety, sleep, digestion and fertility.</p>
+          <p class="mt-4 pt-3 border-t border-hairline font-serif italic text-sm text-softp">First visit includes full consultation; follow-ups 45 minutes.</p>
+        </article>
+        <article class="fadeup bg-oat border border-hairline rounded-2xl p-8 hover:border-gold" style="--d:80ms">
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="9" cy="10" r="5"/><circle cx="16" cy="14" r="5"/></svg>
+          <h3 class="font-serif font-bold text-xl mt-4">Cupping Therapy</h3>
+          <p class="text-gold font-medium text-sm mt-1">From £55 / session · 45 min</p>
+          <p class="mt-3 text-softp text-[15px]">Glass and silicone cups lift fascia and move circulation — deep relief for chronic pain, athletic recovery and stress tension. Marks fade in 3–7 days.</p>
+        </article>
+        <article class="fadeup bg-oat border border-hairline rounded-2xl p-8 hover:border-gold" style="--d:160ms">
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3 C7 9 6 14 8 18 a5 5 0 0 0 8 0 C18 14 17 9 12 3 Z"/></svg>
+          <h3 class="font-serif font-bold text-xl mt-4">Chinese Herbal Medicine</h3>
+          <p class="text-gold font-medium text-sm mt-1">From £45 / consultation · + herbs</p>
+          <p class="mt-3 text-softp text-[15px]">Custom herbal formulas as tea, granules or capsules after a full consultation — for hormonal, digestive, immune and skin concerns.</p>
+          <p class="mt-4 pt-3 border-t border-hairline font-serif italic text-sm text-softp">Herbs typically £30–55 per month.</p>
+        </article>
+        <article class="fadeup bg-oat border border-hairline rounded-2xl p-8 hover:border-gold" style="--d:0ms">
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 21 c-4 -4 -7 -7 -7 -11 a5 5 0 0 1 10 0 c0 -2 0 -3 0 -3 M4 21 h16"/></svg>
+          <h3 class="font-serif font-bold text-xl mt-4">Moxibustion</h3>
+          <p class="text-gold font-medium text-sm mt-1">Within treatment plans · add-on</p>
+          <p class="mt-3 text-softp text-[15px]">Warming mugwort near points to nourish yang and move qi — best for cold and deficiency patterns.</p>
+          <p class="mt-4 pt-3 border-t border-hairline font-serif italic text-sm text-softp">Performed by Dr. Zhang within a treatment plan.</p>
+        </article>
+        <article class="fadeup bg-oat border border-hairline rounded-2xl p-8 hover:border-gold" style="--d:80ms">
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="10" r="6"/><path d="M9 10h6M12 7v6"/><path d="M8 21h8M10 18h4"/></svg>
+          <h3 class="font-serif font-bold text-xl mt-4">Facial Acupuncture</h3>
+          <p class="text-gold font-medium text-sm mt-1">From £85 / session · 75 min</p>
+          <p class="mt-3 text-softp text-[15px]">Constitutional facial renewal: micro-circulation, collagen response and release of facial tension. Cumulative over a course.</p>
+          <p class="mt-4 pt-3 border-t border-hairline font-serif italic text-sm text-softp">Course of 10 weekly sessions, then monthly. Not in pregnancy.</p>
+        </article>
+        <article class="fadeup bg-oat border border-hairline rounded-2xl p-8 hover:border-gold" style="--d:160ms">
+          <svg class="w-6 h-6 text-gold" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M21 11 a8 8 0 1 0 -3 6 l4 1 z"/><path d="M9 10h6M9 13h4"/></svg>
+          <h3 class="font-serif font-bold text-xl mt-4">TCM Health Consultation</h3>
+          <p class="text-gold font-medium text-sm mt-1">£95 · 75 min</p>
+          <p class="mt-3 text-softp text-[15px]">A complete first diagnosis: history, symptoms, lifestyle, tongue and pulse reading. The £95 credits towards your first treatment course.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 治疗适应症 -->
+  <section id="conditions" class="bg-oat py-24">
+    <div class="max-w-5xl mx-auto px-5 text-center">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">What we can help with.</h2>
+      <p class="mt-4 text-softp fadeup" style="--d:100ms">A short list of conditions patients most often bring through our doors.</p>
+      <div class="mt-10 flex flex-wrap justify-center gap-2.5 fadeup" style="--d:180ms" id="conds">
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Chronic Back Pain</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Neck &amp; Shoulder Pain</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Migraines &amp; Headaches</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Anxiety &amp; Stress</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Insomnia &amp; Sleep Issues</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Fertility Support</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Menstrual Irregularities</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Menopause Symptoms</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">IBS &amp; Digestive Issues</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Fatigue &amp; Low Energy</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Sports Injuries</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Sciatica</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Fibromyalgia</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Hay Fever &amp; Allergies</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Skin Conditions</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">High Blood Pressure</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Immune Support</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Post-COVID Recovery</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Pregnancy Support</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Carpal Tunnel Syndrome</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Tennis Elbow</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Frozen Shoulder</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Low Mood &amp; Depression</span>
+        <span class="cond-pill bg-white border border-hairline rounded-full px-4 py-1.5 text-sm">Irritable Bowel Syndrome</span>
+      </div>
+      <p class="mt-10 text-softp fadeup">Not sure whether acupuncture can help with your condition?
+        <a href="#book" class="text-gold font-medium hover:underline"> Book a free 15-minute discovery call →</a></p>
+    </div>
+  </section>
+
+  <!-- 5. 经络穴位 -->
+  <section class="bg-white py-24">
+    <div class="max-w-6xl mx-auto px-5">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">The science of acupuncture.</h2>
+      <p class="mt-4 text-softp max-w-2xl fadeup" style="--d:100ms">TCM sees the body as a network of meridians carrying qi. Hover a point to meet six of the most requested.</p>
+      <div class="mt-12 grid md:grid-cols-2 gap-12 items-center">
+        <div class="relative mx-auto fadeup" id="bodywrap">
+          <svg width="300" height="500" viewBox="0 0 300 500" fill="none" aria-hidden="true">
+            <g stroke="hsl(155 27% 18% / 0.15)" stroke-width="3">
+              <circle cx="150" cy="52" r="30"/>
+              <path d="M150 82 v30 M120 132 q30 -18 60 0 l14 90 q-44 20 -88 0 Z"/>
+              <path d="M118 138 L70 220 L84 228 L128 156 M182 138 L230 220 L216 228 L172 156"/>
+              <path d="M106 340 q44 26 88 0 M110 344 L96 470 M190 344 L204 470"/>
+            </g>
+            <g id="points">
+              <g class="pt" data-i="0" transform="translate(150,140)"><circle r="16" fill="hsl(40 52% 52% / 0)" stroke="hsl(40 52% 52% / .4)" stroke-width="2" class="pulse-ring"/><circle r="6" fill="hsl(40, 52%, 52%)"/></g>
+              <g class="pt" data-i="1" transform="translate(84,224)"><circle r="16" fill="none" stroke="hsl(40 52% 52% / .4)" stroke-width="2" class="pulse-ring" style="animation-delay:.4s"/><circle r="6" fill="hsl(40, 52%, 52%)"/></g>
+              <g class="pt" data-i="2" transform="translate(216,224)"><circle r="16" fill="none" stroke="hsl(40 52% 52% / .4)" stroke-width="2" class="pulse-ring" style="animation-delay:.8s"/><circle r="6" fill="hsl(40, 52%, 52%)"/></g>
+              <g class="pt" data-i="3" transform="translate(128,330)"><circle r="16" fill="none" stroke="hsl(40 52% 52% / .4)" stroke-width="2" class="pulse-ring" style="animation-delay:1.2s"/><circle r="6" fill="hsl(40, 52%, 52%)"/></g>
+              <g class="pt" data-i="4" transform="translate(150,90)"><circle r="16" fill="none" stroke="hsl(40 52% 52% / .4)" stroke-width="2" class="pulse-ring" style="animation-delay:1.6s"/><circle r="6" fill="hsl(40, 52%, 52%)"/></g>
+              <g class="pt" data-i="5" transform="translate(172,330)"><circle r="16" fill="none" stroke="hsl(40 52% 52% / .4)" stroke-width="2" class="pulse-ring" style="animation-delay:2s"/><circle r="6" fill="hsl(40, 52%, 52%)"/></g>
+            </g>
+          </svg>
+          <div id="tip" class="acupoint-tip" role="status">
+            <p class="text-gold font-medium text-sm" id="tipTitle"></p>
+            <p class="text-inkp text-sm mt-1" id="tipDesc"></p>
+          </div>
+        </div>
+        <div class="fadeup" style="--d:120ms">
+          <h3 class="font-serif italic text-2xl text-forest">How acupuncture works.</h3>
+          <div class="mt-5 space-y-5 text-softp text-[15px] leading-relaxed">
+            <p>In Traditional Chinese Medicine, health reflects the smooth movement of <em class="font-serif">qi</em> along meridians — a lattice of channels beneath the skin. When qi stalls, symptoms surface.</p>
+            <p>Modern research suggests acupuncture influences endogenous opioid release, autonomic nervous system regulation and inflammatory markers — mechanisms your body already owns.</p>
+            <p>These six points are a fraction of the 361 classical locations. Your selection is always individual — mapped to your pattern, not your diagnosis code.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 关于执业医师 -->
+  <section id="about" class="bg-oat py-24">
+    <div class="max-w-6xl mx-auto px-5 grid md:grid-cols-2 gap-12 items-center">
+      <div class="fadeup">
+        <!-- 肖像占位：生产环境替换为 Dr. Zhang 的真实照片 -->
+        <svg class="w-full aspect-[4/5] rounded-3xl" viewBox="0 0 400 500" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="400" height="500" fill="hsl(155, 27%, 18%)"/>
+          <circle cx="200" cy="185" r="62" fill="hsl(40, 40%, 70%)"/>
+          <path d="M110 430 C110 330 290 330 290 430 L290 500 L110 500 Z" fill="hsl(40, 30%, 62%)"/>
+          <path d="M60 60 h70 M60 80 h50" stroke="hsl(40, 52%, 52%)" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="fadeup" style="--d:120ms">
+        <p class="text-[10px] uppercase tracking-[0.35em] text-gold">Lead Practitioner</p>
+        <h2 class="font-serif font-bold text-4xl md:text-5xl mt-3">Dr. Mei Lin Zhang</h2>
+        <p class="mt-2 text-softp text-sm">MBBAcC · BSc (Hons) Acupuncture · TCM Herbalist · 14 Years Clinical Experience</p>
+        <p class="mt-5 text-softp text-[15px] leading-relaxed">Dr. Zhang graduated from the University of Westminster — one of the UK's most rigorous TCM programmes — and has practised in London for fourteen years. Her method weaves classical Chinese diagnosis with modern biomedical and lifestyle medicine.</p>
+        <blockquote class="mt-5 border-l-2 border-gold pl-4 font-serif italic text-lg text-inkp">"Tongue and pulse tell me what blood tests can't. Blood tests tell me what pulse reading can't. I use both — and I believe lasting health comes from treating causes, not silencing symptoms."</blockquote>
+        <p class="mt-5 text-softp text-[15px]">She collaborates openly with patients' GPs and specialists, keeps clear clinical records, is BAcC registered, and every treatment uses single-use sterile needles.</p>
+        <dl class="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-hairline text-center">
+          <div><dt class="font-serif font-bold text-2xl text-forest">14</dt><dd class="text-xs text-softp">years practice</dd></div>
+          <div><dt class="font-serif font-bold text-2xl text-forest">1,800+</dt><dd class="text-xs text-softp">patients</dd></div>
+          <div><dt class="font-serif font-bold text-2xl text-forest">BAcC</dt><dd class="text-xs text-softp">registered</dd></div>
+          <div><dt class="font-serif font-bold text-2xl text-forest">5★</dt><dd class="text-xs text-softp">rating</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 首次就诊 -->
+  <section class="bg-white py-24">
+    <div class="max-w-5xl mx-auto px-5">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">Your first visit.</h2>
+      <div class="mt-10">
+        <div class="fadeup flex gap-6 py-7 border-b border-hairline">
+          <span class="font-serif text-[56px] leading-none text-gold/35 shrink-0">1</span>
+          <div><h3 class="font-serif font-bold text-xl">The Consultation <span class="text-gold font-normal text-sm ml-2">30 minutes</span></h3>
+          <p class="mt-2 text-softp text-[15px]">A detailed health history — symptoms, sleep, digestion, mood, energy, menstrual health where relevant. Tongue diagnosis and a three-position pulse reading.</p></div>
+        </div>
+        <div class="fadeup flex gap-6 py-7 border-b border-hairline" style="--d:100ms">
+          <span class="font-serif text-[56px] leading-none text-gold/35 shrink-0">2</span>
+          <div><h3 class="font-serif font-bold text-xl">Your Treatment Plan <span class="text-gold font-normal text-sm ml-2">10 minutes</span></h3>
+          <p class="mt-2 text-softp text-[15px]">Your TCM diagnosis explained in plain English: the pattern, the cause, and a realistic course. We recommend a number of sessions and say why. No pressure, ever.</p></div>
+        </div>
+        <div class="fadeup flex gap-6 py-7 border-b border-hairline" style="--d:200ms">
+          <span class="font-serif text-[56px] leading-none text-gold/35 shrink-0">3</span>
+          <div><h3 class="font-serif font-bold text-xl">The Treatment <span class="text-gold font-normal text-sm ml-2">45–60 minutes</span></h3>
+          <p class="mt-2 text-softp text-[15px]">Rest on a warmed treatment bed. Hair-fine, single-use needles placed gently — most people feel almost nothing, or a dull warmth as the qi arrives. Needles stay 20–30 minutes; most patients doze.</p></div>
+        </div>
+        <div class="fadeup flex gap-6 py-7" style="--d:300ms">
+          <span class="font-serif text-[56px] leading-none text-gold/35 shrink-0">4</span>
+          <div><h3 class="font-serif font-bold text-xl">Ongoing Support <span class="text-gold font-normal text-sm ml-2">between sessions</span></h3>
+          <p class="mt-2 text-softp text-[15px]">After each visit: diet, lifestyle, movement or breathing suggestions. A formal review every four sessions to adjust the plan.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. 患者评价 -->
+  <section class="bg-oat py-24">
+    <div class="max-w-6xl mx-auto px-5">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">Patient experiences.</h2>
+      <div class="mt-12 grid md:grid-cols-3 gap-5">
+        <blockquote class="fadeup bg-white border border-hairline rounded-2xl p-8">
+          <p class="text-gold font-serif italic text-2xl leading-none">"</p>
+          <p class="font-serif italic text-lg mt-2 leading-relaxed">Two years of physio hadn't touched my lower back. Six sessions in, it was the first pain-free stretch in years.</p>
+          <footer class="mt-5 text-sm text-softp">Michael O. · Chronic lower back pain · 6 sessions, ongoing</footer>
+        </blockquote>
+        <blockquote class="fadeup bg-white border border-hairline rounded-2xl p-8" style="--d:100ms">
+          <p class="text-gold font-serif italic text-2xl leading-none">"</p>
+          <p class="font-serif italic text-lg mt-2 leading-relaxed">Eighteen months of insomnia and anxiety. CBT, sleep hygiene, medication — nothing lasted. This was my last resort; I now sleep seven to eight hours a night.</p>
+          <footer class="mt-5 text-sm text-softp">Laura S. · Insomnia &amp; anxiety · 8 sessions to date</footer>
+        </blockquote>
+        <blockquote class="fadeup bg-white border border-hairline rounded-2xl p-8" style="--d:200ms">
+          <p class="text-gold font-serif italic text-2xl leading-none">"</p>
+          <p class="font-serif italic text-lg mt-2 leading-relaxed">Fertility support alongside our IVF cycle — Dr. Zhang understood the process better than we did. Twenty-four weeks pregnant now.</p>
+          <footer class="mt-5 text-sm text-softp">Hannah T. · Fertility support · 12 sessions across IVF</footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. 价格 -->
+  <section id="book" class="bg-white py-24">
+    <div class="max-w-3xl mx-auto px-5">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">Pricing.</h2>
+      <div class="mt-10 border border-hairline rounded-2xl overflow-hidden fadeup">
+        <div class="flex justify-between items-baseline px-6 py-4 border-b border-hairline"><span>Initial TCM Consultation <span class="block text-xs text-softp">75 min · credits toward first course</span></span><span class="font-serif font-bold text-xl text-forest">£95</span></div>
+        <div class="flex justify-between items-baseline px-6 py-4 border-b border-hairline"><span>Follow-up Acupuncture <span class="block text-xs text-softp">60 min</span></span><span class="font-serif font-bold text-xl text-forest">£75</span></div>
+        <div class="flex justify-between items-baseline px-6 py-4 border-b border-hairline"><span>Facial Acupuncture <span class="block text-xs text-softp">75 min</span></span><span class="font-serif font-bold text-xl text-forest">£85</span></div>
+        <div class="flex justify-between items-baseline px-6 py-4 border-b border-hairline"><span>Cupping Therapy <span class="block text-xs text-softp">45 min</span></span><span class="font-serif font-bold text-xl text-forest">£55</span></div>
+        <div class="flex justify-between items-baseline px-6 py-4 border-b border-hairline"><span>Chinese Herbal Consultation <span class="block text-xs text-softp">60 min · herbs from £30–55/mo</span></span><span class="font-serif font-bold text-xl text-forest">£45</span></div>
+        <div class="flex justify-between items-baseline px-6 py-4 border-b border-hairline"><span>Course of 6 Acupuncture Sessions <span class="block text-xs text-softp">prepaid · save 10%</span></span><span class="font-serif font-bold text-xl text-forest">£405</span></div>
+        <div class="flex justify-between items-baseline px-6 py-4"><span>Course of 10 Acupuncture Sessions <span class="block text-xs text-softp">prepaid · save 12%</span></span><span class="font-serif font-bold text-xl text-forest">£660</span></div>
+      </div>
+      <div class="mt-6 text-sm text-softp space-y-1 fadeup">
+        <p>HSA/FSA accepted · itemised receipts for private insurance claims provided.</p>
+        <p>Cancellation: 24 hours' notice, please. Late cancellations charged at 50%.</p>
+      </div>
+      <div class="mt-10 text-center fadeup">
+        <a href="tel:02079460001" class="inline-flex bg-forest text-white font-medium px-7 py-3.5 rounded-full hover:opacity-90">Book Your First Session</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. FAQ -->
+  <section id="faq" class="bg-oat py-24">
+    <div class="max-w-3xl mx-auto px-5">
+      <h2 class="font-serif font-bold text-4xl md:text-[52px] fadeup">Frequently asked questions.</h2>
+      <div class="mt-10 space-y-3" id="faqs">
+        <div class="faq-item bg-white border border-hairline rounded-xl">
+          <button class="w-full flex items-center justify-between px-5 py-4 text-left font-medium" aria-expanded="false"><span>Does acupuncture hurt?</span><span class="faq-x text-gold text-xl leading-none">+</span></button>
+          <div class="faq-panel"><p class="px-5 pb-4 text-softp text-[15px]">The needles are hair-fine. Most people feel almost nothing; some feel a dull ache, warmth or tingle at the point — what we call <em class="font-serif">de qi</em>, a therapeutic and welcome sensation. Most patients drift off.</p></div>
+        </div>
+        <div class="faq-item bg-white border border-hairline rounded-xl">
+          <button class="w-full flex items-center justify-between px-5 py-4 text-left font-medium" aria-expanded="false"><span>How many sessions will I need?</span><span class="faq-x text-gold text-xl leading-none">+</span></button>
+          <div class="faq-panel"><p class="px-5 pb-4 text-softp text-[15px]">Acute issues often shift in 2–3 visits; chronic and complex patterns usually need 6–10. Your first consultation sets honest expectations, reviewed formally at session four.</p></div>
+        </div>
+        <div class="faq-item bg-white border border-hairline rounded-xl">
+          <button class="w-full flex items-center justify-between px-5 py-4 text-left font-medium" aria-expanded="false"><span>Is it safe?</span><span class="faq-x text-gold text-xl leading-none">+</span></button>
+          <div class="faq-panel"><p class="px-5 pb-4 text-softp text-[15px]">With a qualified, registered practitioner and single-use sterile needles, acupuncture's safety record is excellent. Dr. Zhang is a BAcC member, fully insured, and follows BAcC codes of practice.</p></div>
+        </div>
+        <div class="faq-item bg-white border border-hairline rounded-xl">
+          <button class="w-full flex items-center justify-between px-5 py-4 text-left font-medium" aria-expanded="false"><span>Can it work alongside my GP's care?</span><span class="faq-x text-gold text-xl leading-none">+</span></button>
+          <div class="faq-panel"><p class="px-5 pb-4 text-softp text-[15px]">Yes — and it often works best that way, from IVF support to managing cancer-treatment side effects alongside physiotherapy. Your medication and history are reviewed at the first consultation.</p></div>
+        </div>
+        <div class="faq-item bg-white border border-hairline rounded-xl">
+          <button class="w-full flex items-center justify-between px-5 py-4 text-left font-medium" aria-expanded="false"><span>Is acupuncture safe in pregnancy?</span><span class="faq-x text-gold text-xl leading-none">+</span></button>
+          <div class="faq-panel"><p class="px-5 pb-4 text-softp text-[15px]">Yes, and it's one of Dr. Zhang's specialisms — with certain points avoided and treatment adapted by trimester. Commonly used for nausea, pelvic girdle pain, backache, anxiety, sleep and birth preparation.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 页脚 -->
+<footer class="bg-forest text-white py-16">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+      <div>
+        <div class="flex items-center gap-2">
+          <svg width="26" height="26" viewBox="0 0 28 28" fill="none" stroke="hsl(40, 52%, 52%)" stroke-width="1.4" aria-hidden="true"><path d="M14 3 C11 8 11 12 14 16 C17 12 17 8 14 3 Z"/><path d="M4 9 C10 10 13 13 14 16 C9 16 6 13 4 9 Z"/><path d="M24 9 C18 10 15 13 14 16 C19 16 22 13 24 9 Z"/></svg>
+          <span class="font-serif font-bold text-xl">ZEN POINT</span>
+        </div>
+        <p class="mt-3 text-white/70 text-sm max-w-sm">Contemporary acupuncture and Traditional Chinese Medicine. Harley Street area, London.</p>
+      </div>
+      <nav class="flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/70">
+        <a href="#treatments" class="hover:text-gold">Treatments</a>
+        <a href="#conditions" class="hover:text-gold">Conditions</a>
+        <a href="#about" class="hover:text-gold">About</a>
+        <a href="#faq" class="hover:text-gold">What to Expect</a>
+        <a href="#book" class="hover:text-gold">Pricing</a>
+        <a href="#faq" class="hover:text-gold">FAQ</a>
+        <a href="#book" class="hover:text-gold">Book</a>
+      </nav>
+    </div>
+    <div class="mt-10 pt-6 border-t border-white/15 flex flex-col md:flex-row items-center justify-between gap-2 text-sm text-white/70">
+      <p>📍 Harley Street area, London W1 · ☎ 020 7946 0001</p>
+      <p>© 2025 Zen Point Acupuncture Clinic. Dr. Mei Lin Zhang MBBAcC.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 导航吸顶加深
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    nav.classList.toggle('shadow-[0_8px_24px_-16px_rgba(0,0,0,.4)]', window.scrollY > 60);
+  }, { passive: true });
+
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+
+  // 滚动淡入
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in-view'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.fadeup').forEach(function (el) { io.observe(el); });
+
+  // 穴位 tooltips（含键盘支持）
+  const POINTS = [
+    { t: 'PC-6 · Pericardium 6 (Nei Guan)', d: 'Nausea, anxiety, palpitations, travel sickness. One of TCM\'s most-used points.' },
+    { t: 'LI-4 · Large Intestine 4 (He Gu)', d: 'Pain relief, immune support, headaches, facial issues. The "aspirin point" of acupuncture.' },
+    { t: 'ST-36 · Stomach 36 (Zu San Li)', d: 'Digestion, energy and immunity. Among the most important tonification points.' },
+    { t: 'SP-6 · Spleen 6 (San Yin Jiao)', d: 'Hormonal balance, sleep, stress, menstrual regulation. Meeting point of three yin channels.' },
+    { t: 'GV-20 · Governing Vessel 20 (Bai Hui)', d: 'Mental clarity, headaches, dizziness, calming anxiety. The "Hundred Meetings" point.' },
+    { t: 'LV-3 · Liver 3 (Tai Chong)', d: 'Stress and anger, liver health, headaches, period pain, eye issues. Paired with LI-4 as the "Four Gates".' },
+  ];
+  const tip = document.getElementById('tip');
+  const tipTitle = document.getElementById('tipTitle');
+  const tipDesc = document.getElementById('tipDesc');
+  const wrap = document.getElementById('bodywrap');
+  function showTip(i, dot) {
+    tipTitle.textContent = POINTS[i].t;
+    tipDesc.textContent = POINTS[i].d;
+    tip.classList.add('show');
+    const wr = wrap.getBoundingClientRect();
+    const dr = dot.getBoundingClientRect();
+    tip.style.left = Math.max(0, dr.right - wr.left + 10) + 'px';
+    tip.style.top = Math.max(0, dr.top - wr.top - 20) + 'px';
+  }
+  function hideTip() { tip.classList.remove('show'); }
+  document.querySelectorAll('#points .pt').forEach(function (dot) {
+    dot.setAttribute('role', 'button');
+    dot.setAttribute('tabindex', '0');
+    dot.addEventListener('mouseenter', function () { showTip(+dot.dataset.i, dot); });
+    dot.addEventListener('mouseleave', hideTip);
+    dot.addEventListener('focus', function () { showTip(+dot.dataset.i, dot); });
+    dot.addEventListener('blur', hideTip);
+    dot.addEventListener('click', function () { showTip(+dot.dataset.i, dot); });
+  });
+
+  // FAQ 手风琴
+  document.querySelectorAll('#faqs .faq-item button').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const item = btn.closest('.faq-item');
+      const open = item.classList.toggle('open');
+      btn.setAttribute('aria-expanded', String(open));
+    });
+  });
+})();
+</script>
+</body>
+</html>

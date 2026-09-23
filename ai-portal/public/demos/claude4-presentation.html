@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude 4 & Agent Capabilities 演示文稿</title>
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --text-color: #ffffff;
+            --accent-color: #d97757; /* Anthropic-like accent */
+            --secondary-color: #2d333b;
+            --slide-bg: linear-gradient(135deg, #1a1d23 0%, #0f1115 100%);
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-hover: rgba(255, 255, 255, 0.1);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --transition-speed: 0.5s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            overflow: hidden; /* Prevent scrolling, handle in slides */
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Presentation Container */
+        #presentation {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: var(--slide-bg);
+            overflow: hidden;
+        }
+
+        /* Slides */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 4rem 6rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.95) translateY(20px);
+            transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease, visibility var(--transition-speed);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+            z-index: 2;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #fff, #a1a1aa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #e4e4e7;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #a1a1aa;
+            margin-bottom: 1rem;
+        }
+
+        /* Home Slide Layout */
+        .home-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .home-header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .home-subtitle {
+            font-size: 1.5rem;
+            color: #a1a1aa;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-grow: 1;
+            align-content: center;
+        }
+
+        .directory-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .directory-card:hover {
+            background: var(--card-hover);
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-number {
+            font-size: 4rem;
+            font-weight: 800;
+            color: rgba(255, 255, 255, 0.05);
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            transition: color 0.3s;
+        }
+
+        .directory-card:hover .card-number {
+            color: rgba(217, 119, 87, 0.2);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            color: #a1a1aa;
+        }
+
+        /* Content Slide Layout */
+        .content-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            height: 100%;
+            align-items: center;
+        }
+
+        .content-left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .content-right {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .info-card {
+            background: var(--card-bg);
+            border-left: 4px solid var(--accent-color);
+            padding: 1.5rem;
+            border-radius: 0 12px 12px 0;
+            transition: transform 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateX(10px);
+            background: var(--card-hover);
+        }
+
+        .info-card h4 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-card h4::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .highlight-box {
+            background: rgba(217, 119, 87, 0.1);
+            border: 1px solid rgba(217, 119, 87, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .highlight-stat {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--accent-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .highlight-label {
+            font-size: 1rem;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Controls & Progress */
+        .controls {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+            background: linear-gradient(to top, rgba(15, 17, 21, 0.9), transparent);
+            pointer-events: none; /* Let clicks pass through to slides if needed */
+        }
+
+        .controls > * {
+            pointer-events: auto;
+        }
+
+        .progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            font-size: 1.2rem;
+        }
+
+        .nav-btn:hover {
+            background: var(--accent-color);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-indicator {
+            font-family: monospace;
+            color: #a1a1aa;
+            font-size: 0.9rem;
+        }
+
+        .fullscreen-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s;
+        }
+
+        .fullscreen-btn:hover {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .slide {
+                padding: 3rem;
+            }
+            .content-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                overflow-y: auto;
+                display: block; /* Fallback for scrolling */
+            }
+            .content-left {
+                margin-bottom: 2rem;
+            }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            .directory-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1.5rem;
+                overflow-y: auto; /* Enable scrolling on mobile */
+            }
+            .directory-grid {
+                grid-template-columns: 1fr;
+            }
+            .controls {
+                padding: 1rem;
+            }
+            .nav-btn {
+                width: 36px;
+                height: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div id="presentation">
+    
+    <!-- Slide 1: Home / Directory -->
+    <div class="slide active home-slide" id="slide-0">
+        <div class="home-container">
+            <div class="home-header">
+                <h1>Claude 4 & Agent Capabilities</h1>
+                <p class="home-subtitle">Anthropic 新一代 AI 模型与开发者生态系统</p>
+            </div>
+            <div class="directory-grid">
+                <div class="directory-card" onclick="goToSlide(1)">
+                    <span class="card-number">01</span>
+                    <div class="card-title">新一代模型概览</div>
+                    <div class="card-desc">Claude Opus 4 与 Sonnet 4 的混合架构与定价策略</div>
+                </div>
+                <div class="directory-card" onclick="goToSlide(2)">
+                    <span class="card-number">02</span>
+                    <div class="card-title">Claude Opus 4</div>
+                    <div class="card-desc">全球最强编码模型，长时任务与复杂推理的巅峰</div>
+                </div>
+                <div class="directory-card" onclick="goToSlide(3)">
+                    <span class="card-number">03</span>
+                    <div class="card-title">Claude Sonnet 4</div>
+                    <div class="card-desc">性能与效率的最佳平衡，GitHub Copilot 的新引擎</div>
+                </div>
+                <div class="directory-card" onclick="goToSlide(4)">
+                    <span class="card-number">04</span>
+                    <div class="card-title">Agent API 新能力</div>
+                    <div class="card-desc">代码执行、MCP 连接器、文件 API 与 Prompt 缓存</div>
+                </div>
+                <div class="directory-card" onclick="goToSlide(5)">
+                    <span class="card-number">05</span>
+                    <div class="card-title">扩展思维与记忆</div>
+                    <div class="card-desc">工具并行使用、本地文件记忆与连续性构建</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Chapter 1 - Overview -->
+    <div class="slide" id="slide-1">
+        <div class="content-container">
+            <div class="content-left">
+                <h2>01. 新一代模型概览</h2>
+                <p>Anthropic 推出了全新的 Claude 4 系列模型，重新定义了编码、推理和 AI Agent 的标准。</p>
+                <div class="highlight-box">
+                    <span class="highlight-stat">Hybrid</span>
+                    <span class="highlight-label">混合架构模式</span>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #ccc;">即时响应模式 + 扩展思维模式 (Extended Thinking)</p>
+                </div>
+            </div>
+            <div class="content-right">
+                <div class="info-card">
+                    <h4>双模型发布</h4>
+                    <p>Claude Opus 4（旗舰版）与 Claude Sonnet 4（升级版）同步登场，覆盖从日常任务到极端复杂场景的全方位需求。</p>
+                </div>
+                <div class="info-card">
+                    <h4>广泛的可用性</h4>
+                    <p>支持 Web 端、API、Amazon Bedrock 及 Google Cloud Vertex AI。Sonnet 4 同时面向免费用户开放。</p>
+                </div>
+                <div class="info-card">
+                    <h4>一致的定价策略</h4>
+                    <p>Opus 4: $15/$75 (输入/输出 每百万 token)<br>Sonnet 4: $3/$15 (输入/输出 每百万 token)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Chapter 2 - Opus 4 -->
+    <div class="slide" id="slide-2">
+        <div class="content-container">
+            <div class="content-left">
+                <h2>02. Claude Opus 4</h2>
+                <p>全球最强大的编码模型，专为需要深度专注和数千个步骤的长时间运行任务而设计。</p>
+                <div class="highlight-box">
+                    <span class="highlight-stat">72.5%</span>
+                    <span class="highlight-label">SWE-bench 领跑者</span>
+                </div>
+            </div>
+            <div class="content-right">
+                <div class="info-card">
+                    <h4>持续任务执行能力</h4>
+                    <p>能够连续工作数小时，处理需要数千步操作的复杂任务，显著扩展了 AI Agent 的能力边界。</p>
+                </div>
+                <div class="info-card">
+                    <h4>卓越的基准测试表现</h4>
+                    <p>在 Terminal-bench 中达到 43.2%，在复杂代码库理解和多文件修改方面表现出“最先进”的水平。</p>
+                </div>
+                <div class="info-card">
+                    <h4>行业验证</h4>
+                    <p>被 Cursor、Replit 和 Cognition 等前沿开发工具集成，用于解决其他模型无法处理的复杂挑战。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: Chapter 3 - Sonnet 4 -->
+    <div class="slide" id="slide-3">
+        <div class="content-container">
+            <div class="content-left">
+                <h2>03. Claude Sonnet 4</h2>
+                <p>Sonnet 3.7 的重大升级，在编码和推理方面表现出色，同时保持了高效的响应速度。</p>
+                <div class="highlight-box">
+                    <span class="highlight-stat">72.7%</span>
+                    <span class="highlight-label">SWE-bench Verified</span>
+                </div>
+            </div>
+            <div class="content-right">
+                <div class="info-card">
+                    <h4>GitHub Copilot 的新引擎</h4>
+                    <p>GitHub 宣布将 Sonnet 4 作为其新编码 Agent 的核心模型，在 Agent 场景中表现优异。</p>
+                </div>
+                <div class="info-card">
+                    <h4>精准的指令遵循</h4>
+                    <p>相比前代，能够更精准地响应复杂指令，减少导航错误（从 20% 降至接近 0%）。</p>
+                </div>
+                <div class="info-card">
+                    <h4>最佳效能比</h4>
+                    <p>在大多数领域虽然略逊于 Opus 4，但提供了能力与实用性的最佳平衡，适合日常高频使用。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Chapter 4 - Agent API -->
+    <div class="slide" id="slide-4">
+        <div class="content-container">
+            <div class="content-left">
+                <h2>04. Agent API 新能力</h2>
+                <p>Anthropic 发布了四项全新的 API 能力，赋能开发者构建更强大的 AI Agent。</p>
+                <div class="highlight-box">
+                    <span class="highlight-stat">Power</span>
+                    <span class="highlight-label">四大核心工具</span>
+                </div>
+            </div>
+            <div class="content-right">
+                <div class="info-card">
+                    <h4>代码执行工具 (Code Execution)</h4>
+                    <p>允许模型在安全沙箱环境中编写和运行 Python 代码，用于高级数据分析和计算。</p>
+                </div>
+                <div class="info-card">
+                    <h4>MCP 连接器 & Files API</h4>
+                    <p>支持通过 Model Context Protocol 连接外部系统，并能跨会话高效存储和访问文件。</p>
+                </div>
+                <div class="info-card">
+                    <h4>Prompt 缓存 (Prompt Caching)</h4>
+                    <p>支持长达 1 小时的 Prompt 缓存，大幅降低长上下文任务的成本并提升响应速度。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Chapter 5 - Extended Thinking -->
+    <div class="slide" id="slide-5">
+        <div class="content-container">
+            <div class="content-left">
+                <h2>05. 扩展思维与记忆</h2>
+                <p>通过工具使用和本地记忆能力，Claude 现在能够像人类一样进行更深层次的思考和连续工作。</p>
+                <div class="highlight-box">
+                    <span class="highlight-stat">Smart</span>
+                    <span class="highlight-label">自主进化</span>
+                </div>
+            </div>
+            <div class="content-right">
+                <div class="info-card">
+                    <h4>扩展思维 (Extended Thinking)</h4>
+                    <p>模型可以在思考过程中交替使用工具（如网络搜索），并在回复前进行更深度的推理。</p>
+                </div>
+                <div class="info-card">
+                    <h4>并行工具使用</h4>
+                    <p>支持同时并行调用多个工具，显著提升复杂任务的处理效率。</p>
+                </div>
+                <div class="info-card">
+                    <h4>本地文件记忆</h4>
+                    <p>当被授予本地文件访问权限时，能提取并保存关键事实，构建隐性知识，保持工作连续性。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Conclusion -->
+    <div class="slide" id="slide-6">
+        <div class="home-container" style="justify-content: center; align-items: center; text-align: center;">
+            <h1 style="font-size: 4rem;">未来已来</h1>
+            <p style="font-size: 1.5rem; max-width: 800px; margin-bottom: 3rem;">
+                Claude 4 系列与全新的 Agent API 为 AI 应用开发树立了新标杆。<br>
+                无论是复杂的代码重构，还是自主的 Agent 工作流，现在触手可及。
+            </p>
+            <button class="fullscreen-btn" onclick="goToSlide(0)" style="padding: 1rem 2rem; font-size: 1.2rem; background: var(--accent-color); border: none;">返回目录</button>
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <div class="page-indicator">
+            <span id="current-page">1</span> / <span id="total-pages">7</span>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn" id="prev-btn" onclick="prevSlide()" title="上一页">←</button>
+            <button class="nav-btn" id="home-btn" onclick="goToSlide(0)" title="目录">≡</button>
+            <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页">→</button>
+        </div>
+
+        <button class="fullscreen-btn" onclick="toggleFullScreen()">全屏模式</button>
+    </div>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const progressBar = document.getElementById('progress-bar');
+    const currentPageEl = document.getElementById('current-page');
+    const totalPagesEl = document.getElementById('total-pages');
+    const prevBtn = document.getElementById('prev-btn');
+    const nextBtn = document.getElementById('next-btn');
+
+    // Initialize
+    totalPagesEl.textContent = totalSlides;
+    updateSlideState();
+
+    function updateSlideState() {
+        // Update Slides
+        slides.forEach((slide, index) => {
+            if (index === currentSlide) {
+                slide.classList.add('active');
+            } else {
+                slide.classList.remove('active');
+            }
+        });
+
+        // Update Progress Bar
+        const progress = ((currentSlide + 1) / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+
+        // Update Page Indicator
+        currentPageEl.textContent = currentSlide + 1;
+
+        // Update Buttons
+        prevBtn.disabled = currentSlide === 0;
+        nextBtn.disabled = currentSlide === totalSlides - 1;
+    }
+
+    function goToSlide(index) {
+        if (index >= 0 && index < totalSlides) {
+            currentSlide = index;
+            updateSlideState();
+        }
+    }
+
+    function nextSlide() {
+        if (currentSlide < totalSlides - 1) {
+            currentSlide++;
+            updateSlideState();
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 0) {
+            currentSlide--;
+            updateSlideState();
+        }
+    }
+
+    // Keyboard Navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === 'Space') {
+            nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            prevSlide();
+        } else if (e.key === 'Home') {
+            goToSlide(0);
+        } else if (e.key === 'End') {
+            goToSlide(totalSlides - 1);
+        }
+    });
+
+    // Fullscreen Toggle
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log(`Error attempting to enable full-screen mode: ${err.message}`);
+            });
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    }
+
+    // Touch Swipe Support (Simple)
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    });
+
+    function handleSwipe() {
+        if (touchEndX < touchStartX - 50) {
+            nextSlide();
+        }
+        if (touchEndX > touchStartX + 50) {
+            prevSlide();
+        }
+    }
+</script>
+
+</body>
+</html>

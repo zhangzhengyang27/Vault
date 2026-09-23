@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课程章节 · 敦煌艺术与丝路文明</title>
+<meta name="description" content="八讲课程时间轴：张骞出使、魏晋石窟、盛唐经变、五代供养人、西夏元蒙、藏经洞、近代流散、当代数字化。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+<main class="container" style="padding-top:30px">
+  <div class="section-head reveal" style="text-align:left;margin:10px 0 8px">
+    <div class="section-eyebrow">Timeline · 时间轴</div>
+    <h1 class="serif gilt" style="font-size:clamp(2rem,5vw,3.2rem);margin:.2em 0">课程章节</h1>
+    <p class="lede" style="margin:0">八讲沿时间轴展开，从张骞凿空到数字敦煌。点击任一章节进入沉浸式详情页：知识讲解、AI 语音朗读与高清壁画细节。</p>
+    <div class="tl-stats" id="tlStats" style="margin-top:18px;display:flex;gap:26px;flex-wrap:wrap"></div>
+  </div>
+  <div class="timeline" id="timeline"></div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script>
+  renderShell('chapters.html');
+  (function () {
+    const n = D.chapters.length;
+    /* 头部动态统计 */
+    $('#tlStats').innerHTML =
+      '<div><div style="font-family:var(--serif);font-size:1.5rem;color:var(--gold-deep)">' + n + ' 讲</div>' +
+      '<div style="font-size:.78rem;color:var(--text-muted)">课程体量</div></div>' +
+      '<div><div style="font-family:var(--serif);font-size:1.5rem;color:var(--gold-deep)">' + D.chapters[0].era.split('·')[0].trim() + ' — ' + D.chapters[n-1].era.split('·')[0].trim() + '</div>' +
+      '<div style="font-size:.78rem;color:var(--text-muted)">历史跨度</div></div>' +
+      '<div><div style="font-family:var(--serif);font-size:1.5rem;color:var(--gold-deep)">' + D.relics.length + ' 件</div>' +
+      '<div style="font-size:.78rem;color:var(--text-muted)">关联文物</div></div>';
+
+    const tl = $('#timeline');
+    tl.innerHTML = D.chapters.map(function (c, i) {
+      const side = i % 2 === 0 ? 'odd' : 'even';
+      const color = c.color || 'var(--ochre)';
+      return '<div class="tl-item ' + side + ' reveal">' +
+        '<span class="tl-dot" style="background:' + color + '">' + (c.num < 10 ? '0' + c.num : c.num) + '</span>' +
+        '<a class="tl-card" href="chapter.html?id=' + c.id + '" data-idx="' + i + '" style="border-top:4px solid ' + color + '">' +
+          '<div class="cover"><img src="' + c.cover + '" alt="' + c.title + '" loading="lazy" onerror="imgFallback(this,\'' + c.title + '\')">' +
+          '<span class="tl-num">' + (c.num < 10 ? '0' + c.num : c.num) + '</span></div>' +
+          '<div class="body"><div class="meta" style="color:' + color + '">第 ' + c.num + ' 讲 · ' + c.era + '</div>' +
+          '<h3>' + c.title + '<span style="font-size:.8rem;color:var(--text-muted);font-weight:400">｜' + c.subtitle + '</span></h3>' +
+          '<p>' + c.summary + '</p>' +
+          '<span class="go">进入本章</span></div></a></div>';
+    }).join('');
+
+    /* 悬停时轻微立体倾斜 */
+    $$('.tl-card').forEach(function (card, i) {
+      card.addEventListener('mousemove', function (e) {
+        const r = card.getBoundingClientRect();
+        const tx = ((e.clientX - r.left) / r.width - .5);
+        card.style.setProperty('--tilt', (-tx * 5) + 'deg');
+      });
+      card.style.setProperty('--tilt', '0deg');
+    });
+
+    /* 渲染完成后再绑定滚动显现，确保时间轴卡片可见 */
+    bindReveal();
+  })();
+</script>
+</body>
+</html>

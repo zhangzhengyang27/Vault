@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>合租账单分摊</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+            align-items: flex-end;
+        }
+        .form-item { display: flex; flex-direction: column; }
+        .form-item label { font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .form-item input, .form-item select {
+            padding: 8px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-item input:focus, .form-item select:focus { border-color: #1976d2; }
+        .checkbox-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+        .checkbox-group input:checked + span { color: #1976d2; font-weight: 600; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary { background: #1976d2; color: #fff; }
+        .btn-success { background: #43a047; color: #fff; }
+        .btn-danger { background: #eceff1; color: #546e7a; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 12px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #eceff1; }
+        th { color: #78909c; font-weight: 600; }
+        .result-card {
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 10px;
+        }
+        .result-card.receive { background: #e8f5e9; border-left: 4px solid #43a047; }
+        .result-card.pay { background: #ffebee; border-left: 4px solid #e53935; }
+        .result-card .name { font-weight: 600; font-size: 16px; }
+        .result-card .amount { font-size: 24px; font-weight: 700; }
+        .result-card.receive .amount { color: #2e7d32; }
+        .result-card.pay .amount { color: #c62828; }
+        .transfer-item {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .transfer-item .arrow { color: #1976d2; font-size: 20px; }
+        .transfer-item .money { font-weight: 700; color: #e65100; }
+        .del-btn { color: #e53935; cursor: pointer; border: none; background: none; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 合租账单分摊</h1>
+        <div class="card">
+            <h3>添加消费记录</h3>
+            <div class="form-row">
+                <div class="form-item">
+                    <label>付款人</label>
+                    <input type="text" id="payer" placeholder="姓名" style="width:100px;">
+                </div>
+                <div class="form-item">
+                    <label>金额</label>
+                    <input type="number" id="amount" placeholder="0.00" step="0.01" style="width:120px;">
+                </div>
+                <div class="form-item">
+                    <label>备注</label>
+                    <input type="text" id="memo" placeholder="如：水电费" style="width:150px;">
+                </div>
+            </div>
+            <div class="form-item" style="margin-bottom:12px;">
+                <label>参与分摊人（多选）</label>
+                <div class="checkbox-group" id="memberChecks"></div>
+                <input type="text" id="newMember" placeholder="添加新成员" style="width:120px;margin-top:6px;padding:6px 10px;border:1px solid #e0e0e0;border-radius:4px;font-size:13px;">
+                <button class="btn btn-primary" style="padding:6px 12px;font-size:12px;margin-left:6px;" onclick="addMember()">加人</button>
+            </div>
+            <button class="btn btn-primary" onclick="addRecord()">添加记录</button>
+        </div>
+        <div class="card">
+            <h3>消费记录</h3>
+            <table>
+                <thead><tr><th>付款人</th><th>金额</th><th>分摊人</th><th>备注</th><th></th></tr></thead>
+                <tbody id="recordBody"></tbody>
+            </table>
+            <div style="margin-top:16px;display:flex;gap:10px;">
+                <button class="btn btn-success" onclick="calculate()">计算分摊</button>
+                <button class="btn btn-danger" onclick="clearAll()">清空所有</button>
+            </div>
+        </div>
+        <div class="card" id="resultCard" style="display:none;">
+            <h3>分摊结果</h3>
+            <div id="netResults"></div>
+            <h3 style="margin-top:20px;">最简转账方案</h3>
+            <div id="transferPlan"></div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'bill_split';
+        let data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{"members":["张三","李四","王五"],"records":[]}');
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+        function renderChecks() {
+            document.getElementById('memberChecks').innerHTML = data.members.map(m =>
+                `<label><input type="checkbox" value="${m}" checked><span>${m}</span></label>`
+            ).join('');
+        }
+        function addMember() {
+            const name = document.getElementById('newMember').value.trim();
+            if (!name || data.members.includes(name)) return;
+            data.members.push(name);
+            save();
+            renderChecks();
+            document.getElementById('newMember').value = '';
+        }
+        function addRecord() {
+            const payer = document.getElementById('payer').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            const memo = document.getElementById('memo').value.trim();
+            const members = Array.from(document.querySelectorAll('#memberChecks input:checked')).map(c => c.value);
+            if (!payer || isNaN(amount) || amount <= 0 || members.length === 0) { alert('请填写完整信息'); return; }
+            data.records.push({ id: Date.now(), payer, amount, members, memo, time: new Date().toLocaleString() });
+            save();
+            document.getElementById('payer').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('memo').value = '';
+            renderRecords();
+        }
+        function deleteRecord(id) {
+            data.records = data.records.filter(r => r.id !== id);
+            save();
+            renderRecords();
+        }
+        function renderRecords() {
+            const tbody = document.getElementById('recordBody');
+            tbody.innerHTML = data.records.map((r, i) => `
+                <tr>
+                    <td>${r.payer}</td>
+                    <td style="font-weight:600;">¥${r.amount.toFixed(2)}</td>
+                    <td>${r.members.join(', ')}</td>
+                    <td>${r.memo}</td>
+                    <td><button class="del-btn" onclick="deleteRecord(${r.id})">删除</button></td>
+                </tr>
+            `).join('');
+        }
+        function calculate() {
+            if (data.records.length === 0) return;
+            const net = {};
+            data.members.forEach(m => net[m] = 0);
+            data.records.forEach(r => {
+                const share = r.amount / r.members.length;
+                r.members.forEach(m => { net[m] -= share; });
+                net[r.payer] += r.amount;
+            });
+            const results = document.getElementById('netResults');
+            results.innerHTML = '';
+            data.members.forEach(m => {
+                const val = net[m];
+                const type = val >= 0 ? 'receive' : 'pay';
+                const text = val >= 0 ? `应收 ¥${val.toFixed(2)}` : `应付 ¥${Math.abs(val).toFixed(2)}`;
+                results.innerHTML += `<div class="result-card ${type}"><span class="name">${m}</span><span class="amount">${text}</span></div>`;
+            });
+            // 最简转账方案
+            const debtors = [], creditors = [];
+            data.members.forEach(m => {
+                if (net[m] < -0.01) debtors.push({ name: m, amount: -net[m] });
+                else if (net[m] > 0.01) creditors.push({ name: m, amount: net[m] });
+            });
+            const transfers = [];
+            let di = 0, ci = 0;
+            while (di < debtors.length && ci < creditors.length) {
+                const pay = Math.min(debtors[di].amount, creditors[ci].amount);
+                if (pay > 0.01) transfers.push({ from: debtors[di].name, to: creditors[ci].name, amount: pay });
+                debtors[di].amount -= pay;
+                creditors[ci].amount -= pay;
+                if (debtors[di].amount < 0.01) di++;
+                if (creditors[ci].amount < 0.01) ci++;
+            }
+            const plan = document.getElementById('transferPlan');
+            plan.innerHTML = transfers.map(t => `
+                <div class="transfer-item">
+                    <strong>${t.from}</strong><span class="arrow">→</span>
+                    <span class="money">¥${t.amount.toFixed(2)}</span>
+                    <span class="arrow">→</span><strong>${t.to}</strong>
+                </div>
+            `).join('') || '<p style="color:#78909c;">无需转账</p>';
+            document.getElementById('resultCard').style.display = '';
+        }
+        function clearAll() {
+            if (!confirm('确定清空所有记录？')) return;
+            data.records = [];
+            save();
+            renderRecords();
+            document.getElementById('resultCard').style.display = 'none';
+        }
+        renderChecks();
+        renderRecords();
+    </script>
+</body>
+</html>

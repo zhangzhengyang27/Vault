@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>极简记账</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .add-area {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .add-area input, .add-area select {
+            padding: 10px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+        .add-area input:focus, .add-area select:focus { border-color: #1976d2; }
+        .add-area input[type="number"] { width: 120px; }
+        .add-area select { min-width: 100px; }
+        .add-area input[type="text"] { flex: 1; min-width: 100px; }
+        .btn-add {
+            padding: 10px 20px;
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .btn-add:hover { background: #1565c0; }
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 700px) { .content-grid { grid-template-columns: 1fr; } }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #eceff1;
+        }
+        .total-label { font-size: 14px; color: #78909c; }
+        .total-amount { font-size: 28px; font-weight: 700; color: #1976d2; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px 6px; text-align: left; border-bottom: 1px solid #f5f5f5; }
+        th { color: #78909c; font-weight: 600; }
+        td { color: #37474f; }
+        .del-btn {
+            color: #e53935;
+            cursor: pointer;
+            font-size: 12px;
+            border: none;
+            background: none;
+        }
+        .btn-export {
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: #43a047;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💰 极简记账</h1>
+        <div class="add-area">
+            <input type="number" id="amount" placeholder="金额" step="0.01" min="0">
+            <select id="category">
+                <option>餐饮</option><option>交通</option><option>购物</option>
+                <option>娱乐</option><option>住房</option><option>其他</option>
+            </select>
+            <input type="text" id="note" placeholder="备注">
+            <button class="btn-add" onclick="addRecord()">记一笔</button>
+        </div>
+        <div class="content-grid">
+            <div class="card">
+                <h3>本月记录</h3>
+                <div class="total-row">
+                    <span class="total-label">本月支出</span>
+                    <span class="total-amount" id="totalExpense">¥0.00</span>
+                </div>
+                <table>
+                    <thead><tr><th>日期</th><th>金额</th><th>分类</th><th>备注</th><th></th></tr></thead>
+                    <tbody id="recordBody"></tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3>分类统计</h3>
+                <canvas id="pieChart"></canvas>
+                <table style="margin-top:14px;">
+                    <thead><tr><th>分类</th><th>金额</th><th>占比</th></tr></thead>
+                    <tbody id="categoryBody"></tbody>
+                </table>
+                <button class="btn-export" onclick="exportCSV()">导出 CSV</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'bookkeeping_records';
+        let records = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let pieChart = null;
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(records)); }
+        function addRecord() {
+            const amt = parseFloat(document.getElementById('amount').value);
+            if (isNaN(amt) || amt <= 0) return;
+            const rec = {
+                id: Date.now(),
+                amount: amt,
+                category: document.getElementById('category').value,
+                note: document.getElementById('note').value,
+                date: new Date().toISOString().slice(0,10)
+            };
+            records.unshift(rec);
+            save();
+            document.getElementById('amount').value = '';
+            document.getElementById('note').value = '';
+            render();
+        }
+        document.getElementById('amount').addEventListener('keydown', e => { if(e.key==='Enter') addRecord(); });
+        document.getElementById('note').addEventListener('keydown', e => { if(e.key==='Enter') addRecord(); });
+        function deleteRecord(id) {
+            records = records.filter(r => r.id !== id);
+            save();
+            render();
+        }
+        function render() {
+            const now = new Date();
+            const monthRecords = records.filter(r => {
+                const d = new Date(r.date);
+                return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+            });
+            const total = monthRecords.reduce((s, r) => s + r.amount, 0);
+            document.getElementById('totalExpense').textContent = '¥' + total.toFixed(2);
+            const tbody = document.getElementById('recordBody');
+            tbody.innerHTML = monthRecords.map(r => `
+                <tr>
+                    <td>${r.date}</td>
+                    <td style="color:#e53935;font-weight:600;">¥${r.amount.toFixed(2)}</td>
+                    <td>${r.category}</td>
+                    <td>${r.note}</td>
+                    <td><button class="del-btn" onclick="deleteRecord(${r.id})">删除</button></td>
+                </tr>
+            `).join('');
+            const catSummary = {};
+            monthRecords.forEach(r => {
+                catSummary[r.category] = (catSummary[r.category] || 0) + r.amount;
+            });
+            const labels = Object.keys(catSummary);
+            const amounts = labels.map(l => catSummary[l]);
+            const colors = ['#1976d2','#43a047','#fb8c00','#e53935','#8e24aa','#00acc1'];
+            if (pieChart) pieChart.destroy();
+            pieChart = new Chart(document.getElementById('pieChart'), {
+                type: 'pie',
+                data: { labels, datasets: [{ data: amounts, backgroundColor: colors }] },
+                options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+            });
+            const catBody = document.getElementById('categoryBody');
+            catBody.innerHTML = [...labels].sort((a,b) => catSummary[b]-catSummary[a]).map(l => `
+                <tr><td>${l}</td><td>¥${catSummary[l].toFixed(2)}</td><td>${total > 0 ? (catSummary[l]/total*100).toFixed(1) : '0.0'}%</td></tr>
+            `).join('');
+        }
+        function exportCSV() {
+            let csv = '日期,金额,分类,备注\n';
+            records.forEach(r => { csv += `${r.date},${r.amount},${r.category},${r.note}\n`; });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '记账记录.csv';
+            link.click();
+        }
+        render();
+    </script>
+</body>
+</html>

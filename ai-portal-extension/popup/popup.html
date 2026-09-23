@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <title>AI 提示词助手</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        width: 360px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+          "PingFang SC", "Microsoft YaHei", sans-serif;
+        background: #fafafa;
+        color: #18181b;
+      }
+      header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 12px;
+        background: #fff;
+        border-bottom: 1px solid #e4e4e7;
+      }
+      header .logo {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      header .title {
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .search {
+        flex: 1;
+        min-width: 0;
+        padding: 6px 10px;
+        border: 1px solid #e4e4e7;
+        border-radius: 8px;
+        font-size: 12px;
+        outline: none;
+        background: #fafafa;
+      }
+      .search:focus {
+        border-color: #6366f1;
+        background: #fff;
+      }
+      .icon-btn {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 15px;
+        line-height: 1;
+        padding: 4px;
+        border-radius: 6px;
+        color: #71717a;
+      }
+      .icon-btn:hover {
+        background: #f4f4f5;
+        color: #18181b;
+      }
+
+      /* 设置面板 */
+      .settings-panel {
+        padding: 10px 12px;
+        background: #fff;
+        border-bottom: 1px solid #e4e4e7;
+      }
+      .settings-panel.hidden {
+        display: none;
+      }
+      .settings-label {
+        display: block;
+        font-size: 11px;
+        color: #71717a;
+        margin-bottom: 4px;
+      }
+      .settings-input {
+        width: 100%;
+        padding: 6px 10px;
+        border: 1px solid #e4e4e7;
+        border-radius: 8px;
+        font-size: 12px;
+        outline: none;
+      }
+      .settings-input:focus {
+        border-color: #6366f1;
+      }
+      .settings-save {
+        margin-top: 6px;
+        width: 100%;
+        padding: 6px 0;
+        border: none;
+        border-radius: 8px;
+        background: #6366f1;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+      }
+      .settings-save:hover {
+        background: #4f46e5;
+      }
+
+      /* 分类 tabs */
+      .tabs {
+        display: flex;
+        gap: 6px;
+        padding: 8px 12px 0;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab {
+        flex-shrink: 0;
+        padding: 4px 10px;
+        font-size: 12px;
+        border: 1px solid #e4e4e7;
+        border-radius: 999px;
+        background: #fff;
+        color: #52525b;
+        cursor: pointer;
+      }
+      .tab.active {
+        background: #6366f1;
+        border-color: #6366f1;
+        color: #fff;
+      }
+
+      /* 提示词列表 */
+      .list {
+        padding: 8px 12px 12px;
+        max-height: 380px;
+        overflow-y: auto;
+      }
+      .item {
+        padding: 8px 10px;
+        margin-bottom: 6px;
+        background: #fff;
+        border: 1px solid #e4e4e7;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: border-color 0.15s;
+      }
+      .item:hover {
+        border-color: #6366f1;
+      }
+      .item .name {
+        font-size: 13px;
+        font-weight: 500;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .item .desc {
+        margin-top: 2px;
+        font-size: 11px;
+        color: #71717a;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      .item .cat {
+        display: inline-block;
+        margin-top: 4px;
+        padding: 1px 8px;
+        font-size: 10px;
+        border-radius: 999px;
+        background: #eef2ff;
+        color: #4f46e5;
+      }
+
+      .empty,
+      .error {
+        padding: 28px 16px;
+        text-align: center;
+        font-size: 12px;
+        color: #71717a;
+      }
+      .error {
+        color: #dc2626;
+      }
+      .footer {
+        padding: 6px 12px;
+        border-top: 1px solid #e4e4e7;
+        font-size: 10px;
+        color: #a1a1aa;
+        text-align: center;
+        background: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <span class="logo">AI</span>
+      <span class="title">提示词</span>
+      <input type="text" id="search" placeholder="搜索提示词..." class="search" />
+      <button id="open-settings" class="icon-btn" title="设置">⚙</button>
+    </header>
+
+    <!-- 设置面板 -->
+    <div id="settings-panel" class="settings-panel hidden">
+      <label class="settings-label">API 地址</label>
+      <input type="text" id="api-base" class="settings-input" placeholder="https://your-domain.com/api" />
+      <button id="save-settings" class="settings-save">保存</button>
+    </div>
+
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-cat="all">全部</button>
+    </div>
+
+    <div class="list" id="list"></div>
+
+    <div class="footer">点击提示词插入到当前页面的输入框</div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>

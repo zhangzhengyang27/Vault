@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统架构与视觉规范 · 敦煌艺术与丝路文明</title>
+<meta name="description" content="敦煌数字课程门户的系统架构、目录结构、数据来源与视觉规范说明。">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .doc { max-width: 860px; margin: 0 auto; }
+  .doc h1 { font-family: var(--serif); color: var(--gold-deep); }
+  .dark-body .doc h1 { color: var(--gold); }
+  .doc h2 { font-family: var(--serif); color: var(--ochre); border-left: 3px solid var(--stone); padding-left: 12px; margin-top: 42px; }
+  .doc pre { background: rgba(20,18,15,.06); border:1px solid var(--line); border-radius: 10px; padding: 14px 16px; overflow:auto; font-size:.85rem; }
+  .doc code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+</style>
+</head>
+<body>
+
+<main class="container doc" style="padding-top:34px">
+
+  <section id="architecture">
+    <h1>系统架构说明</h1>
+    <p class="lede">本门户为纯静态多页 Web 应用，无需后端服务即可公开访问；AI 讲解员与语音朗读在客户端完成，Ai 视觉/音乐资源预生成后统一存放。</p>
+
+    <h2>技术栈</h2>
+    <p>原生 HTML5、CSS3 与 JavaScript（无构建步骤），交互地图采用 Leaflet + OpenStreetMap 底图（经 CSS 滤镜作古董风处理）。视觉资产由文生图生成，背景乐由文生音乐生成，章节短片优先复用公开版权视频、缺失时降级为封面动效；语音朗读与讲解员播报使用浏览器 Web Speech Synthesis API。</p>
+
+    <h2>目录结构</h2>
+    <pre><code>dunhuang-course/
+├── index.html           首页（视差开场 + 丝路轨迹动效）
+├── chapters.html        课程章节（时间轴 + 立体卡片）
+├── chapter.html         章节详情（知识/朗读/zoom-in/短片）
+├── map.html             丝路互动地图（30 节点）
+├── gallery.html         数字文物长廊（28 件瀑布流翻转卡）
+├── archive.html         课程档案馆（讲义 / 课件 / 说明）
+├── docs.html            本页（架构与视觉规范）
+├── assets/
+│   ├── css/style.css    视觉系统
+│   ├── js/data.js       种子内容（章节/城市/文物/知识库）
+│   ├── js/app.js        公共运行时（导航/背景乐/粒子/回退）
+│   ├── js/tutor.js      AI 讲解员（知识库 + 流式打字 + 语音）
+│   ├── images/          生成的图片资源（统一命名）
+│   ├── media/           背景乐与章节短片
+│   └── downloads/       讲义 .docx 与课件 .pptx
+└── docs/                architecture.md / visual-spec.md</code></pre>
+
+    <h2>数据与资源约定</h2>
+    <p>全部种子内容集中在 <code>assets/js/data.js</code>，以 <code>window.DUNHUANG</code> 暴露：8 个章节（含讲稿与壁画细节）、30 个城市、28 件文物、讲解员知识库。生成的图片统一存于 <code>assets/images/</code>（chapter-01..08、relic-01..34、hero、avatar）；背景乐为 <code>assets/media/bgm.mp3</code>，章节短片为 <code>assets/media/video-&lt;id&gt;.webm</code>。图片加载失败时自动回退到风格化 SVG 占位，保证全站完整可访问。</p>
+  </section>
+
+  <section id="visual" style="padding-bottom:60px">
+    <h1>视觉规范说明</h1>
+    <p class="lede">整体追求「博物馆级」中文留白与丝滑过渡：暗金做标题描金与高光、石青做结构与纹理、赭石做强调与节点，墨底用于夜间剧场式开场，米色纸本用于长文阅读。</p>
+
+    <h2>色彩</h2>
+    <pre><code>暗金  #c8a24b / #a8812f / #e8d5a3
+石青  #3f6f7a / #2a4c55
+赭石  #a4552f / #7e3f22
+墨底  #1c1a17 · 纸本  #f4efe4</code></pre>
+
+    <h2>字体与排版</h2>
+    <p>标题与描金文字使用中文衬线字族（宋体 / Source Han Serif SC），正文使用无衬线中文（苹方 / 思源黑体）。关键标题采用线性渐变描金 + 细微字描边，营造鎏金质感。正文行高约 1.9、字距 0.02em，段落间留白充足。</p>
+
+    <h2>动画</h2>
+    <p>过渡统一采用缓动曲线 cubic-bezier(.22,.61,.36,1)。首页实现视差滚动、飞天粒子上升、丝路轨迹虚线流动；章节卡片悬停平移与轻微 3D 倾斜；文物卡片 360° 翻转；讲解员流式打字与光标闪烁。所有动画均为 GPU 友好的 transform/opacity，避免卡顿。</p>
+  </section>
+
+  <section id="credits" style="padding-bottom:60px">
+    <h1>素材来源与署名</h1>
+    <p class="lede">以下章节短片来自 Wikimedia Commons，均为明确公有领域或 CC 授权素材，可合法复用；未取得合适授权的章节（第四讲、第八讲）以章节封面动效代替。</p>
+    <ul style="line-height:2;font-size:.95rem">
+      <li>第一讲 · 张骞出使（敦煌汉长城/边关大漠）：Bairuilong，CC BY-SA 4.0</li>
+      <li>第二讲 · 魏晋石窟（戈壁大漠卫星影像）：CSU/CIRA 与 JMA/JAXA，公有领域</li>
+      <li>第三讲 · 盛唐经变（敦煌飞天意象）：中国新闻社，CC BY 3.0</li>
+      <li>第五讲 · 西夏元蒙（蒙元牧人/丝路新疆）：中国新闻社，CC BY 3.0</li>
+      <li>第六讲 · 藏经洞（莫高窟实拍）：Bairuilong，CC BY-SA 4.0</li>
+      <li>第七讲 · 近代流散（1926-27 中亚探险队原片）：美国国家档案馆，公有领域</li>
+    </ul>
+    <p style="color:var(--text-muted)">其余视觉资产均为 AI 生成的风格化插画；背景乐为 AI 生成；语音朗读与讲解员播报由浏览器内置语音合成完成。</p>
+  </section>
+
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script>
+  renderShell('archive.html');
+  bindReveal();
+</script>
+</body>
+</html>

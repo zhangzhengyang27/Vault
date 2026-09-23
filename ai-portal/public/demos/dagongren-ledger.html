@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>打工人小账本</title>
+<style>
+  :root{
+    --cream:#FFF7EC; --cream2:#FDEFD9; --paper:#FFFFFF;
+    --mint:#8FD9BE; --mint-d:#5FBF9A; --mint-l:#C9EFDD;
+    --coral:#FF9AA2; --coral-d:#F2747D;
+    --ink:#5C6B5A; --ink-soft:#8AA08C; --line:#ECE3D2;
+    --shadow:0 8px 22px rgba(150,170,150,.18);
+    --radius:20px;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    color:var(--ink);
+    background-color:var(--cream);
+    background-image:radial-gradient(var(--cream2) 1.4px, transparent 1.4px);
+    background-size:22px 22px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{display:flex;min-height:100vh}
+
+  /* ---------- 侧栏（桌面） ---------- */
+  .sidebar{
+    width:188px;flex:0 0 188px;background:var(--paper);border-right:2px solid var(--line);
+    padding:22px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh;
+  }
+  .brand{display:flex;align-items:center;gap:10px;padding:4px 8px 18px}
+  .brand h1{font-size:17px;margin:0;letter-spacing:.5px}
+  .brand .pig{width:38px;height:38px;flex:0 0 38px}
+  .nav-item{
+    display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:14px;cursor:pointer;
+    color:var(--ink-soft);font-size:14.5px;font-weight:600;transition:.18s;border:2px solid transparent;
+  }
+  .nav-item svg{width:21px;height:21px;flex:0 0 21px}
+  .nav-item:hover{background:var(--cream)}
+  .nav-item.active{background:var(--mint-l);color:var(--mint-d);border-color:var(--mint)}
+  .sidebar .spacer{flex:1}
+
+  /* ---------- 主区 ---------- */
+  .main{flex:1;max-width:760px;margin:0 auto;padding:22px 20px 110px;width:100%}
+  .view{display:none;animation:fade .25s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .card{
+    background:var(--paper);border-radius:var(--radius);box-shadow:var(--shadow);
+    padding:18px;margin-bottom:16px;position:relative;border:2px solid #fff;
+  }
+  .card.washi::before{
+    content:"";position:absolute;top:-9px;left:24px;width:74px;height:18px;
+    background:repeating-linear-gradient(45deg,var(--mint-l),var(--mint-l) 6px,#bfe9d3 6px,#bfe9d3 12px);
+    transform:rotate(-3deg);border-radius:3px;opacity:.85;
+  }
+  .card h2{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+  .card h2 svg{width:19px;height:19px}
+  .muted{color:var(--ink-soft);font-size:12.5px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .stat{flex:1;min-width:120px;background:var(--cream);border-radius:14px;padding:12px 14px}
+  .stat .label{font-size:12px;color:var(--ink-soft)}
+  .stat .val{font-size:21px;font-weight:800;margin-top:3px}
+  .val.coral{color:var(--coral-d)} .val.mint{color:var(--mint-d)}
+
+  /* 进度条 */
+  .prog{height:14px;background:var(--cream2);border-radius:99px;overflow:hidden;margin:8px 0 4px}
+  .prog>i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--mint-d));border-radius:99px;transition:width .5s}
+  .prog.coral>i{background:linear-gradient(90deg,var(--coral),var(--coral-d))}
+
+  /* 列表 */
+  .tx{display:flex;align-items:center;gap:12px;padding:11px 4px;border-bottom:1px dashed var(--line)}
+  .tx:last-child{border-bottom:none}
+  .tx .ic{width:38px;height:38px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:var(--cream);flex:0 0 38px}
+  .tx .ic svg{width:20px;height:20px}
+  .tx .mid{flex:1;min-width:0}
+  .tx .mid .t{font-weight:700;font-size:14.5px}
+  .tx .mid .s{font-size:12px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tx .amt{font-weight:800;font-size:15.5px;white-space:nowrap}
+  .tx .amt.exp{color:var(--coral-d)} .tx .amt.inc{color:var(--mint-d)}
+  .tx .wt{font-size:11px;color:var(--ink-soft)}
+  .tx .del{background:none;border:none;color:#cdb;cursor:pointer;font-size:18px;padding:4px 6px}
+  .tx .del:hover{color:var(--coral-d)}
+
+  .tag{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--mint-l);color:var(--mint-d);font-weight:700}
+
+  /* 表单控件 */
+  .field{margin-bottom:14px}
+  .field>label{display:block;font-size:13px;font-weight:700;margin-bottom:7px;color:var(--ink)}
+  input[type=number],input[type=text],input[type=date],textarea,select{
+    width:100%;padding:13px 14px;border:2px solid var(--line);border-radius:14px;font-size:15px;
+    background:var(--cream);color:var(--ink);font-family:inherit;outline:none;transition:.15s;
+  }
+  input:focus,textarea:focus,select:focus{border-color:var(--mint);background:#fff}
+  textarea{resize:vertical;min-height:60px}
+
+  .seg{display:flex;background:var(--cream);border-radius:14px;padding:4px;gap:4px}
+  .seg button{flex:1;border:none;background:none;padding:11px;border-radius:11px;font-size:15px;font-weight:800;color:var(--ink-soft);cursor:pointer;font-family:inherit}
+  .seg button.on.exp{background:var(--coral);color:#fff}
+  .seg button.on.inc{background:var(--mint-d);color:#fff}
+
+  .chips{display:flex;gap:9px;flex-wrap:wrap}
+  .chip{display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 4px;width:74px;border:2px solid var(--line);border-radius:14px;background:var(--cream);cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-soft);transition:.15s}
+  .chip svg{width:22px;height:22px}
+  .chip.on{border-color:var(--mint);background:var(--mint-l);color:var(--mint-d)}
+
+  .btn{display:block;width:100%;padding:15px;border:none;border-radius:16px;background:linear-gradient(90deg,var(--mint),var(--mint-d));color:#fff;font-size:16px;font-weight:800;cursor:pointer;font-family:inherit;box-shadow:var(--shadow);transition:.15s}
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:#fff;color:var(--mint-d);border:2px solid var(--mint)}
+  .btn.coral{background:linear-gradient(90deg,var(--coral),var(--coral-d))}
+  .btn:disabled{opacity:.6}
+
+  .big-amt{font-size:40px;font-weight:800;text-align:center;width:100%;border:none;background:transparent;color:var(--ink);outline:none;text-align-last:center}
+  .big-amt::placeholder{color:#d8cdbb}
+
+  /* 公式 */
+  .formula{background:var(--cream);border-radius:14px;padding:14px 16px;font-size:14px;line-height:1.9}
+  .formula .k{color:var(--ink-soft)}
+  .formula .v{font-weight:800;color:var(--mint-d)}
+  .formula .op{color:var(--coral-d);font-weight:800}
+  .big-wage{text-align:center;padding:8px 0 2px}
+  .big-wage .n{font-size:44px;font-weight:900;color:var(--mint-d)}
+  .big-wage .u{font-size:15px;color:var(--ink-soft)}
+
+  /* 情景模拟滑块 */
+  .slider-row{margin-bottom:18px}
+  .slider-row .top{display:flex;justify-content:space-between;font-size:13.5px;font-weight:700;margin-bottom:6px}
+  .slider-row .top .num{color:var(--mint-d)}
+  input[type=range]{width:100%;accent-color:var(--mint-d);height:30px}
+
+  /* 底部 Tab（手机） */
+  .bottomnav{display:none}
+  @media(max-width:760px){
+    .sidebar{display:none}
+    .bottomnav{
+      display:flex;position:fixed;bottom:0;left:0;right:0;background:var(--paper);
+      border-top:2px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+      justify-content:space-around;z-index:30;
+    }
+    .bottomnav .nav-item{flex-direction:column;gap:3px;padding:6px 2px;font-size:10.5px;flex:1;border:none;border-radius:10px}
+    .bottomnav .nav-item svg{width:23px;height:23px}
+    .main{padding:16px 14px 96px}
+  }
+
+  /* SVG 存款曲线容器 */
+  .curve{width:100%;height:160px;display:block}
+  .toast{
+    position:fixed;left:50%;top:18%;transform:translateX(-50%);background:rgba(92,107,90,.95);color:#fff;
+    padding:13px 22px;border-radius:14px;font-size:14.5px;font-weight:700;z-index:90;opacity:0;transition:.25s;pointer-events:none;box-shadow:var(--shadow);max-width:90%;text-align:center
+  }
+  .toast.show{opacity:1;top:22%}
+  .empty{text-align:center;color:var(--ink-soft);padding:26px 0;font-size:13.5px}
+  .sub{font-size:12.5px;color:var(--ink-soft);margin-top:6px;line-height:1.7}
+  .pill{display:inline-block;background:var(--cream2);border-radius:99px;padding:3px 11px;font-size:12px;font-weight:700;color:var(--ink);margin:2px 4px 2px 0}
+</style>
+</head>
+<body>
+<div class="app">
+  <!-- 桌面侧栏 -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="pig" id="pigSide"></span>
+      <h1>打工人小账本</h1>
+    </div>
+    <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>首页</div>
+    <div class="nav-item" data-view="record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>10秒记账</div>
+    <div class="nav-item" data-view="wage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>真实时薪</div>
+    <div class="nav-item" data-view="ledger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>账单明细</div>
+    <div class="nav-item" data-view="sim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.4"/><circle cx="8" cy="16" r="2.4"/></svg>情景模拟</div>
+    <div class="nav-item" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>设置</div>
+    <div class="spacer"></div>
+    <div class="muted" style="padding:8px;font-size:11.5px">本地存储 · 数据在你浏览器里</div>
+  </aside>
+
+  <main class="main">
+    <!-- 首页 -->
+    <section class="view active" id="view-home"></section>
+    <!-- 记账 -->
+    <section class="view" id="view-record"></section>
+    <!-- 时薪 -->
+    <section class="view" id="view-wage"></section>
+    <!-- 账单 -->
+    <section class="view" id="view-ledger"></section>
+    <!-- 模拟 -->
+    <section class="view" id="view-sim"></section>
+    <!-- 设置 -->
+    <section class="view" id="view-settings"></section>
+  </main>
+</div>
+
+<!-- 手机底部 Tab -->
+<nav class="bottomnav">
+  <div class="nav-item active" data-view="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-7 9 7"/><path d="M5 10v9h14v-9"/></svg>首页</div>
+  <div class="nav-item" data-view="record"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>记账</div>
+  <div class="nav-item" data-view="wage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>时薪</div>
+  <div class="nav-item" data-view="ledger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>账单</div>
+  <div class="nav-item" data-view="sim"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8h10M18 8h2M4 16h2M10 16h10"/><circle cx="16" cy="8" r="2.4"/><circle cx="8" cy="16" r="2.4"/></svg>模拟</div>
+  <div class="nav-item" data-view="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>设置</div>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============== 数据层（localStorage 本地存储） ============== */
+const LS_SET="dgr_settings_v1", LS_TX="dgr_tx_v1";
+const CATS=["餐饮","交通","购物","娱乐","居住","医疗","工资","理财","其他"];
+const DEF_SETTINGS={
+  monthlyTakeHome:9000, payMonths:13, monthlyWorkCost:1500,
+  daysPerMonth:21, hoursPerDay:8.5, commuteHoursPerDay:1.5, overtimeHoursPerMonth:12,
+  freedomGoal:100000, safetyGoal:50000, currentDeposit:38000
+};
+const SEED_TX=[
+  {date:"2026-08-15",dir:"支出",cat:"餐饮",amount:38,note:"午饭麦当劳",ts:Date.parse("2026-08-15")},
+  {date:"2026-08-12",dir:"支出",cat:"交通",amount:12,note:"地铁通勤",ts:Date.parse("2026-08-12")},
+  {date:"2026-08-10",dir:"支出",cat:"购物",amount:299,note:"夏天的衣服",ts:Date.parse("2026-08-10")},
+  {date:"2026-08-05",dir:"收入",cat:"工资",amount:9000,note:"8月工资到手",ts:Date.parse("2026-08-05")},
+  {date:"2026-07-28",dir:"支出",cat:"娱乐",amount:88,note:"电影+奶茶",ts:Date.parse("2026-07-28")},
+  {date:"2026-07-20",dir:"支出",cat:"居住",amount:1500,note:"7月房租",ts:Date.parse("2026-07-20")},
+  {date:"2026-07-15",dir:"支出",cat:"餐饮",amount:45,note:"同事聚餐",ts:Date.parse("2026-07-15")},
+  {date:"2026-07-10",dir:"收入",cat:"理财",amount:800,note:"基金分红",ts:Date.parse("2026-07-10")},
+  {date:"2026-06-25",dir:"支出",cat:"医疗",amount:200,note:"看牙",ts:Date.parse("2026-06-25")},
+  {date:"2026-06-15",dir:"支出",cat:"居住",amount:1500,note:"6月房租",ts:Date.parse("2026-06-15")}
+];
+
+let settings=loadSettings();
+let txs=loadTx();
+
+function loadSettings(){
+  try{const s=JSON.parse(localStorage.getItem(LS_SET));if(s&&typeof s==="object")return Object.assign({},DEF_SETTINGS,s);}catch(e){}
+  return Object.assign({},DEF_SETTINGS);
+}
+function loadTx(){
+  try{const t=JSON.parse(localStorage.getItem(LS_TX));if(Array.isArray(t))return t;}catch(e){}
+  return SEED_TX.map(x=>Object.assign({},x));
+}
+function saveSettings(){localStorage.setItem(LS_SET,JSON.stringify(settings));}
+function saveTx(){localStorage.setItem(LS_TX,JSON.stringify(txs));}
+
+/* ============== 计算 ============== */
+function realWage(s){
+  const annualIncome=s.monthlyTakeHome*s.payMonths;
+  const annualCost=s.monthlyWorkCost*12;
+  const net=annualIncome-annualCost;
+  const monthlyHours=s.daysPerMonth*s.hoursPerDay + s.daysPerMonth*s.commuteHoursPerDay + s.overtimeHoursPerMonth;
+  const annualHours=monthlyHours*12;
+  return {annualIncome,annualCost,net,monthlyHours,annualHours,wage:annualHours>0?net/annualHours:0};
+}
+function workHours(amount,wage){return wage>0?amount/wage:0;}
+function fmt(n){return (Math.round(n*100)/100).toLocaleString("zh-CN",{maximumFractionDigits:2});}
+function fmtH(h){return (Math.round(h*10)/10).toLocaleString("zh-CN",{maximumFractionDigits:1});}
+function thisMonthKey(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");}
+function monthAgg(list,key){
+  let inc=0,exp=0,fixed=0,flex=0;
+  list.forEach(t=>{if((t.date||"").slice(0,7)!==key)return;
+    if(t.dir==="收入")inc+=t.amount;else{exp+=t.amount;if(t.cat==="居住")fixed+=t.amount;else flex+=t.amount;}});
+  return {inc,exp,fixed,flex,net:inc-exp};
+}
+function savingsSeries(){
+  const sorted=txs.slice().sort((a,b)=>a.ts-b.ts);
+  let cum=settings.currentDeposit;const pts=[{label:"基线",v:cum}];
+  sorted.forEach(t=>{cum+=t.dir==="收入"?t.amount:-t.amount;pts.push({label:t.date.slice(5),v:cum});});
+  return pts;
+}
+
+/* ============== SVG 图标 ============== */
+function pigSVG(){return `<svg viewBox="0 0 64 64" fill="none">
+  <ellipse cx="32" cy="38" rx="22" ry="17" fill="#FFD3C4" stroke="#E7A892" stroke-width="2.5"/>
+  <path d="M14 30c-3-4-3-9 1-10 3-1 6 2 6 5" fill="#FFD3C4" stroke="#E7A892" stroke-width="2.5"/>
+  <circle cx="22" cy="34" r="2.4" fill="#5C6B5A"/>
+  <path d="M50 26c5-3 9 0 9 4s-4 6-9 4" fill="#FFD3C4" stroke="#E7A892" stroke-width="2.5"/>
+  <path d="M27 24h10v3a5 5 0 0 1-10 0z" fill="#E7A892"/>
+  <ellipse cx="44" cy="46" rx="3" ry="4" fill="#E7A892"/>
+  <circle cx="42" cy="22" r="3.4" fill="#FFE08A" stroke="#E7A892" stroke-width="2"/>
+</svg>`;}
+function catSVG(cat){
+  const m={
+    餐饮:'<path d="M7 3v8M7 3v3a2 2 0 0 0 2 2M7 3a2 2 0 0 1 2 2M17 3c-2 0-3 2-3 5s1 5 3 5M17 3v8" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M12 13v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>',
+    交通:'<rect x="4" y="4" width="16" height="13" rx="3" fill="#fff"/><circle cx="8" cy="20" r="2" fill="#fff"/><circle cx="16" cy="20" r="2" fill="#fff"/><rect x="7" y="7" width="10" height="5" rx="1" fill="#8FD9BE"/>',
+    购物:'<path d="M6 8h14l-1 12H7z" fill="#fff"/><path d="M10 8a2 2 0 0 1 4 0" stroke="#fff" stroke-width="2" fill="none"/>',
+    娱乐:'<circle cx="12" cy="12" r="8" fill="#fff"/><path d="M9 9l6 3-6 3z" fill="#8FD9BE"/>',
+    居住:'<path d="M3 11l9-7 9 7" stroke="#fff" stroke-width="2" fill="none"/><path d="M5 10v9h14v-9" fill="#fff"/><rect x="10" y="14" width="4" height="5" fill="#8FD9BE"/>',
+    医疗:'<rect x="4" y="4" width="16" height="16" rx="4" fill="#fff"/><path d="M12 8v8M8 12h8" stroke="#FF9AA2" stroke-width="2.4" stroke-linecap="round"/>',
+    工资:'<circle cx="12" cy="12" r="8" fill="#fff"/><path d="M9 12h6M12 9v6" stroke="#5FBF9A" stroke-width="2.2" stroke-linecap="round"/>',
+    理财:'<path d="M4 18l5-6 4 3 7-9" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 6h4v4" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/>',
+    其他:'<circle cx="12" cy="12" r="3" fill="#fff"/><circle cx="12" cy="12" r="8" stroke="#fff" stroke-width="2" fill="none"/>'
+  };
+  const bg={餐饮:"#FF9AA2",交通:"#7FB5E6",购物:"#C59BE0",娱乐:"#F2B56B",居住:"#8FD9BE",医疗:"#FF7E8A",工资:"#5FBF9A",理财:"#6FB7D8",其他:"#B7C4A8"}[cat]||"#B7C4A8";
+  return `<svg viewBox="0 0 24 24">${m[cat]||m["其他"]}</svg>`.replace('<svg',`<svg style="background:${bg};border-radius:8px" `);
+}
+
+/* ============== 渲染 ============== */
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2200);}
+function txRow(t){
+  const w=workHours(t.amount,realWage(settings).wage);
+  const wt=t.dir==="支出"?`<div class="wt">≈ ${fmtH(w)} 小时</div>`:"";
+  return `<div class="tx">
+    <div class="ic">${catSVG(t.cat)}</div>
+    <div class="mid"><div class="t">${t.cat}${t.note?` · ${esc(t.note)}`:""}</div><div class="s">${t.date}</div></div>
+    <div style="text-align:right"><div class="amt ${t.dir==="收入"?"inc":"exp"}">${t.dir==="收入"?"+":"−"}${fmt(t.amount)}</div>${wt}</div>
+    <button class="del" data-del="${t.ts}" title="删除">✕</button>
+  </div>`;
+}
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+function renderHome(){
+  const w=realWage(settings);const key=thisMonthKey();const m=monthAgg(txs,key);
+  const freePct=Math.min(100,settings.freedomGoal>0?settings.currentDeposit/settings.freedomGoal*100:0);
+  const safePct=Math.min(100,settings.safetyGoal>0?settings.currentDeposit/settings.safetyGoal*100:0);
+  const recent=txs.slice().sort((a,b)=>b.ts-a.ts).slice(0,4);
+  const depositColor=settings.currentDeposit>=settings.safetyGoal?"mint":"coral";
+  $("view-home").innerHTML=`
+  <div class="card washi">
+    <div class="row" style="align-items:center">
+      <span class="pig" style="width:64px;height:64px">${pigSVG()}</span>
+      <div style="flex:1">
+        <div class="muted">小猪存钱罐 · 现有存款</div>
+        <div class="stat" style="background:transparent;padding:2px 0"><span class="val ${depositColor}">¥${fmt(settings.currentDeposit)}</span></div>
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <div class="muted">自由基金目标 ¥${fmt(settings.freedomGoal)}</div>
+      <div class="prog"><i style="width:${freePct}%"></i></div>
+      <div class="muted">安全垫目标 ¥${fmt(settings.safetyGoal)}</div>
+      <div class="prog coral"><i style="width:${safePct}%"></i></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>${pigMini()} 本月（${key}）账单</h2>
+    <div class="row">
+      <div class="stat"><div class="label">收入</div><div class="val mint">¥${fmt(m.inc)}</div></div>
+      <div class="stat"><div class="label">固定支出</div><div class="val coral">¥${fmt(m.fixed)}</div></div>
+      <div class="stat"><div class="label">弹性支出</div><div class="val coral">¥${fmt(m.flex)}</div></div>
+    </div>
+    <div class="sub">本月净结余 <b>¥${fmt(m.net)}</b>　·　真实时薪 <b>¥${fmtH(w.wage)}</b>/小时</div>
+  </div>
+
+  <div class="card">
+    <h2>${pigMini()} 存款曲线</h2>
+    ${curveSVG(savingsSeries())}
+  </div>
+
+  <div class="card">
+    <h2>${pigMini()} 最近 4 笔</h2>
+    ${recent.length?recent.map(txRow).join(""):'<div class="empty">还没有记录，去「10秒记账」记一笔吧～</div>'}
+  </div>`;
+  bindDel();
+}
+function pigMini(){return '<span style="width:18px;height:18px;display:inline-flex">'+pigSVG()+'</span>';}
+
+function curveSVG(pts){
+  if(pts.length<2)return '<div class="empty">数据不足，记几笔后会出现曲线</div>';
+  const W=320,H=140,pad=10;
+  const vals=pts.map(p=>p.v);let min=Math.min(...vals),max=Math.max(...vals);
+  if(min===max){min-=1;max+=1;}
+  const xs=i=>pad+(W-2*pad)*i/(pts.length-1);
+  const ys=v=>H-pad-(H-2*pad)*(v-min)/(max-min);
+  let line="",area=`M ${xs(0)} ${H-pad}`;
+  pts.forEach((p,i)=>{const x=xs(i),y=ys(p.v);line+=(i?"L":"M")+x+" "+y+" ";area+=`L ${x} ${y} `;});
+  area+=`L ${xs(pts.length-1)} ${H-pad} Z`;
+  const dots=pts.map((p,i)=>`<circle cx="${xs(i)}" cy="${ys(p.v)}" r="3" fill="#5FBF9A"/>`).join("");
+  return `<svg class="curve" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8FD9BE" stop-opacity=".35"/><stop offset="1" stop-color="#8FD9BE" stop-opacity="0"/>
+    </linearGradient></defs>
+    <path d="${area}" fill="url(#g)"/>
+    <path d="${line}" fill="none" stroke="#5FBF9A" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>
+    ${dots}
+  </svg><div class="muted" style="text-align:center;margin-top:4px">从现有存款 ¥${fmt(settings.currentDeposit)} 起，按时间累计净收支</div>`;
+}
+
+function renderRecord(){
+  let dir="支出",cat="餐饮";
+  $("view-record").innerHTML=`
+  <div class="card washi">
+    <h2>${pigMini()} 10 秒记一笔</h2>
+    <div class="field"><input class="big-amt" id="amt" type="number" inputmode="decimal" placeholder="0.00" /></div>
+    <div class="field">
+      <div class="seg" id="seg">
+        <button type="button" class="exp on" data-dir="支出">支出</button>
+        <button type="button" class="inc" data-dir="收入">收入</button>
+      </div>
+    </div>
+    <div class="field"><div class="chips" id="cats">${CATS.map(c=>`<div class="chip${c===cat?" on":""}" data-cat="${c}">${catSVG(c)}${c}</div>`).join("")}</div></div>
+    <div class="field"><input id="note" type="text" placeholder="备注（可选）：这顿饭 / 房租…" maxlength="40"/></div>
+    <div class="field"><input id="date" type="date" value="${thisMonthKey()}-15"/></div>
+    <button class="btn" id="saveTx">记一笔 🐷</button>
+    <div class="sub" id="hint"></div>
+  </div>`;
+  $("seg").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
+    dir=b.dataset.dir;[...$("seg").children].forEach(x=>x.classList.remove("on"));b.classList.add("on");});
+  $("cats").addEventListener("click",e=>{const c=e.target.closest(".chip");if(!c)return;
+    cat=c.dataset.cat;[...$("cats").children].forEach(x=>x.classList.remove("on"));c.classList.add("on");});
+  $("saveTx").addEventListener("click",()=>{
+    const amt=parseFloat($("amt").value);
+    if(!(amt>0)){toast("先填个金额吧～");return;}
+    const date=$("date").value||thisMonthKey();
+    const rec={date,dir,cat,amount:Math.round(amt*100)/100,note:$("note").value.trim(),ts:Date.now()};
+    txs.push(rec);saveTx();
+    const w=realWage(settings).wage;
+    const msg=dir==="支出"?`已记下！这笔 ≈ 你 ${fmtH(workHours(amt,w))} 小时的命 🐷`:"已记下这笔收入 🎉";
+    $("amt").value="";$("note").value="";$("hint").innerHTML=`<span class="tag">${msg}</span>`;
+    toast(msg);renderHome();
+  });
+}
+
+function renderWage(){
+  const params=[
+    ["到手月薪(元/月)","monthlyTakeHome"],
+    ["发薪月数(个月/年)","payMonths"],
+    ["月工作成本(元)","monthlyWorkCost"],
+    ["每月在场天数","daysPerMonth"],
+    ["每日在场小时","hoursPerDay"],
+    ["每日通勤小时","commuteHoursPerDay"],
+    ["每月加班小时","overtimeHoursPerMonth"]
+  ];
+  $("view-wage").innerHTML=`
+  <div class="card washi">
+    <h2>${pigMini()} 真实时薪计算器</h2>
+    <div id="wageDisplay"></div>
+  </div>
+  <div class="card">
+    <h2>${pigMini()} 调整参数（实时计算）</h2>
+    ${params.map(p=>`<div class="field"><label>${p[0]}</label><input type="number" step="any" data-k="${p[1]}" value="${settings[p[1]]}"></div>`).join("")}
+    <div class="sub">改动即时保存到本地，首页与时薪换算同步更新。</div>
+  </div>`;
+  $("view-wage").querySelectorAll("input[data-k]").forEach(inp=>{
+    inp.addEventListener("input",()=>{
+      const v=parseFloat(inp.value);if(isNaN(v))return;
+      settings[inp.dataset.k]=v;saveSettings();updateWageDisplay();renderHome();
+    });
+  });
+  updateWageDisplay();
+}
+function updateWageDisplay(){
+  const s=settings,w=realWage(s);
+  $("wageDisplay").innerHTML=`
+    <div class="big-wage"><span class="n">¥${fmtH(w.wage)}</span> <span class="u">/ 小时（真实到手）</span></div>
+    <div class="formula">
+      <div><span class="k">年总收入</span> = 到手月薪 × 发薪月数 = <span class="v">${fmt(s.monthlyTakeHome)}</span> × ${s.payMonths} = <span class="v">¥${fmt(w.annualIncome)}</span></div>
+      <div><span class="k">年工作成本</span> = 月工作成本 × 12 = <span class="v">${fmt(s.monthlyWorkCost)}</span> × 12 = <span class="op">−¥${fmt(w.annualCost)}</span></div>
+      <div><span class="k">年净收入</span> = 年总收入 − 年工作成本 = <span class="v">¥${fmt(w.net)}</span></div>
+      <div><span class="k">年总耗时</span> = (在场+通勤+加班)×12 = (${fmt(s.daysPerMonth*s.hoursPerDay)}+${fmt(s.daysPerMonth*s.commuteHoursPerDay)}+${s.overtimeHoursPerMonth})×12 = <span class="v">${fmt(w.annualHours)} 小时</span></div>
+      <div style="margin-top:6px"><span class="k">真实时薪</span> = 年净收入 <span class="op">÷</span> 年总耗时 = <span class="v">¥${fmtH(w.wage)}</span></div>
+    </div>
+    <div class="sub">每工作 1 小时，真正净落袋 <b>¥${fmtH(w.wage)}</b>。花出去的每 1 元，都约等于 <b>${fmtH((1/w.wage)*60)}</b> 分钟的自由。</div>`;
+}
+
+function renderLedger(){
+  const months=[...new Set(txs.map(t=>(t.date||"").slice(0,7)))].sort().reverse();
+  const key=thisMonthKey();
+  let html=`<div class="card washi"><h2>${pigMini()} 账单明细</h2>
+    <div class="field"><select id="monthSel"><option value="ALL">全部月份</option>${months.map(m=>`<option value="${m}"${m===key?" selected":""}>${m}</option>`).join("")}</select></div>`;
+  html+=`<div id="ledgerList"></div></div>`;
+  $("view-ledger").innerHTML=html;
+  function draw(){
+    const mv=$("monthSel").value;
+    const fl=txs.slice().sort((a,b)=>b.ts-a.ts).filter(t=>mv==="ALL"||(t.date||"").slice(0,7)===mv);
+    $("ledgerList").innerHTML=fl.length?fl.map(txRow).join(""):'<div class="empty">这个月还没有记录</div>';
+    bindDel();
+  }
+  $("monthSel").addEventListener("change",draw);
+  draw();
+}
+
+function renderSim(){
+  const s=settings,w0=realWage(s).wage;
+  let commute=s.commuteHoursPerDay,ot=s.overtimeHoursPerMonth,raise=0;
+  function calc(){
+    const ns=Object.assign({},s,{commuteHoursPerDay:commute,overtimeHoursPerMonth:ot,monthlyTakeHome:s.monthlyTakeHome*(1+raise/100)});
+    const w=realWage(ns).wage;
+    const dWage=w-w0;
+    return {ns,w,dWage};
+  }
+  $("view-sim").innerHTML=`
+  <div class="card washi">
+    <h2>${pigMini()} 情景模拟</h2>
+    <div class="big-wage"><span class="n">¥${fmtH(calc().w)}</span> <span class="u">/ 小时</span></div>
+    <div class="sub" id="delta"></div>
+  </div>
+  <div class="card">
+    <div class="slider-row"><div class="top"><span>每日通勤小时</span><span class="num" id="nC">${fmtH(commute)}h</span></div><input type="range" id="sC" min="0" max="4" step="0.5" value="${commute}"></div>
+    <div class="slider-row"><div class="top"><span>每月加班小时</span><span class="num" id="nO">${fmtH(ot)}h</span></div><input type="range" id="sO" min="0" max="80" step="2" value="${ot}"></div>
+    <div class="slider-row"><div class="top"><span>涨薪幅度</span><span class="num" id="nR">+${raise}%</span></div><input type="range" id="sR" min="0" max="50" step="5" value="${raise}"></div>
+    <button class="btn ghost" id="applySim">把这套参数应用到时薪</button>
+    <div class="sub">拖动滑块看时薪怎么变。比如少通勤、少加班、涨薪，都会让"每元钱"更便宜（折算工时更少）。</div>
+  </div>`;
+  function refresh(){
+    commute=parseFloat($("sC").value);ot=parseFloat($("sO").value);raise=parseInt($("sR").value);
+    $("nC").textContent=fmtH(commute)+"h";$("nO").textContent=fmtH(ot)+"h";$("nR").textContent="+"+raise+"%";
+    const c=calc();
+    $("view-sim").querySelector(".big-wage .n").textContent="¥"+fmtH(c.w);
+    const d=c.dWage;
+    $("delta").innerHTML=d>=0?`相比现在，时薪 <b style="color:#5FBF9A">↑ ¥${fmtH(d)}</b>，一顿 50 元的饭从 ${fmtH(workHours(50,w0))} 小时降到 ${fmtH(workHours(50,c.w))} 小时。`:`相比现在，时薪 <b style="color:#F2747D">↓ ¥${fmtH(-d)}</b>。`;
+  }
+  ["sC","sO","sR"].forEach(id=>$(id).addEventListener("input",refresh));
+  $("applySim").addEventListener("click",()=>{
+    const c=calc();settings.commuteHoursPerDay=c.ns.commuteHoursPerDay;settings.overtimeHoursPerMonth=c.ns.overtimeHoursPerMonth;settings.monthlyTakeHome=c.ns.monthlyTakeHome;
+    saveSettings();toast("已应用到时薪参数");renderWage();renderHome();
+  });
+  refresh();
+}
+
+function renderSettings(){
+  const s=settings;
+  $("view-settings").innerHTML=`
+  <div class="card washi">
+    <h2>${pigMini()} 目标与安全垫</h2>
+    <div class="field"><label>现有存款（曲线基线，元）</label><input type="number" id="currentDeposit" value="${s.currentDeposit}"></div>
+    <div class="field"><label>自由基金目标（元）</label><input type="number" id="freedomGoal" value="${s.freedomGoal}"></div>
+    <div class="field"><label>安全垫目标（元）</label><input type="number" id="safetyGoal" value="${s.safetyGoal}"></div>
+    <button class="btn ghost" id="saveGoals">保存目标</button>
+  </div>
+  <div class="card">
+    <h2>${pigMini()} 数据管理</h2>
+    <div class="sub">当前共有 <b>${txs.length}</b> 条流水记录，全部存在你这台设备的浏览器里（localStorage）。</div>
+    <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+      <button class="btn ghost" id="reseed" style="flex:1;min-width:140px">恢复示例数据</button>
+      <button class="btn coral" id="clearAll" style="flex:1;min-width:140px">清空所有数据</button>
+    </div>
+  </div>`;
+  ["currentDeposit","freedomGoal","safetyGoal"].forEach(id=>$(id).addEventListener("change",()=>{
+    settings[id]=parseFloat($(id).value)||0;saveSettings();renderHome();
+  }));
+  $("saveGoals").addEventListener("click",()=>{saveSettings();toast("目标已保存");renderHome();});
+  $("reseed").addEventListener("click",()=>{txs=SEED_TX.map(x=>Object.assign({},x));saveTx();settings=Object.assign({},DEF_SETTINGS);saveSettings();toast("已恢复示例数据");renderAll();});
+  $("clearAll").addEventListener("click",()=>{
+    if(confirm("确定清空所有流水和目标？此操作不可恢复。")){txs=[];saveTx();toast("已清空");renderAll();}
+  });
+}
+
+function bindDel(){
+  document.querySelectorAll("[data-del]").forEach(b=>b.addEventListener("click",()=>{
+    const ts=parseInt(b.dataset.del);txs=txs.filter(t=>t.ts!==ts);saveTx();toast("已删除");renderAll();
+  }));
+}
+
+/* ============== 视图切换 ============== */
+function renderAll(){
+  renderHome();renderRecord();renderWage();renderLedger();renderSim();renderSettings();
+}
+function switchView(v){
+  document.querySelectorAll(".view").forEach(s=>s.classList.remove("active"));
+  $("view-"+v).classList.add("active");
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.toggle("active",n.dataset.view===v));
+  if(v==="home")renderHome();
+  if(v==="record")renderRecord();
+  if(v==="wage")renderWage();
+  if(v==="ledger")renderLedger();
+  if(v==="sim")renderSim();
+  if(v==="settings")renderSettings();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.querySelectorAll(".nav-item").forEach(n=>n.addEventListener("click",()=>switchView(n.dataset.view)));
+
+/* ============== 启动 ============== */
+$("pigSide").innerHTML=pigSVG();
+renderAll();
+</script>
+</body>
+</html>

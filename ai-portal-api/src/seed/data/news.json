@@ -1,0 +1,122 @@
+[
+  {
+    "slug": "kimi-k3-release",
+    "title": "月之暗面发布开源大模型 Kimi K3，宣称全球参数规模最大",
+    "summary": "月之暗面开源2.8万亿参数模型Kimi K3，支持视觉与百万级上下文。",
+    "time": "2026-07-17",
+    "phase": "v1",
+    "content": "7月17日，月之暗面（Moonshot AI）正式发布并开源大模型 Kimi K3，官方称其为全球参数规模最大的开源模型，参数约2.8万亿。该模型支持视觉理解与高达100万 token 的上下文窗口，上线后登顶多个国际评测榜单。发布后因访问量激增，Kimi 一度暂停新用户订阅以应对算力过载。此举被业内视为中国开源大模型在规模与性能上的一次标志性突破。"
+  },
+  {
+    "slug": "tencent-foundation-model-dept",
+    "title": "腾讯合并混元大语言与多模态团队，成立基础模型部",
+    "summary": "腾讯成立基础模型部，由姚顺雨统一管理大语言与多模态团队。",
+    "time": "2026-07-24",
+    "phase": "v1",
+    "content": "7月24日，腾讯宣布将混元多模态模型部门与大语言模型部门合并，成立基础模型部，统一由姚顺雨负责管理。此举旨在整合模型研发资源、加速混元基础模型的迭代。姚顺雨此前已在腾讯负责大模型技术方向，此次扩权被视为腾讯加码 AI 模型研发的重要组织调整。"
+  },
+  {
+    "slug": "anthropic-claude-opus-5",
+    "title": "Anthropic 发布旗舰模型 Claude Opus 5",
+    "summary": "Anthropic 推出 Claude Opus 5，性能接近 Fable 5 但价格减半。",
+    "time": "2026-07-28",
+    "phase": "v1",
+    "content": "7月28日，Anthropic 正式发布新一代旗舰模型 Claude Opus 5。据第三方评测，其能力已接近 Anthropic 此前的顶尖模型 Fable 5，同时定价约为后者的一半，被解读为以更具性价比的姿态参与竞争。Claude Opus 5 支持百万级 token 上下文，在代码、推理与智能体任务上均有明显提升。该发布正值 Anthropic 筹备 IPO 之际，被视为其冲刺上市前的关键产品节点。"
+  },
+  {
+    "slug": "cyera-acquires-oasis-security",
+    "title": "Cyera 拟以 10 亿美元收购 Oasis Security，布局 AI 智能体安全",
+    "summary": "数据安全公司 Cyera 以约10亿美元收购 Oasis Security，切入AI Agent身份安全。",
+    "time": "2026-07-29",
+    "phase": "v1",
+    "content": "7月29日消息，数据安全厂商 Cyera 宣布拟以约 10 亿美元收购 Oasis Security，后者专注于非人类身份与 AI 智能体身份安全管理。随着自主式 AI Agent 大量涌现，其数字身份与权限治理成为新的安全盲区。此次收购意在补齐 Cyera 在 AI Agent 安全防护方面的能力，交易被视为 AI 安全赛道加速整合的信号。"
+  },
+  {
+    "slug": "openai-gpt56-luna-price-cut",
+    "title": "OpenAI 下调 GPT-5.6 Luna 价格，降幅达 80%",
+    "summary": "OpenAI 将 GPT-5.6 Luna 输入价格下调80%，AI 价格战升级。",
+    "time": "2026-07-30",
+    "phase": "v1",
+    "content": "7月30日，OpenAI 大幅下调 GPT-5.6 系列 API 价格，其中 Luna 模型输入价格降幅高达 80%。亚马逊 AWS Bedrock 同步宣布下调平台上 GPT-5.6 模型价格。此举被业内视为大模型价格战进一步白热化，OpenAI 意在通过降价巩固市场份额，也反映出推理成本持续下降的趋势。"
+  },
+  {
+    "slug": "deepseek-v4-flash-api",
+    "title": "DeepSeek-V4-Flash 正式版 API 上线国家超算互联网",
+    "summary": "DeepSeek V4 Flash 正式版 API 上线，支持百万级上下文。",
+    "time": "2026-08-01",
+    "phase": "v1",
+    "content": "8月初，DeepSeek-V4-Flash 正式版 API 上线国家超算互联网，开发者可一键接入调用。该模型支持高达 100 万 token 上下文，主打高性价比与 Agent 能力。此前 DeepSeek 已通过多次降价与快速迭代在开发者群体中积累口碑，此次正式版上线被视为其开源生态的进一步扩展。"
+  },
+  {
+    "slug": "bytedance-seedrealtime",
+    "title": "字节跳动发布音视频全双工大模型 SeedRealtime",
+    "summary": "字节发布 SeedRealtime 大模型，实现边看边听边说实时交互。",
+    "time": "2026-08-05",
+    "phase": "v1",
+    "content": "8月5日，字节跳动发布音视频全双工大模型 SeedRealtime，可实现边看、边听、边说的实时多模态交互。该模型打通语音与视觉的双向实时理解与生成，面向智能助手、实时翻译等场景。此举是字节在 Seed 系列模型上的又一步扩张，也进一步加剧了多模态实时交互领域的竞争。"
+  },
+  {
+    "slug": "amd-acquires-taalas",
+    "title": "AMD 宣布收购 AI 推理芯片初创公司 Taalas",
+    "summary": "AMD 收购 Taalas，强化 AI 推理芯片布局，瞄准模型即芯片。",
+    "time": "2026-08-06",
+    "phase": "v1",
+    "content": "当地时间8月6日，AMD 宣布已达成最终协议，收购 AI 推理芯片先驱企业 Taalas。Taalas 致力于把模型直接刻进硅片，绕过传统 HBM 显存瓶颈，宣称可将推理速度大幅提升。此次收购被解读为 AMD 加码后 GPU 时代 AI 推理芯片与定制 ASIC 的重要布局。"
+  },
+  {
+    "slug": "moonshot-series-f-round",
+    "title": "月之暗面完成超35亿美元F轮融资，超额认购3倍",
+    "summary": "Kimi K3 引爆市场后，月之暗面F轮超募3倍，估值达350亿美元。",
+    "time": "2026-08-06",
+    "phase": "v1",
+    "content": "在 Kimi K3 引爆全球关注后，月之暗面于8月初完成 F 轮融资，金额超35亿美元，超额认购约3倍，投后估值达350亿美元。报道称该轮为 Pre-IPO 轮，月之暗面正加速筹备港股 IPO。资本市场的热烈反应被业内视为中国开源大模型商业化与估值逻辑的一次重估。"
+  },
+  {
+    "slug": "jeff-dean-leaves-google",
+    "title": "谷歌首席科学家 Jeff Dean 离职，创办 Discovery Loop",
+    "summary": "效力谷歌27年的 Jeff Dean 离职创业，聚焦 AI 加速科学发现。",
+    "time": "2026-08-06",
+    "phase": "v1",
+    "content": "8月6日，谷歌首席科学家 Jeff Dean 宣布离职，与三名资深同事共同创办初创公司 Discovery Loop。Dean 在谷歌效力27年，是 TensorFlow、MapReduce 等系统的奠基人之一，其离开引发谷歌 AI 人才持续流失的担忧。同期谷歌 DeepMind 也发生管理层换帅，被业内称为谷歌 AI 组织的一次重大洗牌。新公司 Discovery Loop 的方向是加速 AI 前沿科学发现。"
+  },
+  {
+    "slug": "openai-pauses-astra",
+    "title": "OpenAI 因安全风险暂停下一代模型 Astra 开发",
+    "summary": "OpenAI 叫停 Astra 模型，因能力逼近危险边界引发安全警报。",
+    "time": "2026-08-07",
+    "phase": "v1",
+    "content": "8月7日，OpenAI 罕见地按下暂停键，暂停其下一代模型 Astra 的部分研发工作。原因是该模型能力已逼近危险边界，并暴露出网络安全等方面的风险。这是 AI 领域首次有头部厂商因模型能力过强而主动放缓发布，引发关于 AI 安全治理的广泛讨论。"
+  },
+  {
+    "slug": "deepseek-v4-pro-release",
+    "title": "DeepSeek 发布 V4 Pro 正式版，Agent 能力大幅增强",
+    "summary": "DeepSeek V4 Pro 正式版上线，Agent 能力跃升、价格远低于对标模型。",
+    "time": "2026-08-12",
+    "phase": "v1",
+    "content": "8月12日深夜，DeepSeek 官网上线 V4 Pro 正式版。官方与第三方评测称其 Agent 能力大幅增强，性能逼近 Anthropic 的 Fable 5，但价格差距达数十倍。新版本支持双协议兼容，API 定价同步调整，延续了 DeepSeek 高性价比的打法，进一步搅动大模型竞争格局。"
+  },
+  {
+    "slug": "honor-robot-phone",
+    "title": "荣耀发布全球首款机器人手机 Robot Phone",
+    "summary": "荣耀 Robot Phone 发布，9999元起售，预订量超40万台。",
+    "time": "2026-08-12",
+    "phase": "v1",
+    "content": "8月12日，荣耀发布全球首款机器人手机 Robot Phone，起售价9999元。该产品融合 AI 与具身智能，配备机械结构，被视为手机从云端对话走向端侧执行的重要尝试。荣耀 CEO 称其为全新物种，发布后预订量迅速突破40万台，并与通义千问等合作接入 AI Agent 能力。"
+  },
+  {
+    "slug": "google-gemini-36-flash",
+    "title": "谷歌密集更新 Gemini Flash 系列，发布 Gemini 3.6 Flash",
+    "summary": "谷歌发布 Gemini 3.6 Flash，编程能力提升、价格进一步下调。",
+    "time": "2026-08-13",
+    "phase": "v1",
+    "content": "8月中旬，谷歌密集上新 Gemini Flash 系列，正式发布 Gemini 3.6 Flash。新版本在编程能力上明显提升，同时价格进一步下调，延续其高效低成本定位。报道指出谷歌旗舰模型发布时间仍未确定，但通过 Flash 系列快速迭代抢占开发者与 agentic 场景。此前 Gemini 3.6 Flash 模型卡已在 Google DeepMind 官网公布。"
+  },
+  {
+    "slug": "huawei-ascend-950-waic",
+    "title": "华为昇腾 950 超节点在 WAIC 2026 首次亮相真机",
+    "summary": "华为 Atlas 950 超节点真机在 WAIC 2026 首秀，展示国产算力。",
+    "time": "2026-07-20",
+    "phase": "v1",
+    "content": "在7月举行的2026世界人工智能大会（WAIC 2026）上，华为昇腾950超节点（Atlas 950 SuperPoD）真机首次亮相。该超节点支持大规模集群训练，被视为国产 AI 算力迈向超节点时代的标志。华为同期展示了全液冷 AI 超节点等多款产品，释放出加速算力基础设施升级的信号。"
+  }
+]

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>批量重命名工具</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 24px; }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .upload-btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #1976d2;
+            color: #fff;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .upload-btn:hover { opacity: 0.9; }
+        input[type="file"] { display: none; }
+        .rules {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+        @media (max-width: 600px) { .rules { grid-template-columns: 1fr; } }
+        .rule-item label {
+            display: block;
+            font-size: 13px;
+            color: #78909c;
+            margin-bottom: 4px;
+        }
+        .rule-item input, .rule-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .rule-item input:focus { border-color: #1976d2; }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
+            color: #444;
+            margin-top: 10px;
+        }
+        .btn-row { display: flex; gap: 12px; margin-top: 16px; }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-preview { background: #1976d2; color: #fff; }
+        .btn-execute { background: #43a047; color: #fff; }
+        .btn-undo { background: #ff9800; color: #fff; }
+        .btn-clear { background: #eceff1; color: #546e7a; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eceff1; }
+        th { background: #f5f7fa; color: #546e7a; font-weight: 600; }
+        .old-name { color: #78909c; }
+        .arrow { color: #1976d2; font-weight: 700; }
+        .new-name { color: #2e7d32; font-weight: 600; }
+        .filter-row { display: flex; gap: 10px; margin-bottom: 12px; }
+        .filter-btn {
+            padding: 6px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 20px;
+            background: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .filter-btn.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 批量重命名工具</h1>
+        <div class="card">
+            <h3>1. 选择文件</h3>
+            <label class="upload-btn" onclick="document.getElementById('fileInput').click()">📁 选择文件</label>
+            <input type="file" id="fileInput" multiple onchange="handleFiles(event)">
+            <span id="fileCountText" style="margin-left:12px;color:#78909c;font-size:14px;"></span>
+        </div>
+        <div class="card" id="rulesCard" style="display:none;">
+            <h3>2. 命名规则</h3>
+            <div class="rules">
+                <div class="rule-item">
+                    <label>前缀文字</label>
+                    <input type="text" id="prefix" placeholder="如：项目名称" oninput="updatePreview()">
+                </div>
+                <div class="rule-item">
+                    <label>序号起始值</label>
+                    <input type="number" id="startNum" value="1" min="0" oninput="updatePreview()">
+                </div>
+                <div class="rule-item">
+                    <label>序号位数</label>
+                    <select id="digits" onchange="updatePreview()">
+                        <option value="1">1位 (1,2,3)</option>
+                        <option value="2">2位 (01,02,03)</option>
+                        <option value="3" selected>3位 (001,002,003)</option>
+                    </select>
+                </div>
+            </div>
+            <label class="checkbox-item">
+                <input type="checkbox" id="addDate" onchange="updatePreview()"> 加上日期
+            </label>
+            <div class="btn-row">
+                <button class="btn btn-preview" onclick="updatePreview()">预览新文件名</button>
+                <button class="btn btn-execute" onclick="executeRename()">执行重命名</button>
+                <button class="btn btn-undo" onclick="undoRename()">撤销</button>
+            </div>
+        </div>
+        <div class="card" id="previewCard" style="display:none;">
+            <h3>3. 预览</h3>
+            <div class="filter-row">
+                <button class="filter-btn active" onclick="filterFiles('all', this)">全部</button>
+                <button class="filter-btn" onclick="filterFiles('image', this)">图片</button>
+                <button class="filter-btn" onclick="filterFiles('doc', this)">文档</button>
+            </div>
+            <table>
+                <thead><tr><th>序号</th><th>原文件名</th><th></th><th>新文件名</th></tr></thead>
+                <tbody id="previewBody"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        let files = [];
+        let renamedFiles = [];
+        let originalNames = [];
+        function handleFiles(e) {
+            files = Array.from(e.target.files);
+            originalNames = files.map(f => f.name);
+            document.getElementById('fileCountText').textContent = `已选择 ${files.length} 个文件`;
+            document.getElementById('rulesCard').style.display = '';
+            updatePreview();
+        }
+        function getNewName(origName, idx) {
+            const prefix = document.getElementById('prefix').value;
+            const start = parseInt(document.getElementById('startNum').value) || 1;
+            const digits = parseInt(document.getElementById('digits').value);
+            const addDate = document.getElementById('addDate').checked;
+            const ext = origName.includes('.') ? '.' + origName.split('.').pop() : '';
+            const num = String(start + idx).padStart(digits, '0');
+            const date = addDate ? '_' + new Date().toISOString().slice(0,10) : '';
+            return `${prefix}${date}_${num}${ext}`;
+        }
+        function updatePreview() {
+            if (files.length === 0) return;
+            document.getElementById('previewCard').style.display = '';
+            const tbody = document.getElementById('previewBody');
+            tbody.innerHTML = '';
+            files.forEach((f, i) => {
+                const newName = getNewName(f.name, i);
+                tbody.innerHTML += `<tr><td>${i+1}</td><td class="old-name">${f.name}</td><td class="arrow">→</td><td class="new-name">${newName}</td></tr>`;
+            });
+        }
+        function filterFiles(type, btn) {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const tbody = document.getElementById('previewBody');
+            const rows = tbody.querySelectorAll('tr');
+            const imgExts = ['.jpg','.jpeg','.png','.gif','.bmp','.webp'];
+            const docExts = ['.pdf','.doc','.docx','.xls','.xlsx','.txt','.csv'];
+            rows.forEach((row, i) => {
+                const name = files[i].name.toLowerCase();
+                if (type === 'all') row.style.display = '';
+                else if (type === 'image') row.style.display = imgExts.some(e => name.endsWith(e)) ? '' : 'none';
+                else if (type === 'doc') row.style.display = docExts.some(e => name.endsWith(e)) ? '' : 'none';
+            });
+        }
+        function executeRename() {
+            renamedFiles = files.map((f, i) => ({
+                original: f.name,
+                renamed: getNewName(f.name, i)
+            }));
+            // 生成可执行的批量重命名脚本
+            let script = '';
+            const isWin = navigator.platform.includes('Win');
+            if (isWin) {
+                script = '@echo off\nchcp 65001\n';
+                renamedFiles.forEach(r => { script += `ren "${r.original}" "${r.renamed}"\n`; });
+            } else {
+                renamedFiles.forEach(r => { script += `mv "${r.original}" "${r.renamed}"\n`; });
+            }
+            // 下载脚本
+            const ext = isWin ? '.bat' : '.sh';
+            const blob = new Blob([script], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'batch_rename' + ext;
+            link.click();
+        }
+        function undoRename() {
+            if (renamedFiles.length === 0) return;
+            // 生成反向重命名脚本
+            let script = '';
+            const isWin = navigator.platform.includes('Win');
+            if (isWin) {
+                script = '@echo off\nchcp 65001\n';
+                renamedFiles.forEach(r => { script += `ren "${r.renamed}" "${r.original}"\n`; });
+            } else {
+                renamedFiles.forEach(r => { script += `mv "${r.renamed}" "${r.original}"\n`; });
+            }
+            const ext = isWin ? '.bat' : '.sh';
+            const blob = new Blob([script], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'undo_rename' + ext;
+            link.click();
+            renamedFiles = [];
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>敦煌艺术与丝路文明 · 沉浸式数字课程门户</title>
+<meta name="description" content="面向高校通识课的敦煌艺术与丝路文明沉浸式数字课程门户：莫高窟壁画、丝绸之路、数字文物长廊与 AI 讲解员。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<main>
+  <!-- 全屏视差开场 -->
+  <section class="hero" id="hero">
+    <div class="hero-bg" id="heroBg" style="background-image:url('assets/images/hero.png')"></div>
+    <div class="apsara-field" id="apsaraField"></div>
+    <div class="hero-vignette"></div>
+    <div class="hero-content">
+      <div class="hero-kicker">沉 浸 式 数 字 课 程 门 户</div>
+      <h1 class="hero-title serif gilt">敦煌艺术<br>与丝路文明</h1>
+      <div class="hero-sub">莫高窟 · 丝绸之路 · 千年文明</div>
+      <div class="hero-cta">
+        <a class="btn btn-gold" href="chapters.html">开始学习</a>
+        <a class="btn btn-ghost" href="map.html">丝路地图</a>
+      </div>
+    </div>
+    <div class="scroll-hint">向下探索 ↓</div>
+  </section>
+
+  <!-- 丝绸之路轨迹动效 -->
+  <section class="silk-demo">
+    <div class="container">
+      <div class="section-head reveal">
+        <div class="section-eyebrow">Silk Road</div>
+        <h2>一条路，连起欧亚两千年</h2>
+        <p>从长安到罗马，驼铃与商队沿着绿洲城郭一路西行。悬停节点，看丝路上的重要都会。</p>
+      </div>
+      <div class="route-wrap reveal">
+        <svg class="route-svg" viewBox="0 0 960 360" role="img" aria-label="丝绸之路示意图">
+          <defs>
+            <linearGradient id="land" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#1f2a26"/><stop offset="1" stop-color="#241d19"/>
+            </linearGradient>
+            <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+              <stop offset="0" stop-color="#c8a24b" stop-opacity=".25"/><stop offset="1" stop-color="#c8a24b" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <rect width="960" height="360" fill="url(#land)"/>
+          <rect width="960" height="360" fill="url(#glow)"/>
+          <g stroke="#3f6f7a" stroke-width="1" opacity=".25">
+            <path d="M0 90 Q240 70 480 100 T960 88"/>
+            <path d="M0 190 Q300 214 620 196 T960 210"/>
+            <path d="M0 290 Q280 268 540 288 T960 270"/>
+          </g>
+          <path class="route-path" d="M850 258 C780 250 730 236 680 240 C620 246 590 224 545 220 C490 216 455 232 420 234 C380 236 355 216 320 210 C275 202 250 224 215 228 C180 232 160 218 128 220 C100 222 80 208 52 210 C34 212 24 216 16 218"/>
+          <g class="route-node">
+            <circle cx="850" cy="258" r="5"/><circle cx="545" cy="220" r="5"/><circle cx="320" cy="210" r="5"/><circle cx="128" cy="220" r="5"/><circle cx="16" cy="218" r="5"/>
+          </g>
+          <g font-family="serif" font-size="15" fill="#e8d5a3">
+            <text x="850" y="285" text-anchor="middle">长安</text>
+            <text x="680" y="255" text-anchor="middle">武威</text>
+            <text x="545" y="196" text-anchor="middle">敦煌</text>
+            <text x="420" y="258" text-anchor="middle">高昌</text>
+            <text x="320" y="186" text-anchor="middle">龟兹</text>
+            <text x="215" y="252" text-anchor="middle">疏勒</text>
+            <text x="128" y="196" text-anchor="middle">撒马尔罕</text>
+            <text x="40" y="250" text-anchor="middle">罗马</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 课程章节预览 -->
+  <section class="container" style="padding:40px 24px 20px">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Curriculum</div>
+      <h2>八讲 · 从凿空西域到数字敦煌</h2>
+      <p>沿时间轴走进莫高窟的千年营造与丝路文明的兴衰流转。</p>
+    </div>
+    <div class="chapter-strip" id="chapterGrid"></div>
+    <div style="text-align:center;margin-top:34px">
+      <a class="btn btn-gold" href="chapters.html">进入完整课程</a>
+    </div>
+  </section>
+
+  <!-- 三大模块 -->
+  <section class="container" style="padding:70px 24px 30px">
+    <div class="section-head reveal">
+      <div class="section-eyebrow">Explore</div>
+      <h2>三条沉浸路径</h2>
+      <p>丝路地图、数字文物长廊与 AI 讲解员，带你从不同维度触摸敦煌。</p>
+    </div>
+    <div class="archive-grid">
+      <a class="download-card reveal" href="map.html">
+        <div class="ic">🗺️</div><h3>互动丝绸之路</h3>
+        <p>30 个节点城市，点击弹出历史概况、代表文物与相关章节。</p>
+      </a>
+      <a class="download-card reveal" href="gallery.html">
+        <div class="ic">🏺</div><h3>数字文物长廊</h3>
+        <p>28 件文物瀑布流展陈，点击卡片 360° 翻转看断代、材质与故事。</p>
+      </a>
+      <a class="download-card reveal" href="archive.html">
+        <div class="ic">📜</div><h3>课程档案馆</h3>
+        <p>下载《敦煌艺术精讲》Word 讲义与配套教学 PPT。</p>
+      </a>
+    </div>
+  </section>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script>
+  renderShell('index.html', { dark: true });
+  spawnApsaras($('#apsaraField'), 30);
+  bindReveal();
+  renderChapterCards($('#chapterGrid'));
+
+  /* 视差：背景随滚动缓动 */
+  (function () {
+    const bg = $('#heroBg');
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(function () {
+          const y = window.scrollY;
+          if (y < window.innerHeight) {
+            bg.style.transform = 'translateY(' + (y * 0.35) + 'px) scale(1.08)';
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
+</body>
+</html>

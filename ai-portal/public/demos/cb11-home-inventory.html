@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家庭物品管理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .alert-bar {
+            background: #ffebee;
+            border: 1px solid #ef9a9a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #c62828;
+            display: none;
+        }
+        .alert-bar.show { display: block; }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .form-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+        .form-item { display: flex; flex-direction: column; }
+        .form-item label { font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .form-item input, .form-item select {
+            padding: 8px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-item input:focus { border-color: #1976d2; }
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary { background: #1976d2; color: #fff; }
+        .btn-small { padding: 4px 10px; font-size: 12px; }
+        .btn-use { background: #ff9800; color: #fff; }
+        .btn-del { background: #eceff1; color: #e53935; }
+        .filter-row { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 5px 14px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 20px;
+            background: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .filter-btn.active { background: #1976d2; color: #fff; border-color: #1976d2; }
+        .item-group { margin-bottom: 16px; }
+        .item-group h4 { font-size: 14px; color: #546e7a; margin-bottom: 8px; padding-left: 4px; }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 12px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        .item-row.expiring { border-left: 4px solid #e53935; background: #fff5f5; }
+        .item-name { font-weight: 600; color: #37474f; }
+        .item-detail { font-size: 13px; color: #78909c; }
+        .item-expire { font-size: 12px; color: #e53935; font-weight: 600; }
+        .item-actions { display: flex; gap: 6px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏠 家庭物品管理</h1>
+        <div class="alert-bar" id="alertBar"></div>
+        <div class="card">
+            <h3>添加物品</h3>
+            <div class="form-row">
+                <div class="form-item"><label>名称</label><input type="text" id="itemName" placeholder="物品名称"></div>
+                <div class="form-item"><label>类别</label>
+                    <select id="itemCategory"><option>食品</option><option>药品</option><option>日用品</option><option>其他</option></select>
+                </div>
+                <div class="form-item"><label>数量</label><input type="number" id="itemQty" value="1" min="1" style="width:70px;"></div>
+                <div class="form-item"><label>到期日期（选填）</label><input type="date" id="itemExpire"></div>
+                <button class="btn btn-primary" onclick="addItem()">添加</button>
+            </div>
+        </div>
+        <div class="card">
+            <h3>物品列表</h3>
+            <div class="filter-row">
+                <button class="filter-btn active" onclick="filterItems('全部', this)">全部</button>
+                <button class="filter-btn" onclick="filterItems('食品', this)">食品</button>
+                <button class="filter-btn" onclick="filterItems('药品', this)">药品</button>
+                <button class="filter-btn" onclick="filterItems('日用品', this)">日用品</button>
+                <button class="filter-btn" onclick="filterItems('其他', this)">其他</button>
+            </div>
+            <div id="itemList"></div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'home_inventory';
+        let items = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let currentFilter = '全部';
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }
+        function addItem() {
+            const name = document.getElementById('itemName').value.trim();
+            if (!name) return;
+            items.push({
+                id: Date.now(),
+                name,
+                category: document.getElementById('itemCategory').value,
+                qty: parseInt(document.getElementById('itemQty').value) || 1,
+                expire: document.getElementById('itemExpire').value || '',
+                addedAt: new Date().toISOString().slice(0,10)
+            });
+            save();
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemQty').value = '1';
+            document.getElementById('itemExpire').value = '';
+            render();
+        }
+        function useOne(id) {
+            const item = items.find(i => i.id === id);
+            if (item) {
+                item.qty--;
+                if (item.qty <= 0) items = items.filter(i => i.id !== id);
+                save();
+                render();
+            }
+        }
+        function deleteItem(id) {
+            items = items.filter(i => i.id !== id);
+            save();
+            render();
+        }
+        function filterItems(cat, btn) {
+            currentFilter = cat;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            render();
+        }
+        function render() {
+            const alertEl = document.getElementById('alertBar');
+            const now = new Date();
+            const weekLater = new Date(now.getTime() + 7 * 86400000);
+            const expiring = items.filter(i => i.expire && new Date(i.expire) <= weekLater);
+            if (expiring.length > 0) {
+                alertEl.textContent = `⚠️ 有 ${expiring.length} 件物品即将过期！`;
+                alertEl.classList.add('show');
+            } else {
+                alertEl.classList.remove('show');
+            }
+            const filtered = currentFilter === '全部' ? items : items.filter(i => i.category === currentFilter);
+            const grouped = {};
+            filtered.forEach(i => {
+                if (!grouped[i.category]) grouped[i.category] = [];
+                grouped[i.category].push(i);
+            });
+            const list = document.getElementById('itemList');
+            list.innerHTML = '';
+            Object.keys(grouped).forEach(cat => {
+                let html = `<div class="item-group"><h4>${cat}</h4>`;
+                grouped[cat].forEach(item => {
+                    const isExpiring = item.expire && new Date(item.expire) <= weekLater;
+                    html += `
+                        <div class="item-row ${isExpiring ? 'expiring' : ''}">
+                            <div>
+                                <div class="item-name">${item.name}</div>
+                                <div class="item-detail">数量：${item.qty}${item.expire ? ` · 到期：${item.expire}` : ''}</div>
+                                ${isExpiring ? '<div class="item-expire">⚠️ 即将过期</div>' : ''}
+                            </div>
+                            <div class="item-actions">
+                                <button class="btn btn-use btn-small" onclick="useOne(${item.id})">用掉一个</button>
+                                <button class="btn btn-del btn-small" onclick="deleteItem(${item.id})">删除</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                list.innerHTML += html;
+            });
+            if (Object.keys(grouped).length === 0) {
+                list.innerHTML = '<p style="color:#78909c;text-align:center;padding:20px;">暂无物品</p>';
+            }
+        }
+        render();
+    </script>
+</body>
+</html>

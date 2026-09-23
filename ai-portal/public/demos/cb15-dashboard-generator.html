@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据看板生成器</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .upload-area {
+            background: #fff;
+            border: 2px dashed #90caf9;
+            border-radius: 12px;
+            padding: 36px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: border-color 0.2s;
+        }
+        .upload-area:hover { border-color: #1976d2; }
+        .upload-area .icon { font-size: 36px; }
+        .upload-area p { color: #78909c; font-size: 14px; }
+        input[type="file"] { display: none; }
+        .overview-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .ov-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .ov-card .val { font-size: 24px; font-weight: 700; color: #1976d2; }
+        .ov-card .lbl { font-size: 12px; color: #78909c; margin-top: 2px; }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 600px) { .chart-grid { grid-template-columns: 1fr; } }
+        .chart-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .chart-card h4 { font-size: 14px; color: #546e7a; margin-bottom: 10px; }
+        .chart-card canvas { max-height: 250px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 数据看板生成器</h1>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="icon">📁</div>
+            <p>上传 Excel 或 CSV 文件，自动生成数据看板</p>
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" onchange="handleFile(event)">
+        </div>
+        <div id="dashboard" class="hidden">
+            <div class="overview-cards" id="overviewArea"></div>
+            <div class="chart-grid" id="chartGrid"></div>
+        </div>
+    </div>
+    <script>
+        let charts = [];
+        const COLORS = ['#1976d2','#43a047','#fb8c00','#e53935','#8e24aa','#00acc1','#7cb342','#f4511e','#5e35b1','#039be5'];
+        function handleFile(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                let rows = [];
+                if (file.name.endsWith('.csv')) {
+                    const result = Papa.parse(ev.target.result, { header: true });
+                    rows = result.data.filter(r => Object.values(r).some(v => v));
+                } else {
+                    const wb = XLSX.read(ev.target.result, { type: 'binary' });
+                    rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                }
+                if (rows.length === 0) { alert('文件为空'); return; }
+                generateDashboard(rows);
+            };
+            if (file.name.endsWith('.csv')) reader.readAsText(file);
+            else reader.readAsBinaryString(file);
+        }
+        function detectColumnType(rows, col) {
+            const vals = rows.map(r => r[col]).filter(v => v !== undefined && v !== '');
+            if (vals.length === 0) return 'text';
+            const numCount = vals.filter(v => !isNaN(parseFloat(v)) && isFinite(v)).length;
+            if (numCount / vals.length > 0.8) return 'number';
+            const dateCount = vals.filter(v => !isNaN(Date.parse(v))).length;
+            if (dateCount / vals.length > 0.8) return 'date';
+            return 'text';
+        }
+        function generateDashboard(rows) {
+            charts.forEach(c => c.destroy());
+            charts = [];
+            document.getElementById('dashboard').classList.remove('hidden');
+            const cols = Object.keys(rows[0]);
+            const colTypes = {};
+            cols.forEach(c => colTypes[c] = detectColumnType(rows, c));
+            const numCols = cols.filter(c => colTypes[c] === 'number');
+            const textCols = cols.filter(c => colTypes[c] === 'text');
+            const dateCols = cols.filter(c => colTypes[c] === 'date');
+            // overview cards
+            const overviewArea = document.getElementById('overviewArea');
+            let ovHtml = `<div class="ov-card"><div class="val">${rows.length}</div><div class="lbl">总记录数</div></div>`;
+            numCols.forEach(c => {
+                const vals = rows.map(r => parseFloat(r[c])).filter(v => !isNaN(v));
+                if (vals.length === 0) return;
+                const sum = vals.reduce((a, b) => a + b, 0);
+                const avg = sum / vals.length;
+                ovHtml += `<div class="ov-card"><div class="val">${avg.toFixed(1)}</div><div class="lbl">${c} 均值</div></div>`;
+            });
+            overviewArea.innerHTML = ovHtml;
+            // charts
+            const chartGrid = document.getElementById('chartGrid');
+            chartGrid.innerHTML = '';
+            // bar chart for each numeric col
+            numCols.slice(0, 2).forEach((numCol, idx) => {
+                const card = document.createElement('div');
+                card.className = 'chart-card';
+                const title = document.createElement('h4');
+                title.textContent = numCol + ' 分布';
+                card.appendChild(title);
+                const canvas = document.createElement('canvas');
+                card.appendChild(canvas);
+                chartGrid.appendChild(card);
+                const vals = rows.map(r => parseFloat(r[numCol])).filter(v => !isNaN(v));
+                const chart = new Chart(canvas, {
+                    type: 'bar',
+                    data: { labels: rows.slice(0, 20).map((r, i) => textCols[0] ? r[textCols[0]] : `#${i+1}`), datasets: [{ label: numCol, data: rows.slice(0, 20).map(r => parseFloat(r[numCol]) || 0), backgroundColor: COLORS[idx] }] },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                });
+                charts.push(chart);
+            });
+            // pie chart for first text column
+            if (textCols.length > 0) {
+                const cat = textCols[0];
+                const card = document.createElement('div');
+                card.className = 'chart-card';
+                const title = document.createElement('h4');
+                title.textContent = cat + ' 占比';
+                card.appendChild(title);
+                const canvas = document.createElement('canvas');
+                card.appendChild(canvas);
+                chartGrid.appendChild(card);
+                const freq = {};
+                rows.forEach(r => { const v = r[cat]; if (v) freq[v] = (freq[v] || 0) + 1; });
+                const chart = new Chart(canvas, {
+                    type: 'pie',
+                    data: { labels: Object.keys(freq), datasets: [{ data: Object.values(freq), backgroundColor: COLORS.slice(0, Object.keys(freq).length) }] },
+                    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+                });
+                charts.push(chart);
+            }
+            // line chart for date + numeric
+            if (dateCols.length > 0 && numCols.length > 0) {
+                const dateCol = dateCols[0];
+                const numCol = numCols[0];
+                const card = document.createElement('div');
+                card.className = 'chart-card';
+                const title = document.createElement('h4');
+                title.textContent = numCol + ' 趋势';
+                card.appendChild(title);
+                const canvas = document.createElement('canvas');
+                card.appendChild(canvas);
+                chartGrid.appendChild(card);
+                const sorted = [...rows].sort((a, b) => new Date(a[dateCol]) - new Date(b[dateCol]));
+                const chart = new Chart(canvas, {
+                    type: 'line',
+                    data: { labels: sorted.map(r => r[dateCol]), datasets: [{ label: numCol, data: sorted.map(r => parseFloat(r[numCol]) || 0), borderColor: '#1976d2', tension: 0.3, fill: false }] },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                });
+                charts.push(chart);
+            }
+        }
+    </script>
+</body>
+</html>

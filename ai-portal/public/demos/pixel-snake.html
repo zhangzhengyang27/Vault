@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>PIXEL SNAKE · 像素贪吃蛇</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<style>
+/* ============ 限定色板 (PICO-8 向) ============ */
+:root{
+  --bg:        #0b0d16;
+  --panel:     #161a2b;
+  --panel-2:   #1c2237;
+  --line:      #343d5c;
+  --line-hi:   #47527a;
+  --text:      #e8ecf4;
+  --dim:       #8b97b4;
+  --yellow:    #ffd23f;
+  --green:     #55b323;
+  --green-dk:  #3e8c1a;
+  --head:      #d8ff7a;
+  --red:       #ff3b5c;
+  --cyan:      #3aa8ff;
+}
+*{ margin:0; padding:0; box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  background:
+    radial-gradient(120% 90% at 50% -10%, #141a30 0%, var(--bg) 55%);
+  color:var(--text);
+  font-family:"Press Start 2P","PingFang SC","Microsoft YaHei",monospace;
+  image-rendering:pixelated;
+  -webkit-font-smoothing:none;
+  overflow-x:hidden;
+}
+/* 全局微噪点 */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:radial-gradient(rgba(255,255,255,.025) 1px, transparent 1px);
+  background-size:4px 4px;
+}
+.wrap{
+  position:relative; z-index:1;
+  display:flex; gap:26px; align-items:flex-start; justify-content:center;
+  flex-wrap:wrap; padding:28px 16px 60px; max-width:1060px; margin:0 auto;
+}
+
+/* ============ 游戏机外壳 ============ */
+.cabinet{
+  background:linear-gradient(180deg, #20263f 0%, #141827 100%);
+  border:4px solid #000; border-radius:0;
+  box-shadow:0 10px 0 rgba(0,0,0,.45), 0 18px 40px rgba(0,0,0,.5);
+  padding:14px 14px 18px;
+  width:min(480px, 100%);
+}
+.marquee{
+  text-align:center; font-size:22px; color:var(--yellow);
+  padding:12px 0 14px; letter-spacing:2px;
+  text-shadow:0 3px 0 #000, 3px 0 0 #000, -2px 2px 0 #7a5c00;
+  animation:blink 2.4s steps(2,end) infinite;
+}
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:.72} }
+.subtitle{
+  text-align:center; color:var(--dim); font-size:9px; margin-top:-6px;
+  padding-bottom:12px; letter-spacing:3px;
+}
+
+/* ============ CRT 屏幕 ============ */
+.screen{
+  position:relative; background:#0a0c14;
+  border:3px solid #000; outline:4px solid var(--line);
+  touch-action:none;
+  animation:flicker 6s steps(1,end) infinite;
+}
+@keyframes flicker{
+  0%,100%{opacity:1} 87%{opacity:1} 88%{opacity:.93} 89%{opacity:1} 91%{opacity:.97} 92%{opacity:1}
+}
+.screen canvas{
+  display:block; width:100%; height:auto; aspect-ratio:1/1;
+  image-rendering:pixelated; image-rendering:crisp-edges;
+}
+/* 扫描线 */
+.screen::after{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:2;
+  background:repeating-linear-gradient(0deg,
+    rgba(0,0,0,.20) 0 1px, transparent 1px 3px);
+  mix-blend-mode:multiply;
+}
+/* 暗角 */
+.screen::before{
+  content:""; position:absolute; inset:0; pointer-events:none; z-index:3;
+  background:radial-gradient(ellipse at center, transparent 52%, rgba(0,0,0,.5) 100%);
+}
+
+/* HUD */
+.hud{
+  display:flex; justify-content:space-between; gap:6px;
+  margin-top:12px; padding:10px 12px;
+  background:#000; border:3px solid var(--line);
+  font-size:11px; color:var(--text);
+}
+.hud b{ color:var(--yellow); font-weight:normal; display:inline-block; min-width:44px; text-align:left; }
+.hud .hi{ color:var(--cyan); }
+.hud .lv{ color:var(--green); }
+
+/* 按钮排 */
+.btn-row{ display:flex; gap:12px; margin-top:14px; }
+.btn{
+  font-family:inherit; font-size:13px; letter-spacing:1px;
+  padding:14px 10px; border:3px solid #000; border-radius:0;
+  cursor:pointer; text-transform:uppercase;
+  box-shadow:0 5px 0 #000; flex:1; color:#0a0c14;
+}
+.btn:active{ transform:translateY(4px); box-shadow:0 1px 0 #000; }
+.btn:hover{ filter:brightness(1.15); }
+.btn:disabled{ opacity:.45; cursor:default; transform:none; box-shadow:0 5px 0 #000; filter:none; }
+.btn-start{ background:var(--green); }
+.btn-pause{ background:var(--yellow); }
+.btn-cyan{ background:var(--cyan); color:#07111f; }
+.legend{
+  margin-top:14px; text-align:center; color:var(--dim);
+  font-size:9px; line-height:1.9;
+}
+
+/* ============ 积分榜面板 ============ */
+.board{
+  background:linear-gradient(180deg, #20263f 0%, #141827 100%);
+  border:4px solid #000; box-shadow:0 10px 0 rgba(0,0,0,.45), 0 18px 40px rgba(0,0,0,.5);
+  padding:16px 14px 18px; width:min(400px, 100%);
+}
+.board-title{
+  text-align:center; font-size:15px; color:var(--yellow);
+  padding-bottom:12px; letter-spacing:2px;
+  text-shadow:0 3px 0 #000, -2px 2px 0 #7a5c00;
+}
+.tabs{ display:flex; gap:8px; margin-bottom:12px; }
+.tab{
+  flex:1; font-family:inherit; font-size:10px; letter-spacing:1px;
+  padding:10px 4px; border:3px solid #000; border-radius:0; cursor:pointer;
+  background:var(--panel-2); color:var(--dim);
+}
+.tab.active{ background:var(--yellow); color:#0a0c14; box-shadow:0 4px 0 #000; }
+.tab:not(.active):hover{ color:var(--text); }
+.rank-head, .rank-row{
+  display:grid;
+  grid-template-columns:42px 1fr 74px;
+  gap:8px; padding:8px 10px; font-size:10px; align-items:baseline;
+}
+.rank-head{
+  background:#000; border:2px solid var(--line); margin-bottom:6px;
+  color:var(--dim); font-size:8px;
+}
+.rank-row{
+  border-bottom:2px dashed var(--line);
+  transition:background .15s;
+}
+.rank-row.me{
+  background:rgba(255,210,63,.14);
+  box-shadow:inset 4px 0 0 var(--yellow);
+}
+.rk{ color:var(--yellow); }
+.rk.gold{ color:var(--yellow); }
+.rk.silver{ color:#cfd8ec; }
+.rk.bronze{ color:#e08a3c; }
+.nm{ text-align:left; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.sc{ color:var(--green); text-align:right; }
+.tm{ color:var(--dim); font-size:8px; text-align:right; grid-column:2/4; margin-top:-4px; }
+.rank-head .tm{ grid-column:3/4; margin-top:0; }
+.empty{
+  text-align:center; color:var(--dim); font-size:10px;
+  padding:26px 0; line-height:2;
+}
+.empty b{ color:var(--yellow); font-weight:normal; }
+
+/* ============ 遮罩 ============ */
+.overlay{
+  position:fixed; inset:0; z-index:50;
+  background:rgba(5,6,12,.9);
+  display:flex; align-items:center; justify-content:center;
+  padding:16px;
+}
+.overlay.hidden{ display:none; }
+.over-card{
+  background:linear-gradient(180deg, #1c2237, #141827);
+  border:4px solid #000; outline:3px solid var(--line);
+  box-shadow:0 12px 0 rgba(0,0,0,.5);
+  padding:30px 26px; text-align:center;
+  width:min(380px, 100%);
+}
+.over-card h1{
+  font-size:30px; color:var(--yellow); line-height:1.4;
+  text-shadow:0 4px 0 #000, 4px 0 0 #000, -3px 3px 0 #7a5c00;
+  margin-bottom:10px;
+}
+.over-card h1.go{ color:var(--red); text-shadow:0 4px 0 #000, 4px 0 0 #000, -3px 3px 0 #6b0d1f; }
+.over-sub{ color:var(--dim); font-size:9px; letter-spacing:2px; margin-bottom:20px; }
+.score-line{ font-size:13px; margin-bottom:6px; }
+.score-line b{ color:var(--yellow); font-weight:normal; font-size:17px; }
+.best-line{ font-size:9px; color:var(--dim); margin-bottom:22px; }
+.pix-input{
+  width:100%; background:#000; border:3px solid var(--line); border-radius:0;
+  color:var(--text); font-family:inherit; font-size:13px;
+  padding:13px 10px; text-align:center; outline:none;
+}
+.pix-input:focus{ border-color:var(--yellow); }
+.pix-input::placeholder{ color:#4a5470; }
+.input-label{
+  display:block; text-align:left; color:var(--dim); font-size:8px;
+  margin-bottom:8px; letter-spacing:1px;
+}
+.over-actions{ display:flex; gap:12px; margin-top:14px; }
+.over-actions .btn{ padding:13px 6px; font-size:11px; }
+.hint{ margin-top:16px; color:var(--dim); font-size:8px; line-height:2; }
+.hint b{ color:var(--text); font-weight:normal; }
+
+/* toast */
+.toast{
+  position:fixed; left:50%; bottom:30px; transform:translateX(-50%);
+  z-index:99; background:var(--yellow); color:#0a0c14;
+  border:3px solid #000; box-shadow:0 5px 0 #000;
+  padding:12px 18px; font-size:11px; letter-spacing:1px;
+  opacity:0; transition:opacity .2s; pointer-events:none;
+}
+.toast.show{ opacity:1; }
+
+/* ============ 移动端 ============ */
+@media (max-width: 860px){
+  .wrap{ padding:16px 12px 40px; gap:20px; }
+  .marquee{ font-size:18px; }
+  .rank-row{ grid-template-columns:36px 1fr 64px; }
+}
+@media (max-width: 520px){
+  .over-card{ padding:24px 16px; }
+  .over-card h1{ font-size:24px; }
+  .hud{ font-size:9px; }
+  .rank-head, .rank-row{ grid-template-columns:34px 1fr 56px; }
+  .btn{ font-size:11px; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- ===== 游戏机 ===== -->
+  <div class="cabinet">
+    <div class="marquee">PIXEL SNAKE</div>
+    <div class="subtitle">-- 像素贪吃蛇 · CLASSIC ARCADE --</div>
+    <div class="screen">
+      <canvas id="game" width="240" height="240"></canvas>
+    </div>
+    <div class="hud">
+      <span>SCORE <b id="hudScore">0000</b></span>
+      <span>HI <b class="hi" id="hudBest">0000</b></span>
+      <span>LV <b class="lv" id="hudLv">1</b></span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-start" id="btnStart">START</button>
+      <button class="btn btn-pause" id="btnPause">PAUSE</button>
+    </div>
+    <div class="legend">方向键 / WASD / 滑动 控制移动<br>空格 或 P 暂停 · 移动端请在屏幕内滑动</div>
+  </div>
+
+  <!-- ===== 积分榜 ===== -->
+  <div class="board">
+    <div class="board-title">★ LEADERBOARD ★</div>
+    <div class="tabs">
+      <button class="tab active" data-tab="top">TOP 10</button>
+      <button class="tab" data-tab="history">HISTORY</button>
+    </div>
+    <div class="rank-head">
+      <span>RANK</span><span>NAME</span><span>SCORE</span>
+    </div>
+    <div id="rankList"></div>
+    <div class="empty" id="boardEmpty" hidden>
+      NO DATA<br><br><b>▸ 快来当第一名 ◂</b>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== 开始遮罩 ===== -->
+<div class="overlay" id="startOverlay">
+  <div class="over-card">
+    <h1>PIXEL<br>SNAKE</h1>
+    <div class="over-sub">INSERT COIN TO START</div>
+    <div class="hint">
+      方向键 / WASD / 滑动 &nbsp;移动<br>
+      空格 / P &nbsp;暂停<br>
+      撞墙撞自己 &nbsp;GAME OVER<br><br>
+      最高分 <b id="ovBest">0000</b>
+    </div>
+    <div class="over-actions">
+      <button class="btn btn-start" id="btnBigStart" style="font-size:14px;">START GAME</button>
+    </div>
+    <div class="hint" style="margin-top:14px;">按 ENTER 或 点击按钮 开始</div>
+  </div>
+</div>
+
+<!-- ===== 结束遮罩 ===== -->
+<div class="overlay hidden" id="overOverlay">
+  <div class="over-card">
+    <h1 class="go">GAME OVER</h1>
+    <div class="score-line">SCORE <b id="ovScore">0000</b></div>
+    <div class="best-line" id="ovBestLine">NEW HI-SCORE !!!</div>
+    <label class="input-label" for="nameInput">ENTER YOUR NAME (MAX 10)</label>
+    <input class="pix-input" id="nameInput" maxlength="10" placeholder="无名玩家" autocomplete="off">
+    <div class="over-actions">
+      <button class="btn btn-cyan" id="btnSubmit">SUBMIT</button>
+      <button class="btn btn-start" id="btnAgain">AGAIN</button>
+    </div>
+    <div class="hint" id="overHint">提交后写入积分榜</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ================= 基础 ================= */
+  var GRID = 20, CELL = 12, SIZE = 240;
+  var cv = document.getElementById('game');
+  var ctx = cv.getContext('2d');
+  var $ = function(id){ return document.getElementById(id); };
+  var el = {
+    hudScore: $('hudScore'), hudBest: $('hudBest'), hudLv: $('hudLv'),
+    btnStart: $('btnStart'), btnPause: $('btnPause'),
+    startOverlay: $('startOverlay'), overOverlay: $('overOverlay'),
+    ovScore: $('ovScore'), ovBest: $('ovBest'), ovBestLine: $('ovBestLine'),
+    nameInput: $('nameInput'), btnSubmit: $('btnSubmit'), btnAgain: $('btnAgain'),
+    btnBigStart: $('btnBigStart'), overHint: $('overHint'),
+    rankList: $('rankList'), boardEmpty: $('boardEmpty'), toast: $('toast')
+  };
+
+  /* ================= 本地存储 ================= */
+  var LS_REC = 'pixel_snake_records_v1';
+  var LS_BEST = 'pixel_snake_best_v1';
+  var LS_NAME = 'pixel_snake_name_v1';
+  function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function lsSet(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+  function loadRecords(){
+    try{ var r = JSON.parse(lsGet(LS_REC) || '[]'); return Array.isArray(r) ? r : []; }
+    catch(e){ return []; }
+  }
+  function saveRecords(r){ lsSet(LS_REC, JSON.stringify(r)); }
+
+  /* ================= 游戏状态 ================= */
+  var snake, dir, queue, food, score, best, speed, lv;
+  var state = 'ready';   // ready | playing | paused | over
+  var acc = 0, lastT = 0;
+  var running = false;
+
+  function resetGame(){
+    snake = [{x:9,y:10},{x:8,y:10},{x:7,y:10}];
+    dir = {x:1,y:0}; queue = [];
+    score = 0; lv = 1; speed = 170;
+    spawnFood();
+    state = 'ready';
+    updateHud();
+  }
+  function spawnFood(){
+    var free = [];
+    for(var y=0;y<GRID;y++) for(var x=0;x<GRID;x++){
+      var hit = false;
+      for(var i=0;i<snake.length;i++){ if(snake[i].x===x && snake[i].y===y){ hit=true; break; } }
+      if(!hit) free.push({x:x,y:y});
+    }
+    food = free.length ? free[Math.floor(Math.random()*free.length)] : {x:0,y:0};
+  }
+  function startGame(){
+    if(state==='playing' || state==='paused') return;
+    if(state==='over') resetGame();
+    state = 'playing';
+    el.startOverlay.classList.add('hidden');
+    el.overOverlay.classList.add('hidden');
+    el.btnPause.textContent = 'PAUSE';
+    lastT = performance.now(); acc = 0;
+    if(!running){ running = true; requestAnimationFrame(loop); }
+  }
+  function togglePause(){
+    if(state==='playing'){ state='paused'; el.btnPause.textContent='RESUME'; }
+    else if(state==='paused'){ state='playing'; lastT=performance.now(); el.btnPause.textContent='PAUSE'; }
+  }
+  function gameOver(){
+    state = 'over';
+    beepDown();
+    var isNew = score > best;
+    if(isNew){ best = score; lsSet(LS_BEST, String(best)); }
+    updateHud();
+    el.ovScore.textContent = pad4(score);
+    el.ovBest.textContent = pad4(best);
+    el.ovBestLine.textContent = (isNew && score>0) ? 'NEW HI-SCORE !!!' : ('BEST ' + pad4(best));
+    submitted = false;
+    el.nameInput.value = lsGet(LS_NAME) || '';
+    el.overHint.textContent = '提交后写入积分榜';
+    el.btnSubmit.disabled = false;
+    el.overOverlay.classList.remove('hidden');
+    setTimeout(function(){ try{ el.nameInput.focus(); el.nameInput.select(); }catch(e){} }, 60);
+  }
+
+  /* ================= 移动逻辑 ================= */
+  function enqueue(d){
+    var last = queue.length ? queue[queue.length-1] : dir;
+    if(d.x === -last.x && d.y === -last.y) return;
+    if(d.x === last.x && d.y === last.y) return;
+    if(queue.length < 3) queue.push(d);
+  }
+  function setDirBySwipe(dx,dy){
+    if(state!=='playing') return;
+    var ax = Math.abs(dx), ay = Math.abs(dy);
+    if(ax > ay) enqueue({x: dx>0?1:-1, y:0});
+    else if(ay > ax) enqueue({x:0, y: dy>0?1:-1});
+  }
+  function tick(){
+    if(queue.length) dir = queue.shift();
+    var hx = snake[0].x + dir.x, hy = snake[0].y + dir.y;
+    if(hx<0 || hy<0 || hx>=GRID || hy>=GRID) return gameOver();
+    var eat = (hx===food.x && hy===food.y);
+    var body = eat ? snake : snake.slice(0, -1);
+    for(var i=0;i<body.length;i++){
+      if(body[i].x===hx && body[i].y===hy) return gameOver();
+    }
+    snake.unshift({x:hx, y:hy});
+    if(eat){
+      score += 10; beep(880, .07);
+      lv = Math.floor(score/50) + 1;
+      speed = Math.max(70, 170 - Math.floor(score/10)*8);
+      spawnFood(); updateHud();
+    } else {
+      snake.pop();
+    }
+  }
+  function loop(t){
+    requestAnimationFrame(loop);
+    if(state==='playing'){
+      acc += t - lastT; lastT = t;
+      while(acc >= speed){
+        acc -= speed; tick();
+        if(state!=='playing'){ acc=0; break; }
+      }
+    } else { lastT = t; }
+    draw();
+  }
+
+  /* ================= 绘制 ================= */
+  function draw(){
+    // 背景棋盘格
+    ctx.fillStyle = '#0a0c14'; ctx.fillRect(0,0,SIZE,SIZE);
+    ctx.fillStyle = '#0d1120';
+    for(var y=0;y<GRID;y++) for(var x=0;x<GRID;x++)
+      if((x+y)%2===0) ctx.fillRect(x*CELL, y*CELL, CELL, CELL);
+    // 食物
+    if(food){
+      var on = Math.floor(performance.now()/220)%2===0;
+      ctx.fillStyle = '#ff3b5c';
+      ctx.fillRect(food.x*CELL+1, food.y*CELL+1, CELL-2, CELL-2);
+      if(on){ ctx.fillStyle='#ffd9de'; ctx.fillRect(food.x*CELL+4, food.y*CELL+3, 3, 3); }
+    }
+    // 蛇
+    var headColor = (state==='over') ? '#ff3b5c' : '#d8ff7a';
+    for(var i=0;i<snake.length;i++){
+      var s = snake[i];
+      ctx.fillStyle = i===0 ? headColor : (i%2 ? '#3e8c1a' : '#55b323');
+      ctx.fillRect(s.x*CELL+1, s.y*CELL+1, CELL-2, CELL-2);
+    }
+    // 眼睛（按移动方向垂直并排）
+    if(snake.length){
+      var h = snake[0];
+      var ex = dir.x, ey = dir.y;
+      var cx = h.x*CELL + 6 + ex*2, cy = h.y*CELL + 6 + ey*2;
+      ctx.fillStyle = '#0a0c14';
+      ctx.fillRect(cx + ey*3 - 1, cy + ex*3 - 1, 2, 2);
+      ctx.fillRect(cx - ey*3 - 1, cy - ex*3 - 1, 2, 2);
+    }
+    // 暂停提示
+    if(state==='paused'){
+      ctx.fillStyle = 'rgba(0,0,0,.65)';
+      ctx.fillRect(0, 108, SIZE, 26);
+      ctx.fillStyle = '#ffd23f';
+      ctx.font = '8px "Press Start 2P", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('PAUSED', 120, 125);
+    }
+  }
+
+  /* ================= 音效 (WebAudio 方波) ================= */
+  var actx = null;
+  function ac(){
+    try{
+      if(!actx){ var AC = window.AudioContext || window.webkitAudioContext; if(AC) actx = new AC(); }
+      if(actx && actx.state==='suspended') actx.resume();
+    }catch(e){}
+    return actx;
+  }
+  function beep(freq, dur){
+    try{
+      var a = ac(); if(!a) return;
+      var o = a.createOscillator(), g = a.createGain();
+      o.type = 'square'; o.frequency.value = freq;
+      g.gain.setValueAtTime(.045, a.currentTime);
+      g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + dur);
+      o.connect(g); g.connect(a.destination);
+      o.start(); o.stop(a.currentTime + dur);
+    }catch(e){}
+  }
+  function beepDown(){
+    try{
+      var a = ac(); if(!a) return;
+      var t0 = a.currentTime;
+      var o = a.createOscillator(), g = a.createGain();
+      o.type = 'sawtooth';
+      o.frequency.setValueAtTime(320, t0);
+      o.frequency.exponentialRampToValueAtTime(90, t0 + .4);
+      g.gain.setValueAtTime(.05, t0);
+      g.gain.exponentialRampToValueAtTime(.0001, t0 + .42);
+      o.connect(g); g.connect(a.destination);
+      o.start(t0); o.stop(t0 + .45);
+    }catch(e){}
+  }
+
+  /* ================= HUD ================= */
+  function pad4(n){ n = Math.max(0, Math.floor(n)||0); return ('000'+n).slice(-4); }
+  function updateHud(){
+    el.hudScore.textContent = pad4(score);
+    el.hudBest.textContent = pad4(best);
+    el.hudLv.textContent = String(lv);
+  }
+
+  /* ================= 积分榜 ================= */
+  var records = loadRecords();
+  var currentTab = 'top';
+  var myMark = null;   // 本次提交的 ts，用于高亮
+  var submitted = false; // 防重复提交
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fmtTime(ts){
+    var d = new Date(ts);
+    var p = function(n){ return ('0'+n).slice(-2); };
+    return d.getFullYear() + '-' + p(d.getMonth()+1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  function topList(){
+    var m = {};
+    records.forEach(function(r){
+      var e = m[r.name];
+      if(!e || r.score > e.score) m[r.name] = r;
+    });
+    var arr = Object.keys(m).map(function(k){ return m[k]; });
+    arr.sort(function(a,b){ return (b.score - a.score) || (a.ts - b.ts); });
+    return arr.slice(0, 10);
+  }
+  function rankOf(ts){
+    // 在 top 榜中计算某条记录(按 ts)的排名
+    var tl = topList();
+    for(var i=0;i<tl.length;i++) if(tl[i].ts === ts) return i+1;
+    return null;
+  }
+  function renderBoard(){
+    var html = '';
+    if(currentTab === 'top'){
+      var tl = topList();
+      if(!tl.length){ showEmpty(); return; }
+      hideEmpty();
+      tl.forEach(function(r, i){
+        var rkCls = i===0 ? 'gold' : (i===1 ? 'silver' : (i===2 ? 'bronze' : ''));
+        var me = (myMark !== null && r.ts === myMark) ? ' me' : '';
+        var rk = ('0' + (i+1)).slice(-2);
+        html += '<div class="rank-row' + me + '">'
+          + '<span class="rk ' + rkCls + '">' + rk + '</span>'
+          + '<span class="nm">' + esc(r.name) + '</span>'
+          + '<span class="sc">' + r.score + '</span>'
+          + '<span class="tm">' + fmtTime(r.ts) + '</span>'
+          + '</div>';
+      });
+    } else {
+      var all = records.slice().sort(function(a,b){ return b.ts - a.ts; }).slice(0, 50);
+      if(!all.length){ showEmpty(); return; }
+      hideEmpty();
+      all.forEach(function(r, i){
+        var me = (myMark !== null && r.ts === myMark) ? ' me' : '';
+        var rk = ('0' + (i+1)).slice(-2);
+        html += '<div class="rank-row' + me + '">'
+          + '<span class="rk">' + rk + '</span>'
+          + '<span class="nm">' + esc(r.name) + '</span>'
+          + '<span class="sc">' + r.score + '</span>'
+          + '<span class="tm">' + fmtTime(r.ts) + '</span>'
+          + '</div>';
+      });
+    }
+    el.rankList.innerHTML = html;
+  }
+  function showEmpty(){ el.rankList.innerHTML=''; el.boardEmpty.hidden = false; }
+  function hideEmpty(){ el.boardEmpty.hidden = true; }
+
+  function submit(){
+    if(submitted) return;
+    submitted = true;
+    var name = (el.nameInput.value || '').trim() || '无名玩家';
+    name = name.slice(0, 10);
+    lsSet(LS_NAME, name);
+    var rec = { name: name, score: score, ts: Date.now() };
+    records.push(rec);
+    saveRecords(records);
+    myMark = rec.ts;
+    renderBoard();
+    var rk = rankOf(rec.ts);
+    el.btnSubmit.disabled = true;
+    if(rk){
+      el.overHint.textContent = '已上榜 #' + ('0'+rk).slice(-2) + ' · ' + name;
+      showToast('★ RANK #' + ('0'+rk).slice(-2) + ' ★');
+    } else {
+      el.overHint.textContent = '已记录 · 继续加油';
+      showToast('已记录到积分榜');
+    }
+    // 提交成功：稍后自动关闭遮罩，露出榜单高亮行
+    setTimeout(function(){ el.overOverlay.classList.add('hidden'); }, 900);
+  }
+  function showToast(msg){
+    el.toast.textContent = msg;
+    el.toast.classList.add('show');
+    clearTimeout(el.toast._t);
+    el.toast._t = setTimeout(function(){ el.toast.classList.remove('show'); }, 2200);
+  }
+
+  /* ================= 输入事件 ================= */
+  var KEYMAP = {
+    ArrowUp:{x:0,y:-1}, w:{x:0,y:-1}, W:{x:0,y:-1},
+    ArrowDown:{x:0,y:1}, s:{x:0,y:1}, S:{x:0,y:1},
+    ArrowLeft:{x:-1,y:0}, a:{x:-1,y:0}, A:{x:-1,y:0},
+    ArrowRight:{x:1,y:0}, d:{x:1,y:0}, D:{x:1,y:0}
+  };
+  document.addEventListener('keydown', function(e){
+    var k = e.key;
+    if(KEYMAP[k]){
+      e.preventDefault();
+      if(state==='playing') enqueue(KEYMAP[k]);
+      return;
+    }
+    if(k===' ' || k==='p' || k==='P'){
+      e.preventDefault();
+      if(state==='playing' || state==='paused') togglePause();
+      return;
+    }
+    if(k==='Enter'){
+      if(!el.startOverlay.classList.contains('hidden')){ e.preventDefault(); startGame(); }
+      else if(state==='over' && el.overOverlay.classList.contains('hidden')){ e.preventDefault(); startGame(); }
+    }
+  });
+
+  // 触屏滑动
+  var ts = null, swipeLock = false;
+  cv.addEventListener('touchstart', function(e){
+    ts = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    swipeLock = false;
+  }, {passive:true});
+  cv.addEventListener('touchmove', function(e){
+    e.preventDefault();
+    if(swipeLock || !ts) return;
+    var t = e.touches[0];
+    var dx = t.clientX - ts.x, dy = t.clientY - ts.y;
+    if(Math.max(Math.abs(dx), Math.abs(dy)) < 18) return;
+    swipeLock = true;
+    setDirBySwipe(dx, dy);
+  }, {passive:false});
+  cv.addEventListener('touchend', function(){ ts = null; swipeLock = false; }, {passive:true});
+
+  // 按钮
+  function bindStart(btn){
+    btn.addEventListener('click', function(){
+      ac();
+      if(state==='over') resetGame();
+      startGame();
+    });
+  }
+  bindStart(el.btnStart);
+  bindStart(el.btnBigStart);
+  el.btnPause.addEventListener('click', function(){ ac(); togglePause(); });
+  el.btnAgain.addEventListener('click', function(){ ac(); resetGame(); startGame(); });
+  el.btnSubmit.addEventListener('click', function(){ ac(); submit(); });
+  el.nameInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){ e.preventDefault(); submit(); }
+  });
+  // Tab 切换
+  document.querySelectorAll('.tab').forEach(function(tb){
+    tb.addEventListener('click', function(){
+      document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+      tb.classList.add('active');
+      currentTab = tb.getAttribute('data-tab');
+      renderBoard();
+    });
+  });
+
+  /* ================= 初始化 ================= */
+  best = parseInt(lsGet(LS_BEST) || '0', 10) || 0;
+  resetGame();
+  el.ovBest.textContent = pad4(best);
+  renderBoard();
+  draw();
+})();
+</script>
+</body>
+</html>

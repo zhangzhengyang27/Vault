@@ -1,0 +1,106 @@
+[
+  {
+    "authorName": "深海鱼",
+    "title": "大家现在日常工作最离不开哪个 AI 工具？",
+    "content": "我先来：写周报用 DeepSeek，做 PPT 用 Gamma，查资料用 Perplexity。",
+    "likes": 328,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "代码柠檬",
+    "title": "求推荐一个中文友好的提示词库",
+    "content": "希望是免费、可搜索、带效果示例的那种，不要太营销。",
+    "likes": 156,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "MCP 观察员",
+    "title": "MCP 生态正在爆发的信号",
+    "content": "最近一周官方目录新增了上百个服务，感觉智能体工具链要起来了。",
+    "likes": 214,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "效率控",
+    "title": "大家每个月在 AI 工具上的订阅费是多少？",
+    "content": "我现在 Claude Pro + Cursor + 一个视频工具，加起来快三百了，有点肉疼。你们是怎么做取舍的？",
+    "likes": 412,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "RAG 踩坑王",
+    "title": "做知识库问答，检索总是搜不到正确片段",
+    "content": "文档切分调了好几版，嵌入也换了，但准确率就是上不去。有没有过来人说说，是切片问题还是检索策略问题？",
+    "likes": 289,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "Agent 观察员",
+    "title": "你们公司有真正跑通的 Agent 场景吗？",
+    "content": "看了很多 demo，感觉落地还是难。我们目前只在客服和工单分类上跑起来了，想听听大家的真实案例。",
+    "likes": 356,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "国产模型党",
+    "title": "国产大模型和国外旗舰的真实差距还有多大？",
+    "content": "日常写作和简单推理感觉差距不大了，但复杂编程和多轮长任务还是差点意思。你们体感如何？",
+    "likes": 521,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "码农小张",
+    "title": "AI 编程助手真的提升效率了吗？",
+    "content": "补全确实快，但 review 生成的代码更累了。感觉省下的时间又花在检查上了，是我用法不对吗？",
+    "likes": 334,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "多模态新手",
+    "title": "文生图和文生视频，现在哪个更值得投入学？",
+    "content": "预算有限只能选一个方向，图像和视频生成的应用前景大家怎么看？",
+    "likes": 198,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "MCP 布道师",
+    "title": "MCP 生态爆发了，但碎片化也开始了",
+    "content": "目录里 server 越来越多，质量参差不齐。你们现在用哪些 MCP？有没有踩过权限的坑？",
+    "likes": 267,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "转行中",
+    "title": "零基础转 AI 方向，先从哪门课开始？",
+    "content": "文科背景，会一点 Python，目标是能自己搭 RAG 应用。求一条不劝退的学习路线。",
+    "likes": 445,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "副业探索",
+    "title": "用 AI 做的副业，真的能赚到钱吗？",
+    "content": "看到很多教 AI 副业的，但感觉割韭菜的多。有没有真实做出成绩的朋友分享一下？",
+    "likes": 308,
+    "comments": 0,
+    "phase": "v1"
+  },
+  {
+    "authorName": "合规老兵",
+    "title": "公司用大模型，最容易被忽略的合规风险",
+    "content": "数据出境、版权、内容标识，样样都是坑。建议先做一次数据流梳理，比急着上应用重要。",
+    "likes": 176,
+    "comments": 0,
+    "phase": "v1"
+  }
+]

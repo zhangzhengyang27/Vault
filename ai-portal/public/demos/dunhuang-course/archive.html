@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>课程档案馆 · 敦煌艺术与丝路文明</title>
+<meta name="description" content="下载《敦煌艺术精讲》Word 讲义与配套教学 PPT，查看系统架构与视觉规范。">
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+  .swatches { display:flex; gap:14px; flex-wrap:wrap; margin:18px 0 8px; }
+  .sw { width:120px; height:84px; border-radius:12px; display:flex; flex-direction:column; justify-content:flex-end; padding:10px; color:#fff; font-size:.78rem; box-shadow:0 6px 20px rgba(0,0,0,.15); }
+  .sw span { opacity:.85; font-size:.68rem; }
+  .spec-block { border:1px solid var(--line); border-radius:16px; padding:22px 24px; background:#fff; margin-top:16px; }
+  .dark-body .spec-block { background: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<main class="container" style="padding-top:30px">
+  <div class="section-head reveal" style="text-align:left;margin:10px 0 24px">
+    <div class="section-eyebrow">Archive</div>
+    <h1 class="serif gilt" style="font-size:clamp(2rem,5vw,3.2rem);margin:.2em 0">课程档案馆</h1>
+    <p class="lede" style="margin:0">下载可用于课堂的讲义与课件，并可查阅本门户的系统架构与视觉规范。</p>
+  </div>
+
+  <div class="archive-grid reveal">
+    <div class="download-card">
+      <div class="ic">📄</div>
+      <h3>《敦煌艺术精讲》Word 讲义</h3>
+      <p>八讲图文讲义，含课程概述、章节纲要、讲解稿与文物对照，可二次编辑用于教学。</p>
+      <a class="btn btn-gold" href="assets/downloads/敦煌艺术精讲-讲义.docx" download>下载 .docx</a>
+    </div>
+    <div class="download-card">
+      <div class="ic">📊</div>
+      <h3>配套教学 PPT 课件</h3>
+      <p>与八讲对应的演示文稿，暗金/石青/赭石博物馆级视觉，含封面、目录、章节与结语页。</p>
+      <a class="btn btn-gold" href="assets/downloads/敦煌艺术精讲-课件.pptx" download>下载 .pptx</a>
+    </div>
+    <div class="download-card">
+      <div class="ic">🗂️</div>
+      <h3>系统架构说明</h3>
+      <p>技术栈、目录结构、数据来源与资源存放约定，便于二次开发与维护。</p>
+      <a class="btn btn-ghost" href="docs.html#architecture">阅读架构</a>
+    </div>
+    <div class="download-card">
+      <div class="ic">🎨</div>
+      <h3>视觉规范说明</h3>
+      <p>暗金 / 石青 / 赭石三色体系、中文衬线排版与动画规范。</p>
+      <a class="btn btn-ghost" href="docs.html#visual">阅读规范</a>
+    </div>
+  </div>
+
+  <div class="spec-block reveal" style="margin-top:26px">
+    <h2 class="serif" style="margin:0 0 6px;color:var(--gold-deep)">视觉规范 · 三色体系</h2>
+    <p style="color:var(--text-muted);margin:0">全站主视觉遵循「暗金 · 石青 · 赭石」三色，辅以墨色底与米色纸本，强调中文留白与丝滑过渡。</p>
+    <div class="swatches">
+      <div class="sw" style="background:#c8a24b"><b>暗金</b><span>#c8a24b · 标题描金</span></div>
+      <div class="sw" style="background:#3f6f7a"><b>石青</b><span>#3f6f7a · 结构/纹理</span></div>
+      <div class="sw" style="background:#a4552f"><b>赭石</b><span>#a4552f · 强调/节点</span></div>
+      <div class="sw" style="background:#1c1a17"><b>墨底</b><span>#1c1a17 · 夜间剧场</span></div>
+      <div class="sw" style="background:#f4efe4;color:#3b342b"><b>纸本</b><span>#f4efe4 · 阅读留白</span></div>
+    </div>
+  </div>
+</main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script>
+  renderShell('archive.html');
+  bindReveal();
+</script>
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alex Chen — Full-Stack Developer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-500.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        base: 'hsl(0, 0%, 4%)',
+        surface: 'hsl(0, 0%, 7%)',
+        raised: 'hsl(0, 0%, 10%)',
+        line: 'hsl(0, 0%, 13%)',
+        fg: 'hsl(0, 0%, 95%)',
+        soft: 'hsl(0, 0%, 42%)',
+        green: 'hsl(142, 72%, 50%)',
+        greendark: 'hsl(142, 76%, 38%)',
+      },
+      fontFamily: {
+        sans: ['Sora', '"PingFang SC"', 'Arial', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: Sora, "PingFang SC", Arial, sans-serif; }
+  .code-float { animation: codefloat 4s ease-in-out infinite; filter: drop-shadow(0 0 40px hsl(142 72% 50% / .15)); }
+  @keyframes codefloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  .cursor-blink { animation: blink 1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .fadeup { opacity: 0; transform: translateY(20px); transition: opacity .5s ease, transform .5s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .glow-card { transition: border-color .18s ease, box-shadow .18s ease; }
+  .glow-card:hover { border-color: hsl(142, 72%, 50%); box-shadow: 0 0 32px hsl(142 72% 50% / .12); }
+  a, button { transition: all .2s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .code-float, .cursor-blink { animation: none; }
+    .fadeup { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body class="bg-base text-fg font-sans antialiased">
+
+<div id="glow" class="fixed w-[200px] h-[200px] rounded-full pointer-events-none z-0 hidden md:block" style="background: radial-gradient(circle, hsl(142 72% 50% / .05), transparent 70%); transform: translate(-50%,-50%);" aria-hidden="true"></div>
+
+<!-- 1. 导航栏 -->
+<header class="fixed top-0 inset-x-0 z-50 bg-base/90 backdrop-blur-[12px] border-b border-line">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-baseline gap-2">
+      <span class="font-bold text-base">Alex Chen</span>
+      <span class="font-mono text-[10px] text-green">Full-Stack Dev</span>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm text-soft">
+      <a href="#projects" class="hover:text-fg">Projects</a>
+      <a href="#stack" class="hover:text-fg">Stack</a>
+      <a href="#about" class="hover:text-fg">About</a>
+      <a href="#contact" class="hover:text-fg">Contact</a>
+    </nav>
+    <a href="#contact" class="hidden md:inline-flex bg-green text-black font-semibold text-xs px-4 py-2 rounded-md hover:bg-greendark">Hire me →</a>
+    <button id="burger" class="md:hidden p-2 text-soft" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden border-t border-line px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm text-soft">
+      <a href="#projects" class="py-1">Projects</a><a href="#stack" class="py-1">Stack</a>
+      <a href="#about" class="py-1">About</a><a href="#contact" class="py-1 text-green">Contact</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. 主视觉 -->
+  <section class="min-h-screen flex items-center px-5 md:px-16 pt-24 pb-16 max-w-6xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
+    <div class="fadeup" style="--d:0ms">
+      <p class="inline-flex items-center gap-2 font-mono text-[11px] text-green border border-green/30 bg-green/5 rounded-md px-3 py-1.5">AVAILABLE FOR HIRE · 2026<span class="cursor-blink">|</span></p>
+      <h1 class="font-extrabold tracking-[-0.04em] leading-[0.92] text-[clamp(44px,6.5vw,88px)] mt-6">Building apps<br>people actually use.<span class="cursor-blink text-green">|</span></h1>
+      <p class="mt-6 font-light text-soft max-w-[400px] text-[16px]">Full-stack developer specialising in React, Node.js, and TypeScript. Fast, accessible, and built to scale.</p>
+      <div class="mt-8 flex flex-wrap gap-4">
+        <a href="#projects" class="bg-green text-black font-semibold text-[13px] px-5 py-3 rounded-md hover:bg-greendark">View projects →</a>
+        <a href="#" class="border border-line font-semibold text-[13px] px-5 py-3 rounded-md hover:border-green hover:text-green">Download CV</a>
+      </div>
+      <div class="mt-8 flex flex-wrap gap-2">
+        <span class="font-mono text-[10px] bg-surface border border-line text-green rounded-full px-3 py-1">React</span>
+        <span class="font-mono text-[10px] bg-surface border border-line text-green rounded-full px-3 py-1">Node.js</span>
+        <span class="font-mono text-[10px] bg-surface border border-line text-green rounded-full px-3 py-1">TypeScript</span>
+        <span class="font-mono text-[10px] bg-surface border border-line text-green rounded-full px-3 py-1">PostgreSQL</span>
+        <span class="font-mono text-[10px] bg-surface border border-line text-green rounded-full px-3 py-1">AWS</span>
+      </div>
+    </div>
+    <!-- 浮动终端代码块 -->
+    <div class="code-float hidden lg:block">
+      <div class="bg-surface border border-line rounded-lg px-6 py-5 font-mono text-[13px] leading-relaxed">
+        <p class="text-soft">// building the future</p>
+        <p><span class="text-green">const</span> <span class="text-fg">alex</span> = {</p>
+        <p class="pl-4">role: <span class="text-green">"Full-Stack Dev"</span>,</p>
+        <p class="pl-4">stack: [<span class="text-green">"React"</span>, <span class="text-green">"Node"</span>, <span class="text-green">"TS"</span>],</p>
+        <p class="pl-4">open: <span class="text-green">true</span></p>
+        <p>}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 精选项目 -->
+  <section id="projects" class="py-24 px-5 md:px-16 max-w-6xl mx-auto">
+    <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(36px,4.5vw,56px)] fadeup">Projects.</h2>
+    <div class="mt-10 space-y-6">
+      <article class="fadeup glow-card bg-surface border border-line rounded-xl p-8 grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <p class="font-mono text-[10px] text-green tracking-widest">REACT · NODE · POSTGRES</p>
+          <h3 class="font-bold text-[22px] mt-2">Pulseboard — SaaS Analytics</h3>
+          <p class="mt-2 text-soft text-sm leading-relaxed">Real-time analytics dashboard for small SaaS teams. Event pipelines, custom charts, role-based access — sub-second query feedback.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Next.js</span>
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Prisma</span>
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Redis</span>
+          </div>
+          <a href="#" class="inline-block mt-4 text-green text-sm font-semibold hover:underline">View project →</a>
+        </div>
+        <svg class="w-full rounded-lg border border-line" viewBox="0 0 420 260" aria-hidden="true">
+          <rect width="420" height="260" fill="hsl(0, 0%, 6%)"/>
+          <rect x="24" y="24" width="372" height="212" rx="8" fill="hsl(0, 0%, 10%)"/>
+          <rect x="44" y="44" width="90" height="14" rx="4" fill="hsl(142, 72%, 50%)"/>
+          <rect x="44" y="74" width="160" height="8" rx="4" fill="hsl(0, 0%, 22%)"/>
+          <g fill="hsl(142, 40%, 22%)">
+            <rect x="44" y="100" width="60" height="110" rx="4"/><rect x="116" y="80" width="60" height="130" rx="4"/><rect x="188" y="120" width="60" height="90" rx="4"/><rect x="260" y="95" width="60" height="115" rx="4"/>
+          </g>
+          <path d="M50 190 L110 160 L170 175 L230 120 L290 140 L350 95" fill="none" stroke="hsl(142, 72%, 50%)" stroke-width="3"/>
+        </svg>
+      </article>
+      <article class="fadeup glow-card bg-surface border border-line rounded-xl p-8 grid md:grid-cols-2 gap-8 items-center" style="--d:100ms">
+        <div>
+          <p class="font-mono text-[10px] text-green tracking-widest">NEXT.JS · STRIPE · TYPESCRIPT</p>
+          <h3 class="font-bold text-[22px] mt-2">Fieldmade — E-commerce</h3>
+          <p class="mt-2 text-soft text-sm leading-relaxed">Headless storefront for a craft goods brand. 98 Lighthouse score, edge-cached pages, and a checkout that converts 12% better than the old one.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Shopify API</span>
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Stripe</span>
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Vercel</span>
+          </div>
+          <a href="#" class="inline-block mt-4 text-green text-sm font-semibold hover:underline">View project →</a>
+        </div>
+        <svg class="w-full rounded-lg border border-line" viewBox="0 0 420 260" aria-hidden="true">
+          <rect width="420" height="260" fill="hsl(0, 0%, 6%)"/>
+          <g fill="hsl(0, 0%, 10%)">
+            <rect x="24" y="24" width="115" height="150" rx="8"/><rect x="152" y="24" width="115" height="150" rx="8"/><rect x="280" y="24" width="115" height="150" rx="8"/>
+          </g>
+          <g fill="hsl(142, 40%, 22%)">
+            <rect x="36" y="36" width="91" height="90" rx="6"/><rect x="164" y="36" width="91" height="90" rx="6"/><rect x="292" y="36" width="91" height="90" rx="6"/>
+          </g>
+          <rect x="24" y="200" width="371" height="34" rx="8" fill="hsl(142, 72%, 38%)"/>
+          <text x="210" y="222" text-anchor="middle" font-size="14" fill="#000" font-family="monospace">Checkout — £184.00</text>
+        </svg>
+      </article>
+      <article class="fadeup glow-card bg-surface border border-line rounded-xl p-8 grid md:grid-cols-2 gap-8 items-center" style="--d:200ms">
+        <div>
+          <p class="font-mono text-[10px] text-green tracking-widest">WEBSOCKETS · NODE · REDIS</p>
+          <h3 class="font-bold text-[22px] mt-2">Scribeflow — Realtime Collab</h3>
+          <p class="mt-2 text-soft text-sm leading-relaxed">Multiplayer document editing with presence indicators and offline queueing. CRDT-based sync that survives terrible hotel Wi-Fi.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">Yjs</span>
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">WebSockets</span>
+            <span class="font-mono text-[10px] bg-raised border border-line rounded-full px-2.5 py-0.5">AWS</span>
+          </div>
+          <a href="#" class="inline-block mt-4 text-green text-sm font-semibold hover:underline">View project →</a>
+        </div>
+        <svg class="w-full rounded-lg border border-line" viewBox="0 0 420 260" aria-hidden="true">
+          <rect width="420" height="260" fill="hsl(0, 0%, 6%)"/>
+          <rect x="24" y="24" width="372" height="212" rx="8" fill="hsl(0, 0%, 10%)"/>
+          <g fill="hsl(142, 60%, 40%)"><circle cx="360" cy="48" r="10"/><circle cx="332" cy="48" r="10" opacity=".7"/></g>
+          <rect x="44" y="44" width="120" height="10" rx="5" fill="hsl(0, 0%, 22%)"/>
+          <g fill="hsl(0, 0%, 18%)">
+            <rect x="44" y="80" width="240" height="9" rx="4"/><rect x="44" y="100" width="300" height="9" rx="4"/><rect x="44" y="120" width="210" height="9" rx="4"/>
+          </g>
+          <g fill="hsl(142, 50%, 28%)"><rect x="255" y="115" width="66" height="18" rx="4"/></g>
+          <rect x="44" y="150" width="280" height="9" rx="4" fill="hsl(0, 0%, 18%)"/>
+          <rect x="44" y="170" width="240" height="9" rx="4" fill="hsl(0, 0%, 18%)"/>
+        </svg>
+      </article>
+    </div>
+  </section>
+
+  <!-- 4. 技术栈 -->
+  <section id="stack" class="bg-surface border-y border-line py-24 px-5 md:px-16 max-w-6xl mx-auto">
+    <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(36px,4.5vw,56px)] fadeup">The stack.</h2>
+    <div class="mt-10 space-y-8">
+      <div class="fadeup" style="--d:0ms">
+        <p class="font-mono text-[9px] uppercase tracking-widest text-soft">Frontend</p>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">React</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">Next.js</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">TypeScript</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">Tailwind</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">Native JS</span>
+        </div>
+      </div>
+      <div class="fadeup" style="--d:120ms">
+        <p class="font-mono text-[9px] uppercase tracking-widest text-soft">Backend</p>
+        <div class="mt-3 flex flex-wrap gap-3">
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">Node.js</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">PostgreSQL</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">Redis</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">Prisma</span>
+          <span class="glow-card bg-base border border-line rounded-lg px-4 py-3 font-mono text-[11px]">AWS</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. 关于 -->
+  <section id="about" class="py-24 px-5 md:px-16 max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div class="fadeup">
+      <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(32px,4vw,52px)]">About me.</h2>
+      <p class="mt-5 text-soft text-[15px] leading-relaxed">I started writing code to automate a job I didn't love, and discovered I loved the code more. Six years later I've shipped products across fintech, retail and collaboration tools.</p>
+      <p class="mt-4 text-soft text-[15px] leading-relaxed">My method is boring on purpose: small PRs, typed everything, tests where they matter, and measuring before optimising. Boring ships.</p>
+      <p class="mt-4 text-soft text-[15px] leading-relaxed">Currently: open to freelance and contract work, maintaining a couple of small OSS libraries, and learning Rust properly this time.</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">5 yrs exp</span>
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">30+ projects</span>
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1 text-green">Open source contributor</span>
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">Remote-friendly</span>
+      </div>
+    </div>
+    <div class="fadeup" style="--d:120ms">
+      <svg class="w-full rounded-xl border border-line" viewBox="0 0 480 380" aria-hidden="true">
+        <rect width="480" height="380" fill="hsl(0, 0%, 6%)"/>
+        <rect x="70" y="70" width="220" height="140" rx="8" fill="hsl(0, 0%, 10%)"/>
+        <g font-family="monospace" font-size="12" fill="hsl(142, 72%, 50%)">
+          <text x="90" y="110">$ npm run build</text>
+          <text x="90" y="135" fill="hsl(0, 0%, 45%)">✓ compiled in 1.2s</text>
+          <text x="90" y="160">$ git push origin main</text>
+        </g>
+        <rect x="320" y="90" width="90" height="120" rx="8" fill="hsl(0, 0%, 10%)"/>
+        <circle cx="365" cy="130" r="24" fill="hsl(0, 0%, 18%)"/>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 6. 开源 / GitHub -->
+  <section class="bg-surface border-y border-line py-20 px-5 md:px-16 max-w-6xl mx-auto rounded-none">
+    <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(32px,4vw,48px)] text-center fadeup">Open source.</h2>
+    <div class="mt-10 grid md:grid-cols-3 gap-5">
+      <div class="fadeup glow-card bg-base border border-line rounded-xl p-6 text-center" style="--d:0ms"><p class="font-extrabold text-3xl text-green">1,240</p><p class="font-mono text-[10px] text-soft mt-1">stars earned</p></div>
+      <div class="fadeup glow-card bg-base border border-line rounded-xl p-6 text-center" style="--d:100ms"><p class="font-extrabold text-3xl text-green">38</p><p class="font-mono text-[10px] text-soft mt-1">public repos</p></div>
+      <div class="fadeup glow-card bg-base border border-line rounded-xl p-6 text-center" style="--d:200ms"><p class="font-extrabold text-3xl text-green">900+</p><p class="font-mono text-[10px] text-soft mt-1">contributions this year</p></div>
+    </div>
+    <div class="mt-8 grid md:grid-cols-3 gap-5">
+      <div class="fadeup glow-card bg-base border border-line rounded-xl p-5" style="--d:0ms">
+        <p class="font-semibold text-sm">use-cached-fetch</p>
+        <p class="font-mono text-[10px] text-soft mt-1"><span class="inline-block w-2 h-2 rounded-full bg-amber align-middle mr-1"></span>TypeScript · ★ 412</p>
+        <p class="mt-2 text-soft text-[13px]">React hook with stale-while-revalidate semantics and request deduping.</p>
+      </div>
+      <div class="fadeup glow-card bg-base border border-line rounded-xl p-5" style="--d:100ms">
+        <p class="font-semibold text-sm">env-guard</p>
+        <p class="font-mono text-[10px] text-soft mt-1"><span class="inline-block w-2 h-2 rounded-full bg-green align-middle mr-1"></span>Node · ★ 236</p>
+        <p class="mt-2 text-soft text-[13px]">Fail-fast environment variable validation with zero dependencies.</p>
+      </div>
+      <div class="fadeup glow-card bg-base border border-line rounded-xl p-5" style="--d:200ms">
+        <p class="font-semibold text-sm">mono-lint</p>
+        <p class="font-mono text-[10px] text-soft mt-1"><span class="inline-block w-2 h-2 rounded-full bg-sky-400 align-middle mr-1"></span>Tooling · ★ 148</p>
+        <p class="mt-2 text-soft text-[13px]">One-command ESLint + Prettier + TS setup for monorepos.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 客户评价 -->
+  <section class="py-24 px-5 md:px-16 max-w-6xl mx-auto">
+    <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(32px,4vw,52px)] fadeup">From clients &amp; teams.</h2>
+    <div class="mt-10 grid md:grid-cols-3 gap-5">
+      <blockquote class="fadeup border-t-2 border-green bg-surface rounded-b-xl p-6" style="--d:0ms">
+        <p class="font-light italic text-sm leading-relaxed">"Alex rebuilt our checkout in six weeks. Conversion up 12%, support tickets down to zero."</p>
+        <footer class="mt-4 font-semibold text-sm">Fieldmade</footer>
+        <p class="font-mono text-[10px] text-soft">Head of Product</p>
+      </blockquote>
+      <blockquote class="fadeup border-t-2 border-green bg-surface rounded-b-xl p-6" style="--d:100ms">
+        <p class="font-light italic text-sm leading-relaxed">"Writes tests I actually enjoy reading. Our codebase is unrecognisably better."</p>
+        <footer class="mt-4 font-semibold text-sm">Pulseboard</footer>
+        <p class="font-mono text-[10px] text-soft">CTO</p>
+      </blockquote>
+      <blockquote class="fadeup border-t-2 border-green bg-surface rounded-b-xl p-6" style="--d:200ms">
+        <p class="font-light italic text-sm leading-relaxed">"Joined a messy legacy project and left us with docs, tests and a deployment we trust."</p>
+        <footer class="mt-4 font-semibold text-sm">Scribeflow</footer>
+        <p class="font-mono text-[10px] text-soft">Founding team</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- 8. 联系 CTA -->
+  <section id="contact" class="relative py-20 px-5 text-center bg-[hsl(0,0%,3%)] overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background: radial-gradient(ellipse at center, hsl(142 72% 50% / 0.06), transparent 60%)"></div>
+    <div class="relative fadeup">
+      <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(36px,5vw,64px)]">Let's build something.</h2>
+      <p class="mt-4 font-mono text-[11px] text-green">Currently available · 2–3 project slots open.</p>
+      <div class="mt-8 flex flex-wrap justify-center items-center gap-5">
+        <a href="mailto:hey@alexchen.example" class="bg-green text-black font-semibold px-7 py-3.5 rounded-lg hover:bg-greendark">Start a conversation →</a>
+        <a href="mailto:hey@alexchen.example" class="text-green font-semibold hover:underline">Or email me</a>
+      </div>
+      <p class="mt-6 font-mono text-[11px] text-soft">avg. response time · same working day</p>
+    </div>
+  </section>
+</main>
+
+<!-- 9. 页脚 -->
+<footer class="bg-[hsl(0,0%,3%)] border-t border-line">
+  <div class="max-w-6xl mx-auto px-5 md:px-16 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div>
+      <p class="font-bold">Alex Chen</p>
+      <p class="font-mono text-[10px] text-soft">Full-Stack Developer · React / Node / TypeScript</p>
+    </div>
+    <div class="flex gap-6 text-sm text-soft">
+      <a href="#" class="hover:text-green">GitHub</a><a href="#" class="hover:text-green">LinkedIn</a><a href="#" class="hover:text-green">Twitter</a>
+    </div>
+  </div>
+  <div class="max-w-6xl mx-auto px-5 md:px-16 pb-6">
+    <p class="font-mono text-[10px] text-soft">© 2026 Alex Chen. Demo page generated from the developer portfolio prompt.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 光标辉光
+  const glow = document.getElementById('glow');
+  document.addEventListener('mousemove', function (e) {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+  // 入场
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.fadeup').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

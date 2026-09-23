@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户管理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .alert-card {
+            background: #fff3e0;
+            border: 1px solid #ffcc80;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #e65100;
+            display: none;
+        }
+        .alert-card.show { display: flex; align-items: center; gap: 8px; }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 20px;
+        }
+        @media (max-width: 750px) { .main-grid { grid-template-columns: 1fr; } }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .form-item { margin-bottom: 10px; }
+        .form-item label { display: block; font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .form-item input, .form-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-item input:focus { border-color: #1976d2; }
+        .tag-group { display: flex; gap: 6px; flex-wrap: wrap; }
+        .tag-group label {
+            display: flex; align-items: center; gap: 4px;
+            font-size: 13px; cursor: pointer;
+            padding: 4px 10px; border: 1px solid #e0e0e0; border-radius: 4px;
+        }
+        .intent-high { color: #e53935; font-weight: 700; }
+        .intent-mid { color: #fb8c00; font-weight: 700; }
+        .intent-low { color: #43a047; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #eceff1; }
+        th { color: #78909c; font-weight: 600; }
+        tr { cursor: pointer; }
+        tr:hover { background: #f5f7fa; }
+        .btn {
+            padding: 10px 20px; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600; cursor: pointer; width: 100%;
+        }
+        .btn-primary { background: #1976d2; color: #fff; }
+        .timeline { padding-left: 20px; border-left: 3px solid #e0e0e0; margin-top: 10px; }
+        .timeline-item {
+            padding: 10px 14px;
+            margin-bottom: 8px;
+            background: #f5f7fa;
+            border-radius: 6px;
+            position: relative;
+            font-size: 13px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 14px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #1976d2;
+        }
+        .timeline-item .time { font-size: 11px; color: #78909c; }
+        .detail-panel { display: none; }
+        .detail-panel.show { display: block; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>👥 客户管理</h1>
+        <div class="alert-card" id="followAlert"></div>
+        <div class="main-grid">
+            <div>
+                <div class="card">
+                    <h3>客户列表</h3>
+                    <table>
+                        <thead><tr><th>姓名</th><th>电话</th><th>公司</th><th>意向</th><th>最后跟进</th></tr></thead>
+                        <tbody id="customerBody"></tbody>
+                    </table>
+                </div>
+                <div class="card detail-panel" id="detailPanel">
+                    <h3>跟进日志</h3>
+                    <div class="timeline" id="timeline"></div>
+                    <div style="margin-top:14px;">
+                        <div class="form-item">
+                            <label>添加跟进记录</label>
+                            <input type="text" id="followNote" placeholder="输入跟进内容">
+                        </div>
+                        <button class="btn btn-primary" onclick="addFollowLog()" style="margin-top:8px;">添加记录</button>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="card">
+                    <h3>添加客户</h3>
+                    <div class="form-item"><label>姓名（必填）</label><input type="text" id="cName"></div>
+                    <div class="form-item"><label>电话（必填）</label><input type="tel" id="cPhone"></div>
+                    <div class="form-item"><label>公司</label><input type="text" id="cCompany"></div>
+                    <div class="form-item">
+                        <label>需求标签</label>
+                        <div class="tag-group">
+                            <label><input type="checkbox" value="买房">买房</label>
+                            <label><input type="checkbox" value="卖房">卖房</label>
+                            <label><input type="checkbox" value="租房">租房</label>
+                            <label><input type="checkbox" value="投资">投资</label>
+                        </div>
+                    </div>
+                    <div class="form-item">
+                        <label>意向等级</label>
+                        <select id="cIntent"><option value="高">高</option><option value="中">中</option><option value="低">低</option></select>
+                    </div>
+                    <div class="form-item">
+                        <label>下次跟进日期</label>
+                        <input type="date" id="cNextDate">
+                    </div>
+                    <button class="btn btn-primary" onclick="addCustomer()">添加客户</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'customer_crm';
+        let customers = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let selectedId = null;
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(customers)); }
+        function addCustomer() {
+            const name = document.getElementById('cName').value.trim();
+            const phone = document.getElementById('cPhone').value.trim();
+            if (!name || !phone) { alert('请填写姓名和电话'); return; }
+            const tags = Array.from(document.querySelectorAll('.tag-group input:checked')).map(c => c.value);
+            customers.push({
+                id: Date.now(),
+                name, phone,
+                company: document.getElementById('cCompany').value.trim(),
+                tags,
+                intent: document.getElementById('cIntent').value,
+                nextDate: document.getElementById('cNextDate').value,
+                logs: [],
+                lastFollow: new Date().toISOString().slice(0,10)
+            });
+            save();
+            ['cName','cPhone','cCompany','cNextDate'].forEach(id => document.getElementById(id).value = '');
+            document.querySelectorAll('.tag-group input').forEach(c => c.checked = false);
+            renderAll();
+        }
+        function selectCustomer(id) {
+            selectedId = id;
+            const c = customers.find(c => c.id === id);
+            if (!c) return;
+            const panel = document.getElementById('detailPanel');
+            panel.classList.add('show');
+            const timeline = document.getElementById('timeline');
+            timeline.innerHTML = (c.logs || []).map(l => `
+                <div class="timeline-item">
+                    <div class="time">${l.time}</div>
+                    <div>${l.content}</div>
+                </div>
+            `).join('') || '<p style="color:#78909c;font-size:13px;padding:10px;">暂无跟进记录</p>';
+            renderList();
+        }
+        function addFollowLog() {
+            if (!selectedId) return;
+            const note = document.getElementById('followNote').value.trim();
+            if (!note) return;
+            const c = customers.find(c => c.id === selectedId);
+            if (!c) return;
+            if (!c.logs) c.logs = [];
+            c.logs.unshift({ content: note, time: new Date().toLocaleString() });
+            c.lastFollow = new Date().toISOString().slice(0,10);
+            save();
+            document.getElementById('followNote').value = '';
+            selectCustomer(selectedId);
+        }
+        function renderList() {
+            const tbody = document.getElementById('customerBody');
+            tbody.innerHTML = customers.map(c => {
+                const intentClass = c.intent === '高' ? 'intent-high' : c.intent === '中' ? 'intent-mid' : 'intent-low';
+                const isSelected = c.id === selectedId;
+                return `<tr style="${isSelected ? 'background:#e3f2fd;' : ''}" onclick="selectCustomer(${c.id})">
+                    <td>${c.name}</td><td>${c.phone}</td><td>${c.company || '-'}</td>
+                    <td><span class="${intentClass}">${c.intent}</span></td><td>${c.lastFollow}</td>
+                </tr>`;
+            }).join('');
+        }
+        function renderAlert() {
+            const today = new Date().toISOString().slice(0,10);
+            const due = customers.filter(c => c.nextDate && c.nextDate <= today);
+            const alertEl = document.getElementById('followAlert');
+            if (due.length > 0) {
+                alertEl.innerHTML = `🔔 今天有 ${due.length} 位客户需要跟进：${due.map(c => c.name).join('、')}`;
+                alertEl.classList.add('show');
+            } else {
+                alertEl.classList.remove('show');
+            }
+        }
+        function renderAll() { renderList(); renderAlert(); }
+        renderAll();
+    </script>
+</body>
+</html>

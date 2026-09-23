@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Groundwork Coffee — Good Coffee. Good People. Great Days.</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/playfair-display@5/latin-600-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/dm-sans@5/latin-500.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        cream: 'hsl(35, 30%, 97%)',
+        ink: 'hsl(22, 40%, 12%)',
+        espresso: 'hsl(22, 55%, 28%)',
+        amber: 'hsl(38, 65%, 55%)',
+        oat: 'hsl(35, 25%, 91%)',
+        soft: 'hsl(22, 15%, 50%)',
+        line: 'hsl(35, 20%, 82%)',
+      },
+      fontFamily: {
+        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+        sans: ['"DM Sans"', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: light; }
+  body { font-family: "DM Sans", "PingFang SC", Arial, sans-serif; }
+  .tag { font-family: "DM Sans", sans-serif; font-weight: 500; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+  .underline-anim { transform: scaleX(0); transform-origin: left; transition: transform .5s ease; }
+  .underline-anim.in { transform: scaleX(1); }
+  .rise { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; transition-delay: var(--d, 0ms); }
+  .rise.in { opacity: 1; transform: none; }
+  .menu-card img, .gal img { transition: transform .2s ease; }
+  .menu-card:hover { border-color: hsl(22, 55%, 28%); }
+  .menu-card:hover img, .gal:hover img { transform: scale(1.02); }
+  a, button { transition: all .2s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .rise { opacity: 1; transform: none; transition: none; }
+    .underline-anim { transform: scaleX(1); transition: none; }
+  }
+</style>
+</head>
+<body class="bg-cream text-ink font-sans font-light antialiased">
+
+<!-- 1. 导航栏 -->
+<header class="sticky top-0 z-50 bg-cream/85 backdrop-blur-[10px] border-b border-line">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="font-serif font-semibold text-2xl flex items-center gap-2">
+      Groundwork
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="hsl(38,65%,55%)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+    </a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-normal text-soft">
+      <a href="#menu" class="hover:text-espresso">Menu</a>
+      <a href="#coffee" class="hover:text-espresso">Our Coffee</a>
+      <a href="#about" class="hover:text-espresso">About</a>
+      <a href="#visit" class="hover:text-espresso">Visit</a>
+      <a href="#visit" class="bg-espresso text-cream font-medium text-sm px-4 py-2 hover:opacity-90">Order ahead →</a>
+    </nav>
+    <button id="burger" class="md:hidden p-2" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden border-t border-line px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm font-normal text-soft">
+      <a href="#menu" class="py-1">Menu</a><a href="#coffee" class="py-1">Our Coffee</a>
+      <a href="#about" class="py-1">About</a><a href="#visit" class="py-1">Visit</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. Hero -->
+  <section class="relative">
+    <div class="relative h-[68vh] min-h-[420px] overflow-hidden">
+      <svg class="absolute inset-0 w-full h-full" viewBox="0 0 1440 680" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="1440" height="680" fill="hsl(24, 26%, 32%)"/>
+        <g opacity=".8">
+          <rect x="0" y="0" width="1440" height="120" fill="hsl(22, 30%, 18%)"/>
+          <g fill="hsl(28, 40%, 34%)">
+            <rect x="40" y="20" width="90" height="14" rx="7"/><rect x="170" y="20" width="90" height="14" rx="7"/><rect x="300" y="20" width="90" height="14" rx="7"/><rect x="430" y="20" width="90" height="14" rx="7"/>
+            <rect x="1180" y="20" width="90" height="14" rx="7"/><rect x="1310" y="20" width="90" height="14" rx="7"/>
+          </g>
+        </g>
+        <g stroke="hsl(20, 26%, 22%)" stroke-width="6" fill="hsl(25, 30%, 40%)">
+          <rect x="120" y="300" width="520" height="30" rx="6"/>
+          <rect x="150" y="330" width="20" height="180"/><rect x="590" y="330" width="20" height="180"/><rect x="150" y="510" width="460" height="16"/>
+        </g>
+        <g>
+          <circle cx="960" cy="300" r="26" fill="hsl(38, 70%, 62%)"/>
+          <path d="M960 210 L972 300 L948 300 Z" fill="hsl(38, 70%, 58%)"/>
+          <circle cx="1060" cy="300" r="26" fill="hsl(38, 70%, 62%)"/>
+          <path d="M1060 210 L1072 300 L1048 300 Z" fill="hsl(38, 70%, 58%)"/>
+          <rect x="880" y="300" width="260" height="18" fill="hsl(20, 30%, 22%)"/>
+          <rect x="880" y="318" width="260" height="140" fill="hsl(22, 32%, 38%)"/>
+        </g>
+        <g fill="hsl(24, 20%, 44%)">
+          <rect x="700" y="360" width="120" height="200" opacity=".6"/>
+          <rect x="1240" y="380" width="160" height="180" opacity=".6"/>
+        </g>
+      </svg>
+      <div class="absolute inset-0 bg-ink/45"></div>
+      <div class="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-cream to-transparent"></div>
+    </div>
+    <div class="absolute inset-0 flex items-center justify-center text-center px-5">
+      <div class="max-w-3xl -mt-16">
+        <h1 class="font-serif font-bold text-4xl md:text-6xl leading-tight text-cream drop-shadow-[0_2px_14px_rgba(20,10,4,.55)]">
+          <span class="rise block" style="--d:0ms">Good Coffee.</span>
+          <span class="rise block" style="--d:120ms">Good People.</span>
+          <span class="rise block italic text-amber" style="--d:240ms">Great Days.</span>
+        </h1>
+        <p class="rise tag mt-6 text-cream/90 tracking-[0.12em]" style="--d:360ms">Specialty Roaster · Organic Milk · Dog Friendly</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. 菜单亮点 -->
+  <section id="menu" class="max-w-6xl mx-auto px-5 py-20">
+    <h2 class="font-serif font-bold text-3xl md:text-5xl">
+      What's <span class="relative inline-block italic text-amber">On<span class="underline-anim absolute left-0 -bottom-1 w-full h-[3px] bg-amber"></span></span>
+    </h2>
+    <div class="mt-10 grid sm:grid-cols-2 gap-6">
+      <article class="menu-card rise border border-line bg-white overflow-hidden" style="--d:0ms">
+        <div class="gal overflow-hidden h-52">
+          <svg class="w-full h-full" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="210" fill="hsl(30, 32%, 90%)"/><rect x="150" y="60" width="100" height="90" rx="8" fill="hsl(22, 45%, 34%)"/><path d="M250 80 h18 a16 16 0 0 1 0 32 h-18" fill="none" stroke="hsl(22, 45%, 34%)" stroke-width="8"/><ellipse cx="200" cy="72" rx="42" ry="10" fill="hsl(30, 50%, 78%)"/><rect x="60" y="150" width="280" height="12" rx="6" fill="hsl(25, 35%, 55%)"/></svg>
+        </div>
+        <div class="p-5 flex items-baseline justify-between gap-4">
+          <h3 class="font-serif font-semibold text-xl">Espresso Bar</h3>
+          <span class="text-amber font-medium whitespace-nowrap">from £3.20</span>
+        </div>
+        <p class="px-5 pb-5 text-soft text-[15px]">House blend, single origin guest shots, flat whites done properly.</p>
+      </article>
+      <article class="menu-card rise border border-line bg-white overflow-hidden" style="--d:80ms">
+        <div class="gal overflow-hidden h-52">
+          <svg class="w-full h-full" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="210" fill="hsl(32, 30%, 89%)"/><path d="M170 40 L230 40 L222 150 L178 150 Z" fill="hsl(30, 55%, 72%)"/><path d="M174 40 C174 90 226 90 226 40" fill="none" stroke="hsl(22, 45%, 34%)" stroke-width="6"/><rect x="150" y="150" width="100" height="16" rx="4" fill="hsl(25, 35%, 55%)"/><circle cx="320" cy="120" r="24" fill="hsl(28, 50%, 60%)"/></svg>
+        </div>
+        <div class="p-5 flex items-baseline justify-between gap-4">
+          <h3 class="font-serif font-semibold text-xl">Filter Brew</h3>
+          <span class="text-amber font-medium whitespace-nowrap">from £3.50</span>
+        </div>
+        <p class="px-5 pb-5 text-soft text-[15px]">V60 and Chemex, rotating single origins. Ask what's on the bar today.</p>
+      </article>
+      <article class="menu-card rise border border-line bg-white overflow-hidden" style="--d:120ms">
+        <div class="gal overflow-hidden h-52">
+          <svg class="w-full h-full" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="210" fill="hsl(35, 32%, 91%)"/><circle cx="140" cy="110" r="42" fill="hsl(38, 60%, 62%)"/><circle cx="140" cy="104" r="30" fill="hsl(45, 75%, 82%)"/><rect x="220" y="70" width="130" height="14" rx="7" fill="hsl(25, 30%, 55%)"/><rect x="220" y="100" width="110" height="14" rx="7" fill="hsl(25, 30%, 62%)"/><rect x="220" y="130" width="120" height="14" rx="7" fill="hsl(25, 30%, 58%)"/></svg>
+        </div>
+        <div class="p-5 flex items-baseline justify-between gap-4">
+          <h3 class="font-serif font-semibold text-xl">All-Day Brunch</h3>
+          <span class="text-amber font-medium whitespace-nowrap">from £8</span>
+        </div>
+        <p class="px-5 pb-5 text-soft text-[15px]">Sourdough, seasonal shakshuka, and the best granola in the postcode.</p>
+      </article>
+      <article class="menu-card rise border border-line bg-white overflow-hidden" style="--d:160ms">
+        <div class="gal overflow-hidden h-52">
+          <svg class="w-full h-full" viewBox="0 0 400 210" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="210" fill="hsl(28, 30%, 88%)"/><g fill="hsl(25, 45%, 45%)"><rect x="90" y="80" width="60" height="90" rx="6"/><rect x="170" y="60" width="60" height="110" rx="6"/><rect x="250" y="90" width="60" height="80" rx="6"/></g><g fill="hsl(30, 55%, 75%)"><rect x="98" y="88" width="44" height="30" rx="4"/><rect x="178" y="68" width="44" height="30" rx="4"/><rect x="258" y="98" width="44" height="30" rx="4"/></g></svg>
+        </div>
+        <div class="p-5 flex items-baseline justify-between gap-4">
+          <h3 class="font-serif font-semibold text-xl">Bakery</h3>
+          <span class="text-amber font-medium whitespace-nowrap">from £2.80</span>
+        </div>
+        <p class="px-5 pb-5 text-soft text-[15px]">Baked upstairs before dawn. Cardamom buns sell out — you've been warned.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 4. 冲煮方式条 -->
+  <section class="w-full bg-amber/15 border-y border-line">
+    <div class="max-w-6xl mx-auto px-5 py-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div class="rise" style="--d:0ms"><p class="font-serif italic text-lg">Espresso</p><p class="text-soft text-sm">18g in, 36g out, 27 seconds.</p></div>
+      <div class="rise" style="--d:100ms"><p class="font-serif italic text-lg">V60</p><p class="text-soft text-sm">Bright, tea-like, brewed to order.</p></div>
+      <div class="rise" style="--d:200ms"><p class="font-serif italic text-lg">Chemex</p><p class="text-soft text-sm">Shareable, clean, for the table.</p></div>
+      <div class="rise" style="--d:300ms"><p class="font-serif italic text-lg">Cold Brew</p><p class="text-soft text-sm">Steeped 18 hours. Worth the wait.</p></div>
+    </div>
+  </section>
+
+  <!-- 5. 我们的咖啡 -->
+  <section id="coffee" class="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-2 gap-10 items-center">
+    <div class="rise">
+      <p class="tag text-amber mb-3">Our Coffee</p>
+      <h2 class="font-serif font-bold text-3xl md:text-5xl leading-tight">From <span class="italic text-amber">Farm</span> to Cup</h2>
+      <p class="mt-5 text-soft text-[15px] leading-relaxed max-w-md">We buy direct from three farms we've actually visited, roast small batches every Tuesday, and keep a seasonal rotation so there's always something new on the shelf.</p>
+      <ul class="mt-5 space-y-2 text-[15px] text-soft">
+        <li>— Direct trade: Huila, Colombia &amp; Yirgacheffe, Ethiopia</li>
+        <li>— Single origin, roasted on site</li>
+        <li>— Three seasonal rotating beans at all times</li>
+      </ul>
+      <a href="#visit" class="inline-block mt-6 font-medium text-espresso hover:text-amber">Shop our beans →</a>
+    </div>
+    <div class="rise overflow-hidden border border-line" style="--d:120ms">
+      <svg class="w-full h-72" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="500" height="300" fill="hsl(30, 32%, 89%)"/><g fill="hsl(25, 42%, 48%)"><circle cx="150" cy="150" r="55"/><circle cx="250" cy="150" r="55"/><circle cx="350" cy="150" r="55"/></g><g fill="hsl(30, 55%, 78%)"><circle cx="150" cy="150" r="42"/><circle cx="250" cy="150" r="42"/><circle cx="350" cy="150" r="42"/></g><g fill="hsl(22, 45%, 34%)"><text x="150" y="156" text-anchor="middle" font-size="14" font-family="Georgia, serif" font-style="italic">N°1</text><text x="250" y="156" text-anchor="middle" font-size="14" font-family="Georgia, serif" font-style="italic">N°2</text><text x="350" y="156" text-anchor="middle" font-size="14" font-family="Georgia, serif" font-style="italic">N°3</text></g></svg>
+    </div>
+  </section>
+
+  <!-- 6. 关于 -->
+  <section id="about" class="bg-oat border-y border-line">
+    <div class="max-w-6xl mx-auto px-5 py-20 grid md:grid-cols-2 gap-10 items-center">
+      <div class="rise overflow-hidden border border-line order-2 md:order-1">
+        <svg class="w-full h-72" viewBox="0 0 500 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="500" height="300" fill="hsl(32, 30%, 88%)"/><rect x="60" y="90" width="170" height="24" rx="4" fill="hsl(25, 35%, 52%)"/><rect x="80" y="114" width="130" height="80" fill="hsl(22, 40%, 38%)"/><circle cx="330" cy="120" r="34" fill="hsl(38, 62%, 60%)"/><path d="M322 120 a8 8 0 0 1 16 0" stroke="hsl(22,40%,12%)" stroke-width="3" fill="none"/><path d="M310 136 q20 12 40 0" stroke="hsl(22,40%,12%)" stroke-width="3" fill="none"/><rect x="60" y="230" width="380" height="16" fill="hsl(25, 30%, 55%)"/></svg>
+      </div>
+      <div class="rise order-1 md:order-2" style="--d:120ms">
+        <p class="tag text-amber mb-3">About</p>
+        <h2 class="font-serif font-bold text-3xl md:text-5xl leading-tight">Built by hand,<br>run on <span class="italic text-amber">kindness</span>.</h2>
+        <p class="mt-5 text-soft text-[15px] leading-relaxed max-w-md">Groundwork opened in 2019 when Jamie Walsh swapped a decade of accountancy for a second-hand espresso machine and a lease on a rainy corner in Ancoats. The spreadsheet habit stuck — the coffee got a lot better.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. 画廊条 -->
+  <section class="max-w-6xl mx-auto px-5 py-16">
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div class="gal overflow-hidden h-[280px]"><svg class="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="280" fill="hsl(30, 30%, 86%)"/><circle cx="100" cy="120" r="46" fill="hsl(22, 45%, 34%)"/><rect x="30" y="200" width="140" height="12" rx="6" fill="hsl(25, 35%, 55%)"/></svg></div>
+      <div class="gal overflow-hidden h-[280px]"><svg class="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="280" fill="hsl(28, 28%, 82%)"/><rect x="40" y="60" width="120" height="160" fill="hsl(24, 38%, 42%)"/><rect x="56" y="76" width="88" height="128" fill="hsl(30, 40%, 68%)"/></svg></div>
+      <div class="gal overflow-hidden h-[280px]"><svg class="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="280" fill="hsl(35, 30%, 90%)"/><g stroke="hsl(25, 30%, 55%)" stroke-width="5" fill="none"><circle cx="100" cy="140" r="40"/><path d="M100 100 v-30 M100 180 v30 M60 140 h-30 M140 140 h30"/></g></svg></div>
+      <div class="gal overflow-hidden h-[280px]"><svg class="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="280" fill="hsl(22, 26%, 30%)"/><g fill="hsl(30, 40%, 60%)"><rect x="40" y="70" width="120" height="10" rx="5"/><rect x="40" y="100" width="120" height="10" rx="5"/><rect x="40" y="130" width="120" height="10" rx="5"/><rect x="40" y="160" width="120" height="10" rx="5"/></g></svg></div>
+      <div class="gal overflow-hidden h-[280px]"><svg class="w-full h-full" viewBox="0 0 200 280" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="200" height="280" fill="hsl(38, 45%, 75%)"/><circle cx="70" cy="90" r="26" fill="hsl(45, 70%, 85%)"/><circle cx="120" cy="150" r="34" fill="hsl(28, 55%, 62%)"/><circle cx="80" cy="210" r="22" fill="hsl(22, 45%, 40%)"/></svg></div>
+    </div>
+  </section>
+
+  <!-- 8. 活动与空间 -->
+  <section class="max-w-6xl mx-auto px-5 pb-16">
+    <h2 class="font-serif font-bold text-3xl md:text-5xl">Hire the <span class="italic text-amber">Space</span></h2>
+    <div class="mt-8 grid sm:grid-cols-2 gap-6">
+      <article class="border border-line bg-white p-6">
+        <h3 class="font-serif font-semibold text-xl">Private hire</h3>
+        <p class="mt-2 text-soft text-[15px]">Evenings and weekends, up to 40 standing. Bring your own playlist; we'll bring the machine.</p>
+      </article>
+      <article class="border border-line bg-white p-6">
+        <h3 class="font-serif font-semibold text-xl">Cupping sessions</h3>
+        <p class="mt-2 text-soft text-[15px]">Last Saturday of the month, 10am. Five coffees, one hour, zero snobbery. £10 a head.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 9. 用户评价 -->
+  <section class="max-w-6xl mx-auto px-5 pb-20 grid md:grid-cols-3 gap-6">
+    <blockquote class="rise border border-line bg-white p-6">
+      <p class="text-amber" aria-label="5 stars">★★★★★</p>
+      <p class="mt-3 font-serif italic text-lg leading-relaxed">"The flat white I judge all other flat whites against."</p>
+      <footer class="tag mt-4 text-soft">— Sarah M.</footer>
+    </blockquote>
+    <blockquote class="rise border border-line bg-white p-6" style="--d:100ms">
+      <p class="text-amber" aria-label="5 stars">★★★★★</p>
+      <p class="mt-3 font-serif italic text-lg leading-relaxed">"Dog treats by the till, comfy chairs, and a roast I actually buy beans from."</p>
+      <footer class="tag mt-4 text-soft">— Dev &amp; Biscuit</footer>
+    </blockquote>
+    <blockquote class="rise border border-line bg-white p-6" style="--d:200ms">
+      <p class="text-amber" aria-label="5 stars">★★★★★</p>
+      <p class="mt-3 font-serif italic text-lg leading-relaxed">"Cupping Saturdays got me properly into filter coffee. No gatekeeping, all warmth."</p>
+      <footer class="tag mt-4 text-soft">— Tom H.</footer>
+    </blockquote>
+  </section>
+
+  <!-- 10. 到店 CTA -->
+  <section id="visit" class="bg-espresso text-cream">
+    <div class="max-w-6xl mx-auto px-5 py-16 text-center">
+      <h2 class="font-serif font-bold text-3xl md:text-5xl">Come and <span class="italic text-amber">Say Hello</span></h2>
+      <p class="mt-4 text-cream/80 text-[15px]">Mon–Fri 7am–5pm · Sat–Sun 8am–5pm · 12 Foundry Lane, Ancoats</p>
+      <a href="#top" class="inline-block mt-7 border border-cream/70 px-6 py-3 font-medium hover:bg-cream hover:text-espresso">Plan your visit</a>
+    </div>
+  </section>
+</main>
+
+<!-- 11. 页脚 -->
+<footer class="bg-espresso text-cream/80 border-t border-cream/15">
+  <div class="max-w-6xl mx-auto px-5 py-8 flex flex-col md:flex-row items-center justify-between gap-3">
+    <p class="font-serif italic text-xl text-amber">Groundwork Coffee</p>
+    <p class="text-sm">© 2026 Groundwork Coffee · Demo page generated from the café prompt.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 汉堡菜单
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') menu.classList.add('hidden');
+  });
+
+  // 滚动 rise 动画 + amber 下划线
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.rise, .underline-anim').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

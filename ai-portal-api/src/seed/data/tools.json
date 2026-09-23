@@ -1,0 +1,1242 @@
+[
+  {
+    "slug": "chatgpt",
+    "name": "ChatGPT",
+    "categorySlug": "chat",
+    "description": "通用对话与写作助手，支持多轮推理与联网搜索。",
+    "rating": 4.9,
+    "tags": [
+      "免费",
+      "对话"
+    ],
+    "phase": "mvp",
+    "content": "ChatGPT 是 OpenAI 推出的通用对话助手，适合写作、头脑风暴、编程辅助与日常问答。免费版即可满足大多数日常场景，付费版提供更长的上下文窗口与优先访问。"
+  },
+  {
+    "slug": "deepseek",
+    "name": "DeepSeek",
+    "categorySlug": "chat",
+    "description": "高性价比中文大模型，代码与推理表现突出。",
+    "rating": 4.8,
+    "tags": [
+      "免费",
+      "推理"
+    ],
+    "phase": "mvp",
+    "content": "DeepSeek 以高性价比和中文理解能力著称，在代码生成、数学推理与长文本任务上表现稳定，适合职场办公与开发者的日常高频使用。"
+  },
+  {
+    "slug": "midjourney",
+    "name": "Midjourney",
+    "categorySlug": "image",
+    "description": "高质量 AI 绘画工具，适合概念设计与视觉创作。",
+    "rating": 4.7,
+    "tags": [
+      "付费",
+      "绘画"
+    ],
+    "phase": "mvp",
+    "content": "Midjourney 是主流 AI 绘画工具之一，以画面质感和风格控制见长，广泛应用于概念设计、插画与视觉素材创作。需付费订阅使用。"
+  },
+  {
+    "slug": "suno",
+    "name": "Suno",
+    "categorySlug": "audio",
+    "description": "输入歌词或风格即可生成完整歌曲。",
+    "rating": 4.6,
+    "tags": [
+      "音乐",
+      "付费"
+    ],
+    "phase": "mvp",
+    "content": "Suno 支持通过文字描述生成带人声的完整歌曲，可用于内容配乐、创意 Demo 与个人娱乐。免费额度有限，商用需注意授权条款。"
+  },
+  {
+    "slug": "gamma",
+    "name": "Gamma",
+    "categorySlug": "office",
+    "description": "AI 生成演示文稿与文档，快速排版。",
+    "rating": 4.5,
+    "tags": [
+      "PPT",
+      "办公"
+    ],
+    "phase": "mvp",
+    "content": "Gamma 帮助用户用自然语言快速生成演示文稿、文档和网页，内置自动排版与模板，适合需要快速产出汇报材料的职场场景。"
+  },
+  {
+    "slug": "cursor",
+    "name": "Cursor",
+    "categorySlug": "dev",
+    "description": "AI 原生代码编辑器，支持代码补全与重构。",
+    "rating": 4.8,
+    "tags": [
+      "编程",
+      "免费"
+    ],
+    "phase": "mvp",
+    "content": "Cursor 是 AI 原生的代码编辑器，支持跨文件理解、代码补全、解释与重构，能显著提升开发效率。基础版免费，高级模型用量按订阅计费。"
+  },
+  {
+    "slug": "mcp-hub",
+    "name": "MCP Hub",
+    "categorySlug": "agent",
+    "description": "发现并接入各类 MCP 服务的聚合入口。",
+    "rating": 4.4,
+    "tags": [
+      "MCP",
+      "Agent"
+    ],
+    "phase": "v1",
+    "content": "MCP Hub 聚合各类 Model Context Protocol 服务，帮助智能体连接外部工具、数据源与工作流，是构建 Agent 应用的基础设施之一。"
+  },
+  {
+    "slug": "perplexity",
+    "name": "Perplexity",
+    "categorySlug": "search",
+    "description": "AI 搜索引擎，答案带来源引用。",
+    "rating": 4.7,
+    "tags": [
+      "搜索",
+      "免费"
+    ],
+    "phase": "v1",
+    "content": "Perplexity 将搜索引擎与大模型结合，答案附带可核验的来源引用，适合需要快速核实信息的调研与问答场景。"
+  },
+  {
+    "slug": "claude",
+    "name": "Claude",
+    "categorySlug": "chat",
+    "description": "Anthropic开发的高性能对话助手，长文本与代码能力强",
+    "rating": 4.8,
+    "tags": [
+      "免费",
+      "对话助手",
+      "长文本"
+    ],
+    "phase": "v1",
+    "content": "Anthropic推出的对话式AI助手，以长上下文、代码生成和严谨推理著称。支持上传文档与图片，可处理长达数十万token的文本。提供免费与付费Pro版本，广泛应用于写作、编程和复杂分析场景。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "gemini",
+    "name": "Gemini",
+    "categorySlug": "chat",
+    "description": "谷歌多模态大模型助手，深度整合搜索与办公生态",
+    "rating": 4.7,
+    "tags": [
+      "免费",
+      "对话助手",
+      "多模态"
+    ],
+    "phase": "v1",
+    "content": "谷歌推出的多模态大模型助手，深度整合搜索、Gmail、Docs等谷歌生态。支持文字、图片、音频、视频输入，可联网获取实时信息。免费版功能强大，付费版解锁更大上下文与优先体验。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "grok",
+    "name": "Grok",
+    "categorySlug": "chat",
+    "description": "xAI推出的对话助手，实时联网且风格幽默",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "对话助手",
+      "实时联网"
+    ],
+    "phase": "v1",
+    "content": "马斯克旗下xAI推出的对话助手，以实时联网、幽默风格与较少的内容限制为特点。深度整合X（推特）平台，可获取实时资讯。提供免费与高级订阅版本。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "kimi",
+    "name": "Kimi",
+    "categorySlug": "chat",
+    "description": "月之暗面推出的长文本对话助手，联网搜索能力强",
+    "rating": 4.6,
+    "tags": [
+      "免费",
+      "对话助手",
+      "长文本"
+    ],
+    "phase": "v1",
+    "content": "月之暗面推出的国产大模型助手，以超长上下文和联网搜索能力见长。擅长阅读长文档、总结资料与多轮推理。提供网页、App与API多种使用方式，免费额度充足。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "doubao",
+    "name": "豆包",
+    "categorySlug": "chat",
+    "description": "字节跳动推出的全能AI助手，覆盖对话与多模态能力",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "对话助手",
+      "多模态"
+    ],
+    "phase": "v1",
+    "content": "字节跳动推出的AI助手，覆盖对话、写作、图像生成、语音等多项能力。与抖音生态联动，操作门槛低、上手快。免费为主，适合日常办公与内容创作。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "tongyi-qianwen",
+    "name": "通义千问",
+    "categorySlug": "chat",
+    "description": "阿里云千亿级大模型助手，与钉钉深度整合",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "对话助手",
+      "多模态"
+    ],
+    "phase": "v1",
+    "content": "阿里云推出的千亿级大模型助手，具备多轮对话、文档处理与代码能力。与钉钉、阿里云深度整合，支持联网搜索与插件。提供免费网页与API服务。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "wenxin-yiyan",
+    "name": "文心一言",
+    "categorySlug": "chat",
+    "description": "百度知识增强大模型助手，擅长中文理解与问答",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "对话助手",
+      "知识问答"
+    ],
+    "phase": "v1",
+    "content": "百度推出的知识增强大模型助手，结合百度搜索与知识图谱。擅长中文理解、写作与问答，支持文生图等能力。提供免费网页版与企业级服务。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "iflytek-spark",
+    "name": "讯飞星火",
+    "categorySlug": "chat",
+    "description": "科大讯飞认知大模型，中文语音与NLP能力突出",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "对话助手",
+      "语音交互"
+    ],
+    "phase": "v1",
+    "content": "科大讯飞推出的认知大模型，以中文语音和自然语言处理见长。支持多模态交互、代码与教育场景，提供丰富的免费额度。广泛应用于办公、教育等行业。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "zhipu-chatglm",
+    "name": "智谱清言",
+    "categorySlug": "chat",
+    "description": "智谱AI基于GLM模型的对话助手，支持智能体",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "对话助手",
+      "智能体"
+    ],
+    "phase": "v1",
+    "content": "智谱AI基于GLM大模型推出的对话助手，支持长文本、联网搜索与智能体。提供文字、图像等多种输入方式。免费开放使用，并提供开放平台API。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "tencent-yuanbao",
+    "name": "腾讯元宝",
+    "categorySlug": "chat",
+    "description": "腾讯混元大模型助手，深度连接微信生态",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "对话助手",
+      "文档解析"
+    ],
+    "phase": "v1",
+    "content": "腾讯推出的AI助手，整合混元大模型与腾讯内容生态。支持文档解析、联网搜索与图像识别。免费为主，深度连接微信生态，方便内容分享与使用。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "stable-diffusion",
+    "name": "Stable Diffusion",
+    "categorySlug": "image",
+    "description": "Stability AI开源的文生图模型，社区生态庞大",
+    "rating": 4.6,
+    "tags": [
+      "开源",
+      "图像生成",
+      "文生图"
+    ],
+    "phase": "v1",
+    "content": "Stability AI推出的开源图像生成模型，可通过文字描述生成高质量图片。支持本地部署与多种二次开发，社区生态庞大。免费开源，也可通过官方平台在线使用。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "ideogram",
+    "name": "Ideogram",
+    "categorySlug": "image",
+    "description": "擅长在图片中精准生成文字与标志的图像生成平台",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "图像生成",
+      "文字渲染"
+    ],
+    "phase": "v1",
+    "content": "以文字渲染能力见长的AI图像生成平台，擅长在图片中精准生成文字与标志。界面简洁，支持多种风格与比例。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "leonardo-ai",
+    "name": "Leonardo AI",
+    "categorySlug": "image",
+    "description": "面向游戏与设计场景的AI图像生成平台",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "图像生成",
+      "游戏设计"
+    ],
+    "phase": "v1",
+    "content": "面向游戏与设计场景的AI图像生成平台，提供丰富的风格模型与精细控制。支持角色一致性、素材生成等专业功能。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "recraft",
+    "name": "Recraft",
+    "categorySlug": "image",
+    "description": "专注于矢量图形与品牌设计的AI生成工具",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "图像生成",
+      "矢量设计"
+    ],
+    "phase": "v1",
+    "content": "专注于矢量图形与品牌设计的AI生成工具，可生成可编辑的矢量图、图标与插画。支持风格统一与版式设计。提供免费额度与专业订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "jimeng",
+    "name": "即梦",
+    "categorySlug": "image",
+    "description": "字节跳动AI创作平台，支持文生图与文生视频",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "图像生成",
+      "视频生成"
+    ],
+    "phase": "v1",
+    "content": "字节跳动推出的AI创作平台，支持文生图、文生视频与智能修图。与剪映、抖音生态打通，创作门槛低。提供免费额度，适合短视频与内容创作者。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "wenxin-yige",
+    "name": "文心一格",
+    "categorySlug": "image",
+    "description": "百度AI艺术创作平台，支持文生图与风格化创作",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "图像生成",
+      "艺术创作"
+    ],
+    "phase": "v1",
+    "content": "百度推出的AI艺术与创意辅助平台，支持文生图与风格化创作。可生成插画、海报等多种视觉内容。提供免费与付费创作方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "flux",
+    "name": "Flux",
+    "categorySlug": "image",
+    "description": "Black Forest Labs开源图像模型，画质与细节突出",
+    "rating": 4.5,
+    "tags": [
+      "开源",
+      "图像生成",
+      "文生图"
+    ],
+    "phase": "v1",
+    "content": "Black Forest Labs推出的新一代开源图像生成模型系列，画质与细节表现突出。支持本地部署与多种工具集成。模型开源，可通过官方平台或API使用。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "runway",
+    "name": "Runway",
+    "categorySlug": "video",
+    "description": "专业AI视频创作平台，提供生成与编辑特效工具",
+    "rating": 4.6,
+    "tags": [
+      "免费",
+      "视频生成",
+      "视频编辑"
+    ],
+    "phase": "v1",
+    "content": "专业的AI视频创作平台，提供文生视频、图生视频、视频编辑与特效工具。被广泛应用于影视、广告与创意行业。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "sora",
+    "name": "Sora",
+    "categorySlug": "video",
+    "description": "OpenAI推出的高保真AI视频生成模型",
+    "rating": 4.7,
+    "tags": [
+      "付费",
+      "视频生成",
+      "文生视频"
+    ],
+    "phase": "v1",
+    "content": "OpenAI推出的AI视频生成模型，可根据文字或图片生成高保真视频。支持多镜头、复杂场景与长时长生成。需订阅ChatGPT付费计划使用。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "pika",
+    "name": "Pika",
+    "categorySlug": "video",
+    "description": "轻量易用的AI视频生成平台，上手快",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "视频生成",
+      "视频特效"
+    ],
+    "phase": "v1",
+    "content": "轻量易用的AI视频生成平台，支持文生视频、图生视频与视频特效。操作简单、上手快，适合社交媒体内容创作。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "kling",
+    "name": "可灵",
+    "categorySlug": "video",
+    "description": "快手推出的AI视频生成平台，动态表现优秀",
+    "rating": 4.6,
+    "tags": [
+      "免费",
+      "视频生成",
+      "图生视频"
+    ],
+    "phase": "v1",
+    "content": "快手推出的AI视频生成平台，支持文生视频、图生视频与视频续写。生成质量与动态表现优秀，支持最高1080p。提供免费额度与会员方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "hailuo",
+    "name": "海螺AI",
+    "categorySlug": "video",
+    "description": "MiniMax推出的AI视频生成平台，生成速度快",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "视频生成",
+      "图生视频"
+    ],
+    "phase": "v1",
+    "content": "MiniMax推出的AI视频生成平台，支持文生视频与图生视频。生成速度快、动作流畅，支持多语言。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "vidu",
+    "name": "Vidu",
+    "categorySlug": "video",
+    "description": "生数科技AI视频生成平台，风格多样速度快",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "视频生成",
+      "参考生视频"
+    ],
+    "phase": "v1",
+    "content": "生数科技推出的AI视频生成平台，支持文生视频、图生视频与参考生视频。生成速度快、风格多样，支持动漫等风格。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "luma",
+    "name": "Luma",
+    "categorySlug": "video",
+    "description": "Dream Machine视频生成工具，擅长运镜与动态",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "视频生成",
+      "文生视频"
+    ],
+    "phase": "v1",
+    "content": "Luma AI推出的Dream Machine视频生成工具，支持文生视频与图生视频。擅长运镜与动态效果，画面质感出色。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "heygen",
+    "name": "HeyGen",
+    "categorySlug": "video",
+    "description": "AI数字人与视频翻译平台，多语言口型同步",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "数字人",
+      "视频翻译"
+    ],
+    "phase": "v1",
+    "content": "专注于数字人与视频翻译的平台，可生成逼真的AI数字人视频。支持多语言配音与口型同步，广泛应用于营销与培训。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "elevenlabs",
+    "name": "ElevenLabs",
+    "categorySlug": "audio",
+    "description": "领先的AI语音合成与语音克隆平台",
+    "rating": 4.7,
+    "tags": [
+      "免费",
+      "语音合成",
+      "语音克隆"
+    ],
+    "phase": "v1",
+    "content": "领先的AI语音合成平台，提供超逼真的文本转语音与语音克隆。支持多种语言与情感控制，广泛用于配音、有声书与视频旁白。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "udio",
+    "name": "Udio",
+    "categorySlug": "audio",
+    "description": "AI音乐生成平台，输入文字即可生成完整歌曲",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "音乐生成",
+      "作曲"
+    ],
+    "phase": "v1",
+    "content": "AI音乐生成平台，可输入文字描述或歌词生成完整歌曲。支持多种风格与人声，适合音乐创作灵感与配乐。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "iflyrec",
+    "name": "讯飞听见",
+    "categorySlug": "audio",
+    "description": "讯飞语音转文字与会议记录工具，准确率高",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "语音转写",
+      "会议记录"
+    ],
+    "phase": "v1",
+    "content": "科大讯飞推出的语音转文字与会议记录工具，支持实时转写、翻译与字幕。准确率高，支持多语种与专业术语。提供免费额度与付费服务。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "github-copilot",
+    "name": "GitHub Copilot",
+    "categorySlug": "dev",
+    "description": "GitHub与OpenAI联合推出的AI编程助手",
+    "rating": 4.7,
+    "tags": [
+      "付费",
+      "编程助手",
+      "代码补全"
+    ],
+    "phase": "v1",
+    "content": "GitHub与OpenAI联合推出的AI编程助手，可自动补全代码、生成函数与解释代码。深度集成主流编辑器，提升开发效率。付费订阅，对学生与开源维护者免费。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "codeium",
+    "name": "Codeium",
+    "categorySlug": "dev",
+    "description": "免费的AI代码补全与聊天助手",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "编程助手",
+      "代码补全"
+    ],
+    "phase": "v1",
+    "content": "免费的AI代码补全与聊天助手，支持多种编程语言与编辑器。提供代码生成、解释与重构能力。个人用户免费，企业提供付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "windsurf",
+    "name": "Windsurf",
+    "categorySlug": "dev",
+    "description": "Codeium推出的AI原生IDE，内置Cascade智能体",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "编程助手",
+      "AI IDE"
+    ],
+    "phase": "v1",
+    "content": "Codeium推出的AI原生IDE，内置Cascade智能体可理解整个代码库并执行任务。适合复杂项目的开发与重构。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "v0",
+    "name": "v0",
+    "categorySlug": "dev",
+    "description": "Vercel推出的AI界面生成工具，生成React代码",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "界面生成",
+      "前端开发"
+    ],
+    "phase": "v1",
+    "content": "Vercel推出的AI界面生成工具，输入文字即可生成React与Tailwind代码。支持实时预览与一键部署，适合快速搭建前端原型。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "bolt",
+    "name": "Bolt",
+    "categorySlug": "dev",
+    "description": "StackBlitz浏览器内全栈AI开发工具",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "全栈开发",
+      "代码生成"
+    ],
+    "phase": "v1",
+    "content": "StackBlitz推出的浏览器内全栈AI开发工具，可生成并运行前后端应用。支持一键部署，适合快速构建Web应用。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "lovable",
+    "name": "Lovable",
+    "categorySlug": "dev",
+    "description": "AI驱动的全栈应用生成平台，可生成可运行应用",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "应用生成",
+      "全栈开发"
+    ],
+    "phase": "v1",
+    "content": "AI驱动的全栈应用生成平台，输入需求即可生成可运行的Web应用。支持连接数据库与后端逻辑，适合产品原型与MVP开发。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "replit",
+    "name": "Replit",
+    "categorySlug": "dev",
+    "description": "浏览器云端开发环境，内置AI编程助手",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "在线开发",
+      "代码协作"
+    ],
+    "phase": "v1",
+    "content": "浏览器内的云端开发环境与AI编程助手，支持多人协作与一键部署。内置AI Agent可辅助编写与调试代码。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "notebooklm",
+    "name": "NotebookLM",
+    "categorySlug": "office",
+    "description": "谷歌AI研究助手，可生成文档摘要与音频概览",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "研究助手",
+      "文档总结"
+    ],
+    "phase": "v1",
+    "content": "谷歌推出的AI研究助手，可上传文档生成摘要、问答与播客式音频概览。擅长处理长文档与知识库问答。免费使用，适合学习与研究场景。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "tingwu",
+    "name": "通义听悟",
+    "categorySlug": "office",
+    "description": "阿里云AI会议转录与总结工具",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "会议转写",
+      "智能纪要"
+    ],
+    "phase": "v1",
+    "content": "阿里云推出的AI会议转录与总结工具，支持实时转写、字幕翻译与智能纪要。可提取待办与关键结论，提升会议效率。提供免费额度与付费服务。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "notion-ai",
+    "name": "Notion AI",
+    "categorySlug": "office",
+    "description": "集成在Notion中的AI助手，支持写作与总结",
+    "rating": 4.4,
+    "tags": [
+      "付费",
+      "办公助手",
+      "写作总结"
+    ],
+    "phase": "v1",
+    "content": "集成在Notion中的AI助手，支持写作、总结、翻译与内容生成。可直接在工作区中调用，提升知识管理与文档效率。需Notion账号，提供付费增值服务。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "wps-ai",
+    "name": "WPS AI",
+    "categorySlug": "office",
+    "description": "金山办公AI助手，集成于WPS文档与表格",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "办公助手",
+      "文档处理"
+    ],
+    "phase": "v1",
+    "content": "金山办公推出的AI办公助手，集成于WPS文档、表格与演示中。支持内容生成、改写、总结与数据处理。提升日常办公效率，提供免费与会员方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "otter-ai",
+    "name": "Otter.ai",
+    "categorySlug": "office",
+    "description": "AI会议记录与转写工具，支持自动摘要",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "会议转写",
+      "实时字幕"
+    ],
+    "phase": "v1",
+    "content": "AI会议记录与转写工具，支持实时转写、自动摘要与行动项提取。可集成Zoom、Teams等会议平台。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "canva",
+    "name": "Canva",
+    "categorySlug": "office",
+    "description": "在线设计平台，内置AI生成与魔法编辑能力",
+    "rating": 4.6,
+    "tags": [
+      "免费",
+      "设计工具",
+      "AI设计"
+    ],
+    "phase": "v1",
+    "content": "综合性在线设计平台，内置AI图像生成、文案与魔法编辑等能力。模板丰富、上手简单，适合非专业用户做海报与社交媒体设计。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "metaso",
+    "name": "秘塔AI搜索",
+    "categorySlug": "search",
+    "description": "无广告AI搜索引擎，直接给出结构化答案",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "AI搜索",
+      "学术搜索"
+    ],
+    "phase": "v1",
+    "content": "无广告的AI搜索引擎，直接给出结构化答案并标注来源。支持学术、文库等多场景搜索，适合研究与信息检索。免费使用。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "phind",
+    "name": "Phind",
+    "categorySlug": "search",
+    "description": "面向开发者的AI搜索引擎与编程问答助手",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "AI搜索",
+      "编程问答"
+    ],
+    "phase": "v1",
+    "content": "面向开发者的AI搜索引擎与编程问答助手，可联网检索并给出代码示例。擅长技术问题解答与代码调试。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "felo",
+    "name": "Felo",
+    "categorySlug": "search",
+    "description": "多语言AI搜索引擎，跨语言搜索并自动翻译",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "AI搜索",
+      "多语言"
+    ],
+    "phase": "v1",
+    "content": "多语言AI搜索引擎，可跨语言搜索全球信息并自动翻译整理。支持深度研究与可视化结果。提供免费额度与付费订阅。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "grammarly",
+    "name": "Grammarly",
+    "categorySlug": "content",
+    "description": "AI英文写作辅助，语法检查与风格优化",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "写作辅助",
+      "语法检查"
+    ],
+    "phase": "v1",
+    "content": "AI写作辅助工具，提供语法检查、拼写纠错与风格优化建议。支持浏览器、桌面与移动端，适合英文写作。提供免费额度与付费高级版。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "jasper",
+    "name": "Jasper",
+    "categorySlug": "content",
+    "description": "面向营销团队的AI内容创作平台",
+    "rating": 4.2,
+    "tags": [
+      "付费",
+      "内容营销",
+      "文案生成"
+    ],
+    "phase": "v1",
+    "content": "面向营销团队的AI内容创作平台，支持生成博客、广告文案与社媒内容。内置品牌声音与模板，提升内容生产效率。付费订阅，提供试用。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "xiezuocat",
+    "name": "秘塔写作猫",
+    "categorySlug": "content",
+    "description": "中文AI写作辅助平台，支持纠错改写与续写",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "写作辅助",
+      "文本润色"
+    ],
+    "phase": "v1",
+    "content": "中文AI写作辅助平台，提供文本纠错、改写、润色与AI续写。支持多种文体，适合学生、编辑与内容创作者。提供免费额度与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "coze",
+    "name": "Coze",
+    "categorySlug": "agent",
+    "description": "字节跳动AI智能体开发平台，零代码搭建机器人",
+    "rating": 4.4,
+    "tags": [
+      "免费",
+      "智能体",
+      "无代码"
+    ],
+    "phase": "v1",
+    "content": "字节跳动推出的AI智能体开发平台，可零代码搭建对话机器人并发布到多渠道。支持插件、知识库与工作流。免费使用，适合个人与企业。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "manus",
+    "name": "Manus",
+    "categorySlug": "agent",
+    "description": "通用型自主AI Agent，自主规划执行复杂任务",
+    "rating": 4.5,
+    "tags": [
+      "免费",
+      "智能体",
+      "任务自动化"
+    ],
+    "phase": "v1",
+    "content": "通用型自主AI Agent，可自主规划并执行复杂多步骤任务。能调用浏览器、代码等工具完成调研、分析等工作。提供免费与付费使用方式。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "dify",
+    "name": "Dify",
+    "categorySlug": "agent",
+    "description": "开源LLM应用开发平台，支持构建智能体与工作流",
+    "rating": 4.5,
+    "tags": [
+      "开源",
+      "智能体",
+      "应用开发"
+    ],
+    "phase": "v1",
+    "content": "开源的LLM应用开发平台，支持构建AI应用、智能体与工作流。可对接多种大模型，支持私有化部署。核心开源，提供云服务与付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "n8n",
+    "name": "n8n",
+    "categorySlug": "agent",
+    "description": "开源自动化工作流平台，可连接数百种应用与AI",
+    "rating": 4.4,
+    "tags": [
+      "开源",
+      "自动化",
+      "工作流"
+    ],
+    "phase": "v1",
+    "content": "开源的自动化工作流平台，可连接数百种应用与AI服务。支持可视化编排与代码节点，适合构建自动化流程。核心开源，提供云托管付费方案。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "pixai-art",
+    "name": "PixAI Art",
+    "categorySlug": "image",
+    "description": "在线AI艺术创作平台，擅长二次元插画与模型社区",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "图像生成",
+      "二次元"
+    ],
+    "phase": "v1",
+    "content": "PixAI Art 是一个在线 AI 艺术创作平台，支持通过文字提示词生成插画和二次元风格作品，并提供模型、作品展示及社区交流等功能，适合插画创作、灵感探索和图像生成。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "hunyuan-image",
+    "name": "腾讯混元生图",
+    "categorySlug": "image",
+    "description": "腾讯推出的AI图片生成平台，文字描述即可出图",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "图像生成",
+      "文生图"
+    ],
+    "phase": "v1",
+    "content": "腾讯混元生图是腾讯推出的 AI 图片生成平台，支持通过文字描述生成图片，帮助用户快速创作多种风格的视觉内容，适用于设计、营销、创意表达等场景。用户可在线体验智能图像生成服务。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "removal-ai",
+    "name": "Removal.AI",
+    "categorySlug": "image",
+    "description": "在线AI图片背景移除工具，几秒自动抠图",
+    "rating": 4.1,
+    "tags": [
+      "免费",
+      "抠图",
+      "背景移除"
+    ],
+    "phase": "v1",
+    "content": "Removal.AI 是一款在线 AI 图片背景移除工具，可在几秒内自动去除图像背景，适用于人像、商品图等场景。网站支持免费使用，无需注册，方便快速制作透明背景图片。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "piccopilot",
+    "name": "PicCopilot",
+    "categorySlug": "image",
+    "description": "面向电商卖家的AI内容生成工具，商品图转模特展示",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "电商",
+      "商品图生成"
+    ],
+    "phase": "v1",
+    "content": "PicCopilot 是一款面向电商卖家的 AI 内容生成工具，可将产品照片制作成模特展示图、营销视觉素材、短视频和社交媒体内容，帮助商家提升商品展示效率并获取自然流量。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "weshop",
+    "name": "WeShop唯象",
+    "categorySlug": "image",
+    "description": "面向电商场景的AI商拍工具，AI生图与AI模特试穿",
+    "rating": 4.3,
+    "tags": [
+      "付费",
+      "电商",
+      "AI商拍"
+    ],
+    "phase": "v1",
+    "content": "WeShop唯象是面向电商场景的AI商拍工具，提供AI生图、AI商品图、AI模特图和AI试穿等功能，帮助品牌方快速生成商品视觉素材，减少对模特、摄影、场地及后期制作的依赖。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "facechain",
+    "name": "FaceChain",
+    "categorySlug": "image",
+    "description": "魔搭社区开源AI人像生成项目，3张照片生成个人形象",
+    "rating": 4.2,
+    "tags": [
+      "开源",
+      "人像生成",
+      "ModelScope"
+    ],
+    "phase": "v1",
+    "content": "FaceChain 是魔搭社区（ModelScope）上的开源 AI 人像生成项目，支持通过 3 张照片训练或生成个性化人物形象，适用于个人写真、头像等视觉内容创作。页面提供项目模型与在线体验入口。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "gaoding-ai",
+    "name": "稿定AI",
+    "categorySlug": "image",
+    "description": "稿定推出的AI图像创作与智能设计工具，支持文生图与扩图",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "图像生成",
+      "AI设计"
+    ],
+    "phase": "v1",
+    "content": "稿定AI是稿定推出的 AI 图像创作与智能设计工具，支持 AI 对话、文生图、图生图、AI 扩图及图片清晰度增强等功能。平台提供创意画布、风格选择、参考图控制和比例调节，适用于图片生成与编辑。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "bgremover",
+    "name": "BGremover",
+    "categorySlug": "image",
+    "description": "VanceAI提供的在线图片背景移除工具，自动识别主体",
+    "rating": 4,
+    "tags": [
+      "免费",
+      "抠图",
+      "背景移除"
+    ],
+    "phase": "v1",
+    "content": "BGremover 是 VanceAI 提供的在线图片背景移除工具，支持自动识别人像、商品、动物等主体并快速去除背景，生成透明背景图片。无需安装专业软件，适用于电商商品图、证件照、社交媒体素材。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "upscalepics",
+    "name": "Upscalepics",
+    "categorySlug": "image",
+    "description": "在线图片放大与增强工具，提升分辨率与清晰度",
+    "rating": 4,
+    "tags": [
+      "免费",
+      "图像增强",
+      "图片放大"
+    ],
+    "phase": "v1",
+    "content": "Upscalepics 是一款在线图片放大与增强工具，支持提升图像分辨率、改善清晰度和细节表现，适用于照片、插画及其他数字图片处理。用户可通过网页上传图片进行快速处理。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "cnki-ai",
+    "name": "CNKI AI学术研究助手",
+    "categorySlug": "search",
+    "description": "中国知网推出的智能知识服务平台，文献解读与学术问答",
+    "rating": 4.4,
+    "tags": [
+      "付费",
+      "学术搜索",
+      "文献解读"
+    ],
+    "phase": "v1",
+    "content": "CNKI AI学术研究助手是中国知网推出的智能知识服务平台，面向学术研究、科技创新与知识学习场景，提供增强检索、知识问答、智能研读、文献解读、专题分析、文献推荐及辅助写作等功能。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "sensechat",
+    "name": "商汤商量SenseChat",
+    "categorySlug": "chat",
+    "description": "商汤科技推出的AI聊天与问答助手，擅长财经与政策解读",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "对话助手",
+      "财经分析"
+    ],
+    "phase": "v1",
+    "content": "商汤商量（SenseChat）是商汤科技推出的 AI 聊天与问答助手，支持财经资讯总结、政策解读、财报分析等内容处理，并可辅助文案创作、图片生成和代码编写，满足信息整理与日常对话需求。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "nano-ai",
+    "name": "纳米AI",
+    "categorySlug": "search",
+    "description": "集成多家大模型的智能搜索与内容生成平台，支持多智能体协作",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "AI搜索",
+      "多智能体"
+    ],
+    "phase": "v1",
+    "content": "纳米AI是一个集成多家大模型的智能搜索与内容生成平台，支持通过自然语言生成视频、报告和PPT，并提供多智能体协作、MCP工具箱、深度推理及个人知识库管理等功能。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "cherry-studio",
+    "name": "Cherry Studio",
+    "categorySlug": "dev",
+    "description": "开源免费的AI桌面客户端，兼容主流大模型与本地模型",
+    "rating": 4.5,
+    "tags": [
+      "开源",
+      "AI客户端",
+      "多模型"
+    ],
+    "phase": "v1",
+    "content": "Cherry Studio 是一款开源免费的 AI 桌面客户端，支持 Windows、macOS 和 Linux。平台兼容 ChatGPT、Claude、Gemini、DeepSeek、Ollama、LM Studio 等主流大模型，提供 AI 对话、AI Agent、知识库、AI 绘图、翻译等功能，数据本地存储。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "liner",
+    "name": "Liner",
+    "categorySlug": "office",
+    "description": "面向学习与研究的AI工具，网页文档搜索标注与AI问答",
+    "rating": 4.2,
+    "tags": [
+      "免费",
+      "研究助手",
+      "网页标注"
+    ],
+    "phase": "v1",
+    "content": "Liner 是一款面向学习、研究与信息整理的 AI 工具，支持网页和文档内容的搜索、阅读、标注与收藏，并提供 AI 问答和信息总结功能，帮助用户快速获取、整理和引用网络资料。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "audiomyst",
+    "name": "音秘AudioMyst",
+    "categorySlug": "audio",
+    "description": "免费AI播客创作工具，文本转超拟人对话音频",
+    "rating": 4.1,
+    "tags": [
+      "免费",
+      "AI配音",
+      "播客生成"
+    ],
+    "phase": "v1",
+    "content": "音秘（AudioMyst）是一款免费的 AI 播客创作工具，支持将多格式文本转换为超拟人对话音频，自动生成播客脚本，并提供多主播配音、音色克隆和背景音乐添加功能，适用于播客制作与文本转语音。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "moises",
+    "name": "Moises",
+    "categorySlug": "audio",
+    "description": "AI音乐练习与音频处理应用，分离人声与乐器音轨",
+    "rating": 4.3,
+    "tags": [
+      "免费",
+      "音频分离",
+      "音乐处理"
+    ],
+    "phase": "v1",
+    "content": "Moises 是一款基于人工智能的音乐练习与音频处理应用，支持去除人声、分离鼓、贝斯、吉他等乐器音轨，调整歌曲速度与调性，并可用于制作个人音轨和重新混音，适合音乐学习与创作。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "skymusic",
+    "name": "天工SkyMusic",
+    "categorySlug": "audio",
+    "description": "天工旗下AI音乐创作工具，自然语言生成歌曲",
+    "rating": 4.1,
+    "tags": [
+      "免费",
+      "音乐生成",
+      "作曲"
+    ],
+    "phase": "v1",
+    "content": "天工 SkyMusic 是天工旗下的 AI 音乐创作工具，支持通过自然语言生成歌曲与音乐作品，帮助用户快速完成歌词、旋律及音乐风格创作。适用于音乐灵感探索、内容创作与短视频配乐。",
+    "isFree": true,
+    "requiresLogin": true
+  },
+  {
+    "slug": "musichero",
+    "name": "MusicHero",
+    "categorySlug": "audio",
+    "description": "在线AI音乐创作平台，文本生成免版税音乐",
+    "rating": 4,
+    "tags": [
+      "免费",
+      "音乐生成",
+      "免版税"
+    ],
+    "phase": "v1",
+    "content": "MusicHero 是一款在线 AI 音乐创作平台，支持通过文本生成音乐，无需注册即可免费试用。平台提供免版税音乐制作、人声去除、AI 歌词生成及 MP4 音乐视频制作等功能，适合内容创作者与个人音乐创作。",
+    "isFree": true,
+    "requiresLogin": false
+  },
+  {
+    "slug": "bimoai",
+    "name": "笔墨AI",
+    "categorySlug": "image",
+    "description": "一站式AIGC互动营销SaaS平台，AI绘画与实时画布",
+    "rating": 4,
+    "tags": [
+      "付费",
+      "AIGC",
+      "营销"
+    ],
+    "phase": "v1",
+    "content": "笔墨AI（BIMOAI）是万笔千墨科技推出的一站式 AIGC 互动营销 SaaS 工具与解决方案平台，提供 AI 绘画、文生图、图生图、AI 写真、实时画布及多样化 AI 创作玩法，助力企业提升内容生产效率和数字化营销能力。",
+    "isFree": false,
+    "requiresLogin": true
+  },
+  {
+    "slug": "yuanxiang-xchat",
+    "name": "元象XChat",
+    "categorySlug": "chat",
+    "description": "元象XVERSE推出的AI智能问答服务，对话式交互",
+    "rating": 4,
+    "tags": [
+      "免费",
+      "对话助手",
+      "智能问答"
+    ],
+    "phase": "v1",
+    "content": "元象XChat是元象XVERSE推出的AI智能问答服务，依托大模型、自然语言处理和智能体等技术，为用户提供便捷的对话式交互体验。元象XVERSE专注于AI与3D技术，涵盖元宇宙、数字人及AIGC等方向。",
+    "isFree": true,
+    "requiresLogin": true
+  }
+]

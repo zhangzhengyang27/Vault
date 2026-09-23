@@ -1,0 +1,153 @@
+[
+  {
+    "slug": "ai-for-everyone",
+    "title": "吴恩达《AI For Everyone》",
+    "type": "课程",
+    "description": "面向非技术人群的 AI 通识课，中文有字幕。",
+    "phase": "v1",
+    "sourceUrl": "https://www.coursera.org/learn/ai-for-everyone"
+  },
+  {
+    "slug": "prompt-engineering-guide",
+    "title": "Prompt Engineering Guide",
+    "type": "文档",
+    "description": "系统性的提示词工程在线指南。",
+    "phase": "v1",
+    "sourceUrl": "https://www.promptingguide.ai"
+  },
+  {
+    "slug": "huggingface-tutorial",
+    "title": "Hugging Face 教程",
+    "type": "文档",
+    "description": "模型微调、推理与部署的实战教程合集。",
+    "phase": "v1",
+    "sourceUrl": "https://huggingface.co/docs"
+  },
+  {
+    "slug": "ai-pm-camp",
+    "title": "AI 产品经理训练营",
+    "type": "训练营",
+    "description": "从需求到落地的 AI 产品全流程实战。",
+    "phase": "v2"
+  },
+  {
+    "slug": "andrew-ng-ml-specialization",
+    "title": "机器学习专项课程（吴恩达）",
+    "type": "课程",
+    "description": "斯坦福吴恩达主讲，含监督学习、无监督学习等三门核心课程。",
+    "phase": "v1",
+    "sourceUrl": "https://www.coursera.org/specializations/machine-learning-introduction"
+  },
+  {
+    "slug": "deeplearning-ai-specialization",
+    "title": "DeepLearning.AI 深度学习专项课程",
+    "type": "课程",
+    "description": "吴恩达团队的深度学习五门课，覆盖神经网络、CNN、RNN 与序列模型。",
+    "phase": "v1",
+    "sourceUrl": "https://www.coursera.org/specializations/deep-learning"
+  },
+  {
+    "slug": "fastai-practical-deep-learning",
+    "title": "fast.ai 实用深度学习课程",
+    "type": "课程",
+    "description": "面向程序员的免费深度学习实战课，用 PyTorch 快速构建模型。",
+    "phase": "v1",
+    "sourceUrl": "https://course.fast.ai"
+  },
+  {
+    "slug": "dive-into-deep-learning",
+    "title": "动手学深度学习（Dive into Deep Learning）",
+    "type": "书籍",
+    "description": "李沐等编写的交互式深度学习教材，代码、数学与可运行示例结合。",
+    "phase": "v1",
+    "sourceUrl": "https://zh.d2l.ai"
+  },
+  {
+    "slug": "hugging-face-platform",
+    "title": "Hugging Face",
+    "type": "平台",
+    "description": "全球最大开源模型与数据集社区，提供模型托管、推理与协作工具。",
+    "phase": "v1",
+    "sourceUrl": "https://huggingface.co"
+  },
+  {
+    "slug": "hugging-face-learn",
+    "title": "Hugging Face Learn 官方课程",
+    "type": "教程",
+    "description": "官方免费课程，涵盖 NLP、Transformers、扩散模型与强化学习等。",
+    "phase": "v1",
+    "sourceUrl": "https://huggingface.co/learn"
+  },
+  {
+    "slug": "pytorch-tutorials",
+    "title": "PyTorch 官方教程",
+    "type": "文档",
+    "description": "PyTorch 官方入门到进阶教程，含 60 分钟快速上手与实战示例。",
+    "phase": "v1",
+    "sourceUrl": "https://pytorch.org/tutorials"
+  },
+  {
+    "slug": "tensorflow-tutorials",
+    "title": "TensorFlow 官方教程",
+    "type": "文档",
+    "description": "Google 出品，覆盖 Keras、计算机视觉、NLP 等完整中文教程。",
+    "phase": "v1",
+    "sourceUrl": "https://www.tensorflow.org/tutorials"
+  },
+  {
+    "slug": "google-ml-crash-course",
+    "title": "Google 机器学习速成课程",
+    "type": "课程",
+    "description": "Google 提供的免费入门课，以视频与练习讲解 ML 核心概念。",
+    "phase": "v1",
+    "sourceUrl": "https://developers.google.com/machine-learning/crash-course"
+  },
+  {
+    "slug": "kaggle-learn",
+    "title": "Kaggle Learn",
+    "type": "平台",
+    "description": "Kaggle 官方的免费微课程平台，提供 Python、ML、深度学习实战练习。",
+    "phase": "v1",
+    "sourceUrl": "https://www.kaggle.com/learn"
+  },
+  {
+    "slug": "stanford-cs231n",
+    "title": "Stanford CS231n 卷积神经网络课程",
+    "type": "课程",
+    "description": "斯坦福经典计算机视觉深度学习课，含讲义、作业与视频。",
+    "phase": "v1",
+    "sourceUrl": "https://cs231n.stanford.edu"
+  },
+  {
+    "slug": "mit-6s191",
+    "title": "MIT 6.S191 深度学习导论",
+    "type": "课程",
+    "description": "MIT 公开的深度学习入门课，每年更新，含视频与代码实验。",
+    "phase": "v1",
+    "sourceUrl": "https://introtodeeplearning.com"
+  },
+  {
+    "slug": "scikit-learn-docs",
+    "title": "scikit-learn 官方文档",
+    "type": "文档",
+    "description": "经典机器学习库的完整文档与用户指南，含大量代码示例。",
+    "phase": "v1",
+    "sourceUrl": "https://scikit-learn.org/stable/"
+  },
+  {
+    "slug": "microsoft-learn-ai",
+    "title": "Microsoft Learn AI 学习路径",
+    "type": "课程",
+    "description": "微软官方 AI 学习中心，覆盖 Azure AI 与生成式 AI 的免费路径。",
+    "phase": "v1",
+    "sourceUrl": "https://learn.microsoft.com/zh-cn/training/browse/?products=azure-ai-services"
+  },
+  {
+    "slug": "openai-platform-docs",
+    "title": "OpenAI 开发者文档",
+    "type": "文档",
+    "description": "OpenAI 官方 API 与模型文档，含提示词、函数调用等指南。",
+    "phase": "v1",
+    "sourceUrl": "https://platform.openai.com/docs"
+  }
+]

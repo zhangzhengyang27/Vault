@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>暑期旅行准备 · 现在完成时 already / yet 语法闯关</title>
+<style>
+  :root{
+    --bg1:#aee9ff; --bg2:#fff3c4; --bg3:#ffd6e8;
+    --ink:#27384a; --muted:#5b7088;
+    --card:#ffffff; --line:#e3ecf5;
+    --c1:#ff7a59; --c2:#1fb6b6; --c3:#ffb43d; --c4:#7c5cff; --c5:#ff5fa2;
+    --ok:#1dd1a1; --no:#ff5b5b;
+    --shadow:0 10px 30px rgba(40,70,110,.18);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+    color:var(--ink);
+    background:linear-gradient(135deg,var(--bg1),var(--bg2) 55%,var(--bg3));
+    min-height:100vh;
+    font-size:24px;
+    line-height:1.6;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:24px 20px 60px;}
+
+  header.top{
+    text-align:center;margin-bottom:18px;
+  }
+  header.top h1{
+    font-size:42px;margin:0 0 6px;
+    color:#fff;
+    text-shadow:0 3px 0 var(--c1),0 6px 14px rgba(0,0,0,.15);
+    letter-spacing:1px;
+  }
+  header.top p{font-size:22px;color:var(--muted);margin:0;}
+
+  /* 关卡进度条 */
+  .levels{display:flex;gap:14px;justify-content:center;margin:22px 0 26px;flex-wrap:wrap;}
+  .lv{
+    flex:1 1 200px;max-width:300px;
+    background:var(--card);border-radius:18px;padding:14px 16px;
+    box-shadow:var(--shadow);border:3px solid var(--line);
+    text-align:center;position:relative;transition:.25s;
+  }
+  .lv .num{
+    width:46px;height:46px;border-radius:50%;margin:0 auto 8px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;font-weight:800;color:#fff;background:#c7d3e0;
+  }
+  .lv .tt{font-size:20px;font-weight:700;}
+  .lv .st{font-size:15px;color:var(--muted);margin-top:2px;}
+  .lv.locked{opacity:.55;filter:grayscale(.4);}
+  .lv.active{border-color:var(--c4);transform:translateY(-4px);}
+  .lv.done .num{background:var(--ok);}
+  .lv.active .num{background:var(--c4);}
+
+  .panel{
+    background:var(--card);border-radius:22px;padding:28px 26px;
+    box-shadow:var(--shadow);min-height:340px;
+  }
+  .panel h2{font-size:30px;margin:0 0 4px;color:var(--c4);}
+  .panel .sub{font-size:20px;color:var(--muted);margin:0 0 20px;}
+
+  .qno{display:inline-block;background:var(--c3);color:#5a3b00;font-weight:800;
+    padding:4px 14px;border-radius:999px;font-size:18px;margin-bottom:14px;}
+
+  .zh{font-size:30px;font-weight:800;text-align:center;margin:10px 0 22px;color:var(--ink);}
+
+  /* 第1关 */
+  .answer-row{
+    min-height:74px;border:3px dashed var(--c2);border-radius:16px;
+    padding:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+    background:#f3fffb;margin-bottom:18px;
+  }
+  .answer-row .ph{color:#9bb6ad;font-size:18px;margin:auto;}
+  .pool{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;}
+  .blk{
+    background:linear-gradient(180deg,#fff,#eef5ff);
+    border:3px solid var(--c4);color:var(--c4);
+    font-weight:800;font-size:26px;padding:14px 20px;border-radius:14px;
+    cursor:pointer;user-select:none;transition:.15s;box-shadow:0 4px 0 rgba(124,92,255,.25);
+  }
+  .blk:hover{transform:translateY(-3px);}
+  .blk.placed{background:linear-gradient(180deg,#d8fff0,#b6ffe6);border-color:var(--c2);color:var(--c2);}
+  .blk.locked{cursor:default;opacity:.85;}
+
+  .btn{
+    border:none;cursor:pointer;font-weight:800;font-size:24px;
+    padding:14px 26px;border-radius:14px;color:#fff;
+    background:var(--c1);box-shadow:0 5px 0 #d8553a;transition:.12s;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #d8553a;}
+  .btn.ghost{background:#eef2f7;color:var(--muted);box-shadow:0 5px 0 #cdd6e1;}
+  .btn.teal{background:var(--c2);box-shadow:0 5px 0 #138a8a;}
+  .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none;}
+  .actions{display:flex;gap:14px;justify-content:center;margin-top:20px;flex-wrap:wrap;}
+
+  .feedback{text-align:center;font-size:26px;font-weight:800;margin-top:16px;min-height:34px;}
+  .feedback.ok{color:var(--ok);}
+  .feedback.no{color:var(--no);}
+
+  /* 第2关 */
+  .sentence{
+    background:#f7fbff;border:2px solid var(--line);border-radius:16px;
+    padding:16px 18px;margin-bottom:16px;
+  }
+  .sentence .en{font-size:26px;font-weight:700;margin-bottom:12px;}
+  .sentence .en .blank{display:inline-block;min-width:120px;border-bottom:4px solid var(--c4);
+    text-align:center;color:var(--c4);padding:0 8px;}
+  .pick{display:flex;gap:14px;}
+  .pick .opt{
+    flex:1;cursor:pointer;font-weight:800;font-size:24px;padding:12px;border-radius:12px;
+    border:3px solid var(--c2);color:var(--c2);background:#fff;text-align:center;transition:.12s;
+  }
+  .pick .opt:hover{background:#eafff8;}
+  .pick .opt.sel-ok{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .pick .opt.sel-no{background:var(--no);color:#fff;border-color:var(--no);}
+  .pick .opt:disabled{cursor:default;}
+  .s-fb{font-size:18px;font-weight:700;margin-top:8px;min-height:22px;}
+  .s-fb.ok{color:var(--ok);} .s-fb.no{color:var(--no);}
+
+  /* 第3关 */
+  .passage{font-size:25px;line-height:2.0;background:#fffdf3;border:2px solid var(--line);
+    border-radius:16px;padding:20px 22px;margin-bottom:18px;}
+  .passage .bgrp{display:inline-flex;gap:8px;vertical-align:middle;margin:0 4px;}
+  .passage .bopt{
+    cursor:pointer;font-weight:800;font-size:20px;padding:4px 12px;border-radius:10px;
+    border:2px solid var(--c5);color:var(--c5);background:#fff;
+  }
+  .passage .bopt.sel-ok{background:var(--ok);color:#fff;border-color:var(--ok);}
+  .passage .bopt.sel-no{background:var(--no);color:#fff;border-color:var(--no);}
+  .score{text-align:center;font-size:30px;font-weight:800;color:var(--c4);margin-top:8px;}
+
+  /* 过关 / 通关 弹层 */
+  .overlay{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(20,30,45,.55);z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .modal{
+    background:#fff;border-radius:26px;padding:40px 46px;text-align:center;max-width:560px;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);animation:pop .35s ease;
+  }
+  @keyframes pop{from{transform:scale(.7);opacity:0;}to{transform:scale(1);opacity:1;}}
+  .modal .big{font-size:64px;margin-bottom:6px;}
+  .modal h3{font-size:38px;margin:6px 0 10px;color:var(--c4);}
+  .modal p{font-size:22px;color:var(--muted);margin:0 0 22px;}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:60;}
+
+  .restart{margin-top:14px;}
+  footer{text-align:center;color:var(--muted);font-size:16px;margin-top:26px;}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="wrap">
+  <header class="top">
+    <h1>🧳 暑期旅行准备 · 语法闯关</h1>
+    <p>现在完成时：already / yet 大挑战</p>
+  </header>
+
+  <div class="levels" id="levels">
+    <div class="lv active" data-lv="1"><div class="num">1</div><div class="tt">词卡拼装</div><div class="st">顺序规则</div></div>
+    <div class="lv locked" data-lv="2"><div class="num">2</div><div class="tt">选词填空</div><div class="st">句式规则</div></div>
+    <div class="lv locked" data-lv="3"><div class="num">3</div><div class="tt">综合填空</div><div class="st">完整运用</div></div>
+  </div>
+
+  <div class="panel" id="panel"></div>
+  <footer>🌞 正洋大人的初二英语课堂互动 · 双击 HTML 即可使用</footer>
+</div>
+
+<!-- 过关弹层 -->
+<div class="overlay" id="ovClear">
+  <div class="modal">
+    <div class="big">🌟</div>
+    <h3>恭喜过关！</h3>
+    <p id="ovClearText">你完成了本关挑战，下一关已解锁！</p>
+    <button class="btn teal" id="ovClearBtn">继续下一关 ➡️</button>
+  </div>
+</div>
+
+<!-- 通关弹层 -->
+<div class="overlay" id="ovWin">
+  <div class="modal">
+    <div class="big">🎉</div>
+    <h3>你是旅行准备小达人！</h3>
+    <p>三关全部通关，already / yet 已经牢牢掌握啦！</p>
+    <button class="btn" id="ovWinBtn">再玩一次 🔁</button>
+  </div>
+</div>
+
+<script>
+/* ---------- 工具函数 ---------- */
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function eqArr(a,b){return a.length===b.length&&a.every((x,i)=>x===b[i]);}
+
+/* ---------- 关卡数据 ---------- */
+const level1=[
+  {zh:"我已经打包好了。", words:["I","have","already","packed"], answer:["I","have","already","packed"]},
+  {zh:"她已经买好了票。", words:["She","has","already","bought","the","ticket"], answer:["She","has","already","bought","the","ticket"]},
+  {zh:"我们已经订了酒店。", words:["We","have","already","booked","the","hotel"], answer:["We","have","already","booked","the","hotel"]},
+  {zh:"他已经读过了这本书。", words:["He","has","already","read","this","book"], answer:["He","has","already","read","this","book"]},
+  {zh:"他们已经到达机场了。", words:["They","have","already","arrived","at","the","airport"], answer:["They","have","already","arrived","at","the","airport"]}
+];
+
+const level2=[
+  {en:"I have ______ packed my suitcase.", ans:"already"},
+  {en:"Has she bought the tickets ______?", ans:"yet"},
+  {en:"We haven't left ______.", ans:"yet"},
+  {en:"He has ______ finished his homework.", ans:"already"},
+  {en:"Have they arrived at the airport ______?", ans:"yet"},
+  {en:"Mom has ______ made lunch for us.", ans:"already"}
+];
+
+const level3=[
+  {t:"Tom is getting ready for his summer trip. He has "},
+  {blank:"already"},
+  {t:" packed his clothes. His sister has "},
+  {blank:"already"},
+  {t:" bought the tickets. But Dad hasn't booked the hotel "},
+  {blank:"yet"},
+  {t:". Have they got the passports "},
+  {blank:"yet"},
+  {t:"? Mom has "},
+  {blank:"already"},
+  {t:" prepared some snacks. Now they are ready to go!"}
+];
+
+/* ---------- 状态 ---------- */
+let unlocked=1, current=1;
+const panel=document.getElementById('panel');
+
+/* ---------- 关卡导航 ---------- */
+function refreshLevels(){
+  document.querySelectorAll('.lv').forEach(el=>{
+    const n=+el.dataset.lv;
+    el.classList.remove('active','locked','done');
+    if(n<current) el.classList.add('done');
+    else if(n===current) el.classList.add('active');
+    else el.classList.add('locked');
+  });
+}
+
+/* ============ 第1关 ============ */
+let l1Idx=0, l1Pool=[], l1Answer=[], l1Locked=false;
+function showLevel1(){
+  l1Idx=0; l1Locked=false;
+  renderL1();
+}
+function renderL1(){
+  const q=level1[l1Idx];
+  if(l1Pool.length===0) l1Pool=shuffle(q.words.map((w,i)=>({id:i,word:w})));
+  if(eqArr(l1Pool.map(x=>x.word),q.answer)) l1Pool=shuffle(l1Pool);
+  let poolHtml=l1Pool.map(b=>`<div class="blk" data-id="${b.id}">${b.word}</div>`).join('');
+  let ansHtml=l1Answer.length? l1Answer.map(b=>`<div class="blk placed" data-id="${b.id}">${b.word}</div>`).join('')
+                               : `<span class="ph">👇 点击下方单词，按顺序组成句子</span>`;
+  panel.innerHTML=`
+    <h2>第 1 关 · 词卡拼装</h2>
+    <p class="sub">看中文，按正确顺序点击英文单词块，组成现在完成时的句子。</p>
+    <div class="qno">第 ${l1Idx+1} / ${level1.length} 题</div>
+    <div class="zh">${q.zh}</div>
+    <div class="answer-row" id="ansRow">${ansHtml}</div>
+    <div class="pool" id="pool">${poolHtml}</div>
+    <div class="feedback" id="fb1"></div>
+    <div class="actions">
+      <button class="btn ghost" id="reset1">🔄 重置</button>
+      <button class="btn teal" id="submit1">✅ 提交答案</button>
+    </div>`;
+  bindL1();
+}
+function bindL1(){
+  document.getElementById('pool').querySelectorAll('.blk').forEach(el=>{
+    el.onclick=()=>{
+      if(l1Locked) return;
+      const id=+el.dataset.id;
+      const i=l1Pool.findIndex(b=>b.id===id);
+      if(i>-1){ l1Answer.push(l1Pool.splice(i,1)[0]); renderL1(); }
+    };
+  });
+  document.getElementById('ansRow').querySelectorAll('.blk').forEach(el=>{
+    el.onclick=()=>{
+      if(l1Locked) return;
+      const id=+el.dataset.id;
+      const i=l1Answer.findIndex(b=>b.id===id);
+      if(i>-1){ l1Pool.push(l1Answer.splice(i,1)[0]); renderL1(); }
+    };
+  });
+  document.getElementById('reset1').onclick=()=>{ l1Answer=[]; l1Pool=shuffle(level1[l1Idx].words.map((w,i)=>({id:i,word:w}))); renderL1(); };
+  document.getElementById('submit1').onclick=()=>{
+    if(l1Locked) return;
+    const q=level1[l1Idx];
+    const fb=document.getElementById('fb1');
+    if(eqArr(l1Answer.map(x=>x.word),q.answer)){
+      l1Locked=true;
+      fb.className='feedback ok'; fb.textContent='✅ 太棒了，句子正确！';
+      document.getElementById('pool').querySelectorAll('.blk').forEach(b=>b.classList.add('locked'));
+      const last=l1Idx===level1.length-1;
+      const wrap=document.createElement('div');
+      wrap.className='actions';
+      wrap.innerHTML=`<button class="btn" id="next1">${last?'🌟 完成第 1 关':'下一题 ➡️'}</button>`;
+      document.getElementById('submit1').style.display='none';
+      document.getElementById('reset1').style.display='none';
+      panel.appendChild(wrap);
+      document.getElementById('next1').onclick=()=>{
+        if(last){ completeLevel(1); }
+        else { l1Idx++; l1Pool=[]; l1Answer=[]; l1Locked=false; renderL1(); }
+      };
+    } else {
+      fb.className='feedback no'; fb.textContent='❌ 顺序还不对，再试试看～';
+    }
+  };
+}
+
+/* ============ 第2关 ============ */
+let l2Choice=[];
+function showLevel2(){
+  l2Choice=new Array(level2.length).fill(null);
+  renderL2();
+}
+function renderL2(){
+  let html=`<h2>第 2 关 · 选词填空</h2>
+    <p class="sub">读句子，判断空白处该用 <b>already</b>（已经，多用于肯定句）还是 <b>yet</b>（还/尚未，多用于否定句、疑问句，常放句末）。点击即时判分。</p>`;
+  level2.forEach((q,i)=>{
+    const c=l2Choice[i];
+    const mk=(val)=>{
+      let cls='opt';
+      if(c){ cls+= (c===q.ans?' sel-ok':' sel-no'); }
+      return `<div class="${cls}" data-i="${i}" data-v="${val}">${val}</div>`;
+    };
+    let fb='';
+    if(c){ fb=`<div class="s-fb ${c===q.ans?'ok':'no'}">${c===q.ans?'✓ 正确！':'✗ 正确答案：'+q.ans}</div>`; }
+    html+=`<div class="sentence">
+      <div class="en">${q.en.replace('______','<span class="blank">______</span>')}</div>
+      <div class="pick">${mk('already')}${mk('yet')}</div>
+      ${fb}
+    </div>`;
+  });
+  const allDone=l2Choice.every(x=>x!==null);
+  html+=`<div class="actions">${allDone?'<button class="btn teal" id="done2">🌟 过关</button>':'<span class="feedback">完成全部 6 题即可过关（已答 '+l2Choice.filter(x=>x!==null).length+'/6）</span>'}</div>`;
+  panel.innerHTML=html;
+  panel.querySelectorAll('.opt').forEach(el=>{
+    el.onclick=()=>{
+      const i=+el.dataset.i, v=el.dataset.v;
+      if(l2Choice[i]!==null) return;
+      l2Choice[i]=v;
+      renderL2();
+    };
+  });
+  const d=document.getElementById('done2');
+  if(d) d.onclick=()=>completeLevel(2);
+}
+
+/* ============ 第3关 ============ */
+let l3Choice=[];
+function showLevel3(){
+  const blanks=level3.filter(s=>s.blank).length;
+  l3Choice=new Array(blanks).fill(null);
+  renderL3();
+}
+function renderL3(){
+  let bi=0, body='';
+  level3.forEach(seg=>{
+    if(seg.blank){
+      const idx=bi, c=l3Choice[idx]; bi++;
+      const opt=(v)=>{
+        let cls='bopt';
+        if(c){ cls+=(c===seg.blank?' sel-ok':' sel-no'); }
+        return `<span class="${cls}" data-i="${idx}" data-v="${v}">${v}</span>`;
+      };
+      body+=`<span class="bgrp">${opt('already')}${opt('yet')}</span>`;
+    } else { body+=seg.t; }
+  });
+  let html=`<h2>第 3 关 · 综合填空</h2>
+    <p class="sub">读短文，在每个空白处选择 <b>already</b> 或 <b>yet</b>。全部填完自动批改给分。</p>
+    <div class="passage">${body}</div>
+    <div class="score" id="score3"></div>
+    <div class="actions" id="act3"></div>`;
+  panel.innerHTML=html;
+  panel.querySelectorAll('.bopt').forEach(el=>{
+    el.onclick=()=>{
+      const i=+el.dataset.i, v=el.dataset.v;
+      l3Choice[i]=v;
+      renderL3();
+      checkL3();
+    };
+  });
+}
+function checkL3(){
+  if(l3Choice.some(x=>x===null)) return;
+  let correct=0;
+  level3.forEach(seg=>{ if(seg.blank){} });
+  // 逐空比对
+  let bi=0;
+  level3.forEach(seg=>{ if(seg.blank){ if(l3Choice[bi]===seg.blank) correct++; bi++; } });
+  const total=l3Choice.length;
+  document.getElementById('score3').textContent=`🏆 得分：${correct} / ${total}`;
+  const act=document.getElementById('act3');
+  act.innerHTML=`<button class="btn teal" id="done3">🌟 完成全部闯关</button>`;
+  document.getElementById('done3').onclick=()=>completeLevel(3);
+}
+
+/* ---------- 过关 / 通关流程 ---------- */
+function showPanel(n){
+  current=n; refreshLevels();
+  if(n===1) showLevel1();
+  if(n===2) showLevel2();
+  if(n===3) showLevel3();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function completeLevel(n){
+  if(n<3){
+    unlocked=n+1;
+    const ov=document.getElementById('ovClear');
+    document.getElementById('ovClearText').textContent='你完成了第 '+n+' 关，下一关已解锁！';
+    const btn=document.getElementById('ovClearBtn');
+    btn.textContent='继续下一关 ➡️';
+    ov.classList.add('show');
+    launchConfetti(2500);
+    btn.onclick=()=>{ ov.classList.remove('show'); showPanel(n+1); };
+  } else {
+    const ov=document.getElementById('ovWin');
+    ov.classList.add('show');
+    launchConfetti(4500);
+    document.getElementById('ovWinBtn').onclick=()=>{
+      ov.classList.remove('show'); unlocked=1; showPanel(1);
+    };
+  }
+}
+
+/* ---------- 彩带 + 星星 庆祝动画 ---------- */
+function launchConfetti(duration){
+  const canvas=document.getElementById('confetti');
+  const dpr=window.devicePixelRatio||1;
+  canvas.width=innerWidth*dpr; canvas.height=innerHeight*dpr;
+  canvas.style.width=innerWidth+'px'; canvas.style.height=innerHeight+'px';
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  const colors=['#ff7a59','#feca57','#1fb6b6','#7c5cff','#ff5fa2','#1dd1a1'];
+  const pieces=[];
+  for(let i=0;i<160;i++){
+    pieces.push({
+      x:Math.random()*innerWidth,
+      y:-20-Math.random()*innerHeight*0.4,
+      w:8+Math.random()*9, h:8+Math.random()*9,
+      vx:-2.5+Math.random()*5, vy:2+Math.random()*5,
+      rot:Math.random()*6.28, vr:-0.25+Math.random()*0.5,
+      color:colors[Math.floor(Math.random()*colors.length)],
+      shape:Math.random()<0.32?'star':'rect'
+    });
+  }
+  const start=performance.now();
+  function frame(now){
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    pieces.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; p.vy+=0.05;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.color;
+      if(p.shape==='star') drawStar(ctx,p.w); else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    if(now-start<duration) requestAnimationFrame(frame);
+    else ctx.clearRect(0,0,innerWidth,innerHeight);
+  }
+  requestAnimationFrame(frame);
+}
+function drawStar(ctx,r){
+  ctx.beginPath();
+  for(let i=0;i<5;i++){
+    const a=-Math.PI/2+i*2*Math.PI/5;
+    ctx.lineTo(Math.cos(a)*r,Math.sin(a)*r);
+    const a2=a+Math.PI/5;
+    ctx.lineTo(Math.cos(a2)*r*0.45,Math.sin(a2)*r*0.45);
+  }
+  ctx.closePath(); ctx.fill();
+}
+
+/* ---------- 启动 ---------- */
+refreshLevels();
+showPanel(1);
+</script>
+</body>
+</html>

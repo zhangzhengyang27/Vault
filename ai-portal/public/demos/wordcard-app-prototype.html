@@ -1,0 +1,2131 @@
+<!doctype html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <title>单词卡片 App - 安卓落地版原型</title>
+    <style>
+      :root {
+        --m3-primary: #6750a4;
+        --m3-on-primary: #ffffff;
+        --m3-primary-container: #eaddff;
+        --m3-on-primary-container: #21005d;
+        --m3-secondary: #625b71;
+        --m3-on-secondary: #ffffff;
+        --m3-secondary-container: #e8def8;
+        --m3-on-secondary-container: #1d192b;
+        --m3-tertiary: #7d5260;
+        --m3-on-tertiary: #ffffff;
+        --m3-tertiary-container: #ffd8e4;
+        --m3-on-tertiary-container: #31111d;
+        --m3-error: #b3261e;
+        --m3-on-error: #ffffff;
+        --m3-error-container: #f9dedc;
+        --m3-on-error-container: #410e0b;
+        --m3-surface: #fef7ff;
+        --m3-surface-dim: #ded8e1;
+        --m3-surface-bright: #fef7ff;
+        --m3-surface-container-lowest: #ffffff;
+        --m3-surface-container-low: #f7f2fa;
+        --m3-surface-container: #f3edf7;
+        --m3-surface-container-high: #ece6f0;
+        --m3-surface-container-highest: #e6e0e9;
+        --m3-on-surface: #1d1b20;
+        --m3-on-surface-variant: #49454f;
+        --m3-outline: #79747e;
+        --m3-outline-variant: #cac4d0;
+        --m3-shadow: rgba(0, 0, 0, 0.12);
+        --m3-scrim: rgba(0, 0, 0, 0.45);
+
+        --elev-1: 0 1px 2px var(--m3-shadow);
+        --elev-2: 0 4px 14px rgba(0, 0, 0, 0.12);
+
+        --r-8: 8px;
+        --r-12: 12px;
+        --r-16: 16px;
+        --r-20: 20px;
+        --r-28: 28px;
+
+        --dp-2: 8px;
+        --dp-3: 12px;
+        --dp-4: 16px;
+        --dp-5: 20px;
+        --dp-6: 24px;
+        --dp-7: 28px;
+        --dp-8: 32px;
+
+        --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB",
+          "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+        --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --m3-primary: #d0bcff;
+          --m3-on-primary: #381e72;
+          --m3-primary-container: #4f378b;
+          --m3-on-primary-container: #eaddff;
+          --m3-secondary: #ccc2dc;
+          --m3-on-secondary: #332d41;
+          --m3-secondary-container: #4a4458;
+          --m3-on-secondary-container: #e8def8;
+          --m3-tertiary: #efb8c8;
+          --m3-on-tertiary: #492532;
+          --m3-tertiary-container: #633b48;
+          --m3-on-tertiary-container: #ffd8e4;
+          --m3-error: #f2b8b5;
+          --m3-on-error: #601410;
+          --m3-error-container: #8c1d18;
+          --m3-on-error-container: #f9dedc;
+          --m3-surface: #141218;
+          --m3-surface-dim: #141218;
+          --m3-surface-bright: #3b383e;
+          --m3-surface-container-lowest: #0f0d13;
+          --m3-surface-container-low: #1d1b20;
+          --m3-surface-container: #211f26;
+          --m3-surface-container-high: #2b2930;
+          --m3-surface-container-highest: #36343b;
+          --m3-on-surface: #e6e0e9;
+          --m3-on-surface-variant: #cac4d0;
+          --m3-outline: #938f99;
+          --m3-outline-variant: #49454f;
+          --m3-shadow: rgba(0, 0, 0, 0.42);
+          --m3-scrim: rgba(0, 0, 0, 0.62);
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: var(--sans);
+        color: var(--m3-on-surface);
+        background:
+          radial-gradient(900px 520px at 12% -10%, color-mix(in srgb, var(--m3-primary) 24%, transparent), transparent 60%),
+          radial-gradient(760px 480px at 100% 0%, color-mix(in srgb, var(--m3-tertiary) 18%, transparent), transparent 55%),
+          var(--m3-surface);
+      }
+      .wrap {
+        min-height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+      }
+      .top {
+        position: sticky;
+        top: 0;
+        z-index: 8;
+        background: color-mix(in srgb, var(--m3-surface) 86%, transparent);
+        backdrop-filter: blur(16px);
+        border-bottom: 1px solid var(--m3-outline-variant);
+      }
+      .top__inner {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 14px 16px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .badge {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+        color: var(--m3-on-surface-variant);
+        white-space: nowrap;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 260px;
+      }
+      .logo {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--m3-primary), color-mix(in srgb, var(--m3-tertiary) 70%, var(--m3-primary)));
+        box-shadow: 0 18px 36px rgba(103, 80, 164, 0.26);
+      }
+      .brand__text {
+        display: grid;
+        gap: 2px;
+      }
+      .brand__title {
+        font-weight: 820;
+        letter-spacing: -0.2px;
+      }
+      .brand__sub {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+      }
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+      .btn {
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+        color: var(--m3-on-surface);
+        border-radius: 999px;
+        padding: 9px 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+        transition:
+          background 150ms ease,
+          transform 120ms ease,
+          border-color 150ms ease;
+        font-weight: 660;
+        font-size: 13px;
+      }
+      .btn:hover {
+        background: var(--m3-surface-container);
+        border-color: var(--m3-outline);
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn__icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--m3-surface-container-high);
+        border: 1px solid var(--m3-outline-variant);
+        color: var(--m3-on-surface-variant);
+        font-size: 14px;
+      }
+
+      .content {
+        max-width: 1120px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 16px;
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        gap: 16px;
+        align-items: start;
+      }
+      @media (max-width: 980px) {
+        .content {
+          grid-template-columns: 1fr;
+        }
+        .brand {
+          min-width: auto;
+        }
+      }
+
+      .panel {
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+        border-radius: var(--r-20);
+        box-shadow: var(--elev-1);
+        overflow: hidden;
+      }
+      .panel__hd {
+        padding: 14px 14px 12px;
+        border-bottom: 1px solid var(--m3-outline-variant);
+        display: grid;
+        gap: 6px;
+        background: var(--m3-surface-container);
+      }
+      .panel__title {
+        font-weight: 820;
+        letter-spacing: -0.15px;
+      }
+      .panel__sub {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        line-height: 1.45;
+      }
+      .panel__bd {
+        padding: 14px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .specList {
+        display: grid;
+        gap: 10px;
+      }
+      .specItem {
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-lowest);
+        border-radius: var(--r-16);
+        padding: 12px;
+        display: grid;
+        gap: 8px;
+      }
+      .specItem__k {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+      }
+      .specItem__v {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--m3-on-surface);
+        line-height: 1.5;
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        line-height: 1.45;
+      }
+      .kbd {
+        font-family: var(--mono);
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 7px;
+        background: var(--m3-surface-container-high);
+        border: 1px solid var(--m3-outline-variant);
+      }
+
+      .device {
+        border-radius: 36px;
+        border: 1px solid color-mix(in srgb, var(--m3-outline) 40%, var(--m3-outline-variant));
+        background: var(--m3-surface-container-lowest);
+        box-shadow: var(--elev-2);
+        overflow: hidden;
+        position: sticky;
+        top: 88px;
+      }
+      @media (max-width: 980px) {
+        .device {
+          position: relative;
+          top: 0;
+        }
+      }
+      .device__bezel {
+        background:
+          linear-gradient(180deg, color-mix(in srgb, var(--m3-surface-container-highest) 40%, transparent), transparent),
+          var(--m3-surface-container-lowest);
+        padding: 12px;
+      }
+      .phone {
+        width: 100%;
+        max-width: 390px;
+        margin: 0 auto;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface);
+      }
+      .sysbar {
+        height: 28px;
+        padding: 0 14px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: var(--m3-on-surface-variant);
+        font-size: 12px;
+        background: var(--m3-surface);
+      }
+      .sysbar__right {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--mono);
+      }
+      .appbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 14px 16px 10px;
+        background: var(--m3-surface);
+        border-bottom: 1px solid var(--m3-outline-variant);
+      }
+      .appbar__title {
+        display: grid;
+        gap: 2px;
+      }
+      .appbar__main {
+        font-weight: 860;
+        letter-spacing: -0.2px;
+      }
+      .appbar__sub {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+      }
+      .iconBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        user-select: none;
+        transition:
+          background 150ms ease,
+          transform 120ms ease,
+          border-color 150ms ease;
+        color: var(--m3-on-surface-variant);
+      }
+      .iconBtn:hover {
+        background: var(--m3-surface-container);
+        border-color: var(--m3-outline);
+      }
+      .iconBtn:active {
+        transform: translateY(1px);
+      }
+
+      .viewport {
+        height: 760px;
+        display: grid;
+        grid-template-rows: 1fr auto;
+        background: var(--m3-surface);
+      }
+      .screen {
+        padding: 14px 16px 10px;
+        overflow: auto;
+      }
+      .screen[aria-hidden="true"] {
+        display: none;
+      }
+      .section {
+        display: grid;
+        gap: 10px;
+      }
+      .card {
+        border-radius: var(--r-16);
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+        overflow: hidden;
+        box-shadow: var(--elev-1);
+      }
+      .card__hd {
+        padding: 12px 12px 10px;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container);
+      }
+      .card__title {
+        font-weight: 820;
+        letter-spacing: -0.15px;
+      }
+      .card__desc {
+        margin-top: 6px;
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        line-height: 1.45;
+      }
+      .card__bd {
+        padding: 12px;
+        display: grid;
+        gap: 10px;
+      }
+
+      .statusPill {
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-lowest);
+        border-radius: 999px;
+        padding: 7px 10px;
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 99px;
+        background: var(--m3-outline);
+      }
+      .dot.ok {
+        background: color-mix(in srgb, #00c853 70%, var(--m3-primary));
+      }
+      .dot.warn {
+        background: #ffb300;
+      }
+      .dot.err {
+        background: var(--m3-error);
+      }
+
+      .field {
+        display: grid;
+        gap: 6px;
+      }
+      .labelRow {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 10px;
+      }
+      .label {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+      }
+      .support {
+        font-size: 11px;
+        color: var(--m3-on-surface-variant);
+      }
+      .textField {
+        border-radius: var(--r-12);
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-lowest);
+        padding: 12px 12px;
+        color: var(--m3-on-surface);
+        outline: none;
+        transition: border-color 150ms ease;
+        font-size: 14px;
+      }
+      .textField:focus {
+        border-color: color-mix(in srgb, var(--m3-primary) 60%, var(--m3-outline));
+      }
+      .textField[readonly] {
+        opacity: 0.9;
+      }
+
+      .chips {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .chipBtn {
+        border-radius: 999px;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-lowest);
+        padding: 9px 10px;
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        cursor: pointer;
+        user-select: none;
+        transition:
+          background 150ms ease,
+          border-color 150ms ease,
+          transform 120ms ease;
+      }
+      .chipBtn[aria-pressed="true"] {
+        border-color: color-mix(in srgb, var(--m3-primary) 55%, var(--m3-outline));
+        background: color-mix(in srgb, var(--m3-primary-container) 65%, var(--m3-surface-container-lowest));
+        color: var(--m3-on-primary-container);
+        font-weight: 740;
+      }
+      .chipBtn:active {
+        transform: translateY(1px);
+      }
+
+      .btnRow {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .m3Btn {
+        border-radius: 999px;
+        border: 1px solid var(--m3-outline-variant);
+        padding: 10px 12px;
+        font-weight: 760;
+        font-size: 13px;
+        background: var(--m3-surface-container-lowest);
+        color: var(--m3-on-surface);
+        cursor: pointer;
+        user-select: none;
+        transition:
+          background 150ms ease,
+          transform 120ms ease,
+          border-color 150ms ease,
+          opacity 150ms ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .m3Btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .m3Btn:active {
+        transform: translateY(1px);
+      }
+      .m3Btn--filled {
+        border-color: color-mix(in srgb, var(--m3-primary) 52%, var(--m3-outline));
+        background: var(--m3-primary);
+        color: var(--m3-on-primary);
+      }
+      .m3Btn--tonal {
+        background: var(--m3-secondary-container);
+        border-color: color-mix(in srgb, var(--m3-secondary) 40%, var(--m3-outline-variant));
+        color: var(--m3-on-secondary-container);
+      }
+      .m3Btn--danger {
+        background: var(--m3-error-container);
+        border-color: color-mix(in srgb, var(--m3-error) 45%, var(--m3-outline-variant));
+        color: var(--m3-on-error-container);
+      }
+      .m3Btn__icon {
+        width: 18px;
+        height: 18px;
+        display: grid;
+        place-items: center;
+        border-radius: 6px;
+        background: color-mix(in srgb, var(--m3-on-primary) 14%, transparent);
+      }
+      .m3Btn--filled .m3Btn__icon {
+        background: color-mix(in srgb, #ffffff 18%, transparent);
+      }
+
+      .imgBox {
+        border-radius: var(--r-16);
+        overflow: hidden;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container);
+        aspect-ratio: 16/10;
+        display: grid;
+        place-items: center;
+        position: relative;
+      }
+      .imgBox img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .skeleton {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--m3-on-surface) 10%, transparent), transparent);
+        transform: translateX(-60%);
+        animation: sh 1.1s infinite;
+      }
+      @keyframes sh {
+        to {
+          transform: translateX(60%);
+        }
+      }
+      .imgTag {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--m3-surface) 78%, transparent);
+        border: 1px solid var(--m3-outline-variant);
+        color: var(--m3-on-surface-variant);
+        font-size: 12px;
+        backdrop-filter: blur(12px);
+      }
+
+      .list {
+        display: grid;
+        gap: 10px;
+      }
+      .listItem {
+        border-radius: var(--r-16);
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-lowest);
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 92px 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+      }
+      .thumb {
+        width: 92px;
+        height: 64px;
+        border-radius: 12px;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container);
+        overflow: hidden;
+      }
+      .thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .liMain {
+        display: grid;
+        gap: 4px;
+        min-width: 0;
+      }
+      .liTitle {
+        font-weight: 820;
+        letter-spacing: -0.1px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .liSub {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .liMeta {
+        font-size: 11px;
+        font-family: var(--mono);
+        color: var(--m3-on-surface-variant);
+        text-align: right;
+      }
+
+      .bnav {
+        border-top: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface);
+        padding: 8px 10px 10px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+      }
+      .navBtn {
+        border-radius: 14px;
+        padding: 9px 6px;
+        display: grid;
+        gap: 4px;
+        place-items: center;
+        color: var(--m3-on-surface-variant);
+        cursor: pointer;
+        user-select: none;
+        border: 1px solid transparent;
+        transition:
+          background 150ms ease,
+          border-color 150ms ease,
+          transform 120ms ease,
+          color 150ms ease;
+      }
+      .navBtn:hover {
+        background: var(--m3-surface-container-low);
+        border-color: var(--m3-outline-variant);
+      }
+      .navBtn:active {
+        transform: translateY(1px);
+      }
+      .navBtn[aria-current="page"] {
+        background: color-mix(in srgb, var(--m3-primary-container) 70%, var(--m3-surface));
+        border-color: color-mix(in srgb, var(--m3-primary) 45%, var(--m3-outline-variant));
+        color: var(--m3-on-primary-container);
+        font-weight: 740;
+      }
+      .navIcon {
+        width: 30px;
+        height: 30px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--m3-surface-container-low);
+        border: 1px solid var(--m3-outline-variant);
+        font-size: 14px;
+      }
+      .navBtn[aria-current="page"] .navIcon {
+        background: color-mix(in srgb, var(--m3-primary) 14%, transparent);
+        border-color: color-mix(in srgb, var(--m3-primary) 40%, var(--m3-outline-variant));
+      }
+      .navText {
+        font-size: 11px;
+      }
+
+      .snackbar {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 76px;
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--m3-on-surface) 90%, var(--m3-surface));
+        color: color-mix(in srgb, var(--m3-surface) 98%, transparent);
+        padding: 12px 12px;
+        display: none;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
+      }
+      .snackbar[aria-hidden="false"] {
+        display: flex;
+      }
+      .snackbar__msg {
+        font-size: 13px;
+        line-height: 1.35;
+        flex: 1;
+      }
+      .snackbar__action {
+        border: none;
+        background: transparent;
+        color: color-mix(in srgb, var(--m3-primary-container) 95%, #fff);
+        font-weight: 820;
+        cursor: pointer;
+        padding: 8px 10px;
+        border-radius: 999px;
+      }
+      .snackbar__action:hover {
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .scrim {
+        position: absolute;
+        inset: 0;
+        background: var(--m3-scrim);
+        display: none;
+      }
+      .scrim[aria-hidden="false"] {
+        display: block;
+      }
+
+      .sheet {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 24px 24px 0 0;
+        background: var(--m3-surface);
+        border-top: 1px solid var(--m3-outline-variant);
+        box-shadow: 0 -12px 34px rgba(0, 0, 0, 0.22);
+        transform: translateY(110%);
+        transition: transform 180ms ease;
+        padding: 10px 12px 14px;
+      }
+      .sheet[aria-hidden="false"] {
+        transform: translateY(0);
+      }
+      .grab {
+        width: 42px;
+        height: 5px;
+        border-radius: 99px;
+        background: var(--m3-outline-variant);
+        margin: 6px auto 10px;
+      }
+      .sheetTitle {
+        font-weight: 860;
+        letter-spacing: -0.15px;
+        padding: 0 6px 10px;
+      }
+      .sheetList {
+        display: grid;
+        gap: 8px;
+      }
+      .sheetItem {
+        border-radius: 16px;
+        border: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+        padding: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .sheetItem:hover {
+        background: var(--m3-surface-container);
+      }
+      .sheetItem__l {
+        display: grid;
+        gap: 4px;
+      }
+      .sheetItem__t {
+        font-weight: 780;
+      }
+      .sheetItem__s {
+        font-size: 12px;
+        color: var(--m3-on-surface-variant);
+        line-height: 1.35;
+      }
+      .sheetItem__r {
+        color: var(--m3-on-surface-variant);
+      }
+
+      .dialog {
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%) scale(0.98);
+        background: var(--m3-surface);
+        border-radius: 20px;
+        border: 1px solid var(--m3-outline-variant);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.32);
+        display: none;
+        overflow: hidden;
+      }
+      .dialog[aria-hidden="false"] {
+        display: block;
+        transform: translateY(-50%) scale(1);
+      }
+      .dialog__hd {
+        padding: 14px 14px 10px;
+        border-bottom: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container);
+      }
+      .dialog__title {
+        font-weight: 860;
+        letter-spacing: -0.15px;
+      }
+      .dialog__bd {
+        padding: 12px 14px;
+        color: var(--m3-on-surface-variant);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+      .dialog__ft {
+        padding: 12px 12px 14px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        border-top: 1px solid var(--m3-outline-variant);
+        background: var(--m3-surface-container-low);
+      }
+
+      .footer {
+        max-width: 1120px;
+        margin: 0 auto;
+        width: 100%;
+        padding: 14px 16px 22px;
+        color: var(--m3-on-surface-variant);
+        font-size: 12px;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div class="top__inner">
+          <div class="brand">
+            <div class="logo" aria-hidden="true"></div>
+            <div class="brand__text">
+              <div class="brand__title">单词卡片 - 安卓落地版原型</div>
+              <div class="brand__sub">更贴近 Material 3 / Bottom Nav / Snackbar / 权限对话框</div>
+            </div>
+          </div>
+
+          <div class="actions">
+            <div class="badge" id="badgeToken">Token: 未配置</div>
+            <div class="badge" id="badgePerm">存储权限: 未授予</div>
+            <button class="btn" id="btnReset">
+              <span class="btn__icon" aria-hidden="true">⟲</span>
+              重置演示数据
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="device">
+          <div class="device__bezel">
+            <div class="phone" id="phone">
+              <div class="sysbar">
+                <div id="sysTime">12:36</div>
+                <div class="sysbar__right">
+                  <span aria-hidden="true">5G</span>
+                  <span aria-hidden="true">▮▮▮</span>
+                  <span aria-hidden="true">🔋</span>
+                </div>
+              </div>
+
+              <div class="appbar">
+                <div class="appbar__title">
+                  <div class="appbar__main" id="appTitle">生成卡片</div>
+                  <div class="appbar__sub" id="appSub">输入中文/英文，生成卡片图片与英文词</div>
+                </div>
+                <button class="iconBtn" id="btnOverflow" title="更多操作">
+                  <span aria-hidden="true">⋮</span>
+                </button>
+              </div>
+
+              <div class="viewport">
+                <div class="screen" id="screen-generate" aria-hidden="false">
+                  <div class="section">
+                    <div class="card">
+                      <div class="card__hd">
+                        <div>
+                          <div class="card__title">输入</div>
+                          <div class="card__desc">建议输入更具体的含义以稳定生成风格，例如：<span class="kbd">苹果（水果）</span> / <span class="kbd">Apple（公司）</span></div>
+                        </div>
+                        <div class="statusPill" id="pillGenerate">
+                          <span class="dot warn" aria-hidden="true"></span>
+                          <span>等待输入</span>
+                        </div>
+                      </div>
+                      <div class="card__bd">
+                        <div class="field">
+                          <div class="labelRow">
+                            <div class="label">单词 / 含义</div>
+                            <div class="support">Enter 生成</div>
+                          </div>
+                          <input id="inputOrigin" class="textField" placeholder="例如：苹果 / grateful / 勇气" autocomplete="off" />
+                          <div class="hint">落地安卓：输入框可做“历史输入联想”，降低重复输入成本。</div>
+                        </div>
+
+                        <div class="field">
+                          <div class="label">卡片风格（示意）</div>
+                          <div class="chips" id="styleChips">
+                            <button class="chipBtn" data-style="clean" aria-pressed="true">干净</button>
+                            <button class="chipBtn" data-style="playful" aria-pressed="false">活泼</button>
+                            <button class="chipBtn" data-style="study" aria-pressed="false">学习</button>
+                          </div>
+                        </div>
+
+                        <div class="btnRow">
+                          <button class="m3Btn m3Btn--filled" id="btnGenerate">
+                            <span class="m3Btn__icon" aria-hidden="true">↻</span>
+                            生成卡片
+                          </button>
+                          <button class="m3Btn m3Btn--tonal" id="btnExample">
+                            <span class="m3Btn__icon" aria-hidden="true">✦</span>
+                            示例
+                          </button>
+                          <button class="m3Btn" id="btnGoSettings">
+                            <span class="m3Btn__icon" aria-hidden="true">⚙</span>
+                            配置 Token
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="card">
+                      <div class="card__hd">
+                        <div>
+                          <div class="card__title">首次使用的引导策略</div>
+                          <div class="card__desc">“没 Token → 先去设置；有 Token → 允许快速生成”。避免用户盲目重试。</div>
+                        </div>
+                      </div>
+                      <div class="card__bd">
+                        <div class="hint">落地安卓建议：在设置页做“保存后立即轻量验证”，把错误前移，减少生成页失败率。</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="screen" id="screen-card" aria-hidden="true">
+                  <div class="section">
+                    <div class="card">
+                      <div class="card__hd">
+                        <div>
+                          <div class="card__title">生成结果</div>
+                          <div class="card__desc">展示卡片图片与英文词；支持再生成 / 保存 / 分享。</div>
+                        </div>
+                        <div class="statusPill" id="pillCard">
+                          <span class="dot warn" aria-hidden="true"></span>
+                          <span>未生成</span>
+                        </div>
+                      </div>
+                      <div class="card__bd">
+                        <div class="imgBox" id="imgBox" aria-label="卡片预览">
+                          <div class="imgTag" id="imgTag">预览</div>
+                          <div class="skeleton" id="imgSkeleton" aria-hidden="true" style="display: none"></div>
+                        </div>
+
+                        <div class="field">
+                          <div class="labelRow">
+                            <div class="label">原始输入</div>
+                            <div class="support" id="metaCreatedAt">-</div>
+                          </div>
+                          <input id="outOrigin" class="textField" readonly value="-" />
+                        </div>
+
+                        <div class="field">
+                          <div class="labelRow">
+                            <div class="label">英文单词</div>
+                            <div class="support" id="metaCache">cache: -</div>
+                          </div>
+                          <input id="outEnglish" class="textField" readonly value="-" />
+                        </div>
+
+                        <div class="btnRow">
+                          <button class="m3Btn m3Btn--filled" id="btnRegenerate">
+                            <span class="m3Btn__icon" aria-hidden="true">↻</span>
+                            再生成
+                          </button>
+                          <button class="m3Btn" id="btnSave">
+                            <span class="m3Btn__icon" aria-hidden="true">⬇</span>
+                            保存
+                          </button>
+                          <button class="m3Btn m3Btn--tonal" id="btnShare">
+                            <span class="m3Btn__icon" aria-hidden="true">⤴</span>
+                            分享
+                          </button>
+                        </div>
+
+                        <div class="hint">落地安卓：保存通常走 MediaStore（图片）+ Room（元数据），并支持“保存后打开/分享”。</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="screen" id="screen-saved" aria-hidden="true">
+                  <div class="section">
+                    <div class="card">
+                      <div class="card__hd">
+                        <div>
+                          <div class="card__title">已保存</div>
+                          <div class="card__desc">集中管理保存的卡片，点击进入详情；右侧按钮打开操作面板。</div>
+                        </div>
+                        <div class="statusPill" id="pillSaved">
+                          <span class="dot warn" aria-hidden="true"></span>
+                          <span>0 张</span>
+                        </div>
+                      </div>
+                      <div class="card__bd">
+                        <div class="field">
+                          <div class="label">搜索（英文 / 原始输入）</div>
+                          <input id="inputSearch" class="textField" placeholder="例如：apple / 苹果" />
+                        </div>
+                        <div class="btnRow">
+                          <button class="m3Btn m3Btn--tonal" id="btnSeed">
+                            <span class="m3Btn__icon" aria-hidden="true">＋</span>
+                            填充示例
+                          </button>
+                          <button class="m3Btn m3Btn--danger" id="btnClearSaved">
+                            <span class="m3Btn__icon" aria-hidden="true">⨯</span>
+                            清空
+                          </button>
+                        </div>
+
+                        <div class="list" id="savedList"></div>
+                        <div class="hint">落地安卓：列表建议支持“滑动删除 + 撤销 Snackbar”，避免误删。</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="screen" id="screen-settings" aria-hidden="true">
+                  <div class="section">
+                    <div class="card">
+                      <div class="card__hd">
+                        <div>
+                          <div class="card__title">设置</div>
+                          <div class="card__desc">Token 必须由用户配置并安全存储；原型用本地存储模拟。</div>
+                        </div>
+                        <div class="statusPill" id="pillSettings">
+                          <span class="dot warn" aria-hidden="true"></span>
+                          <span>未配置</span>
+                        </div>
+                      </div>
+                      <div class="card__bd">
+                        <div class="field">
+                          <div class="labelRow">
+                            <div class="label">Coze Token</div>
+                            <div class="support" id="tokenUpdatedAt">-</div>
+                          </div>
+                          <input id="inputToken" class="textField" placeholder="在此粘贴 Token（示意）" />
+                          <div class="hint">落地安卓：建议用 Keystore + EncryptedSharedPreferences/Datastore，并默认遮挡。</div>
+                        </div>
+
+                        <div class="btnRow">
+                          <button class="m3Btn m3Btn--filled" id="btnSaveToken">
+                            <span class="m3Btn__icon" aria-hidden="true">✓</span>
+                            保存
+                          </button>
+                          <button class="m3Btn" id="btnToggleToken">
+                            <span class="m3Btn__icon" aria-hidden="true">👁</span>
+                            显示/隐藏
+                          </button>
+                          <button class="m3Btn m3Btn--tonal" id="btnTestToken">
+                            <span class="m3Btn__icon" aria-hidden="true">↯</span>
+                            测试连接
+                          </button>
+                          <button class="m3Btn m3Btn--danger" id="btnClearToken">
+                            <span class="m3Btn__icon" aria-hidden="true">⨯</span>
+                            清除
+                          </button>
+                        </div>
+
+                        <div class="card" style="box-shadow: none">
+                          <div class="card__hd">
+                            <div>
+                              <div class="card__title">权限与存储（示意）</div>
+                              <div class="card__desc">保存图片时可能需要访问相册/媒体库。这里用于演示权限对话框与拒绝后的引导。</div>
+                            </div>
+                          </div>
+                          <div class="card__bd">
+                            <div class="btnRow">
+                              <button class="m3Btn" id="btnGrantPerm">
+                                <span class="m3Btn__icon" aria-hidden="true">🔐</span>
+                                授予存储权限
+                              </button>
+                              <button class="m3Btn m3Btn--danger" id="btnRevokePerm">
+                                <span class="m3Btn__icon" aria-hidden="true">⛔</span>
+                                撤销权限
+                              </button>
+                            </div>
+                            <div class="hint">落地安卓：Android 13+ 保存到 MediaStore 一般不需要旧式存储权限，但访问“所有文件”才需要更强权限。</div>
+                          </div>
+                        </div>
+
+                        <div class="hint">建议：把“失败原因”映射到可操作的下一步（去设置/重试/检查网络）。</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="snackbar" id="snackbar" aria-hidden="true">
+                  <div class="snackbar__msg" id="snackMsg">提示</div>
+                  <button class="snackbar__action" id="snackAction" style="display: none">操作</button>
+                </div>
+
+                <div class="scrim" id="scrim" aria-hidden="true"></div>
+
+                <div class="sheet" id="sheet" aria-hidden="true" role="dialog" aria-label="底部操作面板">
+                  <div class="grab" aria-hidden="true"></div>
+                  <div class="sheetTitle" id="sheetTitle">操作</div>
+                  <div class="sheetList" id="sheetList"></div>
+                </div>
+
+                <div class="dialog" id="dialog" aria-hidden="true" role="dialog" aria-label="系统对话框">
+                  <div class="dialog__hd">
+                    <div class="dialog__title" id="dlgTitle">标题</div>
+                  </div>
+                  <div class="dialog__bd" id="dlgBody">内容</div>
+                  <div class="dialog__ft" id="dlgFooter"></div>
+                </div>
+
+                <div class="bnav" role="navigation" aria-label="底部导航">
+                  <div class="navBtn" data-nav="generate" aria-current="page">
+                    <div class="navIcon" aria-hidden="true">✦</div>
+                    <div class="navText">生成</div>
+                  </div>
+                  <div class="navBtn" data-nav="card">
+                    <div class="navIcon" aria-hidden="true">▣</div>
+                    <div class="navText">卡片</div>
+                  </div>
+                  <div class="navBtn" data-nav="saved">
+                    <div class="navIcon" aria-hidden="true">⧉</div>
+                    <div class="navText">已保存</div>
+                  </div>
+                  <div class="navBtn" data-nav="settings">
+                    <div class="navIcon" aria-hidden="true">⚙</div>
+                    <div class="navText">设置</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel__hd">
+            <div class="panel__title">落地感提升点（已体现在右侧“手机壳”里）</div>
+            <div class="panel__sub">目标：让评审人员一眼看出未来在安卓端的真实交互层级（Top App Bar / Bottom Nav / Sheet / Dialog / Snackbar）。</div>
+          </div>
+          <div class="panel__bd">
+            <div class="specList">
+              <div class="specItem">
+                <div class="specItem__k">导航结构</div>
+                <div class="specItem__v">底部导航四入口：生成 / 卡片 / 已保存 / 设置（符合需求页集合）</div>
+              </div>
+              <div class="specItem">
+                <div class="specItem__k">Token 引导策略</div>
+                <div class="specItem__v">没 Token 时生成会弹系统对话框 → 一键去设置（降低失败成本）</div>
+              </div>
+              <div class="specItem">
+                <div class="specItem__k">保存的“系统感”</div>
+                <div class="specItem__v">保存前检查权限 → 弹 Dialog；成功后 Snackbar 提供“查看”动作</div>
+              </div>
+              <div class="specItem">
+                <div class="specItem__k">管理的“底部操作面板”</div>
+                <div class="specItem__v">列表/详情共用 Sheet：查看、分享、删除、复制英文单词（贴近安卓交互习惯）</div>
+              </div>
+              <div class="specItem">
+                <div class="specItem__k">缓存与性能表达</div>
+                <div class="specItem__v">卡片页显示 cache 命中示意；便于未来对接图片缓存策略</div>
+              </div>
+            </div>
+            <div class="hint">你可以用 <span class="kbd">示例</span> → <span class="kbd">生成</span> → <span class="kbd">保存</span> → <span class="kbd">已保存</span> 来走通闭环。</div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        本文件为“更接近安卓落地”的 HTML 原型：用 Material 3 视觉与安卓常见组件（底部导航、系统对话框、底部操作面板、Snackbar）模拟真实交互。
+        实际开发需要接入 Coze API、实现图片缓存（如 Coil/Glide）、数据库（Room/SQLite）与安全存储（Keystore/Encrypted）。
+      </footer>
+    </div>
+
+    <script>
+      const StorageKeys = {
+        token: "coze_token",
+        tokenUpdatedAt: "coze_token_updated_at",
+        saved: "saved_cards_v2_androidish",
+        perm: "androidish_storage_permission",
+        style: "androidish_card_style",
+      };
+
+      const Screens = ["generate", "card", "saved", "settings"];
+
+      const state = {
+        origin: "",
+        english: "",
+        imageUrl: "",
+        createdAt: "",
+        cacheHit: false,
+        lastOpenedSavedId: "",
+      };
+
+      const el = {
+        sysTime: document.getElementById("sysTime"),
+        appTitle: document.getElementById("appTitle"),
+        appSub: document.getElementById("appSub"),
+        btnOverflow: document.getElementById("btnOverflow"),
+
+        badgeToken: document.getElementById("badgeToken"),
+        badgePerm: document.getElementById("badgePerm"),
+        btnReset: document.getElementById("btnReset"),
+
+        screens: {
+          generate: document.getElementById("screen-generate"),
+          card: document.getElementById("screen-card"),
+          saved: document.getElementById("screen-saved"),
+          settings: document.getElementById("screen-settings"),
+        },
+
+        navBtns: Array.from(document.querySelectorAll(".navBtn[data-nav]")),
+
+        pillGenerate: document.getElementById("pillGenerate"),
+        inputOrigin: document.getElementById("inputOrigin"),
+        styleChips: document.getElementById("styleChips"),
+        btnGenerate: document.getElementById("btnGenerate"),
+        btnExample: document.getElementById("btnExample"),
+        btnGoSettings: document.getElementById("btnGoSettings"),
+
+        pillCard: document.getElementById("pillCard"),
+        imgBox: document.getElementById("imgBox"),
+        imgSkeleton: document.getElementById("imgSkeleton"),
+        imgTag: document.getElementById("imgTag"),
+        outOrigin: document.getElementById("outOrigin"),
+        outEnglish: document.getElementById("outEnglish"),
+        metaCreatedAt: document.getElementById("metaCreatedAt"),
+        metaCache: document.getElementById("metaCache"),
+        btnRegenerate: document.getElementById("btnRegenerate"),
+        btnSave: document.getElementById("btnSave"),
+        btnShare: document.getElementById("btnShare"),
+
+        pillSaved: document.getElementById("pillSaved"),
+        inputSearch: document.getElementById("inputSearch"),
+        savedList: document.getElementById("savedList"),
+        btnSeed: document.getElementById("btnSeed"),
+        btnClearSaved: document.getElementById("btnClearSaved"),
+
+        pillSettings: document.getElementById("pillSettings"),
+        inputToken: document.getElementById("inputToken"),
+        tokenUpdatedAt: document.getElementById("tokenUpdatedAt"),
+        btnSaveToken: document.getElementById("btnSaveToken"),
+        btnToggleToken: document.getElementById("btnToggleToken"),
+        btnTestToken: document.getElementById("btnTestToken"),
+        btnClearToken: document.getElementById("btnClearToken"),
+        btnGrantPerm: document.getElementById("btnGrantPerm"),
+        btnRevokePerm: document.getElementById("btnRevokePerm"),
+
+        snackbar: document.getElementById("snackbar"),
+        snackMsg: document.getElementById("snackMsg"),
+        snackAction: document.getElementById("snackAction"),
+
+        scrim: document.getElementById("scrim"),
+        sheet: document.getElementById("sheet"),
+        sheetTitle: document.getElementById("sheetTitle"),
+        sheetList: document.getElementById("sheetList"),
+
+        dialog: document.getElementById("dialog"),
+        dlgTitle: document.getElementById("dlgTitle"),
+        dlgBody: document.getElementById("dlgBody"),
+        dlgFooter: document.getElementById("dlgFooter"),
+      };
+
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
+      function formatTime(iso) {
+        if (!iso) return "-";
+        const d = new Date(iso);
+        return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())} ${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+      }
+      function nowIso() {
+        return new Date().toISOString();
+      }
+      function escapeHtml(str) {
+        return String(str || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;");
+      }
+      function setPill(pill, kind, text) {
+        const dot = pill.querySelector(".dot");
+        const label = pill.querySelector("span:last-child");
+        dot.className = `dot ${kind || ""}`.trim();
+        label.textContent = text;
+      }
+
+      function getToken() {
+        return localStorage.getItem(StorageKeys.token) || "";
+      }
+      function setToken(token) {
+        localStorage.setItem(StorageKeys.token, token);
+        localStorage.setItem(StorageKeys.tokenUpdatedAt, nowIso());
+      }
+      function clearToken() {
+        localStorage.removeItem(StorageKeys.token);
+        localStorage.removeItem(StorageKeys.tokenUpdatedAt);
+      }
+      function hasStoragePermission() {
+        return localStorage.getItem(StorageKeys.perm) === "granted";
+      }
+      function setStoragePermission(granted) {
+        localStorage.setItem(StorageKeys.perm, granted ? "granted" : "denied");
+      }
+
+      function getSaved() {
+        try {
+          return JSON.parse(localStorage.getItem(StorageKeys.saved) || "[]");
+        } catch {
+          return [];
+        }
+      }
+      function setSaved(list) {
+        localStorage.setItem(StorageKeys.saved, JSON.stringify(list));
+      }
+
+      function getStyle() {
+        return localStorage.getItem(StorageKeys.style) || "clean";
+      }
+      function setStyle(style) {
+        localStorage.setItem(StorageKeys.style, style);
+      }
+
+      function setSysTime() {
+        const d = new Date();
+        el.sysTime.textContent = `${pad2(d.getHours())}:${pad2(d.getMinutes())}`;
+      }
+
+      function showSnackbar(message, actionText, actionCb) {
+        el.snackMsg.innerHTML = message;
+        if (actionText && typeof actionCb === "function") {
+          el.snackAction.style.display = "inline-block";
+          el.snackAction.textContent = actionText;
+          el.snackAction.onclick = () => {
+            hideSnackbar();
+            actionCb();
+          };
+        } else {
+          el.snackAction.style.display = "none";
+          el.snackAction.onclick = null;
+        }
+        el.snackbar.setAttribute("aria-hidden", "false");
+        window.clearTimeout(showSnackbar._t);
+        showSnackbar._t = window.setTimeout(() => hideSnackbar(), 2600);
+      }
+      function hideSnackbar() {
+        el.snackbar.setAttribute("aria-hidden", "true");
+        el.snackAction.style.display = "none";
+        el.snackAction.onclick = null;
+      }
+
+      function openSheet(title, items) {
+        el.sheetTitle.textContent = title || "操作";
+        el.sheetList.innerHTML = items
+          .map((it) => {
+            return `
+              <div class="sheetItem" data-id="${escapeHtml(it.id)}">
+                <div class="sheetItem__l">
+                  <div class="sheetItem__t">${escapeHtml(it.title)}</div>
+                  <div class="sheetItem__s">${escapeHtml(it.sub || "")}</div>
+                </div>
+                <div class="sheetItem__r" aria-hidden="true">${escapeHtml(it.icon || "›")}</div>
+              </div>
+            `;
+          })
+          .join("");
+
+        el.scrim.setAttribute("aria-hidden", "false");
+        el.sheet.setAttribute("aria-hidden", "false");
+        el.sheetList.onclick = (e) => {
+          const row = e.target.closest(".sheetItem");
+          if (!row) return;
+          const id = row.getAttribute("data-id");
+          const pick = items.find((x) => x.id === id);
+          if (!pick) return;
+          closeSheet();
+          pick.onClick?.();
+        };
+      }
+      function closeSheet() {
+        el.sheet.setAttribute("aria-hidden", "true");
+        el.scrim.setAttribute("aria-hidden", "true");
+        el.sheetList.onclick = null;
+      }
+
+      function openDialog({ title, body, actions }) {
+        el.dlgTitle.textContent = title || "提示";
+        el.dlgBody.innerHTML = body || "";
+        el.dlgFooter.innerHTML = "";
+        (actions || []).forEach((a) => {
+          const b = document.createElement("button");
+          b.className = `m3Btn ${a.variant || ""}`.trim();
+          b.textContent = a.text;
+          b.onclick = () => {
+            closeDialog();
+            a.onClick?.();
+          };
+          el.dlgFooter.appendChild(b);
+        });
+        el.scrim.setAttribute("aria-hidden", "false");
+        el.dialog.setAttribute("aria-hidden", "false");
+      }
+      function closeDialog() {
+        el.dialog.setAttribute("aria-hidden", "true");
+        el.scrim.setAttribute("aria-hidden", "true");
+        el.dlgFooter.innerHTML = "";
+      }
+
+      function setAppBarFor(screen) {
+        const map = {
+          generate: { t: "生成卡片", s: "输入中文/英文，生成卡片图片与英文词" },
+          card: { t: "卡片", s: "查看、再生成、保存与分享" },
+          saved: { t: "已保存", s: "管理你的卡片库" },
+          settings: { t: "设置", s: "配置 Token、权限与调试" },
+        };
+        const conf = map[screen] || map.generate;
+        el.appTitle.textContent = conf.t;
+        el.appSub.textContent = conf.s;
+      }
+
+      function showScreen(name) {
+        Screens.forEach((s) => {
+          el.screens[s].setAttribute("aria-hidden", s === name ? "false" : "true");
+        });
+        el.navBtns.forEach((b) => {
+          const n = b.getAttribute("data-nav");
+          if (n === name) b.setAttribute("aria-current", "page");
+          else b.removeAttribute("aria-current");
+        });
+        setAppBarFor(name);
+        window.location.hash = `#${name}`;
+      }
+
+      function normalizeEnglish(origin) {
+        const t = (origin || "").trim();
+        if (!t) return "";
+        const hasCJK = /[\u3400-\u9fff]/.test(t);
+        if (hasCJK) {
+          const map = [
+            ["苹果", "Apple"],
+            ["香蕉", "Banana"],
+            ["猫", "Cat"],
+            ["狗", "Dog"],
+            ["勇气", "Courage"],
+            ["感谢", "Grateful"],
+            ["快乐", "Happiness"],
+          ];
+          for (const [cn, en] of map) {
+            if (t.includes(cn)) return en;
+          }
+          return "Vocabulary";
+        }
+        const cleaned = t.replace(/\s+/g, " ").slice(0, 40);
+        return cleaned.length ? cleaned[0].toUpperCase() + cleaned.slice(1) : "";
+      }
+
+      function svgCard({ origin, english, style, seed }) {
+        const s = String(seed || Date.now());
+        const sum = s.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
+        const hue = (sum * 7) % 360;
+        const hue2 = (hue + 44) % 360;
+        const hue3 = (hue + 120) % 360;
+
+        const safeOrigin = escapeHtml(origin || "—");
+        const safeEnglish = escapeHtml(english || "—");
+
+        const styleText = style === "playful" ? "PLAYFUL" : style === "study" ? "STUDY" : "CLEAN";
+        const accent = style === "playful" ? 0.18 : style === "study" ? 0.12 : 0.08;
+
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+            <defs>
+              <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="hsl(${hue} 85% 55%)"/>
+                <stop offset="0.55" stop-color="hsl(${hue2} 85% 55%)"/>
+                <stop offset="1" stop-color="hsl(${hue3} 85% 50%)"/>
+              </linearGradient>
+              <filter id="b">
+                <feGaussianBlur stdDeviation="26"/>
+              </filter>
+            </defs>
+            <rect width="1600" height="1000" fill="url(#bg)"/>
+            <circle cx="260" cy="220" r="160" fill="rgba(255,255,255,${accent})" filter="url(#b)"/>
+            <circle cx="1320" cy="180" r="230" fill="rgba(255,255,255,${accent * 0.9})" filter="url(#b)"/>
+            <circle cx="1200" cy="830" r="260" fill="rgba(0,0,0,0.12)" filter="url(#b)"/>
+
+            <rect x="120" y="120" width="1360" height="760" rx="56" fill="rgba(15,18,24,0.30)" stroke="rgba(255,255,255,0.18)"/>
+            <text x="200" y="290" font-family="Roboto, system-ui, -apple-system, Segoe UI, PingFang SC, Microsoft YaHei, Arial" font-size="44" fill="rgba(255,255,255,0.78)">
+              ${safeOrigin}
+            </text>
+            <text x="200" y="460" font-family="Roboto, system-ui, -apple-system, Segoe UI, PingFang SC, Microsoft YaHei, Arial" font-size="124" font-weight="800" fill="#fff">
+              ${safeEnglish}
+            </text>
+            <text x="200" y="565" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace" font-size="26" fill="rgba(255,255,255,0.78)">
+              COZE • WORD CARD • ${styleText}
+            </text>
+            <text x="200" y="705" font-family="Roboto, system-ui, -apple-system, Segoe UI, PingFang SC, Microsoft YaHei, Arial" font-size="32" fill="rgba(255,255,255,0.76)">
+              Regenerate for variations • Save & Share
+            </text>
+            <text x="200" y="825" font-family="ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace" font-size="22" fill="rgba(255,255,255,0.64)">
+              ${new Date().toISOString().slice(0, 19).replace("T", " ")}
+            </text>
+          </svg>
+        `.trim();
+        return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
+      }
+
+      function simulateCozeGenerate({ origin, style }) {
+        const token = getToken();
+        return new Promise((resolve, reject) => {
+          window.setTimeout(() => {
+            if (!token) {
+              reject({ code: "NO_TOKEN", message: "未配置 Token" });
+              return;
+            }
+            const english = normalizeEnglish(origin);
+            const imageUrl = svgCard({ origin, english, style, seed: Date.now() });
+            resolve({ english, imageUrl });
+          }, 850 + Math.random() * 650);
+        });
+      }
+
+      function setLoading(isLoading) {
+        el.imgSkeleton.style.display = isLoading ? "block" : "none";
+        el.btnGenerate.disabled = isLoading;
+        el.btnRegenerate.disabled = isLoading;
+        el.btnSave.disabled = isLoading;
+        el.btnShare.disabled = isLoading;
+      }
+
+      function renderCard() {
+        el.outOrigin.value = state.origin || "-";
+        el.outEnglish.value = state.english || "-";
+        el.metaCreatedAt.textContent = state.createdAt ? formatTime(state.createdAt) : "-";
+        el.metaCache.textContent = `cache: ${state.cacheHit ? "HIT" : "MISS"}`;
+
+        el.imgBox.innerHTML = `
+          <div class="imgTag" id="imgTag">${state.imageUrl ? "预览" : "空"}</div>
+          ${state.imageUrl ? `<img src="${state.imageUrl}" alt="单词卡片图片" />` : ""}
+          <div class="skeleton" id="imgSkeleton" aria-hidden="true" style="display:none"></div>
+        `;
+        el.imgTag = document.getElementById("imgTag");
+        el.imgSkeleton = document.getElementById("imgSkeleton");
+
+        const has = !!state.imageUrl;
+        setPill(el.pillCard, has ? "ok" : "warn", has ? "已生成" : "未生成");
+      }
+
+      async function generate(source) {
+        const origin = (el.inputOrigin.value || "").trim();
+        if (!origin) {
+          setPill(el.pillGenerate, "warn", "请输入内容");
+          showSnackbar("请输入一个单词或中文含义。");
+          showScreen("generate");
+          return;
+        }
+
+        const style = getStyle();
+        state.origin = origin;
+        state.english = "-";
+        state.imageUrl = "";
+        state.createdAt = "";
+        state.cacheHit = false;
+
+        renderCard();
+        showScreen("card");
+        setPill(el.pillCard, "warn", source === "regenerate" ? "再生成中…" : "生成中…");
+        setLoading(true);
+
+        try {
+          // 关键逻辑：这里模拟 Coze API 返回（落地安卓时替换为真实网络请求 + 解析）
+          const res = await simulateCozeGenerate({ origin, style });
+          state.english = res.english || "-";
+          state.imageUrl = res.imageUrl || "";
+          state.createdAt = nowIso();
+          state.cacheHit = false;
+          renderCard();
+          setLoading(false);
+          setPill(el.pillCard, "ok", source === "regenerate" ? "已更新" : "已生成");
+          showSnackbar(`生成成功：<strong>${escapeHtml(state.english)}</strong>`);
+          setPill(el.pillGenerate, "ok", "可继续生成");
+        } catch (e) {
+          setLoading(false);
+          setPill(el.pillCard, "err", "生成失败");
+          if (e?.code === "NO_TOKEN") {
+            // 关键逻辑：没 Token 不是“重试”，而是“去设置”，这能显著降低用户挫败感
+            openDialog({
+              title: "需要配置 Token",
+              body: "检测到未配置 Coze Token。请先在“设置”中保存 Token，再返回生成。",
+              actions: [
+                { text: "取消", variant: "" },
+                {
+                  text: "去设置",
+                  variant: "m3Btn--filled",
+                  onClick: () => {
+                    showScreen("settings");
+                  },
+                },
+              ],
+            });
+            updateBadges();
+            return;
+          }
+          showSnackbar(`生成失败：${escapeHtml(e?.message || "请稍后重试")}`);
+        }
+      }
+
+      function saveCurrent() {
+        if (!state.imageUrl || !state.english || state.english === "-") {
+          showSnackbar("当前没有可保存的卡片。");
+          return;
+        }
+
+        // 关键逻辑：保存前权限检查（落地安卓一般由系统 API 决定是否需要权限）
+        if (!hasStoragePermission()) {
+          openDialog({
+            title: "允许保存到相册？",
+            body: "为了保存图片到本地，需要访问媒体库（示意）。你可以先允许，也可以在设置中稍后开启。",
+            actions: [
+              { text: "拒绝", variant: "", onClick: () => showSnackbar("已拒绝保存权限。可在设置中开启。") },
+              { text: "允许", variant: "m3Btn--filled", onClick: () => (setStoragePermission(true), updateBadges(), saveCurrent()) },
+            ],
+          });
+          return;
+        }
+
+        const list = getSaved();
+        const id = `c_${Math.random().toString(16).slice(2)}_${Date.now()}`;
+        const item = {
+          id,
+          origin: state.origin,
+          english: state.english,
+          imageUrl: state.imageUrl,
+          createdAt: state.createdAt || nowIso(),
+        };
+        setSaved([item, ...list]);
+        renderSaved();
+        updateBadges();
+        showSnackbar(`已保存：<strong>${escapeHtml(item.english)}</strong>`, "查看", () => openSaved(item.id));
+      }
+
+      function shareCurrent() {
+        if (!state.imageUrl || !state.english || state.english === "-") {
+          showSnackbar("当前没有可分享的内容。");
+          return;
+        }
+        // 关键逻辑：原型用 Snackbar 模拟系统分享；安卓落地建议使用 Share Sheet + 临时 Uri
+        showSnackbar(`已调起系统分享（示意）：<strong>${escapeHtml(state.english)}</strong>`);
+      }
+
+      function openSaved(id) {
+        const list = getSaved();
+        const item = list.find((x) => x.id === id);
+        if (!item) return;
+        state.origin = item.origin;
+        state.english = item.english;
+        state.imageUrl = item.imageUrl;
+        state.createdAt = item.createdAt;
+        state.cacheHit = true;
+        state.lastOpenedSavedId = id;
+        renderCard();
+        showScreen("card");
+        setPill(el.pillCard, "ok", "来自已保存");
+      }
+
+      function deleteSaved(id) {
+        const list = getSaved();
+        const item = list.find((x) => x.id === id);
+        setSaved(list.filter((x) => x.id !== id));
+        renderSaved();
+        showSnackbar(`已删除：<strong>${escapeHtml(item?.english || "")}</strong>`, "撤销", () => {
+          if (!item) return;
+          setSaved([item, ...getSaved()]);
+          renderSaved();
+          showSnackbar("已撤销删除。");
+        });
+      }
+
+      function renderSaved() {
+        const list = getSaved();
+        const q = (el.inputSearch.value || "").trim().toLowerCase();
+        const filtered = q ? list.filter((x) => `${x.english} ${x.origin}`.toLowerCase().includes(q)) : list;
+
+        setPill(el.pillSaved, list.length ? "ok" : "warn", `${list.length} 张`);
+
+        if (!filtered.length) {
+          el.savedList.innerHTML = `
+            <div class="card" style="box-shadow:none">
+              <div class="card__bd">
+                <div class="hint"><strong>${list.length ? "无匹配结果" : "暂无已保存卡片"}</strong></div>
+                <div class="hint" style="margin-top:6px">从“卡片”页点击 <span class="kbd">保存</span> 后，这里会出现。</div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
+        el.savedList.innerHTML = filtered
+          .map((x) => {
+            return `
+              <div class="listItem" data-id="${escapeHtml(x.id)}">
+                <div class="thumb">${x.imageUrl ? `<img src="${x.imageUrl}" alt="缩略图" />` : ""}</div>
+                <div class="liMain">
+                  <div class="liTitle">${escapeHtml(x.english || "—")}</div>
+                  <div class="liSub">原始输入：${escapeHtml(x.origin || "-")}</div>
+                </div>
+                <div class="liMeta">
+                  <div>${escapeHtml(formatTime(x.createdAt))}</div>
+                  <div style="height:6px"></div>
+                  <button class="iconBtn" data-action="more" title="更多" style="width:36px;height:36px">
+                    <span aria-hidden="true">⋮</span>
+                  </button>
+                </div>
+              </div>
+            `;
+          })
+          .join("");
+      }
+
+      function updateBadges() {
+        const token = getToken();
+        el.badgeToken.textContent = token ? "Token: 已配置" : "Token: 未配置";
+        el.badgePerm.textContent = hasStoragePermission() ? "存储权限: 已授予" : "存储权限: 未授予";
+
+        const ok = !!token;
+        setPill(el.pillSettings, ok ? "ok" : "warn", ok ? "已配置" : "未配置");
+        const updatedAt = localStorage.getItem(StorageKeys.tokenUpdatedAt) || "";
+        el.tokenUpdatedAt.textContent = updatedAt ? `更新：${formatTime(updatedAt)}` : "-";
+      }
+
+      function renderStyleChips() {
+        const cur = getStyle();
+        Array.from(el.styleChips.querySelectorAll(".chipBtn")).forEach((b) => {
+          const s = b.getAttribute("data-style");
+          b.setAttribute("aria-pressed", s === cur ? "true" : "false");
+        });
+      }
+
+      function seedDemo() {
+        const seeds = ["苹果（水果）", "Apple（公司）", "grateful", "勇气", "harmony", "猫"];
+        const now = Date.now();
+        const list = getSaved();
+        const style = getStyle();
+        const extra = seeds.map((s, idx) => {
+          const english = normalizeEnglish(s);
+          return {
+            id: `demo_${idx}_${now}`,
+            origin: s,
+            english,
+            imageUrl: svgCard({ origin: s, english, style, seed: now + idx * 37 }),
+            createdAt: new Date(now - idx * 3600 * 1000).toISOString(),
+          };
+        });
+        setSaved([...extra, ...list]);
+        renderSaved();
+        showSnackbar("已填充示例卡片。");
+      }
+
+      function overflowActions() {
+        const items = [
+          {
+            id: "go_saved",
+            title: "打开已保存",
+            sub: "查看你的卡片库",
+            icon: "⧉",
+            onClick: () => showScreen("saved"),
+          },
+          {
+            id: "go_settings",
+            title: "设置",
+            sub: "配置 Token / 权限",
+            icon: "⚙",
+            onClick: () => showScreen("settings"),
+          },
+          {
+            id: "seed",
+            title: "填充示例数据",
+            sub: "用于快速体验列表管理",
+            icon: "＋",
+            onClick: () => seedDemo(),
+          },
+        ];
+        openSheet("更多", items);
+      }
+
+      function cardActionsSheet() {
+        const can = !!state.imageUrl && state.english && state.english !== "-";
+        const fromSaved = !!state.lastOpenedSavedId;
+        const items = [
+          { id: "save", title: "保存", sub: "保存到本地卡片库", icon: "⬇", onClick: () => saveCurrent(), disabled: !can },
+          { id: "share", title: "分享", sub: "调起系统分享（示意）", icon: "⤴", onClick: () => shareCurrent(), disabled: !can },
+          {
+            id: "copy",
+            title: "复制英文单词",
+            sub: "复制到剪贴板（示意）",
+            icon: "⧉",
+            onClick: async () => {
+              try {
+                await navigator.clipboard.writeText(state.english || "");
+                showSnackbar("已复制。");
+              } catch {
+                showSnackbar("复制失败（浏览器限制）。");
+              }
+            },
+          },
+        ].filter((x) => !x.disabled);
+
+        if (fromSaved) {
+          items.push({
+            id: "delete",
+            title: "删除此卡片",
+            sub: "从卡片库移除",
+            icon: "🗑",
+            onClick: () => {
+              const id = state.lastOpenedSavedId;
+              openDialog({
+                title: "确认删除？",
+                body: `将删除：<strong>${escapeHtml(state.english)}</strong>`,
+                actions: [
+                  { text: "取消", variant: "" },
+                  { text: "删除", variant: "m3Btn--danger", onClick: () => deleteSaved(id) },
+                ],
+              });
+            },
+          });
+        }
+
+        openSheet("卡片操作", items);
+      }
+
+      function routeFromHash() {
+        const raw = (window.location.hash || "#generate").slice(1);
+        const next = Screens.includes(raw) ? raw : "generate";
+        showScreen(next);
+      }
+
+      function resetAll() {
+        localStorage.removeItem(StorageKeys.token);
+        localStorage.removeItem(StorageKeys.tokenUpdatedAt);
+        localStorage.removeItem(StorageKeys.saved);
+        localStorage.removeItem(StorageKeys.perm);
+        localStorage.removeItem(StorageKeys.style);
+        state.origin = "";
+        state.english = "";
+        state.imageUrl = "";
+        state.createdAt = "";
+        state.cacheHit = false;
+        state.lastOpenedSavedId = "";
+        el.inputOrigin.value = "";
+        el.inputSearch.value = "";
+        el.inputToken.value = "";
+        setStoragePermission(false);
+        setStyle("clean");
+        renderStyleChips();
+        renderSaved();
+        renderCard();
+        updateBadges();
+        setPill(el.pillGenerate, "warn", "等待输入");
+        showScreen("generate");
+        showSnackbar("已重置演示数据。");
+      }
+
+      function init() {
+        setSysTime();
+        window.setInterval(setSysTime, 15000);
+
+        el.scrim.addEventListener("click", () => {
+          closeSheet();
+          closeDialog();
+        });
+
+        el.btnOverflow.addEventListener("click", () => overflowActions());
+        el.btnReset.addEventListener("click", () => resetAll());
+
+        el.navBtns.forEach((b) => {
+          b.addEventListener("click", () => {
+            const n = b.getAttribute("data-nav");
+            if (!n) return;
+            showScreen(n);
+          });
+        });
+
+        el.styleChips.addEventListener("click", (e) => {
+          const b = e.target.closest(".chipBtn");
+          if (!b) return;
+          const style = b.getAttribute("data-style");
+          if (!style) return;
+          setStyle(style);
+          renderStyleChips();
+          showSnackbar(`已选择风格：<strong>${escapeHtml(style)}</strong>`);
+        });
+
+        el.btnExample.addEventListener("click", () => {
+          const examples = ["苹果（水果）", "Apple（公司）", "grateful", "勇气", "harmony", "猫"];
+          const pick = examples[Math.floor(Math.random() * examples.length)];
+          el.inputOrigin.value = pick;
+          setPill(el.pillGenerate, "ok", "已填入示例");
+          showSnackbar(`已填入示例：<strong>${escapeHtml(pick)}</strong>`);
+        });
+
+        el.btnGoSettings.addEventListener("click", () => showScreen("settings"));
+        el.btnGenerate.addEventListener("click", () => generate("generate"));
+        el.inputOrigin.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") generate("generate");
+        });
+
+        el.btnRegenerate.addEventListener("click", () => generate("regenerate"));
+        el.btnSave.addEventListener("click", () => saveCurrent());
+        el.btnShare.addEventListener("click", () => shareCurrent());
+
+        el.btnSeed.addEventListener("click", () => seedDemo());
+        el.btnClearSaved.addEventListener("click", () => {
+          const list = getSaved();
+          if (!list.length) {
+            showSnackbar("已保存为空。");
+            return;
+          }
+          openDialog({
+            title: "清空已保存？",
+            body: "将删除所有已保存卡片（原型演示）。",
+            actions: [
+              { text: "取消", variant: "" },
+              {
+                text: "清空",
+                variant: "m3Btn--danger",
+                onClick: () => {
+                  setSaved([]);
+                  renderSaved();
+                  showSnackbar("已清空。");
+                },
+              },
+            ],
+          });
+        });
+        el.inputSearch.addEventListener("input", () => renderSaved());
+
+        el.savedList.addEventListener("click", (e) => {
+          const li = e.target.closest(".listItem");
+          if (!li) return;
+          const id = li.getAttribute("data-id");
+          const isMore = !!e.target.closest('button[data-action="more"]');
+          if (isMore) {
+            const list = getSaved();
+            const item = list.find((x) => x.id === id);
+            if (!item) return;
+            openSheet(item.english || "操作", [
+              { id: "view", title: "查看", sub: "打开卡片详情", icon: "▣", onClick: () => openSaved(id) },
+              { id: "share", title: "分享", sub: "调起系统分享（示意）", icon: "⤴", onClick: () => (openSaved(id), shareCurrent()) },
+              {
+                id: "delete",
+                title: "删除",
+                sub: "从卡片库移除",
+                icon: "🗑",
+                onClick: () =>
+                  openDialog({
+                    title: "确认删除？",
+                    body: `将删除：<strong>${escapeHtml(item.english)}</strong>`,
+                    actions: [
+                      { text: "取消", variant: "" },
+                      { text: "删除", variant: "m3Btn--danger", onClick: () => deleteSaved(id) },
+                    ],
+                  }),
+              },
+            ]);
+            return;
+          }
+          openSaved(id);
+        });
+
+        el.btnSaveToken.addEventListener("click", () => {
+          const t = (el.inputToken.value || "").trim();
+          if (!t) {
+            showSnackbar("请输入 Token。");
+            return;
+          }
+          setToken(t);
+          el.inputToken.setAttribute("type", "password");
+          updateBadges();
+          showSnackbar("Token 已保存。");
+        });
+        el.btnToggleToken.addEventListener("click", () => {
+          const cur = el.inputToken.getAttribute("type") || "text";
+          el.inputToken.setAttribute("type", cur === "password" ? "text" : "password");
+          showSnackbar(cur === "password" ? "已显示 Token。" : "已隐藏 Token。");
+        });
+        el.btnTestToken.addEventListener("click", async () => {
+          const token = (el.inputToken.value || "").trim();
+          if (!token) {
+            showSnackbar("请先输入 Token。");
+            return;
+          }
+          showSnackbar("正在测试连接（示意）…");
+          window.setTimeout(() => {
+            if (token.length < 10) {
+              openDialog({
+                title: "连接失败（示意）",
+                body: "Token 格式可能不正确。请检查后重新保存。",
+                actions: [{ text: "知道了", variant: "m3Btn--filled" }],
+              });
+              return;
+            }
+            openDialog({
+              title: "连接成功（示意）",
+              body: "Token 看起来有效。你现在可以返回生成卡片。",
+              actions: [
+                { text: "留在设置", variant: "" },
+                { text: "去生成", variant: "m3Btn--filled", onClick: () => showScreen("generate") },
+              ],
+            });
+          }, 900);
+        });
+        el.btnClearToken.addEventListener("click", () => {
+          clearToken();
+          el.inputToken.value = "";
+          updateBadges();
+          showSnackbar("Token 已清除。");
+        });
+
+        el.btnGrantPerm.addEventListener("click", () => {
+          setStoragePermission(true);
+          updateBadges();
+          showSnackbar("已授予存储权限（示意）。");
+        });
+        el.btnRevokePerm.addEventListener("click", () => {
+          setStoragePermission(false);
+          updateBadges();
+          showSnackbar("已撤销存储权限（示意）。");
+        });
+
+        window.addEventListener("hashchange", routeFromHash);
+
+        const token = getToken();
+        el.inputToken.value = token;
+        el.inputToken.setAttribute("type", token ? "password" : "text");
+        if (localStorage.getItem(StorageKeys.perm) == null) setStoragePermission(false);
+        if (!localStorage.getItem(StorageKeys.style)) setStyle("clean");
+
+        renderStyleChips();
+        renderSaved();
+        renderCard();
+        updateBadges();
+
+        routeFromHash();
+      }
+
+      init();
+    </script>
+  </body>
+</html>

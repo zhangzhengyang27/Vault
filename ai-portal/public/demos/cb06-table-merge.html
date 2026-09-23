@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多表合并工具</title>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 24px; }
+        .upload-area {
+            background: #fff;
+            border: 2px dashed #90caf9;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            margin-bottom: 20px;
+        }
+        .upload-area:hover { border-color: #1976d2; }
+        .upload-area .icon { font-size: 36px; margin-bottom: 8px; }
+        .upload-area p { color: #78909c; }
+        input[type="file"] { display: none; }
+        .file-list {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eceff1;
+        }
+        .file-item:last-child { border-bottom: none; }
+        .file-name { font-size: 14px; color: #37474f; }
+        .file-rows { font-size: 13px; color: #78909c; }
+        .btn-row { display: flex; gap: 12px; margin-bottom: 20px; }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-merge { background: #1976d2; color: #fff; }
+        .btn-download { background: #43a047; color: #fff; }
+        .btn-clear { background: #eceff1; color: #546e7a; }
+        .summary {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .summary h3 { font-size: 16px; color: #37474f; margin-bottom: 12px; }
+        .summary-stats { display: flex; gap: 20px; flex-wrap: wrap; }
+        .stat { text-align: center; }
+        .stat .val { font-size: 28px; font-weight: 700; color: #1976d2; }
+        .stat .lbl { font-size: 13px; color: #78909c; }
+        .preview {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            overflow-x: auto;
+        }
+        .preview h3 { font-size: 16px; color: #37474f; margin-bottom: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px 10px; text-align: left; border-bottom: 1px solid #eceff1; }
+        th { background: #f5f7fa; color: #546e7a; font-weight: 600; position: sticky; top: 0; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 多表合并工具</h1>
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="icon">📂</div>
+            <p>拖拽或点击上传多个 Excel / CSV 文件</p>
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" multiple onchange="handleFiles(event)">
+        </div>
+        <div id="fileListCard" class="file-list hidden">
+            <h3 style="margin-bottom:10px;font-size:16px;color:#37474f;">已上传文件</h3>
+            <div id="fileList"></div>
+        </div>
+        <div class="btn-row" id="btnRow" style="display:none;">
+            <button class="btn btn-merge" onclick="mergeFiles()">合并文件</button>
+            <button class="btn btn-download hidden" id="downloadBtn" onclick="downloadResult()">下载合并结果</button>
+            <button class="btn btn-clear" onclick="clearAll()">清空重新开始</button>
+        </div>
+        <div id="summaryCard" class="summary hidden">
+            <h3>合并汇总</h3>
+            <div class="summary-stats">
+                <div class="stat"><div class="val" id="fileCount">0</div><div class="lbl">文件数</div></div>
+                <div class="stat"><div class="val" id="totalRows">0</div><div class="lbl">总行数</div></div>
+                <div class="stat"><div class="val" id="totalCols">0</div><div class="lbl">总列数</div></div>
+            </div>
+        </div>
+        <div id="previewCard" class="preview hidden">
+            <h3>合并预览（前50行）</h3>
+            <table id="previewTable"></table>
+        </div>
+    </div>
+    <script>
+        let fileData = [];
+        let mergedData = [];
+        let mergedHeaders = [];
+        function handleFiles(e) {
+            const files = Array.from(e.target.files);
+            files.forEach((file, idx) => {
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    let rows = [];
+                    const name = file.name;
+                    if (name.endsWith('.csv')) {
+                        const result = Papa.parse(ev.target.result, { header: true });
+                        rows = result.data;
+                    } else {
+                        const wb = XLSX.read(ev.target.result, { type: 'binary' });
+                        rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                    }
+                    // 使用index确保顺序
+                    const targetIdx = fileData.length;
+                    fileData.push({ name, rows, rowCount: rows.length });
+                    renderFileList();
+                };
+                if (file.name.endsWith('.csv')) reader.readAsText(file);
+                else reader.readAsBinaryString(file);
+            });
+        }
+        function renderFileList() {
+            const card = document.getElementById('fileListCard');
+            const list = document.getElementById('fileList');
+            card.classList.remove('hidden');
+            document.getElementById('btnRow').style.display = 'flex';
+            list.innerHTML = fileData.map(f => `
+                <div class="file-item">
+                    <span class="file-name">📄 ${f.name}</span>
+                    <span class="file-rows">${f.rowCount} 行</span>
+                </div>
+            `).join('');
+        }
+        function mergeFiles() {
+            if (fileData.length === 0) return;
+            const allHeaders = new Set();
+            fileData.forEach(f => f.rows.forEach(r => Object.keys(r).forEach(k => allHeaders.add(k))));
+            allHeaders.add('来源文件');
+            mergedHeaders = Array.from(allHeaders);
+            mergedData = [];
+            fileData.forEach(f => {
+                f.rows.forEach(row => {
+                    const newRow = {};
+                    mergedHeaders.forEach(h => {
+                        if (h === '来源文件') newRow[h] = f.name;
+                        else newRow[h] = row[h] !== undefined ? row[h] : '';
+                    });
+                    mergedData.push(newRow);
+                });
+            });
+            document.getElementById('summaryCard').classList.remove('hidden');
+            document.getElementById('fileCount').textContent = fileData.length;
+            document.getElementById('totalRows').textContent = mergedData.length;
+            document.getElementById('totalCols').textContent = mergedHeaders.length;
+            document.getElementById('downloadBtn').classList.remove('hidden');
+            renderPreview();
+        }
+        function renderPreview() {
+            const card = document.getElementById('previewCard');
+            card.classList.remove('hidden');
+            const table = document.getElementById('previewTable');
+            const preview = mergedData.slice(0, 50);
+            let html = '<thead><tr>' + mergedHeaders.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+            preview.forEach(row => {
+                html += '<tr>' + mergedHeaders.map(h => `<td>${row[h]}</td>`).join('') + '</tr>';
+            });
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+        function downloadResult() {
+            const ws = XLSX.utils.json_to_sheet(mergedData, { header: mergedHeaders });
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, '合并结果');
+            XLSX.writeFile(wb, '合并结果.xlsx');
+        }
+        function clearAll() {
+            fileData = [];
+            mergedData = [];
+            mergedHeaders = [];
+            document.getElementById('fileListCard').classList.add('hidden');
+            document.getElementById('summaryCard').classList.add('hidden');
+            document.getElementById('previewCard').classList.add('hidden');
+            document.getElementById('downloadBtn').classList.add('hidden');
+            document.getElementById('btnRow').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>微信公众号 Markdown 渲染组件 - UI 原型</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        /* 基础颜色 */
+        --primary-bg: #ffffff;
+        --secondary-bg: #f8fafc;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --border-color: #e2e8f0;
+        --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+        /* 玻璃拟态效果 */
+        --glass-bg: rgba(255, 255, 255, 0.25);
+        --glass-border: rgba(255, 255, 255, 0.18);
+        --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+        /* 代码块样式 */
+        --code-bg: #1e1e1e;
+        --code-text: #d4d4d4;
+        --code-border: #333333;
+
+        /* 主题颜色 */
+        --accent-color: #3b82f6;
+        --success-color: #10b981;
+        --warning-color: #f59e0b;
+        --error-color: #ef4444;
+      }
+
+      /* 主题定义 - 基于2025年现代UI设计趋势 */
+      [data-theme="minimal"] {
+        --primary-bg: #ffffff;
+        --secondary-bg: #f8fafc;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --border-color: #e2e8f0;
+        --accent-color: #3b82f6;
+      }
+
+      [data-theme="nature"] {
+        --primary-bg: #fefefe;
+        --secondary-bg: #f0fdf4;
+        --text-primary: #166534;
+        --text-secondary: #15803d;
+        --border-color: #dcfce7;
+        --accent-color: #16a34a;
+      }
+
+      [data-theme="cyber"] {
+        --primary-bg: #0f172a;
+        --secondary-bg: #1e293b;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --border-color: #334155;
+        --accent-color: #06b6d4;
+      }
+
+      [data-theme="elegant"] {
+        --primary-bg: #fafafa;
+        --secondary-bg: #f5f5f5;
+        --text-primary: #262626;
+        --text-secondary: #525252;
+        --border-color: #e5e5e5;
+        --accent-color: #dc2626;
+      }
+
+      [data-theme="warm"] {
+        --primary-bg: #fffbeb;
+        --secondary-bg: #fef3c7;
+        --text-primary: #92400e;
+        --text-secondary: #b45309;
+        --border-color: #fde68a;
+        --accent-color: #d97706;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+          Arial, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        color: var(--text-primary);
+        transition: all 0.3s ease;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      /* 顶部设置区域 - 玻璃拟态效果 - 现代优化 */
+      .settings-bar {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 16px 28px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .settings-bar:hover {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+      }
+
+      .control-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .control-button {
+        background: rgba(255, 255, 255, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 14px;
+        padding: 10px 14px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-size: 16px;
+        color: var(--text-primary);
+        position: relative;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+
+      .control-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .control-button:active {
+        transform: translateY(-1px) scale(0.98);
+      }
+
+      .control-button.active {
+        background: var(--accent-color);
+        color: white;
+        border-color: var(--accent-color);
+      }
+
+      /* 主题选择下拉菜单 */
+      .theme-selector {
+        position: relative;
+      }
+
+      .theme-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: var(--primary-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
+        transition: all 0.3s ease;
+        z-index: 1001;
+        min-width: 120px;
+      }
+
+      .theme-selector.active .theme-dropdown {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+      }
+
+      .theme-option {
+        padding: 8px 12px;
+        cursor: pointer;
+        transition: background 0.2s ease;
+        border-radius: 8px;
+        margin: 4px;
+      }
+
+      .theme-option:hover {
+        background: var(--secondary-bg);
+      }
+
+      /* 主要内容区域 */
+      .main-content {
+        margin-top: 100px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+      }
+
+      .preview-container {
+        background: var(--primary-bg);
+        border-radius: 20px;
+        box-shadow: var(--shadow-lg);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      /* 手机视图样式 - 现代新拟态设计 */
+      .preview-container.mobile {
+        width: 375px;
+        height: 667px;
+        border-radius: 36px;
+        position: relative;
+        background: linear-gradient(145deg, #f8fafc, #ffffff);
+        box-shadow:
+          25px 25px 50px #d1d5db,
+          -25px -25px 50px #ffffff,
+          inset 2px 2px 5px rgba(255, 255, 255, 0.5),
+          inset -2px -2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .preview-container.mobile::before {
+        content: "";
+        position: absolute;
+        top: 16px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 140px;
+        height: 28px;
+        background: linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 100%);
+        border-radius: 14px;
+        z-index: 1;
+        box-shadow:
+          inset 0 2px 4px rgba(255, 255, 255, 0.1),
+          0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .preview-content {
+        padding: 40px 20px 20px;
+        height: 100%;
+        overflow-y: auto;
+        transition: all 0.3s ease;
+      }
+
+      .preview-container.mobile .preview-content {
+        padding: 60px 20px 30px;
+        border-radius: 30px;
+        margin: 10px;
+        background: var(--primary-bg);
+      }
+
+      /* 桌面视图样式 */
+      .preview-container.desktop {
+        width: 100%;
+        max-width: 800px;
+        min-height: 600px;
+      }
+
+      .preview-container.desktop .preview-content {
+        padding: 40px;
+      }
+
+      /* Markdown 内容样式 */
+      .markdown-content {
+        line-height: 1.6;
+      }
+
+      .markdown-content h1 {
+        font-size: 2.5em;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 24px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 16px;
+        transition: all 0.3s ease;
+      }
+
+      .markdown-content h2 {
+        font-size: 2em;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 32px 0 16px;
+        transition: all 0.3s ease;
+      }
+
+      .markdown-content h3 {
+        font-size: 1.5em;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin: 24px 0 12px;
+        transition: all 0.3s ease;
+      }
+
+      .markdown-content p {
+        margin-bottom: 16px;
+        color: var(--text-primary);
+        transition: color 0.3s ease;
+      }
+
+      .markdown-content blockquote {
+        border-left: 4px solid var(--accent-color);
+        padding-left: 20px;
+        margin: 20px 0;
+        font-style: italic;
+        color: var(--text-secondary);
+        background: var(--secondary-bg);
+        padding: 16px 20px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+      }
+
+      .markdown-content ul,
+      .markdown-content ol {
+        margin: 16px 0;
+        padding-left: 32px;
+      }
+
+      .markdown-content li {
+        margin-bottom: 8px;
+        color: var(--text-primary);
+      }
+
+      .markdown-content strong {
+        color: var(--accent-color);
+        font-weight: 600;
+      }
+
+      .markdown-content em {
+        color: var(--text-secondary);
+        font-style: italic;
+      }
+
+      .markdown-content a {
+        color: var(--accent-color);
+        text-decoration: none;
+        border-bottom: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .markdown-content a:hover {
+        border-bottom-color: var(--accent-color);
+      }
+
+      /* 代码块样式 */
+      .code-block {
+        background: var(--code-bg);
+        border-radius: 12px;
+        margin: 20px 0;
+        overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+
+      .code-header {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .window-controls {
+        display: flex;
+        gap: 6px;
+      }
+
+      .window-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .window-dot.red {
+        background: #ff5f57;
+      }
+      .window-dot.yellow {
+        background: #ffbd2e;
+      }
+      .window-dot.green {
+        background: #28ca42;
+      }
+
+      .code-language {
+        color: var(--code-text);
+        font-size: 12px;
+        margin-left: auto;
+        opacity: 0.7;
+      }
+
+      .code-content {
+        padding: 16px;
+        font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        color: var(--code-text);
+        overflow-x: auto;
+      }
+
+      /* 复制成功提示 */
+      .copy-toast {
+        position: fixed;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%) translateY(-20px);
+        background: var(--success-color);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1002;
+      }
+
+      .copy-toast.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* 响应式设计 */
+      @media (max-width: 768px) {
+        .container {
+          padding: 10px;
+        }
+
+        .settings-bar {
+          padding: 8px 16px;
+          gap: 12px;
+        }
+
+        .control-button {
+          padding: 6px 10px;
+          font-size: 14px;
+        }
+
+        .main-content {
+          margin-top: 80px;
+        }
+      }
+
+      /* 动画效果 */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .fade-in {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      /* 滚动条样式 */
+      .preview-content::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .preview-content::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      .preview-content::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 3px;
+      }
+
+      .preview-content::-webkit-scrollbar-thumb:hover {
+        background: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body data-theme="default">
+    <div class="container">
+      <!-- 顶部设置区域 -->
+      <div class="settings-bar">
+        <div class="control-group">
+          <div class="theme-selector">
+            <button class="control-button" id="themeToggle">🌈 极简白</button>
+            <div class="theme-dropdown" id="themeDropdown">
+              <div class="theme-option" data-theme="minimal">🌈 极简白</div>
+              <div class="theme-option" data-theme="nature">🌿 自然绿</div>
+              <div class="theme-option" data-theme="cyber">💎 赛博蓝</div>
+              <div class="theme-option" data-theme="elegant">🎩 优雅红</div>
+              <div class="theme-option" data-theme="warm">🧡 温暖橙</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-group">
+          <button class="control-button active" id="mobileView" title="手机视图">
+            📱
+          </button>
+          <button class="control-button" id="desktopView" title="桌面视图">
+            💻
+          </button>
+        </div>
+
+        <div class="control-group">
+          <button class="control-button" id="copyButton" title="复制到微信公众号">
+            📋
+          </button>
+        </div>
+      </div>
+
+      <!-- 复制成功提示 -->
+      <div class="copy-toast" id="copyToast">
+        ✅ 已复制到剪贴板，可直接粘贴到微信公众号
+      </div>
+
+      <!-- 主要内容区域 -->
+      <div class="main-content">
+        <div class="preview-container mobile fade-in" id="previewContainer">
+          <div class="preview-content">
+            <div class="markdown-content" id="markdownContent">
+              <h1>微信公众号 Markdown 渲染组件</h1>
+              <p>
+                这是一个专为<strong>微信公众号</strong>排版优化的 Markdown
+                渲染组件，支持实时预览、主题切换和一键复制功能。
+              </p>
+
+              <h2>✨ 核心功能</h2>
+              <ul>
+                <li><strong>实时渲染</strong>：支持 Markdown 到 HTML 的实时转换</li>
+                <li><strong>主题切换</strong>：提供5种精心设计的视觉主题</li>
+                <li><strong>响应式视图</strong>：手机/桌面两种预览模式</li>
+                <li><strong>一键复制</strong>：完美适配微信公众号格式</li>
+              </ul>
+
+              <h3>🎨 主题展示</h3>
+              <p>点击顶部 <em>🌈 主题切换</em> 按钮，体验现代设计趋势：</p>
+              <blockquote>
+                <p>
+                  基于2025年UI设计趋势，融合极简主义、自然元素、赛博风格、优雅配色和温暖色调，每种主题都精心调配。
+                </p>
+              </blockquote>
+
+              <h3>💻 代码高亮</h3>
+              <div class="code-block">
+                <div class="code-header">
+                  <div class="window-controls">
+                    <div class="window-dot red"></div>
+                    <div class="window-dot yellow"></div>
+                    <div class="window-dot green"></div>
+                  </div>
+                  <span class="code-language">JavaScript</span>
+                </div>
+                <div class="code-content">
+                  const renderMarkdown = (content, theme) => { const html =
+                  parseMarkdown(content); const styledHtml = applyTheme(html, theme);
+                  return convertToWechatFormat(styledHtml); };
+                </div>
+              </div>
+
+              <h3>📱 响应式设计</h3>
+              <p>
+                支持<strong>手机视图</strong>和<strong>桌面视图</strong>两种模式，点击顶部
+                <em>📱💻</em> 按钮即可切换：
+              </p>
+              <ul>
+                <li><strong>手机视图</strong>：375px 宽度，模拟真实手机显示效果</li>
+                <li><strong>桌面视图</strong>：自适应宽度，适合大屏幕编辑</li>
+              </ul>
+
+              <h3>🔗 链接样式</h3>
+              <p>
+                所有链接都经过美化处理，例如：<a href="#">这是一个示例链接</a
+                >，悬停时会有优雅的动画效果。
+              </p>
+
+              <h2>🚀 使用说明</h2>
+              <ol>
+                <li>在左侧编辑器中输入 Markdown 内容</li>
+                <li>选择合适的主题和视图模式</li>
+                <li>点击 📋 复制按钮，将内容粘贴到微信公众号</li>
+                <li>享受完美的排版效果！</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // 主题切换功能
+      const themeToggle = document.getElementById("themeToggle")
+      const themeDropdown = document.getElementById("themeDropdown")
+      const themeOptions = document.querySelectorAll(".theme-option")
+      const body = document.body
+
+      themeToggle.addEventListener("click", (e) => {
+        e.stopPropagation()
+        document.querySelector(".theme-selector").classList.toggle("active")
+      })
+
+      themeOptions.forEach((option) => {
+        option.addEventListener("click", (e) => {
+          e.stopPropagation()
+          const theme = option.dataset.theme
+          const themeName = option.textContent
+
+          body.dataset.theme = theme
+          themeToggle.innerHTML = `${themeName.split(" ")[0]} ${themeName.split(" ")[1]}`
+          document.querySelector(".theme-selector").classList.remove("active")
+
+          // 添加切换动画效果
+          const previewContent = document.querySelector(".preview-content")
+          previewContent.style.opacity = "0.7"
+          setTimeout(() => {
+            previewContent.style.opacity = "1"
+          }, 150)
+        })
+      })
+
+      // 点击外部关闭下拉菜单
+      document.addEventListener("click", () => {
+        document.querySelector(".theme-selector").classList.remove("active")
+      })
+
+      // 视图切换功能
+      const mobileView = document.getElementById("mobileView")
+      const desktopView = document.getElementById("desktopView")
+      const previewContainer = document.getElementById("previewContainer")
+
+      mobileView.addEventListener("click", () => {
+        previewContainer.classList.remove("desktop")
+        previewContainer.classList.add("mobile")
+        mobileView.classList.add("active")
+        desktopView.classList.remove("active")
+      })
+
+      desktopView.addEventListener("click", () => {
+        previewContainer.classList.remove("mobile")
+        previewContainer.classList.add("desktop")
+        desktopView.classList.add("active")
+        mobileView.classList.remove("active")
+      })
+
+      // 复制功能
+      const copyButton = document.getElementById("copyButton")
+      const copyToast = document.getElementById("copyToast")
+
+      copyButton.addEventListener("click", async () => {
+        try {
+          // 模拟复制功能
+          const content = document.getElementById("markdownContent").innerHTML
+          await navigator.clipboard.writeText(content)
+
+          // 显示成功提示
+          copyToast.classList.add("show")
+          setTimeout(() => {
+            copyToast.classList.remove("show")
+          }, 3000)
+
+          // 按钮反馈动画
+          copyButton.style.transform = "scale(0.95)"
+          setTimeout(() => {
+            copyButton.style.transform = "scale(1)"
+          }, 150)
+        } catch (err) {
+          console.error("复制失败:", err)
+          // 降级方案
+          const textArea = document.createElement("textarea")
+          textArea.value = document.getElementById("markdownContent").innerHTML
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand("copy")
+          document.body.removeChild(textArea)
+
+          copyToast.classList.add("show")
+          setTimeout(() => {
+            copyToast.classList.remove("show")
+          }, 3000)
+        }
+      })
+
+      // 添加平滑滚动效果
+      document.querySelector(".preview-content").addEventListener("scroll", (e) => {
+        const scrolled = e.target.scrollTop > 10
+        document.querySelector(".settings-bar").style.background = scrolled
+          ? "rgba(255, 255, 255, 0.9)"
+          : "var(--glass-bg)"
+      })
+
+      // 页面加载动画
+      window.addEventListener("load", () => {
+        document.querySelector(".preview-container").classList.add("fade-in")
+      })
+
+      // 键盘快捷键支持
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          switch (e.key) {
+            case "c":
+              e.preventDefault()
+              copyButton.click()
+              break
+            case "1":
+              e.preventDefault()
+              mobileView.click()
+              break
+            case "2":
+              e.preventDefault()
+              desktopView.click()
+              break
+          }
+        }
+      })
+    </script>
+  </body>
+</html>

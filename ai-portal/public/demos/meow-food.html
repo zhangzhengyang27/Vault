@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script>document.documentElement.classList.add('js')</script>
+<title>喵食光 · 鸡胸肉低敏鲜食餐｜首发预售</title>
+<meta name="description" content="喵食光鸡胸肉低敏鲜食餐，单一蛋白源、无谷低敏，兽医营养团队背书。7天试吃计划 + 订阅制，首发预售限量预约。" />
+<style>
+  :root{
+    --cream:#FBF7F0;
+    --cream-2:#F4ECDD;
+    --card:#FFFFFF;
+    --orange:#E8853A;
+    --orange-soft:#F6B27A;
+    --green:#8FB996;
+    --green-soft:#C7E0C9;
+    --pink:#F2A9A0;
+    --ink:#4A3F35;
+    --ink-soft:#7C6F62;
+    --line:#EADFD0;
+    --shadow:0 10px 30px rgba(120,90,50,.10);
+    --radius:22px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:"PingFang SC","Microsoft YaHei","Helvetica Neue",Arial,sans-serif;
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  section{padding:72px 0}
+  .eyebrow{
+    display:inline-block;font-size:13px;letter-spacing:2px;font-weight:700;
+    color:var(--orange);background:var(--cream-2);padding:6px 14px;border-radius:999px;
+    margin-bottom:16px;
+  }
+  h2{font-size:30px;line-height:1.3;margin-bottom:10px;font-weight:800}
+  .sub{color:var(--ink-soft);font-size:16px;margin-bottom:36px;max-width:640px}
+
+  /* Nav */
+  .nav{
+    position:sticky;top:0;z-index:50;background:rgba(251,247,240,.85);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line);
+  }
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--ink)}
+  .logo .dot{width:30px;height:30px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center}
+  .nav-links{display:flex;gap:26px;font-size:14px;color:var(--ink-soft);font-weight:600}
+  .nav-links a:hover{color:var(--orange)}
+  .nav-cta{
+    background:var(--orange);color:#fff;padding:9px 18px;border-radius:999px;
+    font-weight:700;font-size:14px;transition:.2s;box-shadow:0 6px 16px rgba(232,133,58,.35)
+  }
+  .nav-cta:hover{transform:translateY(-1px);background:#d9772f}
+  @media(max-width:760px){
+    .nav-in{height:auto;flex-wrap:wrap;padding:10px 0;gap:10px}
+    .nav-links{display:flex;width:100%;gap:16px;overflow-x:auto;font-size:13px;order:3;padding-bottom:2px}
+    .nav-cta{margin-left:auto}
+  }
+
+  /* Hero */
+  .hero{
+    background:radial-gradient(120% 100% at 80% 0%,#FCE9D6 0%,var(--cream) 55%);
+    padding:70px 0 60px;position:relative;overflow:hidden;
+  }
+  .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);
+    padding:7px 14px;border-radius:999px;font-size:13px;font-weight:700;color:var(--orange);
+    box-shadow:var(--shadow);margin-bottom:22px
+  }
+  .hero h1{font-size:46px;line-height:1.18;font-weight:900;letter-spacing:-.5px}
+  .hero h1 .hl{color:var(--orange)}
+  .hero p.lead{font-size:18px;color:var(--ink-soft);margin:20px 0 28px;max-width:480px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .btn-primary{
+    background:var(--orange);color:#fff;padding:15px 30px;border-radius:999px;font-weight:800;font-size:16px;
+    box-shadow:0 10px 24px rgba(232,133,58,.4);transition:.2s
+  }
+  .btn-primary:hover{transform:translateY(-2px);background:#d9772f}
+  .btn-ghost{
+    background:#fff;border:1.5px solid var(--line);color:var(--ink);padding:14px 26px;border-radius:999px;font-weight:700;font-size:15px
+  }
+  .btn-ghost:hover{border-color:var(--orange);color:var(--orange)}
+  .hero-points{display:flex;gap:18px;margin-top:30px;flex-wrap:wrap}
+  .hero-points .p{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--ink-soft);font-weight:600}
+  .hero-points .p b{color:var(--green);font-size:18px}
+  .hero-art{
+    background:#fff;border-radius:34px;padding:26px;box-shadow:var(--shadow);border:1px solid var(--line);
+    position:relative
+  }
+  .hero-art .tag{
+    position:absolute;top:18px;right:18px;background:var(--pink);color:#fff;font-size:12px;font-weight:800;
+    padding:6px 12px;border-radius:999px;transform:rotate(6deg)
+  }
+  @media(max-width:860px){.hero-grid{grid-template-columns:1fr}.hero h1{font-size:36px}}
+
+  /* Generic cards */
+  .grid{display:grid;gap:20px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:860px){.g3,.g2{grid-template-columns:1fr}}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:26px;
+    box-shadow:var(--shadow);transition:.2s
+  }
+  .card:hover{transform:translateY(-3px)}
+  .card h3{font-size:18px;margin-bottom:8px;font-weight:800}
+  .card p{font-size:14.5px;color:var(--ink-soft)}
+
+  /* Suitable cats */
+  .suit{background:var(--cream-2)}
+  .pill{
+    display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid var(--line);
+    border-radius:16px;padding:16px 18px
+  }
+  .pill .emo{font-size:22px}
+  .pill b{display:block;font-size:15px;margin-bottom:2px}
+  .pill span{font-size:13.5px;color:var(--ink-soft)}
+  .warn-note{
+    margin-top:22px;background:#FFF4EC;border:1px solid var(--orange-soft);border-radius:16px;
+    padding:16px 20px;font-size:14px;color:#9a5a23;display:flex;gap:10px;align-items:flex-start
+  }
+
+  /* Formula */
+  .formula{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  @media(max-width:860px){.formula{grid-template-columns:1fr}}
+  .ing-list{list-style:none}
+  .ing-list li{display:flex;justify-content:space-between;align-items:center;padding:12px 4px;border-bottom:1px dashed var(--line);font-size:15px}
+  .ing-list li:last-child{border-bottom:none}
+  .ing-list .pct{font-weight:800;color:var(--ink);min-width:46px;text-align:right}
+  .no-add{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:var(--shadow)}
+  .no-add h3{font-size:17px;margin-bottom:14px}
+  .tags{display:flex;flex-wrap:wrap;gap:10px}
+  .tagx{background:var(--cream-2);color:var(--ink-soft);font-size:13px;font-weight:700;padding:8px 14px;border-radius:999px}
+  .nutri-table{width:100%;border-collapse:collapse;margin-top:18px;font-size:14px}
+  .nutri-table th,.nutri-table td{border:1px solid var(--line);padding:10px 12px;text-align:left}
+  .nutri-table th{background:var(--cream-2);font-weight:800}
+  .nutri-table td b{color:var(--orange)}
+
+  /* 7 day plan */
+  .plan{background:var(--cream-2)}
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:12px}
+  @media(max-width:860px){.days{grid-template-columns:repeat(2,1fr)}}
+  .day{
+    background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 12px;text-align:center;
+    box-shadow:var(--shadow);position:relative
+  }
+  .day .d{font-size:12px;color:var(--orange);font-weight:800}
+  .day .n{font-size:26px;font-weight:900;margin:4px 0}
+  .day .r{font-size:12.5px;color:var(--ink-soft);line-height:1.5}
+  .day.peak{background:var(--green);color:#fff;border-color:var(--green)}
+  .day.peak .d,.day.peak .r{color:#eafff0}
+  .observe{
+    margin-top:24px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 24px;box-shadow:var(--shadow)
+  }
+  .observe h3{font-size:17px;margin-bottom:12px}
+  .observe ul{list-style:none;display:flex;flex-wrap:wrap;gap:12px}
+  .observe li{background:var(--cream-2);border-radius:12px;padding:10px 16px;font-size:14px;font-weight:600}
+
+  /* Pricing */
+  .price-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;position:relative
+  }
+  .price-card.hot{border:2px solid var(--orange);transform:scale(1.03)}
+  .price-card .ribbon{
+    position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--orange);color:#fff;
+    font-size:12px;font-weight:800;padding:5px 16px;border-radius:999px;white-space:nowrap
+  }
+  .price-card .pt{font-size:16px;font-weight:800}
+  .price-card .pp{font-size:40px;font-weight:900;color:var(--orange);margin:8px 0 2px}
+  .price-card .pp small{font-size:15px;color:var(--ink-soft);font-weight:600}
+  .price-card .pd{font-size:13.5px;color:var(--ink-soft);min-height:42px}
+  .price-card ul{list-style:none;margin:16px 0;font-size:14px}
+  .price-card ul li{padding:7px 0;border-bottom:1px dashed var(--line);display:flex;gap:8px}
+  .price-card ul li:last-child{border-bottom:none}
+  .price-card ul .ck{color:var(--green);font-weight:900}
+  .price-card .buy{
+    margin-top:auto;background:var(--ink);color:#fff;text-align:center;padding:13px;border-radius:999px;
+    font-weight:800;font-size:15px;transition:.2s
+  }
+  .price-card .buy:hover{background:var(--orange)}
+  .price-card.hot .buy{background:var(--orange)}
+  .price-card.hot .buy:hover{background:#d9772f}
+  .price-note{text-align:center;font-size:13px;color:var(--ink-soft);margin-top:18px}
+
+  /* Logistics */
+  .logi{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:860px){.logi{grid-template-columns:repeat(2,1fr)}}
+  .logi .c{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);text-align:center}
+  .logi .c .e{font-size:30px;margin-bottom:10px}
+  .logi .c b{display:block;font-size:15px;margin-bottom:6px}
+  .logi .c span{font-size:13px;color:var(--ink-soft)}
+
+  /* Reviews */
+  .reviews{background:var(--cream-2)}
+  .rv{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+  .rv .stars{color:var(--orange);font-size:16px;letter-spacing:2px;margin-bottom:10px}
+  .rv p{font-size:14.5px;color:var(--ink);margin-bottom:14px}
+  .rv .who{display:flex;align-items:center;gap:12px}
+  .rv .av{width:42px;height:42px;border-radius:50%;background:var(--green-soft);display:flex;align-items:center;justify-content:center;font-size:20px}
+  .rv .who b{font-size:14px}
+  .rv .who span{font-size:12.5px;color:var(--ink-soft);display:block}
+
+  /* Allergy risk */
+  .risk{background:#FFF4EC;border-top:4px solid var(--orange)}
+  .risk h2{color:#9a5a23}
+  .risk-list{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px}
+  @media(max-width:860px){.risk-list{grid-template-columns:1fr}}
+  .risk-item{background:#fff;border:1px solid var(--orange-soft);border-radius:16px;padding:20px;display:flex;gap:14px}
+  .risk-item .n{width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:900;flex:none}
+  .risk-item b{display:block;font-size:15px;margin-bottom:4px;color:#9a5a23}
+  .risk-item span{font-size:13.5px;color:var(--ink-soft)}
+  .disclaimer{margin-top:22px;font-size:12.5px;color:#b07a45;text-align:center}
+
+  /* Final CTA */
+  .final{background:radial-gradient(120% 100% at 20% 0%,#FCE9D6 0%,var(--cream) 60%);text-align:center}
+  .final h2{font-size:34px}
+  .final p{color:var(--ink-soft);margin:12px 0 28px;font-size:16px}
+  .final .btn-primary{font-size:18px;padding:17px 40px}
+
+  footer{background:var(--ink);color:#e8ddd0;padding:34px 0;font-size:13.5px;text-align:center}
+  footer a{color:var(--orange-soft)}
+
+  /* Float CTA */
+  .float{
+    position:fixed;right:20px;bottom:20px;z-index:60;background:var(--orange);color:#fff;font-weight:800;
+    padding:14px 22px;border-radius:999px;box-shadow:0 12px 28px rgba(232,133,58,.5);font-size:15px;
+    transition:.2s;display:flex;align-items:center;gap:8px
+  }
+  .float:hover{transform:translateY(-3px)}
+  @media(max-width:560px){.float{left:16px;right:16px;justify-content:center}}
+
+  .js .reveal{opacity:0;transform:translateY(24px);transition:.6s ease}
+  .js .reveal.show{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap nav-in">
+    <div class="logo"><span class="dot">🐾</span>喵食光</div>
+    <div class="nav-links">
+      <a href="#suit">适用猫</a>
+      <a href="#formula">配方营养</a>
+      <a href="#plan">7天试吃</a>
+      <a href="#price">订阅价格</a>
+      <a href="#logi">物流说明</a>
+      <a href="#reviews">用户评价</a>
+      <a href="#risk">风险提示</a>
+    </div>
+    <a class="nav-cta" href="#price">立即预约</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="badge">🔥 首发预售 · 限量 1000 份</span>
+      <h1>喵食光<br><span class="hl">鸡胸肉低敏</span>鲜食餐</h1>
+      <p class="lead">单一蛋白源 · 无谷低敏 · 兽医营养团队背书。给肠胃敏感、爱软便、挑嘴的猫，一顿真正「吃得安心」的鲜食。</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="#price">¥39 预约试吃装</a>
+        <a class="btn-ghost" href="#plan">先看 7 天计划</a>
+      </div>
+      <div class="hero-points">
+        <div class="p"><b>✓</b> 0 谷物 0 诱食剂</div>
+        <div class="p"><b>✓</b> 水分 78% 贴近天然猎物</div>
+        <div class="p"><b>✓</b> -18℃ 冷链锁鲜</div>
+      </div>
+    </div>
+    <div class="hero-art">
+      <span class="tag">低敏配方</span>
+      <!-- inline cat + bowl illustration -->
+      <svg viewBox="0 0 320 260" width="100%" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="猫咪与鲜食碗插画">
+        <ellipse cx="160" cy="230" rx="120" ry="16" fill="#F4ECDD"/>
+        <!-- bowl -->
+        <path d="M70 175 q90 60 180 0 l-14 26 q-76 40 -152 0 z" fill="#E8853A"/>
+        <ellipse cx="160" cy="178" rx="92" ry="26" fill="#F6B27A"/>
+        <ellipse cx="160" cy="176" rx="78" ry="20" fill="#fff"/>
+        <circle cx="135" cy="172" r="9" fill="#E8853A"/>
+        <circle cx="160" cy="176" r="11" fill="#F2A9A0"/>
+        <circle cx="186" cy="171" r="8" fill="#8FB996"/>
+        <circle cx="150" cy="180" r="6" fill="#E8853A"/>
+        <!-- cat head -->
+        <g>
+          <path d="M120 70 l-14 -34 l30 16 z" fill="#F6B27A"/>
+          <path d="M200 70 l14 -34 l-30 16 z" fill="#F6B27A"/>
+          <circle cx="160" cy="92" r="52" fill="#F6B27A"/>
+          <circle cx="142" cy="86" r="7" fill="#4A3F35"/>
+          <circle cx="178" cy="86" r="7" fill="#4A3F35"/>
+          <circle cx="144" cy="84" r="2.4" fill="#fff"/>
+          <circle cx="180" cy="84" r="2.4" fill="#fff"/>
+          <path d="M154 100 q6 6 12 0" stroke="#4A3F35" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <path d="M160 104 l0 8" stroke="#4A3F35" stroke-width="3" stroke-linecap="round"/>
+          <path d="M150 110 q10 8 20 0" stroke="#F2A9A0" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="138" cy="104" r="5" fill="#F2A9A0" opacity=".5"/>
+          <circle cx="182" cy="104" r="5" fill="#F2A9A0" opacity=".5"/>
+        </g>
+        <!-- sparkles -->
+        <text x="40" y="60" font-size="20">✨</text>
+        <text x="270" y="120" font-size="18">🐟</text>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<!-- SUITABLE CATS -->
+<section id="suit" class="suit">
+  <div class="wrap">
+    <span class="eyebrow">适用对象</span>
+    <h2>这只餐，写给「吃饭总出状况」的猫</h2>
+    <p class="sub">不是所有猫都需要低敏粮，但如果你家主子有以下几种情况，它大概率会更适合。</p>
+    <div class="grid g3">
+      <div class="pill"><span class="emo">🌿</span><div><b>肠胃敏感 / 软便反复</b><span>一换粮就拉、便便不成形，需要温和单一蛋白。</span></div></div>
+      <div class="pill"><span class="emo">🩹</span><div><b>食物过敏猫</b><span>皮肤瘙痒、耳炎反复、掉毛增多，疑似蛋白过敏。</span></div></div>
+      <div class="pill"><span class="emo">⚖️</span><div><b>需控制体重的成年猫</b><span>高蛋白低脂，饱腹感强，适合减脂期管理。</span></div></div>
+      <div class="pill"><span class="emo">🙀</span><div><b>挑食 / 不爱干粮</b><span>含水鲜食香气足，唤醒食欲，告别「绝食抗议」。</span></div></div>
+      <div class="pill"><span class="emo">🐱</span><div><b>中老年猫</b><span>易咀嚼、好消化，呵护逐渐变弱的肠胃功能。</span></div></div>
+      <div class="pill"><span class="emo">🍼</span><div><b>换粮过渡期猫</b><span>作为低敏过渡餐，平稳切换主粮不翻车。</span></div></div>
+    </div>
+    <div class="warn-note">
+      <span>⚠️</span>
+      <div><b>不适用人群：</b>4 月龄以下幼猫（营养密度不足）、孕期及哺乳期母猫（能量需求高）、对禽类蛋白过敏的猫（见<a href="#risk" style="color:var(--orange);font-weight:700">风险提示</a>）。如有慢性疾病，请遵兽医建议喂食。</div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMULA & NUTRITION -->
+<section id="formula">
+  <div class="wrap">
+    <span class="eyebrow">配方与营养依据</span>
+    <h2>看得懂的配方，讲得清的依据</h2>
+    <p class="sub">我们坚持「少而精」的配料表——把致敏可能降到最低，把营养密度提到够用。</p>
+    <div class="formula">
+      <div class="card">
+        <h3 style="font-size:18px;margin-bottom:16px">📋 核心配料占比</h3>
+        <ul class="ing-list">
+          <li><span>鲜鸡胸肉（单一动物蛋白）</span><span class="pct">70%</span></li>
+          <li><span>鸡肝（天然维生素 A 来源）</span><span class="pct">8%</span></li>
+          <li><span>南瓜（膳食纤维）</span><span class="pct">6%</span></li>
+          <li><span>胡萝卜（β-胡萝卜素）</span><span class="pct">4%</span></li>
+          <li><span>三文鱼油（Omega-3）</span><span class="pct">2%</span></li>
+          <li><span>牛磺酸 + 复合维矿</span><span class="pct">补添</span></li>
+          <li><span>其余为天然水分</span><span class="pct">≈10%</span></li>
+        </ul>
+        <table class="nutri-table">
+          <thead><tr><th>营养指标（ Guaranteed Analysis ）</th><th>含量</th></tr></thead>
+          <tbody>
+            <tr><td>粗蛋白</td><td><b>≥ 12%</b></td></tr>
+            <tr><td>粗脂肪</td><td><b>≥ 5%</b></td></tr>
+            <tr><td>水分</td><td><b>≤ 78%</b></td></tr>
+            <tr><td>牛磺酸</td><td><b>≥ 0.2%</b></td></tr>
+            <tr><td>钙磷比</td><td><b>1.2 : 1</b></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="no-add">
+          <h3>🚫 我们明确「不添加」</h3>
+          <div class="tags">
+            <span class="tagx">无谷物</span>
+            <span class="tagx">无大豆</span>
+            <span class="tagx">无人工色素</span>
+            <span class="tagx">无人工香精</span>
+            <span class="tagx">无诱食剂</span>
+            <span class="tagx">无防腐剂</span>
+          </div>
+          <h3 style="margin-top:22px">🔬 营养学依据</h3>
+          <ul class="ing-list">
+            <li><span>单一蛋白源</span><b style="color:var(--green)">降低致敏</b></li>
+            <li><span>鸡胸肉高生物价蛋白</span><b style="color:var(--green)">易吸收</b></li>
+            <li><span>牛磺酸（猫无法自体合成）</span><b style="color:var(--green)">护心护眼</b></li>
+            <li><span>78% 水分</span><b style="color:var(--green)">贴近猎物</b></li>
+            <li><span>符合 AAFCO / NRC 成猫营养标准</span><b style="color:var(--green)">国际达标</b></li>
+          </ul>
+        </div>
+        <div class="no-add" style="margin-top:18px">
+          <h3>👩‍⚕️ 研发背书</h3>
+          <p style="font-size:14px;color:var(--ink-soft)">由注册兽医营养顾问团队配方审核，每批次第三方送检，报告可在「喵食光」小程序溯源查询。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 DAY PLAN -->
+<section id="plan" class="plan">
+  <div class="wrap">
+    <span class="eyebrow">7 天试吃计划</span>
+    <h2>循序渐进，让肠胃慢慢适应</h2>
+    <p class="sub">突然全换粮是软便的头号原因。跟着下面的节奏，7 天平稳过渡，每天只换一点点。</p>
+    <div class="days">
+      <div class="day"><div class="d">DAY 1-2</div><div class="n">¼</div><div class="r">旧粮 ¾ + 鲜食 ¼<br>观察排便</div></div>
+      <div class="day"><div class="d">DAY 3-4</div><div class="n">½</div><div class="r">旧粮 ½ + 鲜食 ½<br>看食欲变化</div></div>
+      <div class="day"><div class="d">DAY 5-6</div><div class="n">¾</div><div class="r">旧粮 ¼ + 鲜食 ¾<br>留意皮肤</div></div>
+      <div class="day peak"><div class="d">DAY 7</div><div class="n">全</div><div class="r">完全替换鲜食<br>完成过渡 🎉</div></div>
+    </div>
+    <div class="observe">
+      <h3>📝 7 天观察清单（每天花 10 秒看一眼）</h3>
+      <ul>
+        <li>💩 便便是否成形</li>
+        <li>✨ 毛发是否顺亮</li>
+        <li>🐾 皮肤有无红痒</li>
+        <li>😺 精神与食欲</li>
+        <li>⚖️ 体重趋势</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="price">
+  <div class="wrap">
+    <span class="eyebrow">订阅价格</span>
+    <h2>先试吃，再订阅，随时可停</h2>
+    <p class="sub">预售期专属福利：试吃装近乎成本价，订阅首月再打折。不喜欢？随时暂停或取消，不绑年约。</p>
+    <div class="grid g3">
+      <div class="price-card">
+        <div class="pt">试吃装（限购 1 份）</div>
+        <div class="pp">¥39<small> / 7 袋</small></div>
+        <div class="pd">7 天量单次装，刚好跑完试吃计划，运费另计。</div>
+        <ul>
+          <li><span class="ck">✓</span> 完整 7 天过渡量</li>
+          <li><span class="ck">✓</span> 顺丰冷运发货</li>
+          <li><span class="ck">✓</span> 专属喂食顾问</li>
+        </ul>
+        <a class="buy" href="#reserve">预约试吃装</a>
+      </div>
+      <div class="price-card hot">
+        <div class="ribbon">🔥 预售最受欢迎</div>
+        <div class="pt">月订阅 · 标准装</div>
+        <div class="pp">¥198<small> / 月</small></div>
+        <div class="pd">28 袋 / 月，按周配送。首月 8 折，约 ¥158。</div>
+        <ul>
+          <li><span class="ck">✓</span> 每周冷链直送</li>
+          <li><span class="ck">✓</span> 首月 8 折优惠</li>
+          <li><span class="ck">✓</span> 老客积分抵现</li>
+          <li><span class="ck">✓</span> 随时暂停/取消</li>
+        </ul>
+        <a class="buy" href="#reserve">立即订阅</a>
+      </div>
+      <div class="price-card">
+        <div class="pt">双猫家庭装</div>
+        <div class="pp">¥358<small> / 月</small></div>
+        <div class="pd">56 袋 / 月，两只猫更划算，单袋低至 ¥6.4。</div>
+        <ul>
+          <li><span class="ck">✓</span> 标准装全部权益</li>
+          <li><span class="ck">✓</span> 多猫专属折扣</li>
+          <li><span class="ck">✓</span> 年付再省 2 个月</li>
+        </ul>
+        <a class="buy" href="#reserve">选家庭装</a>
+      </div>
+    </div>
+    <p class="price-note">* 预售订单 9 月 1 日起按序发货；订阅可随时在「喵食光」小程序管理，无违约金。</p>
+  </div>
+</section>
+
+<!-- LOGISTICS -->
+<section id="logi" class="suit">
+  <div class="wrap">
+    <span class="eyebrow">物流说明</span>
+    <h2>从工厂到碗里，全程冷链不脱温</h2>
+    <p class="sub">鲜食最怕「半路化冻」。我们用顺丰冷运 + 隔热箱，把温度锁在 -18℃。</p>
+    <div class="logi">
+      <div class="c"><div class="e">📦</div><b>冷链发货</b><span>顺丰冷运，-18℃ 锁鲜隔热箱配送</span></div>
+      <div class="c"><div class="e">🚚</div><b>发货周期</b><span>预售 9/1 起按订单顺序发货，约 3-5 天送达</span></div>
+      <div class="c"><div class="e">🗺️</div><b>配送范围</b><span>全国大部分地区可达（新疆/西藏等偏远除外）</span></div>
+      <div class="c"><div class="e">❄️</div><b>签收保存</b><span>签收后 24h 内冷冻；化冻后 48h 内食用完毕</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews" class="reviews">
+  <div class="wrap">
+    <span class="eyebrow">用户评价</span>
+    <h2>试吃过的铲屎官，怎么说</h2>
+    <p class="sub">来自内测 200 个家庭的真实反馈（节选，昵称已脱敏）。</p>
+    <div class="grid g3">
+      <div class="rv">
+        <div class="stars">★★★★★</div>
+        <p>「橘座以前一换粮就软便，这次跟着 7 天计划走，第 5 天便便就成形了，毛发也亮了。」</p>
+        <div class="who"><div class="av">🐱</div><div><b>橘座铲屎官</b><span>英短 · 4 岁 · 肠胃敏感</span></div></div>
+      </div>
+      <div class="rv">
+        <div class="stars">★★★★★</div>
+        <p>「之前耳炎反复，兽医怀疑蛋白过敏。换这个单一鸡肉源之后，抓耳朵明显少了。」</p>
+        <div class="who"><div class="av">🐈</div><div><b>豆豆妈</b><span>美短 · 3 岁 · 疑似过敏</span></div></div>
+      </div>
+      <div class="rv">
+        <div class="stars">★★★★☆</div>
+        <p>「挑食怪终于不绝食了，闻着就冲过来。就是希望以后出个兔子口味。」</p>
+        <div class="who"><div class="av">😺</div><div><b>奶糖他爹</b><span>布偶 · 2 岁 · 重度挑食</span></div></div>
+      </div>
+      <div class="rv">
+        <div class="stars">★★★★★</div>
+        <p>「订阅很省心，每周送到，不用囤。首月 8 折真的香，已经续了三个月。」</p>
+        <div class="who"><div class="av">🐾</div><div><b>双猫之家</b><span>家庭装用户 · 2 猫</span></div></div>
+      </div>
+      <div class="rv">
+        <div class="stars">★★★★★</div>
+        <p>「冷链箱到手还是硬邦邦的，化冻后能闻到真实肉香，配料表也干净，放心。」</p>
+        <div class="who"><div class="av">🐱</div><div><b>老白</b><span>中华田园 · 6 岁 · 老年猫</span></div></div>
+      </div>
+      <div class="rv">
+        <div class="stars">★★★★☆</div>
+        <p>「客服给的 7 天观察清单很实用，每天拍便便打卡，过渡期一点没翻车。」</p>
+        <div class="who"><div class="av">😸</div><div><b>小满</b><span>暹罗 · 1.5 岁 · 换粮期</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALLERGY RISK -->
+<section id="risk" class="risk">
+  <div class="wrap">
+    <span class="eyebrow">过敏风险提示</span>
+    <h2>再低敏，也有「不适用」的情况</h2>
+    <p class="sub">请花 1 分钟读完以下提示，确保主子安全食用。</p>
+    <div class="risk-list">
+      <div class="risk-item"><div class="n">1</div><div><b>禽类蛋白过敏者禁用</b><span>本品以鸡胸肉为唯一动物蛋白源。若猫已确诊对鸡肉 / 禽类过敏，请勿喂食，可选其他蛋白源产品。</span></div></div>
+      <div class="risk-item"><div class="n">2</div><div><b>务必 7 天渐进过渡</b><span>切勿一次性全量替换旧粮，否则易引发急性肠胃不适。请严格遵循上方试吃计划。</span></div></div>
+      <div class="risk-item"><div class="n">3</div><div><b>异常反应立即停用就医</b><span>如出现持续呕吐、腹泻、皮疹、呼吸困难等，请立即停止喂食并联系兽医。</span></div></div>
+      <div class="risk-item"><div class="n">4</div><div><b>保存与食用时限</b><span>化冻后须 48 小时内食用完毕，勿反复冻融；开封后未吃完请密封冷藏并尽快喂完。</span></div></div>
+    </div>
+    <p class="disclaimer">⚠️ 免责声明：喵食光鸡胸肉低敏鲜食餐为宠物食品，非药品，不能替代疾病诊断与治疗。特殊健康状态（幼猫、孕哺期、慢性病）请遵兽医指导。</p>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final" id="reserve">
+  <div class="wrap">
+    <h2>给主子一顿安心的鲜食</h2>
+    <p>首发预售限量 1000 份，¥39 先带一份试吃装回家，7 天见真章。</p>
+    <a class="btn-primary" href="#price">🐾 立即预约试吃装</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    🐾 喵食光 · 让每一餐都吃得安心 ｜ 预售咨询：喵食光小程序 / 客服微信<br>
+    <span style="opacity:.7">本页面为预售展示页，最终以实际下单页面与产品标签为准。</span>
+  </div>
+</footer>
+
+<a class="float" href="#price">🐾 ¥39 预约试吃</a>
+
+<script>
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target);} });
+  },{threshold:.12});
+  document.querySelectorAll('section .card, .pill, .day, .rv, .logi .c, .risk-item, .observe, .no-add').forEach(el=>{
+    el.classList.add('reveal'); io.observe(el);
+  });
+</script>
+</body>
+</html>

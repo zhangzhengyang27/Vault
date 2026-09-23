@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>成语故事：亡羊补牢</title>
+    <style>
+      :root {
+        --sky-day: #87ceeb;
+        --sky-night: #2c3e50;
+        --grass: #90ee90;
+        --fence: #8b4513;
+        --text-bg: rgba(255, 255, 255, 0.9);
+        --primary-color: #ff9a9e;
+      }
+
+      * {
+        box-sizing: border-box;
+        transition: all 0.5s ease;
+      }
+
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-color: var(--sky-day);
+      }
+
+      /* 场景容器 */
+      .scene {
+        flex: 1;
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+      }
+
+      .sky {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60%;
+        background-color: var(--sky-day);
+        z-index: 0;
+      }
+
+      .grass {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 40%;
+        background-color: var(--grass);
+        z-index: 1;
+        border-top: 5px solid #7bc67b;
+      }
+
+      /* 太阳/月亮 */
+      .celestial {
+        position: absolute;
+        top: 50px;
+        right: 50px;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: #ffd700; /* Sun */
+        box-shadow: 0 0 40px #ffd700;
+        z-index: 2;
+      }
+
+      body.night .sky {
+        background-color: var(--sky-night);
+      }
+      body.night .grass {
+        background-color: #558b2f;
+        border-top-color: #33691e;
+      }
+      body.night .celestial {
+        background: #f4f6f0; /* Moon */
+        box-shadow: 0 0 20px #f4f6f0;
+      }
+
+      /* 羊圈 */
+      .pen-container {
+        position: absolute;
+        bottom: 10%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 300px;
+        height: 200px;
+        z-index: 10;
+      }
+
+      /* SVG 样式 */
+      svg {
+        width: 100%;
+        height: 100%;
+        overflow: visible;
+      }
+
+      /* 角色通用 */
+      .character {
+        position: absolute;
+        transition:
+          transform 1s ease-in-out,
+          opacity 0.5s;
+        z-index: 20;
+      }
+
+      .sheep {
+        width: 60px;
+        height: 50px;
+      }
+
+      .wolf {
+        width: 80px;
+        height: 60px;
+        opacity: 0; /* 默认隐藏 */
+        transform: translateX(-200px);
+      }
+
+      .farmer {
+        width: 70px;
+        height: 120px;
+        bottom: 30%;
+        left: 10%;
+        opacity: 0;
+      }
+
+      .neighbor {
+        width: 70px;
+        height: 120px;
+        bottom: 30%;
+        right: 10%;
+        transform: scaleX(-1); /* 面向左 */
+        opacity: 0;
+      }
+
+      /* 对话气泡 */
+      .bubble {
+        position: absolute;
+        background: white;
+        border-radius: 20px;
+        padding: 10px 15px;
+        font-size: 14px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        opacity: 0;
+        transform: scale(0);
+        z-index: 100;
+        white-space: nowrap;
+      }
+
+      .bubble::after {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 10px 10px 0;
+        border-style: solid;
+        border-color: white transparent transparent transparent;
+      }
+
+      /* 控制栏 */
+      .controls {
+        height: 180px;
+        background: white;
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 100;
+        position: relative;
+      }
+
+      .story-text {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: #333;
+        text-align: center;
+        margin-bottom: 15px;
+        font-weight: bold;
+        min-height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 20px;
+      }
+
+      .btn {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 40px;
+        font-size: 1.2rem;
+        border-radius: 50px;
+        cursor: pointer;
+        box-shadow: 0 4px 0 #e08084;
+        transition:
+          transform 0.1s,
+          box-shadow 0.1s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .btn:active {
+        transform: translateY(4px);
+        box-shadow: none;
+      }
+
+      .btn:disabled {
+        background: #ccc;
+        box-shadow: none;
+        cursor: not-allowed;
+      }
+
+      .meaning-card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        width: 80%;
+        max-width: 500px;
+        z-index: 200;
+        transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .meaning-card.show {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .meaning-title {
+        color: var(--primary-color);
+        font-size: 2rem;
+        margin-bottom: 15px;
+      }
+
+      .meaning-text {
+        font-size: 1.1rem;
+        color: #555;
+        text-align: left;
+        line-height: 1.8;
+      }
+
+      /* 动画关键帧类 */
+      .shake {
+        animation: shake 0.5s infinite;
+      }
+      @keyframes shake {
+        0% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-5px);
+        }
+        75% {
+          transform: translateX(5px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+
+      .hammer-anim {
+        animation: hammer 0.5s infinite;
+        transform-origin: bottom right;
+      }
+      @keyframes hammer {
+        0% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(-45deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+
+      /* SVG 内部元素的样式控制 */
+      .hole {
+        opacity: 0;
+        transition: opacity 0.5s;
+      }
+      .hole.visible {
+        opacity: 1;
+      }
+
+      .plank {
+        opacity: 0;
+      }
+      .plank.visible {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene">
+      <div class="sky"></div>
+      <div class="celestial"></div>
+      <div class="grass"></div>
+
+      <!-- 羊圈 SVG -->
+      <div class="pen-container">
+        <svg viewBox="0 0 300 200">
+          <!-- 后面的栏杆 -->
+          <g stroke="#8B4513" stroke-width="8">
+            <line x1="20" y1="180" x2="280" y2="180" />
+            <line x1="20" y1="140" x2="280" y2="140" />
+            <line x1="20" y1="100" x2="280" y2="100" />
+
+            <line x1="20" y1="190" x2="20" y2="90" stroke-width="10" />
+            <line x1="80" y1="190" x2="80" y2="90" stroke-width="10" />
+            <line x1="150" y1="190" x2="150" y2="90" stroke-width="10" />
+            <line x1="220" y1="190" x2="220" y2="90" stroke-width="10" />
+            <line x1="280" y1="190" x2="280" y2="90" stroke-width="10" />
+          </g>
+
+          <!-- 破洞：把一部分栅栏“遮住”或者替换成断裂的样子 -->
+          <!-- 这里简单处理：用一个覆盖层模拟破洞 -->
+          <g id="hole-group" class="hole">
+            <!-- 破损的缺口 -->
+            <path d="M 220 190 L 220 90" stroke="transparent" stroke-width="12" />
+            <!-- 隐藏原来的柱子 -->
+            <!-- 断裂的横梁 -->
+            <path
+              d="M 220 180 L 250 170"
+              stroke="#8B4513"
+              stroke-width="8"
+              stroke-linecap="round" />
+            <path
+              d="M 250 150 L 280 140"
+              stroke="#8B4513"
+              stroke-width="8"
+              stroke-linecap="round" />
+            <!-- 黑色背景模拟洞 -->
+            <ellipse cx="250" cy="140" rx="30" ry="40" fill="#333" opacity="0.8" />
+          </g>
+
+          <!-- 补丁 -->
+          <g id="patch-group">
+            <g class="plank" style="transition-delay: 0s">
+              <rect x="230" y="90" width="10" height="100" fill="#CD853F" rx="2" />
+            </g>
+            <g class="plank" style="transition-delay: 0.2s">
+              <rect
+                x="220"
+                y="110"
+                width="60"
+                height="15"
+                fill="#DEB887"
+                rx="2"
+                transform="rotate(5 250 117)" />
+            </g>
+            <g class="plank" style="transition-delay: 0.4s">
+              <rect
+                x="220"
+                y="150"
+                width="60"
+                height="15"
+                fill="#DEB887"
+                rx="2"
+                transform="rotate(-5 250 157)" />
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <!-- 角色：羊 (3只) -->
+      <div id="sheep1" class="character sheep" style="bottom: 12%; left: 55%">
+        <svg viewBox="0 0 60 50">
+          <circle cx="20" cy="25" r="15" fill="white" />
+          <circle cx="35" cy="25" r="18" fill="white" />
+          <circle cx="45" cy="20" r="12" fill="white" />
+          <circle cx="10" cy="20" r="10" fill="white" />
+          <rect x="15" y="35" width="4" height="12" fill="#333" rx="2" />
+          <rect x="25" y="38" width="4" height="12" fill="#333" rx="2" />
+          <rect x="35" y="38" width="4" height="12" fill="#333" rx="2" />
+          <rect x="45" y="35" width="4" height="12" fill="#333" rx="2" />
+          <!-- 头 -->
+          <circle cx="10" cy="15" r="8" fill="#eee" />
+          <circle cx="8" cy="13" r="1" fill="#333" />
+          <path d="M 5 18 Q 10 22 15 18" stroke="#333" fill="none" />
+        </svg>
+      </div>
+      <div id="sheep2" class="character sheep" style="bottom: 15%; left: 62%">
+        <svg viewBox="0 0 60 50">
+          <circle cx="20" cy="25" r="15" fill="white" />
+          <circle cx="35" cy="25" r="18" fill="white" />
+          <circle cx="45" cy="20" r="12" fill="white" />
+          <rect x="15" y="35" width="4" height="12" fill="#333" rx="2" />
+          <rect x="45" y="35" width="4" height="12" fill="#333" rx="2" />
+          <!-- 头 -->
+          <circle cx="50" cy="15" r="8" fill="#eee" />
+          <circle cx="52" cy="13" r="1" fill="#333" />
+        </svg>
+      </div>
+      <div id="sheep3" class="character sheep" style="bottom: 11%; left: 48%">
+        <svg viewBox="0 0 60 50">
+          <circle cx="20" cy="25" r="15" fill="white" />
+          <circle cx="35" cy="25" r="18" fill="white" />
+          <!-- 头 -->
+          <circle cx="10" cy="15" r="8" fill="#eee" />
+          <circle cx="8" cy="13" r="1" fill="#333" />
+        </svg>
+      </div>
+
+      <!-- 角色：狼 -->
+      <div id="wolf" class="character wolf">
+        <svg viewBox="0 0 80 60">
+          <!-- 身体 -->
+          <ellipse cx="40" cy="35" rx="25" ry="15" fill="#777" />
+          <!-- 腿 -->
+          <rect x="25" y="45" width="5" height="15" fill="#555" />
+          <rect x="50" y="45" width="5" height="15" fill="#555" />
+          <!-- 头 -->
+          <circle cx="60" cy="20" r="12" fill="#777" />
+          <polygon points="65,10 75,5 70,20" fill="#777" />
+          <!-- 耳朵 -->
+          <polygon points="55,10 45,5 50,20" fill="#777" />
+          <circle cx="65" cy="18" r="2" fill="white" />
+          <circle cx="65" cy="18" r="1" fill="black" />
+          <!-- 嘴 -->
+          <path d="M 68 25 L 78 28 L 68 31 Z" fill="#777" />
+          <path d="M 70 28 L 75 29" stroke="white" stroke-width="2" />
+          <!-- 尾巴 -->
+          <path
+            d="M 15 35 Q 5 25 10 45"
+            stroke="#777"
+            stroke-width="8"
+            fill="none" />
+        </svg>
+      </div>
+
+      <!-- 角色：农夫 -->
+      <div id="farmer" class="character farmer">
+        <svg viewBox="0 0 70 120">
+          <!-- 身体 -->
+          <rect x="20" y="50" width="30" height="40" fill="#E74C3C" />
+          <!-- 衣服 -->
+          <rect x="20" y="90" width="12" height="30" fill="#3498DB" />
+          <!-- 腿 -->
+          <rect x="38" y="90" width="12" height="30" fill="#3498DB" />
+          <!-- 头 -->
+          <circle cx="35" cy="35" r="15" fill="#F1C40F" />
+          <!-- 帽子 -->
+          <path d="M 10 30 Q 35 10 60 30" fill="#D35400" />
+          <rect x="15" y="28" width="40" height="5" fill="#D35400" />
+          <!-- 手 -->
+          <line
+            x1="20"
+            y1="60"
+            x2="10"
+            y2="80"
+            stroke="#F1C40F"
+            stroke-width="5"
+            id="farmer-arm-l" />
+          <line
+            x1="50"
+            y1="60"
+            x2="60"
+            y2="80"
+            stroke="#F1C40F"
+            stroke-width="5"
+            id="farmer-arm-r" />
+          <!-- 锤子 (默认隐藏) -->
+          <g id="hammer" opacity="0">
+            <rect
+              x="60"
+              y="70"
+              width="5"
+              height="20"
+              fill="#8B4513"
+              transform="rotate(-30 62 80)" />
+            <rect
+              x="55"
+              y="65"
+              width="15"
+              height="8"
+              fill="#555"
+              transform="rotate(-30 62 80)" />
+          </g>
+        </svg>
+        <div id="bubble-farmer" class="bubble" style="bottom: 110%; left: 0">
+          ...
+        </div>
+      </div>
+
+      <!-- 角色：邻居 -->
+      <div id="neighbor" class="character neighbor">
+        <svg viewBox="0 0 70 120">
+          <rect x="20" y="50" width="30" height="40" fill="#2ECC71" />
+          <rect x="20" y="90" width="12" height="30" fill="#333" />
+          <rect x="38" y="90" width="12" height="30" fill="#333" />
+          <circle cx="35" cy="35" r="15" fill="#F1C40F" />
+          <path d="M 10 30 Q 35 10 60 30" fill="#555" />
+        </svg>
+        <div id="bubble-neighbor" class="bubble" style="bottom: 110%; left: 0">
+          ...
+        </div>
+      </div>
+    </div>
+
+    <!-- 寓意卡片 -->
+    <div class="meaning-card" id="meaning-card">
+      <h2 class="meaning-title">亡羊补牢</h2>
+      <div class="meaning-text">
+        <p><strong>释义：</strong>羊丢了再去修补羊圈，还不算晚。</p>
+        <p>
+          <strong>寓意：</strong
+          >比喻出了问题以后想办法补救，可以防止继续受损失。告诉我们犯了错误并不可怕，只要及时改正，就不算晚。
+        </p>
+      </div>
+      <button class="btn" style="margin: 20px auto" onclick="story.reset()">
+        再看一遍
+      </button>
+    </div>
+
+    <div class="controls">
+      <div class="story-text" id="story-text">故事开始...</div>
+      <div class="btn-group">
+        <button class="btn" id="btn-prev" onclick="story.prev()" disabled>
+          ⬅️ 上一步
+        </button>
+        <button class="btn" id="btn-next" onclick="story.next()">下一步 ➡️</button>
+      </div>
+    </div>
+
+    <script>
+      const story = {
+        step: 0,
+        maxStep: 6,
+        elements: {
+          text: document.getElementById("story-text"),
+          body: document.body,
+          sheep1: document.getElementById("sheep1"),
+          sheep2: document.getElementById("sheep2"),
+          sheep3: document.getElementById("sheep3"),
+          wolf: document.getElementById("wolf"),
+          farmer: document.getElementById("farmer"),
+          neighbor: document.getElementById("neighbor"),
+          hole: document.getElementById("hole-group"),
+          patches: document.querySelectorAll(".plank"),
+          hammer: document.getElementById("hammer"),
+          bubbleFarmer: document.getElementById("bubble-farmer"),
+          bubbleNeighbor: document.getElementById("bubble-neighbor"),
+          meaningCard: document.getElementById("meaning-card"),
+          btnNext: document.getElementById("btn-next"),
+          btnPrev: document.getElementById("btn-prev"),
+          armR: document.getElementById("farmer-arm-r")
+        },
+
+        stepsData: [
+          {
+            // 0: 初始状态
+            text: "从前，有一个人养了几只羊。有一天早上，他发现羊圈破了个窟窿。",
+            action: (ctx) => {
+              ctx.setDay(true)
+              ctx.showHole(true)
+              ctx.resetSheep()
+              ctx.showCharacter("wolf", false)
+              ctx.showCharacter("farmer", true)
+              ctx.showCharacter("neighbor", false)
+              ctx.setFarmerPos(true)
+              ctx.setBubble(null)
+              ctx.togglePatches(false)
+            }
+          },
+          {
+            // 1: 狼来了（丢第一只羊）
+            text: "夜里，一只大灰狼从窟窿钻进去，叼走了一只羊。",
+            action: (ctx) => {
+              ctx.setDay(false)
+              ctx.showCharacter("farmer", false)
+              ctx.showCharacter("wolf", true, { bottom: "12%", left: "55%" }) // 狼移动到羊位置
+
+              // 动画：狼叼走羊1
+              setTimeout(() => {
+                if (ctx.step !== 1) return
+                ctx.elements.sheep1.style.opacity = "0"
+                ctx.elements.wolf.style.transform = "translateX(100vw)" // 狼跑走
+              }, 1000)
+            }
+          },
+          {
+            // 2: 邻居劝告
+            text: "邻居劝他说：“赶快把羊圈修好吧！” 他说：“羊已经丢了，修羊圈有什么用呢？”",
+            action: (ctx) => {
+              ctx.setDay(true)
+              ctx.elements.wolf.style.opacity = "0" // 隐藏狼
+              ctx.elements.sheep1.style.opacity = "0" // 确保羊1不在
+              ctx.showCharacter("farmer", true)
+              ctx.showCharacter("neighbor", true)
+
+              setTimeout(() => ctx.setBubble("neighbor", "赶快把羊圈修好吧！"), 500)
+              setTimeout(() => ctx.setBubble("farmer", "羊都丢了，修它干啥？"), 2000)
+            }
+          },
+          {
+            // 3: 又丢羊（丢第二只羊）
+            text: "第二天早上，他发现羊又少了一只。原来狼又从窟窿钻进来把羊叼走了。",
+            action: (ctx) => {
+              ctx.setDay(false)
+              ctx.setBubble(null) // 清除气泡
+              ctx.showCharacter("farmer", false)
+              ctx.showCharacter("neighbor", false)
+
+              // 狼再次出现
+              ctx.elements.wolf.style.transition = "none"
+              ctx.elements.wolf.style.transform = "translateX(-200px)" // 重置狼位置
+              ctx.elements.wolf.style.opacity = "1"
+
+              setTimeout(() => {
+                ctx.elements.wolf.style.transition = "transform 1s ease-in-out"
+                ctx.elements.wolf.style.transform = "translateX(calc(50vw + 50px))" // 移动到羊圈
+              }, 100)
+
+              setTimeout(() => {
+                if (ctx.step !== 3) return
+                ctx.elements.sheep2.style.opacity = "0"
+                ctx.elements.wolf.style.transform = "translateX(100vw)"
+              }, 1500)
+            }
+          },
+          {
+            // 4: 后悔并修补
+            text: "他很后悔，想起邻居的话，赶快堵上窟窿，把羊圈修得结结实实的。",
+            action: (ctx) => {
+              ctx.setDay(true)
+              ctx.elements.wolf.style.opacity = "0"
+              ctx.elements.sheep2.style.opacity = "0"
+              ctx.showCharacter("farmer", true)
+              ctx.showCharacter("neighbor", false)
+              ctx.elements.hammer.style.opacity = "1" // 显示锤子
+
+              // 修补动画
+              ctx.elements.farmer.classList.add("hammer-anim")
+              setTimeout(() => ctx.togglePatches(true), 500)
+              setTimeout(
+                () => ctx.elements.farmer.classList.remove("hammer-anim"),
+                2500
+              )
+              setTimeout(() => ctx.setBubble("farmer", "这下安全了！"), 2600)
+            }
+          },
+          {
+            // 5: 结局
+            text: "从此以后，他的羊再也没丢过。",
+            action: (ctx) => {
+              ctx.elements.hammer.style.opacity = "0"
+              ctx.setBubble(null)
+              // 狼在外面徘徊进不来
+              ctx.elements.wolf.style.transition = "none"
+              ctx.elements.wolf.style.transform = "translateX(-200px)"
+              ctx.elements.wolf.style.opacity = "1"
+              setTimeout(() => {
+                ctx.elements.wolf.style.transition = "transform 2s ease"
+                ctx.elements.wolf.style.transform = "translateX(100px)" // 只能在远处看
+              }, 100)
+
+              // 羊开心地跳
+              ctx.elements.sheep3.classList.add("shake")
+            }
+          },
+          {
+            // 6: 寓意展示
+            text: "",
+            action: (ctx) => {
+              ctx.elements.meaningCard.classList.add("show")
+              ctx.elements.btnNext.style.display = "none"
+            }
+          }
+        ],
+
+        init() {
+          this.renderStep()
+        },
+
+        next() {
+          if (this.step < this.maxStep) {
+            this.step++
+            this.renderStep()
+          }
+        },
+
+        prev() {
+          if (this.step > 0) {
+            this.step--
+            this.renderStep()
+          }
+        },
+
+        reset() {
+          this.step = 0
+          this.elements.meaningCard.classList.remove("show")
+          this.elements.btnNext.style.display = "flex"
+          this.renderStep()
+        },
+
+        renderStep() {
+          const data = this.stepsData[this.step]
+          this.elements.text.textContent = data.text
+          this.elements.btnPrev.disabled = this.step === 0
+          this.elements.btnNext.textContent =
+            this.step === this.maxStep ? "完成" : "下一步 ➡️"
+
+          // 执行当前步骤的动作
+          data.action(this)
+        },
+
+        // 辅助函数
+        setDay(isDay) {
+          if (isDay) {
+            this.elements.body.classList.remove("night")
+          } else {
+            this.elements.body.classList.add("night")
+          }
+        },
+
+        showHole(visible) {
+          if (visible) this.elements.hole.classList.add("visible")
+          else this.elements.hole.classList.remove("visible")
+        },
+
+        togglePatches(visible) {
+          this.elements.patches.forEach((p) => {
+            if (visible) p.classList.add("visible")
+            else p.classList.remove("visible")
+          })
+          if (visible) {
+            // 隐藏破洞视觉（被补丁盖住，或者淡出）
+            // 这里的逻辑是破洞还在，只是被补丁挡住
+          }
+        },
+
+        resetSheep() {
+          this.elements.sheep1.style.opacity = "1"
+          this.elements.sheep2.style.opacity = "1"
+          this.elements.sheep3.style.opacity = "1"
+          this.elements.sheep3.classList.remove("shake")
+        },
+
+        showCharacter(name, show, pos) {
+          const el = this.elements[name]
+          el.style.opacity = show ? "1" : "0"
+          if (pos) {
+            if (pos.bottom) el.style.bottom = pos.bottom
+            if (pos.left) el.style.left = pos.left
+          }
+        },
+
+        setFarmerPos(isNearPen) {
+          // 简单处理：农夫位置固定在左边
+        },
+
+        setBubble(charName, text) {
+          // 隐藏所有气泡
+          this.elements.bubbleFarmer.style.opacity = "0"
+          this.elements.bubbleFarmer.style.transform = "scale(0)"
+          this.elements.bubbleNeighbor.style.opacity = "0"
+          this.elements.bubbleNeighbor.style.transform = "scale(0)"
+
+          if (charName && text) {
+            const bubble =
+              charName === "farmer"
+                ? this.elements.bubbleFarmer
+                : this.elements.bubbleNeighbor
+            bubble.textContent = text
+            bubble.style.opacity = "1"
+            bubble.style.transform = "scale(1)"
+          }
+        }
+      }
+
+      // 初始化
+      window.onload = () => story.init()
+    </script>
+  </body>
+</html>

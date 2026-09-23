@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healthy Diet App</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Login Overlay -->
+    <div
+      id="login-overlay"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 32px;
+        text-align: center;
+      ">
+      <div style="margin-bottom: 40px">
+        <div
+          style="
+            width: 80px;
+            height: 80px;
+            background: var(--primary-color);
+            border-radius: 20px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          ">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="white">
+            <path
+              d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" />
+          </svg>
+        </div>
+        <h1 class="text-xl" style="color: var(--primary-color); margin-bottom: 8px">
+          HealthyLife
+        </h1>
+        <p class="text-muted">开启你的健康饮食之旅</p>
+      </div>
+
+      <form id="login-form">
+        <input
+          type="email"
+          placeholder="邮箱地址"
+          style="
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+          " />
+        <input
+          type="password"
+          placeholder="密码"
+          style="
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 24px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+          " />
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="width: 100%; font-size: 1rem">
+          登录 / 注册
+        </button>
+      </form>
+      <p class="text-muted text-sm" style="margin-top: 24px">
+        点击登录即代表同意用户协议
+      </p>
+    </div>
+
+    <!-- Header -->
+    <header class="app-header">
+      <h1 id="page-title" class="text-lg">今日概览</h1>
+      <div
+        class="user-avatar"
+        style="
+          width: 32px;
+          height: 32px;
+          background: #ddd;
+          border-radius: 50%;
+          overflow: hidden;
+        ">
+        <img
+          src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+          alt="User"
+          style="width: 100%; height: 100%" />
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container" style="flex: 1">
+      <!-- Home Page -->
+      <div id="home-page" class="page active">
+        <!-- Calorie Card -->
+        <div class="card">
+          <div class="flex justify-between items-center" style="margin-bottom: 12px">
+            <span class="text-lg">今日摄入</span>
+            <span class="text-muted text-sm">目标: 2000 kcal</span>
+          </div>
+          <div
+            class="flex items-center justify-center flex-col"
+            style="padding: 20px 0">
+            <div
+              class="text-xl"
+              style="color: var(--primary-color); font-size: 2.5rem">
+              1,250
+            </div>
+            <div class="text-muted">kcal</div>
+          </div>
+          <div
+            class="flex justify-between text-sm text-muted"
+            style="margin-top: 12px">
+            <div style="text-align: center">
+              <div>碳水</div>
+              <div class="nutrient-bar" style="width: 60px">
+                <div
+                  class="nutrient-fill"
+                  style="width: 45%; background: #ffb74d"></div>
+              </div>
+              <div>45%</div>
+            </div>
+            <div style="text-align: center">
+              <div>蛋白质</div>
+              <div class="nutrient-bar" style="width: 60px">
+                <div
+                  class="nutrient-fill"
+                  style="width: 70%; background: #66bb6a"></div>
+              </div>
+              <div>70g</div>
+            </div>
+            <div style="text-align: center">
+              <div>脂肪</div>
+              <div class="nutrient-bar" style="width: 60px">
+                <div
+                  class="nutrient-fill"
+                  style="width: 30%; background: #ff7043"></div>
+              </div>
+              <div>30g</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Next Meal Recommendation -->
+        <div class="flex justify-between items-center" style="margin-bottom: 8px">
+          <h2 class="text-lg">推荐食谱</h2>
+          <a href="#" class="text-sm" style="color: var(--primary-color)">更多</a>
+        </div>
+        <div class="card" style="padding: 0; overflow: hidden">
+          <div style="height: 120px; background: #eee; position: relative">
+            <img
+              src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80"
+              alt="Salad"
+              style="width: 100%; height: 100%; object-fit: cover" />
+          </div>
+          <div style="padding: 16px">
+            <div class="flex justify-between">
+              <span class="text-lg">藜麦鸡胸肉沙拉</span>
+              <span style="color: var(--warning-color)">★ 4.8</span>
+            </div>
+            <p class="text-muted text-sm">低卡高蛋白，适合午餐</p>
+            <div class="flex gap-sm" style="margin-top: 8px">
+              <span
+                class="text-sm"
+                style="
+                  background: #f1f8e9;
+                  color: var(--primary-color);
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                "
+                >350 kcal</span
+              >
+              <span
+                class="text-sm"
+                style="
+                  background: #fff3e0;
+                  color: var(--secondary-color);
+                  padding: 4px 8px;
+                  border-radius: 4px;
+                "
+                >15 min</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Gamification / Daily Goal -->
+        <div
+          class="card"
+          style="
+            background: linear-gradient(
+              135deg,
+              var(--primary-color),
+              var(--primary-light)
+            );
+            color: white;
+          ">
+          <div class="flex justify-between items-center">
+            <div>
+              <div class="text-lg">今日喝水挑战</div>
+              <div class="text-sm" style="opacity: 0.9">已完成 4/8 杯</div>
+            </div>
+            <button
+              style="
+                background: white;
+                color: var(--primary-color);
+                border: none;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 1.2rem;
+              ">
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Log Page -->
+      <div id="log-page" class="page">
+        <div class="card">
+          <h2 class="text-lg" style="margin-bottom: 12px">早餐</h2>
+          <div class="meal-item">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #eee;
+                border-radius: 8px;
+                margin-right: 12px;
+                overflow: hidden;
+              ">
+              <img
+                src="https://images.unsplash.com/photo-1525351484163-7529414395d8?auto=format&fit=crop&w=100&q=60"
+                style="width: 100%; height: 100%; object-fit: cover" />
+            </div>
+            <div style="flex: 1">
+              <div>全麦面包 + 鸡蛋</div>
+              <div class="text-muted text-sm">320 kcal</div>
+            </div>
+            <button
+              class="btn-outline"
+              style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem">
+              编辑
+            </button>
+          </div>
+          <div class="meal-item">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #eee;
+                border-radius: 8px;
+                margin-right: 12px;
+                overflow: hidden;
+              ">
+              <img
+                src="https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?auto=format&fit=crop&w=100&q=60"
+                style="width: 100%; height: 100%; object-fit: cover" />
+            </div>
+            <div style="flex: 1">
+              <div>美式咖啡</div>
+              <div class="text-muted text-sm">5 kcal</div>
+            </div>
+            <button
+              class="btn-outline"
+              style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem">
+              编辑
+            </button>
+          </div>
+          <button
+            class="btn btn-outline"
+            style="width: 100%; margin-top: 12px; border-style: dashed">
+            + 添加早餐
+          </button>
+        </div>
+
+        <div class="card">
+          <h2 class="text-lg" style="margin-bottom: 12px">午餐</h2>
+          <div class="meal-item">
+            <div
+              style="
+                width: 48px;
+                height: 48px;
+                background: #eee;
+                border-radius: 8px;
+                margin-right: 12px;
+                overflow: hidden;
+              ">
+              <img
+                src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=100&q=60"
+                style="width: 100%; height: 100%; object-fit: cover" />
+            </div>
+            <div style="flex: 1">
+              <div>藜麦鸡胸肉沙拉</div>
+              <div class="text-muted text-sm">450 kcal</div>
+            </div>
+            <button
+              class="btn-outline"
+              style="padding: 4px 8px; border-radius: 4px; font-size: 0.8rem">
+              编辑
+            </button>
+          </div>
+          <button
+            class="btn btn-outline"
+            style="width: 100%; margin-top: 12px; border-style: dashed">
+            + 添加午餐
+          </button>
+        </div>
+
+        <div class="fab" onclick="alert('开启AI拍照识别功能')">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
+            <path
+              d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+          </svg>
+          <!-- Camera Icon placeholder -->
+          <span style="font-size: 24px">📷</span>
+        </div>
+      </div>
+
+      <!-- Analysis Page -->
+      <div id="analysis-page" class="page">
+        <div class="card">
+          <h2 class="text-lg">本周营养摄入趋势</h2>
+          <div
+            style="
+              height: 200px;
+              display: flex;
+              align-items: flex-end;
+              justify-content: space-around;
+              padding-top: 20px;
+            ">
+            <!-- Simple CSS Bar Chart -->
+            <div class="flex-col items-center gap-sm">
+              <div
+                style="
+                  width: 20px;
+                  height: 100px;
+                  background: #ddd;
+                  border-radius: 4px;
+                "></div>
+              <span class="text-sm text-muted">一</span>
+            </div>
+            <div class="flex-col items-center gap-sm">
+              <div
+                style="
+                  width: 20px;
+                  height: 140px;
+                  background: var(--primary-light);
+                  border-radius: 4px;
+                "></div>
+              <span class="text-sm text-muted">二</span>
+            </div>
+            <div class="flex-col items-center gap-sm">
+              <div
+                style="
+                  width: 20px;
+                  height: 120px;
+                  background: #ddd;
+                  border-radius: 4px;
+                "></div>
+              <span class="text-sm text-muted">三</span>
+            </div>
+            <div class="flex-col items-center gap-sm">
+              <!-- Current day -->
+              <div
+                style="
+                  width: 20px;
+                  height: 160px;
+                  background: var(--primary-color);
+                  border-radius: 4px;
+                "></div>
+              <span
+                class="text-sm"
+                style="color: var(--primary-color); font-weight: bold"
+                >四</span
+              >
+            </div>
+            <div class="flex-col items-center gap-sm">
+              <div
+                style="
+                  width: 20px;
+                  height: 80px;
+                  background: #ddd;
+                  border-radius: 4px;
+                "></div>
+              <span class="text-sm text-muted">五</span>
+            </div>
+            <div class="flex-col items-center gap-sm">
+              <div
+                style="
+                  width: 20px;
+                  height: 100px;
+                  background: #ddd;
+                  border-radius: 4px;
+                "></div>
+              <span class="text-sm text-muted">六</span>
+            </div>
+            <div class="flex-col items-center gap-sm">
+              <div
+                style="
+                  width: 20px;
+                  height: 110px;
+                  background: #ddd;
+                  border-radius: 4px;
+                "></div>
+              <span class="text-sm text-muted">日</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 class="text-lg">AI 健康建议</h2>
+          <p class="text-muted" style="margin-top: 8px; line-height: 1.6">
+            基于你本周的饮食记录，你的蛋白质摄入量略低于目标。建议在晚餐中增加一些豆制品或鱼类。同时，你的水分摄入表现很棒，请继续保持！
+          </p>
+          <button class="btn btn-secondary" style="margin-top: 12px; width: 100%">
+            查看详细报告
+          </button>
+        </div>
+      </div>
+
+      <!-- Recipe Page -->
+      <div id="recipe-page" class="page">
+        <div
+          class="flex gap-sm"
+          style="margin-bottom: 16px; overflow-x: auto; padding-bottom: 4px">
+          <button
+            class="btn btn-primary"
+            style="padding: 8px 16px; font-size: 0.9rem">
+            全部
+          </button>
+          <button
+            class="btn"
+            style="padding: 8px 16px; font-size: 0.9rem; background: #eee">
+            减脂
+          </button>
+          <button
+            class="btn"
+            style="padding: 8px 16px; font-size: 0.9rem; background: #eee">
+            增肌
+          </button>
+          <button
+            class="btn"
+            style="padding: 8px 16px; font-size: 0.9rem; background: #eee">
+            素食
+          </button>
+        </div>
+
+        <div class="recipe-card">
+          <img
+            src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=80"
+            style="width: 100%; height: 100%; object-fit: cover" />
+          <div class="recipe-content">
+            <div class="text-lg">彩虹蔬菜碗</div>
+            <div class="text-sm">280 kcal · 10 min</div>
+          </div>
+        </div>
+
+        <div class="recipe-card">
+          <img
+            src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80"
+            style="width: 100%; height: 100%; object-fit: cover" />
+          <div class="recipe-content">
+            <div class="text-lg">牛油果全麦吐司</div>
+            <div class="text-sm">310 kcal · 5 min</div>
+          </div>
+        </div>
+
+        <div class="recipe-card">
+          <img
+            src="https://images.unsplash.com/photo-1467003909585-2f8a7270028d?auto=format&fit=crop&w=600&q=80"
+            style="width: 100%; height: 100%; object-fit: cover" />
+          <div class="recipe-content">
+            <div class="text-lg">三文鱼波奇饭</div>
+            <div class="text-sm">450 kcal · 20 min</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Page -->
+      <div id="profile-page" class="page">
+        <div class="flex flex-col items-center" style="margin-bottom: 24px">
+          <div
+            style="
+              width: 80px;
+              height: 80px;
+              border-radius: 50%;
+              background: #eee;
+              margin-bottom: 12px;
+              overflow: hidden;
+            ">
+            <img
+              src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
+              alt="User"
+              style="width: 100%; height: 100%" />
+          </div>
+          <div class="text-lg">Alex Chen</div>
+          <div class="text-muted">坚持记录 12 天</div>
+        </div>
+
+        <div class="card">
+          <h3 class="text-lg" style="margin-bottom: 12px">我的成就</h3>
+          <div class="flex justify-around">
+            <div class="flex-col items-center">
+              <div style="font-size: 32px">🥑</div>
+              <div class="text-sm">健康达人</div>
+            </div>
+            <div class="flex-col items-center">
+              <div style="font-size: 32px">🔥</div>
+              <div class="text-sm">燃脂机器</div>
+            </div>
+            <div class="flex-col items-center">
+              <div style="font-size: 32px; opacity: 0.3">🏆</div>
+              <div class="text-sm text-muted">即将解锁</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div
+            class="flex justify-between items-center"
+            style="padding: 8px 0; border-bottom: 1px solid #eee">
+            <span>身体数据</span>
+            <span>></span>
+          </div>
+          <div
+            class="flex justify-between items-center"
+            style="padding: 8px 0; border-bottom: 1px solid #eee">
+            <span>饮食偏好</span>
+            <span>></span>
+          </div>
+          <div
+            class="flex justify-between items-center"
+            style="padding: 8px 0; border-bottom: 1px solid #eee">
+            <span>连接设备</span>
+            <span>></span>
+          </div>
+          <div class="flex justify-between items-center" style="padding: 8px 0">
+            <span>设置</span>
+            <span>></span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+      <a href="#" class="nav-item active" data-target="home-page">
+        <svg viewBox="0 0 24 24">
+          <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+        </svg>
+        <span>首页</span>
+      </a>
+      <a href="#" class="nav-item" data-target="log-page">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 9h-2V7h2v5zm0 4h-2v-2h2v2z" />
+        </svg>
+        <span>记录</span>
+      </a>
+      <a href="#" class="nav-item" data-target="analysis-page">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+        </svg>
+        <span>分析</span>
+      </a>
+      <a href="#" class="nav-item" data-target="recipe-page">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z" />
+        </svg>
+        <span>食谱</span>
+      </a>
+      <a href="#" class="nav-item" data-target="profile-page">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+        </svg>
+        <span>我的</span>
+      </a>
+    </nav>
+
+    <script src="app.js"></script>
+  </body>
+</html>

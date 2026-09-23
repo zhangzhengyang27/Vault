@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 工具箱</title>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 24px; }
+        .tabs {
+            display: flex;
+            gap: 0;
+            background: #fff;
+            border-radius: 12px 12px 0 0;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .tab {
+            flex: 1;
+            padding: 14px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #78909c;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+        }
+        .tab.active { color: #1976d2; background: #e3f2fd; border-bottom-color: #1976d2; }
+        .tab-content {
+            background: #fff;
+            border-radius: 0 0 12px 12px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .upload-area {
+            border: 2px dashed #90caf9;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .upload-area .icon { font-size: 32px; }
+        .upload-area p { color: #78909c; font-size: 14px; }
+        input[type="file"] { display: none; }
+        .file-list { margin-bottom: 16px; }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #f5f7fa;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+        .file-item .name { color: #37474f; }
+        .file-item .remove { color: #e53935; cursor: pointer; font-weight: 600; }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            margin-top: 10px;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-primary { background: #1976d2; color: #fff; }
+        .btn-success { background: #43a047; color: #fff; }
+        .btn-warning { background: #ff9800; color: #fff; }
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 14px; color: #78909c; margin-bottom: 4px; }
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .extract-result {
+            background: #f5f7fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            color: #37474f;
+            min-height: 100px;
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 PDF 工具箱</h1>
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('merge')">合并</div>
+            <div class="tab" onclick="switchTab('split')">拆分</div>
+            <div class="tab" onclick="switchTab('extract')">提取文字</div>
+        </div>
+        <div class="tab-content">
+            <!-- 合并 -->
+            <div class="panel active" id="panel-merge">
+                <div class="upload-area" onclick="document.getElementById('mergeInput').click()">
+                    <div class="icon">📁</div>
+                    <p>拖拽或点击上传多个 PDF 文件</p>
+                    <input type="file" id="mergeInput" accept=".pdf" multiple onchange="addMergeFiles(event)">
+                </div>
+                <div class="file-list" id="mergeFileList"></div>
+                <button class="btn btn-primary" onclick="mergePDFs()">合并 PDF</button>
+                <button class="btn btn-success hidden" id="mergeDownloadBtn" onclick="downloadMerge()">下载合并结果</button>
+            </div>
+            <!-- 拆分 -->
+            <div class="panel" id="panel-split">
+                <div class="upload-area" onclick="document.getElementById('splitInput').click()">
+                    <div class="icon">📁</div>
+                    <p>上传一个 PDF 文件</p>
+                    <input type="file" id="splitInput" accept=".pdf" onchange="loadSplitFile(event)">
+                </div>
+                <div class="input-group">
+                    <label>页码范围（如：1-5, 6-10）</label>
+                    <input type="text" id="splitRange" placeholder="1-5">
+                </div>
+                <button class="btn btn-primary" onclick="splitPDF()">拆分 PDF</button>
+            </div>
+            <!-- 提取文字 -->
+            <div class="panel" id="panel-extract">
+                <div class="upload-area" onclick="document.getElementById('extractInput').click()">
+                    <div class="icon">📁</div>
+                    <p>上传 PDF 文件</p>
+                    <input type="file" id="extractInput" accept=".pdf" onchange="loadExtractFile(event)">
+                </div>
+                <div class="extract-result" id="extractResult">提取的文字将显示在此处</div>
+                <button class="btn btn-warning" onclick="copyExtract()">复制到剪贴板</button>
+                <button class="btn btn-success" onclick="downloadTxt()">下载为 TXT</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        let mergeFilesList = [];
+        let mergedPdfBytes = null;
+        let splitPdfBytes = null;
+        let extractText = '';
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelector(`.tab:nth-child(${name==='merge'?1:name==='split'?2:3})`).classList.add('active');
+            document.getElementById(`panel-${name}`).classList.add('active');
+        }
+        function addMergeFiles(e) {
+            const files = Array.from(e.target.files);
+            mergeFilesList = mergeFilesList.concat(files);
+            renderMergeList();
+        }
+        function renderMergeList() {
+            const list = document.getElementById('mergeFileList');
+            list.innerHTML = mergeFilesList.map((f, i) => `
+                <div class="file-item">
+                    <span class="name">📄 ${f.name}</span>
+                    <span class="remove" onclick="removeMergeFile(${i})">✕</span>
+                </div>
+            `).join('');
+        }
+        function removeMergeFile(idx) {
+            mergeFilesList.splice(idx, 1);
+            renderMergeList();
+        }
+        async function mergePDFs() {
+            if (mergeFilesList.length < 2) { alert('请至少上传 2 个 PDF 文件'); return; }
+            const merged = await PDFLib.PDFDocument.create();
+            for (const file of mergeFilesList) {
+                const bytes = await file.arrayBuffer();
+                const doc = await PDFLib.PDFDocument.load(bytes);
+                const pages = await merged.copyPages(doc, doc.getPageIndices());
+                pages.forEach(p => merged.addPage(p));
+            }
+            mergedPdfBytes = await merged.save();
+            document.getElementById('mergeDownloadBtn').classList.remove('hidden');
+            alert('合并完成！点击"下载合并结果"保存文件。');
+        }
+        function downloadMerge() {
+            if (!mergedPdfBytes) return;
+            const blob = new Blob([mergedPdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '合并结果.pdf';
+            link.click();
+        }
+        async function loadSplitFile(e) {
+            const file = e.target.files[0];
+            splitPdfBytes = await file.arrayBuffer();
+        }
+        async function splitPDF() {
+            if (!splitPdfBytes) { alert('请先上传 PDF 文件'); return; }
+            const rangeStr = document.getElementById('splitRange').value;
+            const ranges = rangeStr.split(',').map(r => {
+                const [s, e] = r.trim().split('-').map(Number);
+                return { start: s - 1, end: e - 1 };
+            });
+            const srcDoc = await PDFLib.PDFDocument.load(splitPdfBytes);
+            for (const range of ranges) {
+                const newDoc = await PDFLib.PDFDocument.create();
+                const pages = await newDoc.copyPages(srcDoc, Array.from({length: range.end - range.start + 1}, (_, i) => range.start + i));
+                pages.forEach(p => newDoc.addPage(p));
+                const bytes = await newDoc.save();
+                const blob = new Blob([bytes], { type: 'application/pdf' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `拆分_${range.start+1}-${range.end+1}.pdf`;
+                link.click();
+            }
+        }
+        async function loadExtractFile(e) {
+            const file = e.target.files[0];
+            const bytes = await file.arrayBuffer();
+            const doc = await PDFLib.PDFDocument.load(bytes);
+            const pageCount = doc.getPageCount();
+            let text = `文件：${file.name}\n页数：${pageCount}\n\n`;
+            for (let i = 0; i < pageCount; i++) {
+                const page = doc.getPage(i);
+                text += `(PDF 文字提取功能暂不支持，当前仅显示文件信息)\n\n`;
+            }
+            extractText = text;
+            document.getElementById('extractResult').textContent = text;
+        }
+        function copyExtract() {
+            navigator.clipboard.writeText(extractText).catch(() => {});
+        }
+        function downloadTxt() {
+            const blob = new Blob([extractText], { type: 'text/plain;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '提取文字.txt';
+            link.click();
+        }
+    </script>
+</body>
+</html>

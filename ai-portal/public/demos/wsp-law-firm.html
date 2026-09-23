@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meridian Law Group — Counsel You Can Count On · Austin, Texas</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant@5/latin-400-italic.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-500.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        navy: 'hsl(221, 47%, 11%)',
+        navydeep: 'hsl(221, 50%, 9%)',
+        navycard: 'hsl(221, 44%, 14%)',
+        parchment: 'hsl(36, 30%, 93%)',
+        gold: 'hsl(41, 55%, 54%)',
+        goldsoft: 'hsl(41, 25%, 22%)',
+        mutedf: 'hsl(36, 15%, 65%)',
+      },
+      fontFamily: {
+        serif: ['Cormorant', 'Georgia', 'serif'],
+        sans: ['Inter', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: Inter, "PingFang SC", Arial, sans-serif; font-weight: 300; line-height: 1.8; }
+  .eyebrow { font-weight: 500; text-transform: uppercase; letter-spacing: 0.15em; font-size: 11px; }
+
+  /* 羊皮纸/亚麻噪点叠层（fixed） */
+  .grain { position: fixed; inset: 0; z-index: 50; pointer-events: none; mix-blend-mode: multiply; opacity: .7; }
+
+  .fadeup { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .goldline { transform: scaleX(0); transform-origin: left; transition: transform .9s cubic-bezier(.6,0,.2,1); }
+  .goldline.in { transform: scaleX(1); }
+  .area-card { border-left: 3px solid hsl(41, 55%, 54%); transition: transform .25s ease, box-shadow .25s ease; }
+  .area-card:hover { transform: translateY(-4px); box-shadow: 0 10px 30px -12px hsl(41 55% 54% / .45); }
+  .atty { opacity: 0; filter: blur(6px); transition: opacity .6s ease, filter .6s ease; transition-delay: var(--d, 0ms); }
+  .atty.in { opacity: 1; filter: blur(0); }
+  .hero-clip { clip-path: inset(0 0 0 100%); animation: heropanel 1.4s cubic-bezier(.6,0,.2,1) .2s forwards; }
+  @keyframes heropanel { to { clip-path: inset(0 0 0 0); } }
+  .stagger { opacity: 0; transform: translateY(16px); animation: stin .6s ease forwards; animation-delay: var(--d, 0ms); }
+  @keyframes stin { to { opacity: 1; transform: none; } }
+  .slide-dot { transition: background-color .3s ease; }
+  a, button, input, select, textarea { transition: all .2s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .fadeup, .atty, .stagger { opacity: 1; transform: none; filter: none; animation: none; }
+    .goldline { transform: scaleX(1); transition: none; }
+    .hero-clip { animation: none; clip-path: none; }
+  }
+</style>
+</head>
+<body class="bg-navy text-parchment antialiased">
+
+<!-- 特效 1: 羊皮纸噪点 -->
+<svg class="grain" aria-hidden="true"><filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#paper)" opacity="0.55"/></svg>
+
+<!-- 1. 导航栏 -->
+<header id="nav" class="fixed top-0 inset-x-0 z-40 h-20 bg-[rgba(13,22,40,0.97)]">
+  <div class="max-w-6xl mx-auto px-5 h-full flex items-center justify-between">
+    <a href="#top" class="font-serif text-xl tracking-wide"><span class="text-gold">MERIDIAN</span> LAW GROUP</a>
+    <nav class="hidden lg:flex items-center gap-7 eyebrow text-mutedf">
+      <a class="hover:text-gold" href="#areas">Practice Areas</a>
+      <a class="hover:text-gold" href="#attorneys">Attorneys</a>
+      <a class="hover:text-gold" href="#results">Results</a>
+      <a class="hover:text-gold" href="#process">Process</a>
+      <a class="hover:text-gold" href="#contact">Contact</a>
+    </nav>
+    <div class="hidden lg:flex items-center gap-4">
+      <a href="tel:+15125550193" class="text-gold font-medium text-sm">+1 512 555 0193</a>
+      <a href="#contact" class="border border-gold text-gold px-4 py-2 text-xs font-medium uppercase tracking-[0.15em] hover:bg-gold hover:text-navy">Free Consultation</a>
+    </div>
+    <button id="burger" class="lg:hidden p-2 text-gold" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden lg:hidden border-t border-goldsoft px-5 py-4 bg-navy">
+    <div class="grid grid-cols-2 gap-3 eyebrow text-mutedf">
+      <a href="#areas" class="py-1">Practice Areas</a><a href="#attorneys" class="py-1">Attorneys</a>
+      <a href="#results" class="py-1">Results</a><a href="#process" class="py-1">Process</a>
+      <a href="#contact" class="py-1">Contact</a><a href="tel:+15125550193" class="py-1 text-gold">Call now</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. Hero 分栏 -->
+  <section class="relative min-h-screen pt-20 flex">
+    <div class="relative w-full lg:w-[60%] flex items-center">
+      <div class="px-5 lg:px-16 py-16 max-w-3xl">
+        <p class="eyebrow text-gold stagger" style="--d:0ms">Austin, Texas · Founded 1989 · AV Preeminent® Rated</p>
+        <h1 class="font-serif font-light text-5xl md:text-7xl leading-[1.05] mt-6 stagger" style="--d:120ms">
+          Counsel You<br><em class="text-gold">Can Count On</em>
+        </h1>
+        <p class="mt-6 text-mutedf max-w-lg stagger" style="--d:240ms">Three decades of trial experience, delivered with the personal attention big firms forget. When your future is on the line, you want a counsel who answers the phone.</p>
+        <div class="mt-8 flex flex-wrap gap-4 stagger" style="--d:360ms">
+          <a href="#contact" class="bg-gold text-navy px-6 py-3 text-sm font-medium uppercase tracking-[0.15em] hover:brightness-110">Free Consultation</a>
+          <a href="#areas" class="border border-goldsoft text-parchment px-6 py-3 text-sm uppercase tracking-[0.15em] hover:border-gold">Our Practice Areas</a>
+        </div>
+        <p class="mt-8 text-mutedf text-sm stagger" style="--d:480ms">🔒 Confidential · No obligation · Same-day response</p>
+      </div>
+    </div>
+    <div class="hero-clip hidden lg:block absolute right-0 top-0 h-full w-[40%]">
+      <svg class="w-full h-full" viewBox="0 0 560 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <rect width="560" height="900" fill="hsl(221, 40%, 16%)"/>
+        <g stroke="hsl(41, 30%, 30%)" stroke-width="3" fill="none" opacity=".8">
+          <rect x="90" y="150" width="380" height="560" />
+          <path d="M90 260 h380 M90 380 h380 M90 500 h380 M90 620 h380"/>
+          <path d="M150 150 v560 M280 150 v560 M410 150 v560"/>
+        </g>
+        <g fill="hsl(41, 55%, 54%)" opacity=".75">
+          <circle cx="280" cy="205" r="26"/>
+          <path d="M280 240 L240 300 L320 300 Z"/>
+        </g>
+        <g stroke="hsl(36, 15%, 65%)" stroke-width="4" opacity=".35">
+          <path d="M120 100 v-40 h320 v40"/>
+        </g>
+      </svg>
+      <div class="absolute inset-0 bg-gradient-to-r from-navy via-navy/40 to-transparent"></div>
+    </div>
+  </section>
+
+  <!-- 3. 信任条 -->
+  <section class="border-y border-goldsoft bg-navydeep">
+    <div class="max-w-6xl mx-auto px-5 py-6 grid grid-cols-2 md:grid-cols-6 gap-4 text-center">
+      <span class="eyebrow text-mutedf">AV Preeminent®</span>
+      <span class="eyebrow text-mutedf">Super Lawyers®</span>
+      <span class="eyebrow text-mutedf">State Bar of Texas</span>
+      <span class="eyebrow text-mutedf">Best Law Firms®</span>
+      <span class="eyebrow text-mutedf">AVVO 10.0</span>
+      <span class="eyebrow text-gold">35+ Years</span>
+    </div>
+  </section>
+
+  <!-- 4. 业务领域 -->
+  <section id="areas" class="max-w-6xl mx-auto px-5 py-24">
+    <p class="eyebrow text-gold">Practice Areas</p>
+    <h2 class="font-serif font-normal text-4xl md:text-6xl mt-3">Experience across <em class="text-gold">six disciplines</em>
+      <span class="block goldline h-[2px] bg-gold mt-3 max-w-xs"></span>
+    </h2>
+    <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <article class="area-card bg-navycard p-6 fadeup" style="--d:0ms">
+        <h3 class="font-serif italic text-[22px] text-gold">Personal Injury</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Serious injuries deserve serious advocacy. We take the fight to insurers who count on you giving up.</p>
+      </article>
+      <article class="area-card bg-navycard p-6 fadeup" style="--d:60ms">
+        <h3 class="font-serif italic text-[22px] text-gold">Family Law</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Divorce, custody and support — handled with discretion, candour and a steady hand.</p>
+      </article>
+      <article class="area-card bg-navycard p-6 fadeup" style="--d:120ms">
+        <h3 class="font-serif italic text-[22px] text-gold">Business Litigation</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Contract disputes and partnership breakdowns. We protect what you've built.</p>
+      </article>
+      <article class="area-card bg-navycard p-6 fadeup" style="--d:180ms">
+        <h3 class="font-serif italic text-[22px] text-gold">Criminal Defense</h3>
+        <p class="mt-2 text-mutedf text-[15px]">From first charge to final verdict — a defence built on facts, not fear.</p>
+      </article>
+      <article class="area-card bg-navycard p-6 fadeup" style="--d:240ms">
+        <h3 class="font-serif italic text-[22px] text-gold">Estate Planning</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Wills, trusts and probate. Your legacy, documented the way you intend it.</p>
+      </article>
+      <article class="area-card bg-navycard p-6 fadeup" style="--d:300ms">
+        <h3 class="font-serif italic text-[22px] text-gold">Employment Law</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Wrongful termination, discrimination and non-competes. We level the playing field.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- 5. 律师档案 -->
+  <section id="attorneys" class="bg-navydeep border-y border-goldsoft">
+    <div class="max-w-6xl mx-auto px-5 py-24">
+      <p class="eyebrow text-gold">Attorneys</p>
+      <h2 class="font-serif font-normal text-4xl md:text-6xl mt-3">The counsel <em class="text-gold">you'll meet</em></h2>
+      <div class="mt-12 grid md:grid-cols-3 gap-6">
+        <article class="atty bg-navycard p-7 text-center" style="--d:0ms">
+          <div class="w-24 h-24 mx-auto rounded-full border-2 border-gold flex items-center justify-center font-serif text-3xl text-gold">EW</div>
+          <h3 class="font-serif italic text-2xl mt-4">Eleanor Whitfield</h3>
+          <p class="eyebrow text-gold mt-1">Managing Partner</p>
+          <p class="mt-3 text-mutedf text-[15px]">Board-certified in personal injury trial law. Second-generation attorney, first call for catastrophic cases.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium hover:underline">View Full Profile →</a>
+        </article>
+        <article class="atty bg-navycard p-7 text-center" style="--d:150ms">
+          <div class="w-24 h-24 mx-auto rounded-full border-2 border-gold flex items-center justify-center font-serif text-3xl text-gold">DO</div>
+          <h3 class="font-serif italic text-2xl mt-4">Daniel Okafor</h3>
+          <p class="eyebrow text-gold mt-1">Partner · Litigation</p>
+          <p class="mt-3 text-mutedf text-[15px]">Fourteen years of courtroom work across Texas. Known for preparation that borders on clairvoyant.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium hover:underline">View Full Profile →</a>
+        </article>
+        <article class="atty bg-navycard p-7 text-center" style="--d:300ms">
+          <div class="w-24 h-24 mx-auto rounded-full border-2 border-gold flex items-center justify-center font-serif text-3xl text-gold">MR</div>
+          <h3 class="font-serif italic text-2xl mt-4">Marisol Reyes</h3>
+          <p class="eyebrow text-gold mt-1">Senior Associate · Family</p>
+          <p class="mt-3 text-mutedf text-[15px]">Bilingual counsel for families in transition. Trained mediator; relentless when mediation fails.</p>
+          <a href="#contact" class="inline-block mt-4 text-gold text-sm font-medium hover:underline">View Full Profile →</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 胜诉战绩 -->
+  <section id="results" class="max-w-6xl mx-auto px-5 py-24">
+    <p class="eyebrow text-gold">Representative Results</p>
+    <h2 class="font-serif font-normal text-4xl md:text-6xl mt-3">A record we're <em class="text-gold">proud of</em>
+      <span class="block goldline h-[2px] bg-gold mt-3 max-w-xs"></span>
+    </h2>
+    <div class="mt-12 grid md:grid-cols-3 gap-6">
+      <article class="border border-goldsoft bg-navycard p-8 text-center fadeup">
+        <p class="font-serif text-6xl text-gold"><span class="countup" data-target="4.2" data-prefix="$" data-suffix="M">0</span></p>
+        <p class="mt-3 text-mutedf text-[15px]">Commercial trucking collision — spinal injury settlement.</p>
+      </article>
+      <article class="border border-goldsoft bg-navycard p-8 text-center fadeup" style="--d:120ms">
+        <p class="font-serif text-6xl text-gold"><span class="countup" data-target="1.8" data-prefix="$" data-suffix="M">0</span></p>
+        <p class="mt-3 text-mutedf text-[15px]">Partnership dispute — business fraud verdict for minority owners.</p>
+      </article>
+      <article class="border border-goldsoft bg-navycard p-8 text-center fadeup" style="--d:240ms">
+        <p class="font-serif text-6xl text-gold"><span class="countup" data-target="3.5" data-prefix="$" data-suffix="M">0</span></p>
+        <p class="mt-3 text-mutedf text-[15px]">Premises liability — traumatic brain injury arbitration award.</p>
+      </article>
+    </div>
+    <p class="mt-6 text-xs text-mutedf">Results depend on the unique facts of each case. Past outcomes do not guarantee future results.</p>
+  </section>
+
+  <!-- 7. 用户评价（滑块） -->
+  <section class="bg-navydeep border-y border-goldsoft">
+    <div class="max-w-3xl mx-auto px-5 py-24 text-center">
+      <p class="eyebrow text-gold">Client Voices</p>
+      <div id="slides" class="mt-8 min-h-[180px]">
+        <blockquote class="slide">
+          <p class="font-serif italic text-2xl md:text-3xl leading-relaxed">"They picked up the phone at 9pm on a Sunday. That's when I knew we'd chosen right."</p>
+          <footer class="eyebrow text-mutedf mt-5">— R. Alvarez, Personal Injury</footer>
+        </blockquote>
+        <blockquote class="slide hidden">
+          <p class="font-serif italic text-2xl md:text-3xl leading-relaxed">"Calm, precise, and completely unflappable in front of a judge. Worth every hour of their time."</p>
+          <footer class="eyebrow text-mutedf mt-5">— The Henderson Family, Custody</footer>
+        </blockquote>
+        <blockquote class="slide hidden">
+          <p class="font-serif italic text-2xl md:text-3xl leading-relaxed">"Meridian treated our dispute like it was the only case in Texas. It settled on our terms."</p>
+          <footer class="eyebrow text-mutedf mt-5">— K. Osei, Business Litigation</footer>
+        </blockquote>
+      </div>
+      <div class="flex justify-center gap-2 mt-8" id="dots"></div>
+    </div>
+  </section>
+
+  <!-- 8. 流程 -->
+  <section id="process" class="max-w-6xl mx-auto px-5 py-24">
+    <p class="eyebrow text-gold">How It Works</p>
+    <h2 class="font-serif font-normal text-4xl md:text-6xl mt-3">Four steps to <em class="text-gold">clarity</em>
+      <span class="block goldline h-[2px] bg-gold mt-3 max-w-xs"></span>
+    </h2>
+    <ol class="mt-12 grid md:grid-cols-4 gap-6 relative">
+      <li class="fadeup relative pl-6 md:pl-0">
+        <span class="hidden md:block absolute -top-3 left-0 font-serif text-6xl text-goldsoft select-none">1</span>
+        <h3 class="font-serif italic text-xl text-gold md:mt-8">Free Consultation</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Tell us what happened. We'll tell you plainly whether you have a case.</p>
+      </li>
+      <li class="fadeup relative pl-6 md:pl-0" style="--d:100ms">
+        <span class="hidden md:block absolute -top-3 left-0 font-serif text-6xl text-goldsoft select-none">2</span>
+        <h3 class="font-serif italic text-xl text-gold md:mt-8">Case Assessment</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Documents, deadlines, and strategy — mapped before you commit to anything.</p>
+      </li>
+      <li class="fadeup relative pl-6 md:pl-0" style="--d:200ms">
+        <span class="hidden md:block absolute -top-3 left-0 font-serif text-6xl text-goldsoft select-none">3</span>
+        <h3 class="font-serif italic text-xl text-gold md:mt-8">Strategic Action</h3>
+        <p class="mt-2 text-mutedf text-[15px]">Negotiation from strength, or trial by jury. Your goals set the tempo.</p>
+      </li>
+      <li class="fadeup relative pl-6 md:pl-0" style="--d:300ms">
+        <span class="hidden md:block absolute -top-3 left-0 font-serif text-6xl text-goldsoft select-none">4</span>
+        <h3 class="font-serif italic text-xl text-gold md:mt-8">Resolution</h3>
+        <p class="mt-2 text-mutedf text-[15px]">A settlement or verdict you understand, explained in plain English.</p>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 9. 联系 -->
+  <section id="contact" class="bg-navydeep border-t border-goldsoft">
+    <div class="max-w-6xl mx-auto px-5 py-24 grid lg:grid-cols-2 gap-12">
+      <form id="cform" class="space-y-4" novalidate>
+        <p class="eyebrow text-gold">Free Case Review</p>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <input required name="name" placeholder="Full name" class="bg-navycard border border-goldsoft px-4 py-3 text-parchment placeholder:text-mutedf focus:border-gold outline-none w-full">
+          <input required name="email" type="email" placeholder="Email" class="bg-navycard border border-goldsoft px-4 py-3 text-parchment placeholder:text-mutedf focus:border-gold outline-none w-full">
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+          <input name="phone" type="tel" placeholder="Phone" class="bg-navycard border border-goldsoft px-4 py-3 text-parchment placeholder:text-mutedf focus:border-gold outline-none w-full">
+          <select name="area" class="bg-navycard border border-goldsoft px-4 py-3 text-parchment focus:border-gold outline-none w-full">
+            <option>Personal Injury</option><option>Family Law</option><option>Business Litigation</option>
+            <option>Criminal Defense</option><option>Estate Planning</option><option>Employment Law</option>
+          </select>
+        </div>
+        <textarea required name="desc" rows="5" placeholder="Briefly describe your situation…" class="bg-navycard border border-goldsoft px-4 py-3 text-parchment placeholder:text-mutedf focus:border-gold outline-none w-full"></textarea>
+        <button type="submit" class="w-full bg-gold text-navy font-medium uppercase tracking-[0.15em] py-4 hover:brightness-110">Submit — We'll Call Within 24 Hours</button>
+        <p id="formnote" class="text-gold text-sm hidden">Thank you. Your enquiry has been noted — a member of the team will call you within one business day. (Demo form — no data is sent.)</p>
+      </form>
+      <div class="lg:pl-10">
+        <p class="eyebrow text-gold">The Office</p>
+        <h2 class="font-serif font-normal text-4xl md:text-5xl mt-3">Meridian Law <em class="text-gold">Group</em></h2>
+        <dl class="mt-8 space-y-5 text-[15px]">
+          <div><dt class="eyebrow text-mutedf">Address</dt><dd class="mt-1">500 W 2nd Street, Suite 1900<br>Austin, TX 78701</dd></div>
+          <div><dt class="eyebrow text-mutedf">Phone</dt><dd class="mt-1"><a class="text-gold hover:underline" href="tel:+15125550193">+1 512 555 0193</a></dd></div>
+          <div><dt class="eyebrow text-mutedf">Email</dt><dd class="mt-1"><a class="text-gold hover:underline" href="mailto:intake@meridianlaw.com">intake@meridianlaw.com</a></dd></div>
+          <div><dt class="eyebrow text-mutedf">Hours</dt><dd class="mt-1">Mon–Fri · 8:30am – 6:00pm<br>Evenings &amp; weekends by appointment</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- 10. 页脚 -->
+<footer class="bg-navydeep border-t-2 border-gold">
+  <div class="max-w-6xl mx-auto px-5 py-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10">
+    <div>
+      <p class="font-serif text-xl"><span class="text-gold">MERIDIAN</span> LAW GROUP</p>
+      <p class="mt-3 text-mutedf text-sm">Counsel you can count on since 1989.</p>
+    </div>
+    <div>
+      <p class="eyebrow text-mutedf mb-3">Practice Areas</p>
+      <ul class="space-y-1 text-sm text-mutedf">
+        <li>Personal Injury</li><li>Family Law</li><li>Business Litigation</li><li>Criminal Defense</li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow text-mutedf mb-3">Firm</p>
+      <ul class="space-y-1 text-sm text-mutedf">
+        <li>Attorneys</li><li>Representative Results</li><li>Our Process</li><li>Contact</li>
+      </ul>
+    </div>
+    <div>
+      <p class="eyebrow text-mutedf mb-3">Contact</p>
+      <ul class="space-y-1 text-sm text-mutedf">
+        <li>+1 512 555 0193</li>
+        <li>intake@meridianlaw.com</li>
+        <li>500 W 2nd Street, Suite 1900<br>Austin, TX 78701</li>
+      </ul>
+    </div>
+  </div>
+  <div class="border-t border-goldsoft">
+    <p class="max-w-6xl mx-auto px-5 py-4 text-xs text-mutedf">© 2026 Meridian Law Group. Attorneys licensed in the State of Texas. Demo page — not legal advice.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 汉堡菜单
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') menu.classList.add('hidden');
+  });
+
+  // 导航阴影
+  const nav = document.getElementById('nav');
+  function onScroll() {
+    nav.style.boxShadow = window.scrollY > 60 ? '0 8px 24px -12px rgba(0,0,0,.6)' : 'none';
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // 入场动画
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add('in');
+      // 战绩数字 count-up
+      en.target.querySelectorAll('.countup').forEach(function (el) { countUp(el); });
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.25 });
+  document.querySelectorAll('.fadeup, .atty, .goldline').forEach(function (el) { io.observe(el); });
+
+  function countUp(el) {
+    const target = parseFloat(el.dataset.target);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const t0 = performance.now();
+    const DUR = 1800;
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / DUR);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (target * eased).toFixed(1) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // 引言滑块 6s 自动轮播
+  const slides = document.querySelectorAll('#slides .slide');
+  const dotsEl = document.getElementById('dots');
+  let cur = 0, timer;
+  slides.forEach(function (_, i) {
+    const d = document.createElement('button');
+    d.className = 'slide-dot w-2.5 h-2.5 rounded-full';
+    d.setAttribute('aria-label', 'Show quote ' + (i + 1));
+    d.addEventListener('click', function () { go(i); restart(); });
+    dotsEl.appendChild(d);
+  });
+  function go(i) {
+    slides[cur].classList.add('hidden');
+    dotsEl.children[cur].classList.remove('bg-gold');
+    dotsEl.children[cur].classList.add('bg-goldsoft');
+    cur = i;
+    slides[cur].classList.remove('hidden');
+    dotsEl.children[cur].classList.add('bg-gold');
+    dotsEl.children[cur].classList.remove('bg-goldsoft');
+  }
+  function restart() { clearInterval(timer); timer = setInterval(function () { go((cur + 1) % slides.length); }, 6000); }
+  dotsEl.children[0].classList.add('bg-gold');
+  restart();
+
+  // 演示表单
+  document.getElementById('cform').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('formnote').classList.remove('hidden');
+  });
+})();
+</script>
+</body>
+</html>

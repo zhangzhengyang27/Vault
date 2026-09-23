@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ember &amp; Stone — Steakhouse · Chicago, IL</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/cormorant-garamond@5/latin-400-italic.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        near: 'hsl(24, 30%, 4%)',
+        cream: 'hsl(37, 53%, 91%)',
+        amber: 'hsl(37, 55%, 51%)',
+        gold: 'hsl(37, 55%, 51%)',
+        soft: 'hsl(40, 15%, 60%)',
+        line: 'hsl(37, 40%, 25%)',
+        card: 'hsl(24, 28%, 7%)',
+      },
+      fontFamily: {
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans: ['"Helvetica Neue"', '"PingFang SC"', 'Arial', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: "Helvetica Neue", "PingFang SC", Arial, sans-serif; font-weight: 300; line-height: 1.7; }
+  .navlink { text-transform: uppercase; letter-spacing: 0.15em; font-size: 11px; }
+  .grain { position: fixed; inset: 0; z-index: 50; pointer-events: none; mix-blend-mode: overlay; opacity: .4; }
+  .fadeup { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .goldline { transform: scaleX(0); transform-origin: left; transition: transform .9s ease; }
+  .goldline.in { transform: scaleX(1); }
+  .menu-item { transition: transform .3s ease; }
+  .menu-item:hover { transform: translateY(-2px); }
+  .tabbtn { transition: all .2s ease; }
+  .tabbtn.active { color: hsl(37, 55%, 51%); border-color: hsl(37, 55%, 51%); }
+  .slide-dot { transition: background-color .3s ease; }
+  /* Ember 火光动画 */
+  @keyframes emberpulse { 0%,100% { opacity: .35; transform: scale(1); } 50% { opacity: .6; transform: scale(1.15); } }
+  .ember { animation: emberpulse 3.5s ease-in-out infinite; transform-origin: center; }
+  @media (prefers-reduced-motion: reduce) {
+    .fadeup, .goldline { opacity: 1; transform: none; transition: none; }
+    .ember { animation: none; }
+  }
+</style>
+</head>
+<body class="bg-near text-cream font-sans antialiased">
+
+<!-- 纸纹理覆盖 -->
+<svg class="grain" aria-hidden="true"><filter id="paper"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2"/></filter><rect width="100%" height="100%" filter="url(#paper)"/></svg>
+
+<!-- 1. 导航栏 -->
+<header id="nav" class="fixed top-0 inset-x-0 z-40 h-20 transition-all duration-500">
+  <div class="max-w-7xl mx-auto px-6 h-full flex items-center justify-between">
+    <a href="#top" class="font-serif text-lg tracking-[0.2em] text-cream">EMBER &amp; STONE</a>
+    <nav class="hidden md:flex items-center gap-8 navlink text-gold">
+      <a href="#menu" class="hover:text-cream">Menu</a>
+      <a href="#philosophy" class="hover:text-cream">Philosophy</a>
+      <a href="#private" class="hover:text-cream">Private Dining</a>
+      <a href="#reserve" class="hover:text-cream">Reserve</a>
+    </nav>
+    <a href="#reserve" class="hidden md:inline-block border border-gold text-gold navlink px-4 py-2 hover:bg-gold hover:text-near">Reserve a Table</a>
+    <button id="burger" class="md:hidden p-2 text-gold" aria-label="Open menu" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden fixed inset-0 bg-near/97 z-50 px-6 pt-24">
+    <div class="flex flex-col gap-6 font-serif text-3xl text-cream">
+      <a href="#menu" class="menu-link">Menu</a><a href="#philosophy" class="menu-link">Philosophy</a>
+      <a href="#private" class="menu-link">Private Dining</a><a href="#reserve" class="menu-link">Reserve</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. 主视觉 -->
+  <section class="relative h-screen overflow-hidden">
+    <div class="absolute inset-0 z-0" aria-hidden="true">
+      <svg class="w-full h-full" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+          <radialGradient id="fire" cx="50%" cy="80%">
+            <stop offset="0%" stop-color="hsl(28, 80%, 40%)"/>
+            <stop offset="60%" stop-color="hsl(24, 60%, 14%)"/>
+            <stop offset="100%" stop-color="hsl(24, 30%, 4%)"/>
+          </radialGradient>
+        </defs>
+        <rect width="1440" height="900" fill="url(#fire)"/>
+        <g class="ember" opacity=".5" fill="hsl(30, 85%, 52%)">
+          <circle cx="720" cy="700" r="90"/><circle cx="560" cy="740" r="46" opacity=".6"/><circle cx="900" cy="730" r="60" opacity=".7"/>
+        </g>
+        <g stroke="hsl(24, 20%, 18%)" stroke-width="3" fill="none">
+          <path d="M200 520 h1040 M240 560 h960"/>
+        </g>
+        <g fill="hsl(30, 40%, 30%)" opacity=".7">
+          <circle cx="640" cy="470" r="60"/><rect x="560" y="470" width="160" height="26" rx="10"/>
+        </g>
+      </svg>
+      <div class="absolute inset-0 z-10" style="background: linear-gradient(to bottom, rgba(13,9,5,0.6) 0%, transparent 30%, transparent 60%, rgba(13,9,5,0.95) 100%)"></div>
+      <div class="absolute inset-0 z-10" style="background: linear-gradient(to right, rgba(13,9,5,0.85) 0%, rgba(13,9,5,0.4) 50%, transparent 100%)"></div>
+    </div>
+    <div class="absolute bottom-16 left-8 md:left-16 z-20 max-w-2xl">
+      <p class="text-gold text-xs uppercase tracking-[0.3em] fadeup" style="--d:0ms">Est. 2019 — Chicago, IL</p>
+      <h1 class="font-serif font-light text-cream leading-[0.95] mt-5 text-[clamp(56px,9vw,120px)] fadeup" style="--d:150ms">Where Fire<br><em>Meets Finesse</em></h1>
+      <p class="mt-6 text-soft fadeup" style="--d:300ms">A steakhouse built on craft, fire, and a reverence for the ingredient.</p>
+      <div class="mt-8 flex flex-wrap gap-4 fadeup" style="--d:450ms">
+        <a href="#reserve" class="bg-gold text-near font-medium text-sm uppercase tracking-[0.15em] px-6 py-3 hover:brightness-110">Reserve Your Table</a>
+        <a href="#menu" class="border border-cream/70 text-cream font-medium text-sm uppercase tracking-[0.15em] px-6 py-3 hover:border-cream">View the Menu</a>
+      </div>
+    </div>
+    <a href="#philosophy" class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 text-gold bob" aria-label="Scroll down">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 4v16m0 0l-6-6m6 6l6-6"/></svg>
+    </a>
+  </section>
+
+  <!-- 3. 理念 -->
+  <section id="philosophy" class="grid md:grid-cols-2">
+    <div class="py-20 px-8 md:px-16 fadeup">
+      <h2 class="font-serif font-medium text-4xl md:text-5xl text-cream">Our Philosophy
+        <span class="block goldline h-[2px] bg-amber mt-4 max-w-[200px]"></span>
+      </h2>
+      <p class="mt-8 text-soft text-[15px] leading-[1.9]">We cook over live fire because it demands attention. Every cut is dry-aged in-house, every sauce built from bones roasted that morning, every plate finished by hand.</p>
+      <p class="mt-4 text-soft text-[15px] leading-[1.9]">The menu is short on purpose. Fewer dishes, done completely — from farms we name on the menu to the salt in the butter.</p>
+    </div>
+    <div class="fadeup" style="--d:120ms" aria-hidden="true">
+      <svg class="w-full h-full min-h-[320px]" viewBox="0 0 600 440" preserveAspectRatio="xMidYMid slice">
+        <rect width="600" height="440" fill="hsl(20, 25%, 8%)"/>
+        <ellipse cx="300" cy="250" rx="190" ry="70" fill="hsl(24, 30%, 14%)"/>
+        <ellipse cx="300" cy="240" rx="140" ry="46" fill="hsl(28, 40%, 22%)"/>
+        <ellipse cx="300" cy="238" rx="96" ry="28" fill="hsl(18, 45%, 30%)"/>
+        <g class="ember" opacity=".6" fill="hsl(28, 80%, 45%)"><ellipse cx="300" cy="360" rx="150" ry="24"/></g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 4. 菜单 -->
+  <section id="menu" class="py-24 px-6 md:px-16 max-w-6xl mx-auto">
+    <h2 class="font-serif font-light text-4xl md:text-6xl text-cream fadeup">The Menu</h2>
+    <div class="mt-8 flex gap-8 border-b border-line fadeup" style="--d:100ms" id="tabs">
+      <button class="tabbtn active pb-3 navlink text-soft border-b-2 border-transparent" data-tab="starters">Starters</button>
+      <button class="tabbtn pb-3 navlink text-soft border-b-2 border-transparent" data-tab="mains">Mains</button>
+      <button class="tabbtn pb-3 navlink text-soft border-b-2 border-transparent" data-tab="desserts">Desserts</button>
+      <button class="tabbtn pb-3 navlink text-soft border-b-2 border-transparent" data-tab="drinks">Drinks</button>
+    </div>
+    <div id="menupanel" class="mt-4 grid md:grid-cols-2 gap-x-16"></div>
+  </section>
+
+  <!-- 5. 主厨特写 -->
+  <section class="relative h-[70vh] flex items-end fadeup">
+    <svg class="absolute inset-0 w-full h-full" viewBox="0 0 1440 630" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <rect width="1440" height="630" fill="hsl(24, 25%, 6%)"/>
+      <circle cx="720" cy="240" r="90" fill="hsl(35, 25%, 62%)"/>
+      <path d="M570 630 C570 430 870 430 870 630 L870 630 Z" fill="hsl(0, 0%, 88%)"/>
+      <path d="M560 420 L720 240 L880 420" stroke="hsl(24, 20%, 12%)" stroke-width="16" fill="none"/>
+    </svg>
+    <div class="absolute inset-0 bg-gradient-to-t from-near via-transparent to-transparent"></div>
+    <div class="relative px-8 md:px-16 pb-14 fadeup" style="--d:150ms">
+      <p class="navlink text-gold">Executive Chef</p>
+      <p class="font-serif text-5xl md:text-6xl text-cream mt-2">Marcus DeLeon</p>
+      <p class="mt-3 text-soft max-w-xl text-[15px]">Trained in Lyon, tempered by Texas brisket joints. Marcus cooks the way a blacksmith works — heat, patience, and no wasted motion.</p>
+    </div>
+  </section>
+
+  <!-- 6. 私人包间 -->
+  <section id="private" class="bg-card border border-line my-24 mx-auto max-w-4xl px-8 md:px-16 py-16 text-center fadeup">
+    <p class="navlink text-gold">Private Dining</p>
+    <h2 class="font-serif font-light text-4xl md:text-5xl text-cream mt-4">The Ember Room</h2>
+    <p class="mt-5 text-soft text-[15px] max-w-xl mx-auto">Twenty-two seats behind a curtain of blackened steel. A dedicated chef, a custom menu written with you, and the same fire that runs the whole room.</p>
+    <a href="#reserve" class="inline-block mt-8 bg-gold text-near font-medium text-sm uppercase tracking-[0.15em] px-6 py-3 hover:brightness-110">Inquire About Private Dining</a>
+  </section>
+
+  <!-- 7. 客户评价 -->
+  <section class="max-w-[640px] mx-auto px-6 pb-24 text-center">
+    <div id="slides" class="min-h-[170px]">
+      <blockquote class="slide"><p class="font-serif italic text-cream text-2xl md:text-[28px] leading-relaxed">"The dry-aged ribeye ruined every other steak for me. Worth every mile of the drive."</p><footer class="navlink text-gold mt-5">— Daniel R.</footer></blockquote>
+      <blockquote class="slide hidden"><p class="font-serif italic text-cream text-2xl md:text-[28px] leading-relaxed">"Service that reads the table perfectly — present when you want it, invisible when you don't."</p><footer class="navlink text-gold mt-5">— Alicia &amp; Mark</footer></blockquote>
+      <blockquote class="slide hidden"><p class="font-serif italic text-cream text-2xl md:text-[28px] leading-relaxed">"We booked the Ember Room for our anniversary. They wrote us a menu. A menu."</p><footer class="navlink text-gold mt-5">— The Ortiz Family</footer></blockquote>
+    </div>
+    <div id="dots" class="flex justify-center gap-2 mt-8"></div>
+  </section>
+
+  <!-- 8. 预订 -->
+  <section id="reserve" class="py-24 px-6" style="background: hsl(24, 30%, 3%)">
+    <div class="max-w-[600px] mx-auto p-8 md:p-10 fadeup" style="border: 1px solid transparent; background: linear-gradient(135deg, rgba(201,151,62,0.5), rgba(201,151,62,0.05) 40%, rgba(201,151,62,0.2)) padding-box, linear-gradient(135deg, rgba(201,151,62,0.5), rgba(201,151,62,0.05) 40%, rgba(201,151,62,0.2)) border-box; background-color: rgba(13,9,5,0.85); backdrop-filter: blur(24px);">
+      <h2 class="font-serif font-light text-3xl md:text-4xl text-cream text-center">Reserve a Table</h2>
+      <form id="rform" class="mt-8 space-y-5" novalidate>
+        <div class="grid sm:grid-cols-2 gap-5">
+          <label class="block"><span class="block text-[10px] uppercase tracking-[0.15em] text-gold mb-1.5">Date</span><input required type="date" class="w-full bg-white/5 border-b border-gold/60 px-3 py-2.5 text-cream outline-none focus:border-gold"></label>
+          <label class="block"><span class="block text-[10px] uppercase tracking-[0.15em] text-gold mb-1.5">Time</span>
+            <select class="w-full bg-white/5 border-b border-gold/60 px-3 py-2.5 text-cream outline-none focus:border-gold"><option>17:00</option><option>18:30</option><option selected>19:00</option><option>20:30</option><option>21:00</option></select></label>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-5">
+          <label class="block"><span class="block text-[10px] uppercase tracking-[0.15em] text-gold mb-1.5">Guests</span>
+            <select class="w-full bg-white/5 border-b border-gold/60 px-3 py-2.5 text-cream outline-none focus:border-gold"><option>2</option><option>3</option><option>4</option><option>5</option><option>6+</option></select></label>
+          <label class="block"><span class="block text-[10px] uppercase tracking-[0.15em] text-gold mb-1.5">Name</span><input required type="text" class="w-full bg-white/5 border-b border-gold/60 px-3 py-2.5 text-cream outline-none focus:border-gold"></label>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-5">
+          <label class="block"><span class="block text-[10px] uppercase tracking-[0.15em] text-gold mb-1.5">Phone</span><input required type="tel" class="w-full bg-white/5 border-b border-gold/60 px-3 py-2.5 text-cream outline-none focus:border-gold"></label>
+          <label class="block"><span class="block text-[10px] uppercase tracking-[0.15em] text-gold mb-1.5">Email</span><input required type="email" class="w-full bg-white/5 border-b border-gold/60 px-3 py-2.5 text-cream outline-none focus:border-gold"></label>
+        </div>
+        <button type="submit" class="w-full bg-gold text-near font-medium uppercase tracking-[0.15em] text-sm py-3.5 hover:brightness-110">Confirm Reservation</button>
+        <p id="rnote" class="hidden text-center text-gold text-sm">Reservation request received — we'll confirm by phone shortly. (Demo form.)</p>
+        <p class="text-center text-[11px] text-soft">Reservations are confirmed via phone. Walk-ins welcome at the bar.</p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<!-- 9. 页脚 -->
+<footer class="bg-[hsl(24,32%,3%)] border-t border-gold/60">
+  <div class="max-w-7xl mx-auto px-6 py-14 grid sm:grid-cols-2 lg:grid-cols-4 gap-10 text-sm text-soft">
+    <div>
+      <p class="font-serif tracking-[0.2em] text-cream text-lg">EMBER &amp; STONE</p>
+      <p class="mt-2">Fire-first steakhouse · Chicago</p>
+    </div>
+    <nav class="space-y-1.5 navlink"><a href="#menu" class="block hover:text-cream">Menu</a><a href="#philosophy" class="block hover:text-cream">Philosophy</a><a href="#private" class="block hover:text-cream">Private Dining</a><a href="#reserve" class="block hover:text-cream">Reserve</a></nav>
+    <div class="space-y-1.5">
+      <p class="navlink text-gold mb-1">Hours</p>
+      <p>Mon–Thu · 5pm – 10pm</p><p>Fri–Sat · 5pm – 11pm</p><p>Sun · 5pm – 9pm</p>
+    </div>
+    <div class="space-y-1.5">
+      <p class="navlink text-gold mb-1">Find Us</p>
+      <p>1142 W Kinzie St, Chicago, IL</p>
+      <p>+1 312 555 0184</p>
+      <p>Instagram · OpenTable</p>
+    </div>
+  </div>
+  <div class="border-t border-line"><p class="max-w-7xl mx-auto px-6 py-4 text-xs text-soft">© 2026 Ember &amp; Stone · Crafted with care in Chicago · Demo page</p></div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 菜单数据 + Tab
+  const MENU = {
+    starters: [
+      ['Bone Marrow & Onion Jam', 'Charred sourdough, parsley salt', '£14'],
+      ['Fire-Roasted Beets', 'Whipped goat cheese, candied walnut', '£11'],
+      ['Steak Tartare', 'Hand-cut sirloin, smoked yolk, rye crisp', '£16'],
+      ['Charred Oysters', 'Nduja butter, breadcrumb gremolata', '£18'],
+    ],
+    mains: [
+      ['45-Day Dry-Aged Ribeye', 'Bone-in, over live oak · for two', '£88'],
+      ['Filet Mignon', '8oz center-cut, bone marrow butter', '£54'],
+      ['Ember Rib Package', 'Short rib, 12-hour smoke, pickled onion', '£38'],
+      ['Cedar Salmon', 'Misso glaze, charred lemon', '£34'],
+    ],
+    desserts: [
+      ['Burnt Basque Cheesecake', 'Slow caramel, sea salt', '£10'],
+      ['Smoked Chocolate Tart', 'Cacao nib crumb, brown butter', '£11'],
+      ['Grilled Stone Fruit', 'Honey mascarpone, thyme', '£9'],
+    ],
+    drinks: [
+      ['Ember Old Fashioned', 'Smoked demerara, orange oil', '£15'],
+      ['The Sommelier\'s Pour', 'Rotating natural reds', '£12'],
+      ['Barrel-Aged Manhattan', '90-day oak rest', '£16'],
+    ],
+  };
+  const panel = document.getElementById('menupanel');
+  function renderMenu(tab) {
+    panel.innerHTML = MENU[tab].map(function (item) {
+      return '<div class="menu-item flex justify-between items-start py-5 border-b border-line">' +
+        '<div><p class="font-serif text-xl text-cream">' + item[0] + '</p>' +
+        '<p class="text-soft text-sm mt-1">' + item[1] + '</p></div>' +
+        '<p class="font-serif italic text-amber text-lg whitespace-nowrap ml-6">' + item[2] + '</p></div>';
+    }).join('');
+  }
+  renderMenu('starters');
+  document.querySelectorAll('#tabs .tabbtn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('#tabs .tabbtn').forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      renderMenu(btn.dataset.tab);
+    });
+  });
+
+  // 评价滑块 5s
+  const slides = document.querySelectorAll('#slides .slide');
+  const dots = document.getElementById('dots');
+  let cur = 0, timer;
+  slides.forEach(function (_, i) {
+    const d = document.createElement('button');
+    d.className = 'slide-dot w-2 h-2 rounded-full bg-line';
+    d.setAttribute('aria-label', 'Quote ' + (i + 1));
+    d.addEventListener('click', function () { go(i); restart(); });
+    dots.appendChild(d);
+  });
+  function go(i) {
+    slides[cur].classList.add('hidden');
+    dots.children[cur].style.background = '';
+    cur = i;
+    slides[cur].classList.remove('hidden');
+    dots.children[cur].style.background = 'hsl(37, 55%, 51%)';
+  }
+  function restart() { clearInterval(timer); timer = setInterval(function () { go((cur + 1) % slides.length); }, 5000); }
+  dots.children[0].style.background = 'hsl(37, 55%, 51%)';
+  restart();
+
+  // 导航滚动态
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 80) {
+      nav.style.background = 'rgba(13,9,5,0.95)';
+      nav.style.backdropFilter = 'blur(12px)';
+      nav.style.borderBottom = '1px solid hsl(37, 40%, 25%)';
+    } else {
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+      nav.style.borderBottom = 'none';
+    }
+  }, { passive: true });
+
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const mm = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = mm.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  mm.addEventListener('click', function (e) { if (e.target.tagName === 'A') mm.classList.add('hidden'); });
+
+  // 表单
+  document.getElementById('rform').addEventListener('submit', function (e) {
+    e.preventDefault();
+    document.getElementById('rnote').classList.remove('hidden');
+  });
+
+  // 入场
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.fadeup, .goldline').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

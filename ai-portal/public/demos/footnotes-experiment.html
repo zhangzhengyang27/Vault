@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>交互式脚注</title>
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  h1, h2, h3 {
+    margin-top: 2rem;
+  }
+  
+  p {
+    margin-bottom: 1.5rem;
+  }
+  
+  blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 1rem;
+    margin-left: 0;
+    color: #555;
+  }
+  
+  .footnote {
+    text-decoration: none;
+    color: #0066cc;
+    vertical-align: super;
+    font-size: 0.75em;
+    padding: 0 2px;
+  }
+  
+  .footnote:hover {
+    background-color: #f0f8ff;
+  }
+  
+  .footnotes {
+    margin-top: 3rem;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+  }
+  
+  .footnotes ol {
+    padding-left: 1.5rem;
+  }
+  
+  .footnotes li {
+    margin-bottom: 1rem;
+    font-size: 0.9em;
+    color: #555;
+  }
+  
+  .reversefootnote {
+    text-decoration: none;
+    color: #0066cc;
+    margin-left: 0.5rem;
+  }
+  
+  /* Tooltip styling */
+  #footnote-popup {
+    position: fixed;
+    display: none;
+    width: 300px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 12px;
+    z-index: 1000;
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+  
+  input, textarea {
+    font-size: 16px;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+  </style>
+</head>
+<body>
+  <h1>脚注的魔力</h1>
+  
+  <p>这里演示的是一个交互式脚注系统,与示例文章所用方案类似。当你写到需要补充背景或引用出处的内容时,就可以加一条脚注<sup id="fnref:first" role="doc-noteref"><a href="#fn:first" class="footnote" rel="footnote">1</a></sup>.</p>
+  
+  <p>脚注的价值在于补充信息而不打断正文节奏:可以放引用、做澄清,或补充有趣的题外话<sup id="fnref:second" role="doc-noteref"><a href="#fn:second" class="footnote" rel="footnote">2</a></sup>.</p>
+  
+  <blockquote>
+    <p>最好的脚注是提供了上下文、却不强迫你阅读的脚注——它服务于好奇的读者,而不是路过的读者。</p>
+  </blockquote>
+  
+  <p>也可以用脚注来做技术性澄清<sup id="fnref:technical" role="doc-noteref"><a href="#fn:technical" class="footnote" rel="footnote">3</a></sup>. And unlike traditional print footnotes, these are interactive – try hovering over or clicking on the footnote references!</p>
+  
+  <h2>工作原理</h2>
+  
+  <p>这套系统用 HTML、CSS 和一点 JavaScript 让脚注变得可交互。关键组成部分:</p>
+  
+  <ol>
+    <li>正文中的脚注引用,带正确的 ID 与 ARIA 角色</li>
+    <li>页面底部对应的脚注区块</li>
+    <li>与引用交互时展示脚注内容的 JavaScript</li>
+  </ol>
+  
+  <p>标记通过规范的 ARIA 角色遵循无障碍标准。你甚至可以用链接在正文与脚注之间往返<sup id="fnref:navigation" role="doc-noteref"><a href="#fn:navigation" class="footnote" rel="footnote">4</a></sup>.</p>
+  
+  <hr>
+  
+  <div class="footnotes" role="doc-endnotes">
+    <ol>
+      <li id="fn:first" role="doc-endnote">
+        <p>这是第一条脚注,提供那些如果不放进来就会把正文塞得乱七八糟的补充信息。 text. <a href="#fnref:first" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      </li>
+      <li id="fn:second" role="doc-endnote">
+        <p>第二条脚注可用于引用文献。例如:Smith, J. (2023). 《脚注的艺术》。. Journal of Useless Knowledge, 42(1), 123-145. <a href="#fnref:second" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      </li>
+      <li id="fn:technical" role="doc-endnote">
+        <p>脚注系统使用 :target CSS 选择器与 JavaScript 增强体验:这一技术方案同时兼顾了渐进增强与无障碍。 <a href="#fnref:technical" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      </li>
+      <li id="fn:navigation" role="doc-endnote">
+        <p>回链(↩)会把你带回正文中的出处,在较长的文档里尤其有用。 <a href="#fnref:navigation" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      </li>
+    </ol>
+  </div>
+  
+  <!-- Single popup element to be positioned and reused -->
+  <div id="footnote-popup"></div>
+  
+  <script type="module">
+// A simplified approach with a single, reliable tooltip
+
+// Create only one popup that we'll reuse
+const popup = document.getElementById('footnote-popup');
+let currentFootnote = null;
+
+// Function to safely show the popup
+function showPopup(footnoteLink) {
+  // Safety check - if there's already a popup showing, hide it first
+  hidePopup();
+  
+  // Update current footnote reference
+  currentFootnote = footnoteLink;
+  
+  // Get footnote content from the corresponding footnote at the bottom
+  const footnoteId = footnoteLink.getAttribute('href').substring(1);
+  const footnoteContent = document.getElementById(footnoteId).innerHTML;
+  
+  // Set popup content
+  popup.innerHTML = footnoteContent;
+  
+  // Position the popup
+  positionPopup(footnoteLink);
+  
+  // Show the popup
+  popup.style.display = 'block';
+}
+
+// Function to safely hide the popup
+function hidePopup() {
+  popup.style.display = 'none';
+  currentFootnote = null;
+}
+
+// Function to position the popup relative to the footnote link
+function positionPopup(footnoteLink) {
+  // Get dimensions and position of the footnote link
+  const linkRect = footnoteLink.getBoundingClientRect();
+  
+  // Get dimensions of the viewport
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  
+  // Calculate initial position (centered below the footnote)
+  const linkCenter = linkRect.left + (linkRect.width / 2);
+  let popupLeft = linkCenter - 150; // 150px is half the popup width
+  let popupTop = linkRect.bottom + 10;
+  
+  // Adjust horizontal position if needed
+  if (popupLeft + 300 > viewportWidth - 20) {
+    // Too close to right edge
+    popupLeft = viewportWidth - 320; // 300px width + 20px margin
+  }
+  if (popupLeft < 20) {
+    // Too close to left edge
+    popupLeft = 20;
+  }
+  
+  // Check if popup would go below viewport
+  // We need to measure the height, which means we need to make it visible briefly
+  popup.style.visibility = 'hidden';
+  popup.style.display = 'block';
+  const popupHeight = popup.offsetHeight;
+  
+  if (popupTop + popupHeight > viewportHeight - 20) {
+    // Not enough room below, try to position above
+    popupTop = linkRect.top - popupHeight - 10;
+    
+    // If still no room, position at top of viewport
+    if (popupTop < 20) {
+      popupTop = 20;
+    }
+  }
+  
+  // Set the position
+  popup.style.left = `${popupLeft}px`;
+  popup.style.top = `${popupTop}px`;
+  popup.style.visibility = 'visible';
+}
+
+// Set up event listeners for all footnote links
+document.querySelectorAll('.footnote').forEach(link => {
+  // Mouse enter - show popup
+  link.addEventListener('mouseenter', function() {
+    showPopup(this);
+  });
+  
+  // Mouse leave - hide popup after delay
+  link.addEventListener('mouseleave', function() {
+    // Add a small delay to allow mouse to move to the popup
+    setTimeout(() => {
+      // Only hide if mouse isn't over the popup
+      if (!isMouseOverElement(popup)) {
+        hidePopup();
+      }
+    }, 300);
+  });
+  
+  // Click handler - for mobile devices
+  link.addEventListener('click', function(event) {
+    // Only use special handling on mobile screens
+    if (window.innerWidth <= 768) {
+      event.preventDefault(); // Prevent jumping to footnote
+      
+      // Toggle popup if clicking the same footnote
+      if (currentFootnote === this) {
+        hidePopup();
+      } else {
+        showPopup(this);
+      }
+    }
+  });
+});
+
+// Helper function to check if mouse is over an element
+function isMouseOverElement(element) {
+  return element.matches(':hover');
+}
+
+// Add listener to the popup itself
+popup.addEventListener('mouseleave', function() {
+  hidePopup();
+});
+
+// Hide popup when clicking anywhere else on the page
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.footnote') && !event.target.closest('#footnote-popup')) {
+    hidePopup();
+  }
+});
+
+// Handle window resize events
+window.addEventListener('resize', function() {
+  if (currentFootnote) {
+    positionPopup(currentFootnote);
+  }
+});
+  </script>
+</body>
+</html>

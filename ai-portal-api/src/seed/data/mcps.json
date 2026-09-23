@@ -1,0 +1,380 @@
+[
+  {
+    "slug": "notion-mcp",
+    "name": "Notion MCP",
+    "description": "连接 Notion 页面与数据库，实现知识库自动化。",
+    "endpoint": "notion.com/mcp",
+    "phase": "v1"
+  },
+  {
+    "slug": "slack-mcp",
+    "name": "Slack MCP",
+    "description": "在智能体中收发消息、检索频道历史。",
+    "endpoint": "slack.com/mcp",
+    "phase": "v1"
+  },
+  {
+    "slug": "everything-mcp",
+    "name": "Everything (MCP)",
+    "description": "官方参考服务器，演示 MCP 核心能力。",
+    "endpoint": "modelcontextprotocol/servers/src/everything",
+    "phase": "v1"
+  },
+  {
+    "slug": "fetch-mcp",
+    "name": "Fetch (MCP)",
+    "description": "让智能体抓取网页内容并转为 Markdown。",
+    "endpoint": "modelcontextprotocol/servers/src/fetch",
+    "phase": "v1"
+  },
+  {
+    "slug": "filesystem-mcp",
+    "name": "Filesystem (MCP)",
+    "description": "让智能体在受控范围内读写本地文件。",
+    "endpoint": "modelcontextprotocol/servers/src/filesystem",
+    "phase": "v1"
+  },
+  {
+    "slug": "git-mcp",
+    "name": "Git (MCP)",
+    "description": "让智能体执行 Git 操作，读取与提交代码。",
+    "endpoint": "modelcontextprotocol/servers/src/git",
+    "phase": "v1"
+  },
+  {
+    "slug": "memory-mcp",
+    "name": "Memory (MCP)",
+    "description": "基于知识图谱的持久化记忆服务。",
+    "endpoint": "modelcontextprotocol/servers/src/memory",
+    "phase": "v1"
+  },
+  {
+    "slug": "sequential-thinking-mcp",
+    "name": "Sequential Thinking (MCP)",
+    "description": "引导模型逐步思考解决复杂问题。",
+    "endpoint": "modelcontextprotocol/servers/src/sequentialthinking",
+    "phase": "v1"
+  },
+  {
+    "slug": "time-mcp",
+    "name": "Time (MCP)",
+    "description": "提供当前时间与时区换算能力。",
+    "endpoint": "modelcontextprotocol/servers/src/time",
+    "phase": "v1"
+  },
+  {
+    "slug": "modelcontextprotocol-servers",
+    "name": "modelcontextprotocol/servers",
+    "description": "MCP 官方参考服务器集合。",
+    "endpoint": "github.com/modelcontextprotocol/servers",
+    "phase": "v1"
+  },
+  {
+    "slug": "github-mcp-server",
+    "name": "GitHub MCP Server",
+    "description": "GitHub 官方 MCP，让智能体管理仓库、Issue 与 PR。",
+    "endpoint": "github.com/github/github-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "playwright-mcp",
+    "name": "Playwright MCP",
+    "description": "驱动浏览器自动化，配合智能体完成端到端操作。",
+    "endpoint": "github.com/microsoft/playwright-mcp",
+    "phase": "v1"
+  },
+  {
+    "slug": "chrome-devtools-mcp",
+    "name": "Chrome DevTools MCP",
+    "description": "调试与操控 Chrome 浏览器，辅助前端开发。",
+    "endpoint": "github.com/ChromeDevTools/chrome-devtools-mcp",
+    "phase": "v1"
+  },
+  {
+    "slug": "context7",
+    "name": "Context7",
+    "description": "为 LLM 提供最新的代码库文档上下文。",
+    "endpoint": "github.com/upstash/context7",
+    "phase": "v1"
+  },
+  {
+    "slug": "codebase-memory-mcp",
+    "name": "Codebase Memory MCP",
+    "description": "高性能代码智能 MCP 服务器，索引代码库。",
+    "endpoint": "github.com/DeusData/codebase-memory-mcp",
+    "phase": "v1"
+  },
+  {
+    "slug": "awesome-mcp-servers",
+    "name": "Awesome MCP Servers",
+    "description": "MCP 服务器精选目录与发现入口。",
+    "endpoint": "github.com/punkpeye/awesome-mcp-servers",
+    "phase": "v1"
+  },
+  {
+    "slug": "firecrawl-mcp",
+    "name": "Firecrawl MCP",
+    "description": "Firecrawl 官方 MCP，提供网页抓取与搜索能力。",
+    "endpoint": "github.com/firecrawl/firecrawl-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "exa-mcp",
+    "name": "Exa MCP",
+    "description": "为智能体提供网页搜索与内容抓取能力。",
+    "endpoint": "github.com/exa-labs/exa-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "notion-mcp-server",
+    "name": "Notion MCP Server",
+    "description": "Notion 官方 MCP，读写页面与数据库。",
+    "endpoint": "github.com/makenotion/notion-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "cloudflare-mcp",
+    "name": "Cloudflare MCP",
+    "description": "Cloudflare 官方 MCP，管理 Workers 与资源。",
+    "endpoint": "github.com/cloudflare/mcp-server-cloudflare",
+    "phase": "v1"
+  },
+  {
+    "slug": "chart-mcp",
+    "name": "Chart MCP",
+    "description": "可视化图表 MCP，生成 25+ 种图表。",
+    "endpoint": "github.com/antvis/mcp-server-chart",
+    "phase": "v1"
+  },
+  {
+    "slug": "apify-mcp",
+    "name": "Apify MCP",
+    "description": "从网页提取结构化数据，供智能体使用。",
+    "endpoint": "github.com/apify/apify-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "browserbase-mcp",
+    "name": "Browserbase MCP",
+    "description": "让 LLM 控制浏览器，执行网页自动化。",
+    "endpoint": "github.com/browserbase/mcp-server-browserbase",
+    "phase": "v1"
+  },
+  {
+    "slug": "arxiv-mcp",
+    "name": "arXiv MCP",
+    "description": "搜索与分析 arXiv 论文。",
+    "endpoint": "github.com/blazickjp/arxiv-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "financial-datasets-mcp",
+    "name": "Financial Datasets MCP",
+    "description": "对接金融数据库，查询股票与市场数据。",
+    "endpoint": "github.com/financial-datasets/mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "kubernetes-mcp",
+    "name": "Kubernetes MCP",
+    "description": "管理 Kubernetes 与 OpenShift 集群。",
+    "endpoint": "github.com/containers/kubernetes-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "slack-mcp-server",
+    "name": "Slack MCP Server",
+    "description": "读写 Slack 消息与频道，自动化协作。",
+    "endpoint": "github.com/korotovsky/slack-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "terraform-mcp",
+    "name": "Terraform MCP",
+    "description": "与 Terraform 集成，管理基础设施即代码。",
+    "endpoint": "github.com/hashicorp/terraform-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "qdrant-mcp",
+    "name": "Qdrant MCP",
+    "description": "Qdrant 官方 MCP，操作向量数据库。",
+    "endpoint": "github.com/qdrant/mcp-server-qdrant",
+    "phase": "v1"
+  },
+  {
+    "slug": "mongodb-mcp",
+    "name": "MongoDB MCP",
+    "description": "连接 MongoDB 数据库，执行查询。",
+    "endpoint": "github.com/mongodb-js/mongodb-mcp-server",
+    "phase": "v1"
+  },
+  {
+    "slug": "xiaohongshu-mcp",
+    "name": "小红书内容发布 MCP",
+    "description": "支持通过MCP协议自动化发布和管理小红书内容，适用于内容运营。",
+    "endpoint": "github.com/xpzouying/xiaohongshu-mcp",
+    "tags": [
+      "内容生成",
+      "小红书自动化",
+      "内容发布"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "12306-mcp",
+    "name": "12306票务搜索 MCP",
+    "description": "基于MCP协议的12306票务搜索服务器，提供API接口查询购票信息。",
+    "endpoint": "github.com/Joooook/12306-mcp",
+    "tags": [
+      "日程管理",
+      "票务查询",
+      "出行服务"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "memos-memory-mcp",
+    "name": "MemOS记忆管理 MCP",
+    "description": "MemOS记忆管理插件提供记忆数据的存储、检索和查询功能，支持个性化交互。",
+    "endpoint": "github.com/MemTensor/MemOS",
+    "tags": [
+      "开发效率",
+      "记忆管理",
+      "个性化推荐"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "markitdown-mcp",
+    "name": "MarkItDown MCP",
+    "description": "微软轻量级Markdown转换服务，支持将各种URI资源转换为Markdown格式。",
+    "endpoint": "github.com/microsoft/markitdown",
+    "tags": [
+      "开发效率",
+      "Markdown转换",
+      "轻量级服务"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "excel-mcp",
+    "name": "Excel操作 MCP",
+    "description": "无需安装Microsoft Excel即可操作Excel文件，支持创建、读取和修改工作簿。",
+    "endpoint": "github.com/haris-musa/excel-mcp-server",
+    "tags": [
+      "办公效率",
+      "Excel操作",
+      "数据管理"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "code-index-mcp",
+    "name": "Code Index MCP",
+    "description": "为大型语言模型提供智能代码索引与分析服务，支持多语言代码库搜索和深度分析。",
+    "endpoint": "github.com/johnhuang316/code-index-mcp",
+    "tags": [
+      "开发效率",
+      "代码分析",
+      "AI辅助开发"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "gitlab-mcp",
+    "name": "GitLab MCP",
+    "description": "GitLab官方MCP服务器，提供项目管理和文件操作，支持自动分支创建与批量操作。",
+    "endpoint": "github.com/modelcontextprotocol/servers",
+    "tags": [
+      "开发效率",
+      "Git管理",
+      "项目管理"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "wcgw-shell-mcp",
+    "name": "wcgw Shell编码代理",
+    "description": "集成Shell和代码编辑工具的MCP服务器，为聊天应用提供本地机器上的编码、构建和运行能力。",
+    "endpoint": "github.com/rusiaaman/wcgw",
+    "tags": [
+      "开发效率",
+      "Shell集成",
+      "代码编辑"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "pandoc-mcp",
+    "name": "Pandoc文档转换 MCP",
+    "description": "基于pandoc的多格式文档转换工具，支持markdown/html/docx等格式间的双向转换。",
+    "endpoint": "github.com/vivekVells/mcp-pandoc",
+    "tags": [
+      "开发效率",
+      "文档转换",
+      "格式标准化"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "ssh-mcp",
+    "name": "SSH远程命令 MCP",
+    "description": "基于SSH的MCP协议服务器，允许AI助手安全执行远程命令和文件传输。",
+    "endpoint": "github.com/classfang/ssh-mcp-server",
+    "tags": [
+      "开发效率",
+      "SSH工具",
+      "远程管理"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "mcp-installer",
+    "name": "MCP服务器安装工具",
+    "description": "用于安装其他MCP服务器的工具，支持通过npm或PyPi安装，需要npx和uv支持。",
+    "endpoint": "github.com/anaisbetts/mcp-installer",
+    "tags": [
+      "开发效率",
+      "MCP管理",
+      "包安装"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "grype-mcp",
+    "name": "Grype漏洞扫描 MCP",
+    "description": "Anchore出品的漏洞扫描MCP，支持目录、容器镜像和特定包的漏洞检测。",
+    "endpoint": "github.com/anchore/grype-mcp",
+    "tags": [
+      "开发效率",
+      "漏洞扫描",
+      "安全检测"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "basic-memory-mcp",
+    "name": "Basic Memory MCP",
+    "description": "AI记忆增强工具，通过本地优先的Markdown文件和双向同步构建知识图谱，适用于个人和团队知识管理。",
+    "endpoint": "github.com/basicmachines-co/basic-memory",
+    "tags": [
+      "开发效率",
+      "知识管理",
+      "AI辅助工具"
+    ],
+    "phase": "v1"
+  },
+  {
+    "slug": "deepwiki-mcp",
+    "name": "Deepwiki文档转换 MCP",
+    "description": "非官方Deepwiki MCP服务器，用于抓取Deepwiki页面并转换为Markdown格式，支持单文档或多页面输出。",
+    "endpoint": "github.com/regenrek/deepwiki-mcp",
+    "tags": [
+      "开发效率",
+      "文档转换",
+      "网页抓取"
+    ],
+    "phase": "v1"
+  }
+]

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营销内容生成</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .form-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+        .form-item { display: flex; flex-direction: column; flex: 1; min-width: 180px; }
+        .form-item label { font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .form-item input, .form-item textarea, .form-item select {
+            padding: 10px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+        .form-item textarea { min-height: 80px; resize: vertical; }
+        .form-item input:focus, .form-item textarea:focus { border-color: #1976d2; }
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary { background: #1976d2; color: #fff; }
+        .result-cards { display: grid; gap: 16px; }
+        .result-card {
+            background: #f5f7fa;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+            border-left: 4px solid #1976d2;
+        }
+        .result-card.style-pro { border-left-color: #1976d2; }
+        .result-card.style-warm { border-left-color: #43a047; }
+        .result-card.style-promo { border-left-color: #e53935; }
+        .result-card .style-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .style-pro .style-tag { background: #e3f2fd; color: #1565c0; }
+        .style-warm .style-tag { background: #e8f5e9; color: #2e7d32; }
+        .style-promo .style-tag { background: #ffebee; color: #c62828; }
+        .result-card .content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #37474f;
+            white-space: pre-wrap;
+        }
+        .result-card .scene {
+            font-size: 12px;
+            color: #78909c;
+            margin-top: 8px;
+        }
+        .result-card .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 4px 12px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .result-card .copy-btn:hover { background: #e3f2fd; border-color: #1976d2; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✍️ 营销内容生成</h1>
+        <div class="card">
+            <h3>输入产品信息</h3>
+            <div class="form-row">
+                <div class="form-item">
+                    <label>产品名称</label>
+                    <input type="text" id="productName" placeholder="如：智能保温杯">
+                </div>
+                <div class="form-item">
+                    <label>发布平台</label>
+                    <select id="platform">
+                        <option>朋友圈</option>
+                        <option>小红书</option>
+                        <option>B站</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-item" style="margin-bottom:12px;">
+                <label>核心卖点（每行一个）</label>
+                <textarea id="sellingPoints" placeholder="如：&#10;24小时保温&#10;316不锈钢内胆&#10;500ml大容量"></textarea>
+            </div>
+            <div class="form-item" style="margin-bottom:16px;">
+                <label>目标人群</label>
+                <input type="text" id="targetAudience" placeholder="如：上班族、学生党">
+            </div>
+            <button class="btn btn-primary" onclick="generateContent()">生成文案</button>
+        </div>
+        <div id="resultArea" style="display:none;">
+            <div class="card">
+                <h3>生成结果</h3>
+                <div class="result-cards" id="resultCards"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function generateContent() {
+            const name = document.getElementById('productName').value.trim();
+            const points = document.getElementById('sellingPoints').value.trim().split('\n').filter(l => l.trim());
+            const audience = document.getElementById('targetAudience').value.trim() || '所有人';
+            const platform = document.getElementById('platform').value;
+            if (!name || points.length === 0) { alert('请填写产品名称和核心卖点'); return; }
+
+            const proText = `【${name}】专业测评\n\n${points.map((p, i) => `${i+1}. ${p.trim()}`).join('\n')}\n\n适用人群：${audience}\n发布平台：${platform}\n\n💡 数据说话，品质看得见。${name}，让每一次使用都安心。`;
+            const warmText = `最近入手了${name}，真的太好用了！✨\n\n${points.map(p => `👉 ${p.trim()}`).join('\n')}\n\n作为${audience}，日常使用体验满分～\n真心推荐给大家，用过的都说好！💕`;
+            const promoText = `🔥 限时推荐！${name}\n\n${points.map(p => `✅ ${p.trim()}`).join('\n')}\n\n🎯 专为${audience}打造\n⏰ 优惠不等人，手慢无！\n\n现在入手，性价比拉满！`;
+
+            const results = [
+                { style: 'style-pro', tag: '专业型', scene: '适合：品牌介绍、产品详情页、行业社群', text: proText },
+                { style: 'style-warm', tag: '亲切型', scene: '适合：朋友圈、私聊推荐、社群分享', text: warmText },
+                { style: 'style-promo', tag: '促销型', scene: '适合：限时活动、直播带货、促销海报', text: promoText }
+            ];
+
+            document.getElementById('resultArea').style.display = '';
+            const container = document.getElementById('resultCards');
+            container.innerHTML = results.map((r, i) => `
+                <div class="result-card ${r.style}">
+                    <span class="style-tag">${r.tag}</span>
+                    <button class="copy-btn" onclick="copyText(${i})">复制</button>
+                    <div class="content" id="copyTarget${i}">${r.text}</div>
+                    <div class="scene">${r.scene}</div>
+                </div>
+            `).join('');
+        }
+        function copyText(idx) {
+            const text = document.getElementById('copyTarget' + idx).textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const orig = btn.textContent;
+                btn.textContent = '已复制';
+                setTimeout(() => btn.textContent = orig, 1000);
+            }).catch(() => {});
+        }
+    </script>
+</body>
+</html>

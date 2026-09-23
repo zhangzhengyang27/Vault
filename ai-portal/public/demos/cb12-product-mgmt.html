@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品管理</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            background: #f0f4f8;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px;
+        }
+        .container { max-width: 960px; margin: 0 auto; }
+        h1 { font-size: 24px; color: #1565c0; text-align: center; margin-bottom: 20px; }
+        .stats {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            flex: 1;
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .stat-card .val { font-size: 24px; font-weight: 700; color: #1976d2; }
+        .stat-card .lbl { font-size: 12px; color: #78909c; margin-top: 4px; }
+        .stat-card.warn .val { color: #e53935; }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 20px;
+        }
+        @media (max-width: 700px) { .main-grid { grid-template-columns: 1fr; } }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .card h3 { font-size: 16px; color: #37474f; margin-bottom: 14px; }
+        .form-item { margin-bottom: 12px; }
+        .form-item label { display: block; font-size: 12px; color: #78909c; margin-bottom: 4px; }
+        .form-item input, .form-item select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .form-item input:focus { border-color: #1976d2; }
+        .search-row { display: flex; gap: 10px; margin-bottom: 14px; }
+        .search-row input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            outline: none;
+        }
+        .search-row select {
+            padding: 8px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        .btn-primary { background: #1976d2; color: #fff; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #eceff1; }
+        th { color: #78909c; font-weight: 600; }
+        .low-stock { background: #ffebee; }
+        .low-stock td:first-child::after { content: ' ⚠️'; }
+        .action-btn {
+            padding: 3px 8px;
+            border: none;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+        .btn-in { background: #e8f5e9; color: #2e7d32; }
+        .btn-out { background: #fff3e0; color: #e65100; }
+        .btn-delete { background: #ffebee; color: #c62828; }
+        .toggle {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            background: #ccc;
+            border-radius: 11px;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .toggle.on { background: #43a047; }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #fff;
+            transition: left 0.2s;
+        }
+        .toggle.on::after { left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 商品管理</h1>
+        <div class="stats" id="statsArea">
+            <div class="stat-card"><div class="val" id="totalCount">0</div><div class="lbl">商品总数</div></div>
+            <div class="stat-card"><div class="val" id="totalValue">¥0</div><div class="lbl">总库存价值</div></div>
+            <div class="stat-card warn"><div class="val" id="lowStock">0</div><div class="lbl">低库存商品</div></div>
+        </div>
+        <div class="main-grid">
+            <div class="card">
+                <h3>商品列表</h3>
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="搜索商品名称" oninput="renderList()">
+                    <select id="filterCat" onchange="renderList()">
+                        <option value="">全部分类</option>
+                        <option>电子产品</option><option>服装</option><option>食品</option><option>其他</option>
+                    </select>
+                </div>
+                <table>
+                    <thead><tr><th>名称</th><th>价格</th><th>库存</th><th>分类</th><th>状态</th><th>操作</th></tr></thead>
+                    <tbody id="productBody"></tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h3 id="formTitle">添加商品</h3>
+                <div class="form-item"><label>商品名称</label><input type="text" id="pName"></div>
+                <div class="form-item"><label>价格</label><input type="number" id="pPrice" step="0.01"></div>
+                <div class="form-item"><label>库存数量</label><input type="number" id="pStock" value="0"></div>
+                <div class="form-item"><label>分类</label>
+                    <select id="pCat"><option>电子产品</option><option>服装</option><option>食品</option><option>其他</option></select>
+                </div>
+                <div class="form-item"><label>图片 URL（选填）</label><input type="text" id="pImg" placeholder="https://..."></div>
+                <button class="btn btn-primary" onclick="saveProduct()">保存商品</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const STORAGE_KEY = 'product_mgmt';
+        let products = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+        let editingId = null;
+        function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(products)); }
+        function saveProduct() {
+            const name = document.getElementById('pName').value.trim();
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const stock = parseInt(document.getElementById('pStock').value) || 0;
+            const category = document.getElementById('pCat').value;
+            const image = document.getElementById('pImg').value.trim();
+            if (!name || isNaN(price)) { alert('请填写商品名称和价格'); return; }
+            if (editingId) {
+                const p = products.find(p => p.id === editingId);
+                if (p) { Object.assign(p, { name, price, stock, category, image }); }
+                editingId = null;
+                document.getElementById('formTitle').textContent = '添加商品';
+            } else {
+                products.push({ id: Date.now(), name, price, stock, category, image, active: true });
+            }
+            save();
+            ['pName','pPrice','pStock','pImg'].forEach(id => document.getElementById(id).value = '');
+            document.getElementById('pStock').value = '0';
+            renderAll();
+        }
+        function editProduct(id) {
+            const p = products.find(p => p.id === id);
+            if (!p) return;
+            editingId = id;
+            document.getElementById('pName').value = p.name;
+            document.getElementById('pPrice').value = p.price;
+            document.getElementById('pStock').value = p.stock;
+            document.getElementById('pCat').value = p.category;
+            document.getElementById('pImg').value = p.image || '';
+            document.getElementById('formTitle').textContent = '编辑商品';
+        }
+        function toggleActive(id) {
+            const p = products.find(p => p.id === id);
+            if (p) { p.active = !p.active; save(); renderAll(); }
+        }
+        function stockIn(id) {
+            const p = products.find(p => p.id === id);
+            const qty = parseInt(prompt(`入库 "${p.name}"，输入数量：`));
+            if (!isNaN(qty) && qty > 0) { p.stock += qty; save(); renderAll(); }
+        }
+        function stockOut(id) {
+            const p = products.find(p => p.id === id);
+            const qty = parseInt(prompt(`出库 "${p.name}"，输入数量：`));
+            if (!isNaN(qty) && qty > 0 && qty <= p.stock) { p.stock -= qty; save(); renderAll(); }
+        }
+        function deleteProduct(id) {
+            if (!confirm('确定删除？')) return;
+            products = products.filter(p => p.id !== id);
+            save();
+            renderAll();
+        }
+        function renderList() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const cat = document.getElementById('filterCat').value;
+            const filtered = products.filter(p => {
+                if (search && !p.name.toLowerCase().includes(search)) return false;
+                if (cat && p.category !== cat) return false;
+                return true;
+            });
+            const tbody = document.getElementById('productBody');
+            tbody.innerHTML = filtered.map(p => `
+                <tr class="${p.stock < 5 ? 'low-stock' : ''}">
+                    <td>${p.name}</td>
+                    <td>¥${p.price.toFixed(2)}</td>
+                    <td>${p.stock}</td>
+                    <td>${p.category}</td>
+                    <td><span class="toggle ${p.active?'on':''}" onclick="toggleActive(${p.id})"></span></td>
+                    <td>
+                        <button class="action-btn btn-in" onclick="stockIn(${p.id})">入库</button>
+                        <button class="action-btn btn-out" onclick="stockOut(${p.id})">出库</button>
+                        <button class="action-btn btn-delete" onclick="editProduct(${p.id})">编辑</button>
+                        <button class="action-btn btn-delete" onclick="deleteProduct(${p.id})" style="background:#ffebee;color:#c62828;">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        function renderStats() {
+            document.getElementById('totalCount').textContent = products.length;
+            const value = products.reduce((s, p) => s + p.price * p.stock, 0);
+            document.getElementById('totalValue').textContent = '¥' + value.toFixed(0);
+            document.getElementById('lowStock').textContent = products.filter(p => p.stock < 5).length;
+        }
+        function renderAll() { renderList(); renderStats(); }
+        renderAll();
+    </script>
+</body>
+</html>

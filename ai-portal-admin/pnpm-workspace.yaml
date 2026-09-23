@@ -1,0 +1,29 @@
+shellEmulator: true
+shamefullyHoist: true
+enablePrePostScripts: false
+strictPeerDependencies: false
+minimumReleaseAge: 0
+
+allowedDeprecatedVersions:
+  are-we-there-yet: '*'
+  sourcemap-codec: '*'
+  lodash.isequal: '*'
+  domexception: '*'
+  w3c-hr-time: '*'
+  inflight: '*'
+  npmlog: '*'
+  rimraf: '*'
+  stable: '*'
+  gauge: '*'
+  abab: '*'
+  glob: '*'
+  ini: '*'
+
+# 允许运行安装脚本的依赖（尾部混入的 lockfile 残留已删除）
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - vue-demi
+  - esbuild
+  - es5-ext
+  - core-js
+  - typeit

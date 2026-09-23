@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>章节详情 · 敦煌艺术与丝路文明</title>
+<meta name="description" content="敦煌课程章节详情：知识讲解、AI 语音朗读、高清壁画细节 zoom-in 交互。">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<main id="chapterRoot" class="fade"></main>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/tutor.js"></script>
+<script>
+  renderShell('chapters.html');
+
+  const params = new URLSearchParams(location.search);
+  const cid = params.get('id') || 'zhangqian';
+  const c = D.chapterById(cid) || D.chapters[0];
+  const idx = D.chapters.indexOf(c);
+  const prev = D.chapters[idx - 1];
+  const next = D.chapters[idx + 1];
+
+  const related = D.relics.filter(r => r.chapter === c.id).slice(0, 6);
+
+  function escapeHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  const root = $('#chapterRoot');
+  root.innerHTML =
+    '<section class="chapter-hero reveal">' +
+      '<div class="bg" id="chBg" style="background-image:url(\'' + c.cover + '\')"></div>' +
+      '<div class="apsara-field" id="chApsarafield"></div>' +
+      '<div class="scrim"></div>' +
+      '<div class="inner">' +
+        '<div class="era">第 ' + c.num + ' 讲 · ' + c.era + '</div>' +
+        '<h1 class="serif gilt" style="font-size:clamp(2.2rem,6vw,4.2rem);margin:.35em 0 .45em">' + c.title + '</h1>' +
+        '<div style="font-family:var(--serif);letter-spacing:.3em;color:#e8ddbc">' + c.subtitle + '</div>' +
+        '<p style="max-width:640px;margin-top:22px;color:#ece4d3;font-size:1.05rem">' + escapeHtml(c.overview) + '</p>' +
+      '</div>' +
+    '</section>' +
+
+    '<div class="container">' +
+      /* 章节短片 + 语音朗读 */
+      '<div style="margin-top:34px">' +
+        '<div class="zoom-stage reveal" id="videoStage" style="height:420px">' +
+          '<video id="chVideo" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover" muted loop playsinline poster="' + c.cover + '" src="' + c.video + '"></video>' +
+          '<div id="kenBurns" style="position:absolute;inset:0;background-size:cover;background-position:center;background-image:url(\'' + c.cover + '\');animation:kb 26s ease-in-out infinite alternate"></div>' +
+          '<div class="zoom-hint" id="videoHint">章节短片 · 背景动效</div>' +
+        '</div>' +
+      '</div>' +
+      '<style>@keyframes kb{0%{transform:scale(1) translate(0,0)}100%{transform:scale(1.18) translate(-2%,-1.5%)}}</style>' +
+
+      '<article class="knowledge reveal" id="knowledge"></article>' +
+
+      '<div class="reader-panel reveal" id="readerPanel">' +
+        '<div class="rp-head"><div class="rp-title">AI 语音朗读 · 讲解稿</div>' +
+        '<button class="reader-btn" id="readerBtn">▶ 朗读本讲</button></div>' +
+        '<p class="reader-text" id="readerText">' + escapeHtml(c.readingScript) + '</p>' +
+      '</div>' +
+
+      '<div class="zoom-panel reveal">' +
+        '<div class="section-head" style="text-align:left;margin-bottom:16px"><div class="section-eyebrow">Close-up</div>' +
+        '<h2>高清壁画细节 · zoom-in</h2></div>' +
+        '<div class="zoom-stage" id="zoomStage">' +
+          '<img id="zoomImg" src="' + c.muralDetail.image + '" alt="' + c.muralDetail.title + '" onerror="imgFallback(this,\'' + c.muralDetail.title + '\')">' +
+          '<div class="zoom-hint">点击画面放大 / 再点击缩小</div>' +
+        '</div>' +
+        '<p style="margin-top:12px;color:var(--text-muted)"><strong style="color:var(--ochre)">' + c.muralDetail.title + '</strong> · ' + escapeHtml(c.muralDetail.desc) + '</p>' +
+        '<p style="color:var(--text-muted);font-size:.9rem">' + escapeHtml(c.muralDetail.note) + '</p>' +
+      '</div>' +
+
+      (related.length ?
+      '<section class="reveal" style="margin-top:30px">' +
+        '<div class="section-head" style="text-align:left;margin-bottom:18px"><div class="section-eyebrow">Related</div><h2>本讲相关文物</h2></div>' +
+        '<div class="chapter-strip">' + related.map(r =>
+          '<a class="chapter-card" href="gallery.html" style="max-width:260px">' +
+          '<div class="cover" style="aspect-ratio:1/1"><img src="' + r.image + '" alt="' + r.name + '" loading="lazy" onerror="imgFallback(this,\'' + r.name + '\')"></div>' +
+          '<div class="body"><h3 style="font-size:1rem">' + r.name + '</h3><div class="era">' + r.era + '</div></div></a>').join('') +
+        '</div></section>' : '') +
+
+      '<nav style="display:flex;justify-content:space-between;margin:40px 0 10px;flex-wrap:wrap;gap:12px">' +
+        (prev ? '<a class="btn btn-ghost" href="chapter.html?id=' + prev.id + '">← ' + prev.title + '</a>' : '<span></span>') +
+        (next ? '<a class="btn btn-ghost" href="chapter.html?id=' + next.id + '">' + next.title + ' →</a>' : '<span></span>') +
+      '</nav>' +
+    '</div>';
+
+  /* 知识讲解段落 */
+  const know = $('#knowledge');
+  know.innerHTML = c.sections.map(function (s) {
+    return '<div><h2>' + s.heading + '</h2>' + s.paragraphs.map(p => '<p>' + escapeHtml(p) + '</p>').join('') + '</div>';
+  }).join('');
+
+  spawnApsaras($('#chApsarafield'), 12);
+  bindReveal();
+
+  /* 视频：有则播，失败则 Ken Burns 封面 */
+  (function () {
+    const v = $('#chVideo'), kb = $('#kenBurns'), vh = $('#videoHint');
+    let settled = false;
+    v.addEventListener('canplay', function () {
+      if (settled) return; settled = true;
+      v.style.display = 'block'; kb.style.display = 'none';
+      vh.textContent = '章节短片 · 自动播放';
+      v.play().catch(() => {});
+    });
+    v.addEventListener('error', function () {
+      if (settled) return; settled = true;
+      v.style.display = 'none'; kb.style.display = 'block';
+      vh.textContent = '章节短片 · 封面动效';
+    });
+    /* 兜底：4 秒仍无数据则视为无片源 */
+    setTimeout(function () {
+      if (!settled) { settled = true; v.style.display = 'none'; kb.style.display = 'block'; vh.textContent = '章节短片 · 封面动效'; }
+      else { /* keep */ }
+    }, 4000);
+    if (v.readyState >= 3) { settled = true; v.play().catch(()=>{}); }
+  })();
+
+  /* 语音朗读 */
+  (function () {
+    const btn = $('#readerBtn');
+    let speaking = false;
+    btn.addEventListener('click', function () {
+      if (!('speechSynthesis' in window)) { alert('当前浏览器不支持语音合成'); return; }
+      if (speaking) {
+        speechSynthesis.cancel(); speaking = false; btn.textContent = '▶ 朗读本讲'; btn.classList.remove('speaking');
+        return;
+      }
+      const u = new SpeechSynthesisUtterance(c.readingScript);
+      u.lang = 'zh-CN'; u.rate = 0.95;
+      const voices = speechSynthesis.getVoices();
+      const zh = voices.find(v => /zh|cmn|Chinese/i.test(v.lang));
+      if (zh) u.voice = zh;
+      u.onstart = function(){ speaking = true; btn.textContent = '■ 停止朗读'; btn.classList.add('speaking'); };
+      u.onend = u.onerror = function(){ speaking = false; btn.textContent = '▶ 朗读本讲'; btn.classList.remove('speaking'); };
+      speechSynthesis.speak(u);
+    });
+  })();
+
+  /* zoom-in */
+  (function () {
+    const img = $('#zoomImg'), stage = $('#zoomStage');
+    stage.addEventListener('click', function () { img.classList.toggle('zoomed'); });
+  })();
+</script>
+</body>
+</html>

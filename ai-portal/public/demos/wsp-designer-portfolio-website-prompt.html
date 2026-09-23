@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Paul Smith — Product Designer</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-500.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-600.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-700.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/sora@5/latin-800.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5/latin-400.css">
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        base: 'hsl(0, 0%, 5%)',
+        surface: 'hsl(0, 0%, 7%)',
+        raised: 'hsl(0, 0%, 10%)',
+        line: 'hsl(0, 0%, 14%)',
+        fg: 'hsl(0, 0%, 96%)',
+        soft: 'hsl(0, 0%, 45%)',
+        vio: 'hsl(270, 80%, 68%)',
+        viodark: 'hsl(270, 84%, 55%)',
+      },
+      fontFamily: {
+        sans: ['Sora', '"PingFang SC"', 'Arial', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'monospace'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: Sora, "PingFang SC", Arial, sans-serif; }
+  .clip-line { clip-path: inset(0 100% 0 0); animation: clipin .65s cubic-bezier(.76, 0, .24, 1) forwards; animation-delay: var(--d, 0ms); }
+  @keyframes clipin { to { clip-path: inset(0 0 0 0); } }
+  .hero-obj { animation: floaty 5s ease-in-out infinite; filter: drop-shadow(0 0 60px hsl(270 80% 68% / .3)); }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .cursor-glow { position: fixed; width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, hsl(270 80% 68% / 0.06), transparent 70%);
+    pointer-events: none; transform: translate(-50%, -50%); z-index: 0; }
+  .fadeup { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; transition-delay: var(--d, 0ms); }
+  .fadeup.in { opacity: 1; transform: none; }
+  .glow-card { transition: border-color .18s ease, box-shadow .18s ease; }
+  .glow-card:hover { border-color: hsl(270, 80%, 68%); box-shadow: 0 0 40px hsl(270 80% 68% / .15); }
+  a, button { transition: all .2s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .clip-line { animation: none; clip-path: none; }
+    .hero-obj { animation: none; }
+    .fadeup { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body class="bg-base text-fg font-sans antialiased">
+
+<div class="cursor-glow" id="glow" aria-hidden="true"></div>
+
+<!-- 1. 导航栏 -->
+<header class="fixed top-0 inset-x-0 z-50 bg-base/90 backdrop-blur-[12px] border-b border-line">
+  <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="font-bold text-base">Paul Smith</a>
+    <nav class="hidden md:flex items-center gap-7 text-sm text-soft">
+      <a href="#work" class="hover:text-fg">Portfolio</a>
+      <a href="#about" class="hover:text-fg">About</a>
+      <a href="#services" class="hover:text-fg">Services</a>
+      <a href="#tech" class="hover:text-fg">Technologies</a>
+      <a href="#hire" class="hover:text-fg">Hire me</a>
+    </nav>
+    <a href="#hire" class="hidden md:inline-flex bg-vio text-white font-semibold text-xs px-4 py-2 rounded-md hover:bg-viodark">Hire me →</a>
+    <button id="burger" class="md:hidden p-2 text-soft" aria-label="Open menu" aria-expanded="false">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+    </button>
+  </div>
+  <div id="mobilemenu" class="hidden md:hidden border-t border-line px-5 py-4">
+    <div class="grid grid-cols-2 gap-3 text-sm text-soft">
+      <a href="#work" class="py-1">Portfolio</a><a href="#about" class="py-1">About</a>
+      <a href="#services" class="py-1">Services</a><a href="#tech" class="py-1">Technologies</a>
+      <a href="#hire" class="py-1 text-vio">Hire me →</a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- 2. 主视觉 -->
+  <section class="relative min-h-screen flex flex-col items-center justify-center text-center px-5 pt-20">
+    <span class="inline-flex items-center gap-2 border border-vio/40 bg-vio/10 rounded-full px-4 py-1.5 font-mono text-[11px] text-vio fadeup" style="--d:0ms">
+      <span class="w-2 h-2 rounded-full bg-vio animate-pulse"></span> Available for hire
+    </span>
+    <h1 class="mt-6 font-extrabold text-[clamp(40px,12vw,96px)] md:text-[clamp(52px,7vw,96px)] leading-[0.92] tracking-[-0.04em]">
+      <span class="clip-line block" style="--d:100ms">Product designer crafting</span>
+      <span class="clip-line block" style="--d:200ms">clean &amp; modern designs.</span>
+    </h1>
+    <p class="mt-5 font-light text-soft max-w-[460px] fadeup" style="--d:300ms">Turning complex problems into intuitive interfaces. 5 years · 40+ projects.</p>
+    <div class="mt-7 flex flex-wrap justify-center gap-4 fadeup" style="--d:400ms">
+      <a href="#work" class="bg-vio text-white font-semibold text-[13px] px-5 py-2.5 rounded-lg hover:bg-viodark">Explore →</a>
+      <a href="#" class="border border-line font-semibold text-[13px] px-5 py-2.5 rounded-lg hover:border-vio hover:text-vio">Download CV</a>
+    </div>
+    <!-- 3D 抽象物体 -->
+    <div class="hero-obj mt-10 w-[280px] md:w-[500px]" aria-hidden="true">
+      <svg viewBox="0 0 500 500">
+        <defs>
+          <radialGradient id="obj" cx="35%" cy="28%">
+            <stop offset="0%" stop-color="hsl(270, 40%, 30%)"/>
+            <stop offset="55%" stop-color="hsl(265, 30%, 13%)"/>
+            <stop offset="100%" stop-color="hsl(260, 20%, 6%)"/>
+          </radialGradient>
+          <radialGradient id="gl" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="hsl(270, 80%, 68%)" stop-opacity=".55"/>
+            <stop offset="100%" stop-color="hsl(270, 80%, 68%)" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="250" cy="250" r="180" fill="url(#gl)" opacity=".5"/>
+        <path d="M250 90 C330 90 380 150 370 220 C400 250 400 300 360 330 C370 400 300 440 250 420 C180 445 110 400 125 330 C85 300 90 245 125 218 C118 148 180 90 250 90 Z" fill="url(#obj)" stroke="hsl(270, 70%, 60% / .35)" stroke-width="1.5"/>
+        <g stroke="hsl(270, 60%, 62% / .4)" stroke-width="1.2" fill="none">
+          <path d="M175 170 C240 130 320 150 355 220"/>
+          <path d="M150 250 C240 210 330 240 362 300"/>
+          <path d="M165 330 C250 380 330 360 360 315"/>
+        </g>
+        <ellipse cx="215" cy="175" rx="42" ry="22" fill="hsl(280, 70%, 70%)" opacity=".18" transform="rotate(-18 215 175)"/>
+      </svg>
+    </div>
+    <div class="mt-8 flex items-center gap-10 text-white/30 text-sm fadeup" style="--d:500ms">
+      <span>Figma</span><span>Framer</span><span>Webflow</span><span>Adobe</span>
+    </div>
+  </section>
+
+  <!-- 3. 精选作品 -->
+  <section id="work" class="py-[100px] px-5 md:px-16 max-w-7xl mx-auto">
+    <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(40px,5vw,64px)] fadeup">Selected work.</h2>
+    <div class="mt-10 grid md:grid-cols-2 gap-4">
+      <a href="#" class="fadeup glow-card md:col-span-2 bg-surface border border-line rounded-xl overflow-hidden block">
+        <svg class="w-full aspect-[16/9]" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+          <rect width="800" height="450" fill="hsl(0, 0%, 6%)"/>
+          <rect x="90" y="70" width="620" height="310" rx="10" fill="hsl(0, 0%, 10%)"/>
+          <rect x="120" y="110" width="220" height="20" rx="6" fill="hsl(270, 70%, 60%)"/>
+          <rect x="120" y="150" width="340" height="12" rx="6" fill="hsl(0, 0%, 24%)"/>
+          <rect x="120" y="174" width="280" height="12" rx="6" fill="hsl(0, 0%, 24%)"/>
+          <rect x="120" y="220" width="150" height="120" rx="8" fill="hsl(270, 30%, 18%)"/>
+          <rect x="290" y="220" width="150" height="120" rx="8" fill="hsl(0, 0%, 14%)"/>
+          <rect x="460" y="220" width="150" height="120" rx="8" fill="hsl(0, 0%, 14%)"/>
+        </svg>
+        <div class="p-6"><h3 class="font-semibold text-lg">Helio Analytics</h3><p class="font-mono text-[11px] text-soft mt-1">Product Design · 2025</p><span class="inline-block mt-3 text-vio text-sm font-semibold">View case study →</span></div>
+      </a>
+      <a href="#" class="fadeup glow-card bg-surface border border-line rounded-xl overflow-hidden block" style="--d:80ms">
+        <svg class="w-full aspect-[16/9]" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(0, 0%, 6%)"/><rect x="70" y="35" width="115" height="185" rx="12" fill="hsl(0, 0%, 10%)"/><rect x="85" y="55" width="85" height="10" rx="4" fill="hsl(270, 70%, 60%)"/><rect x="85" y="75" width="60" height="8" rx="4" fill="hsl(0, 0%, 24%)"/><rect x="85" y="95" width="85" height="40" rx="6" fill="hsl(270, 25%, 17%)"/><rect x="85" y="145" width="85" height="40" rx="6" fill="hsl(0, 0%, 13%)"/></svg>
+        <div class="p-6"><h3 class="font-semibold text-lg">Nomad Banking</h3><p class="font-mono text-[11px] text-soft mt-1">Mobile App · 2024</p><span class="inline-block mt-3 text-vio text-sm font-semibold">View case study →</span></div>
+      </a>
+      <a href="#" class="fadeup glow-card bg-surface border border-line rounded-xl overflow-hidden block" style="--d:160ms">
+        <svg class="w-full aspect-[16/9]" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(0, 0%, 6%)"/><rect x="60" y="50" width="130" height="14" rx="7" fill="hsl(0, 0%, 22%)"/><rect x="60" y="80" width="280" height="10" rx="5" fill="hsl(0, 0%, 15%)"/><rect x="60" y="105" width="250" height="10" rx="5" fill="hsl(0, 0%, 15%)"/><rect x="60" y="135" width="120" height="55" rx="8" fill="hsl(270, 25%, 17%)"/><rect x="200" y="135" width="140" height="55" rx="8" fill="hsl(0, 0%, 13%)"/></svg>
+        <div class="p-6"><h3 class="font-semibold text-lg">Atlas Design System</h3><p class="font-mono text-[11px] text-soft mt-1">Design System · 2024</p><span class="inline-block mt-3 text-vio text-sm font-semibold">View case study →</span></div>
+      </a>
+      <a href="#" class="fadeup glow-card bg-surface border border-line rounded-xl overflow-hidden block" style="--d:240ms">
+        <svg class="w-full aspect-[16/9]" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(0, 0%, 6%)"/><circle cx="200" cy="112" r="55" fill="hsl(270, 25%, 16%)"/><path d="M175 112 l20 20 l30 -40" fill="none" stroke="hsl(270, 70%, 60%)" stroke-width="6"/></svg>
+        <div class="p-6"><h3 class="font-semibold text-lg">Kindred Onboarding</h3><p class="font-mono text-[11px] text-soft mt-1">UX · 2023</p><span class="inline-block mt-3 text-vio text-sm font-semibold">View case study →</span></div>
+      </a>
+      <a href="#" class="fadeup glow-card bg-surface border border-line rounded-xl overflow-hidden block" style="--d:320ms">
+        <svg class="w-full aspect-[16/9]" viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="400" height="225" fill="hsl(0, 0%, 6%)"/><rect x="50" y="40" width="300" height="150" rx="10" fill="hsl(0, 0%, 10%)"/><g fill="hsl(270, 55%, 42%)"><rect x="70" y="60" width="55" height="55" rx="6"/><rect x="137" y="60" width="55" height="55" rx="6"/><rect x="204" y="60" width="55" height="55" rx="6"/><rect x="271" y="60" width="55" height="55" rx="6"/></g><g fill="hsl(0, 0%, 20%)"><rect x="70" y="130" width="256" height="12" rx="6"/><rect x="70" y="152" width="190" height="12" rx="6"/></g></svg>
+        <div class="p-6"><h3 class="font-semibold text-lg">Cobalt Store</h3><p class="font-mono text-[11px] text-soft mt-1">E-commerce · 2023</p><span class="inline-block mt-3 text-vio text-sm font-semibold">View case study →</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- 4. 关于 -->
+  <section id="about" class="py-24 px-5 md:px-16 max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+    <div class="fadeup">
+      <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(32px,4vw,52px)] leading-tight">Crafting products people love.</h2>
+      <p class="mt-5 text-soft text-[15px] leading-relaxed">Five years in, my work has crossed fintech, healthcare and e-commerce — always from the same starting point: understand the mess before designing the order.</p>
+      <p class="mt-4 text-soft text-[15px] leading-relaxed">I design in systems, prototype in code where it helps, and test early. The tools change; the discipline doesn't.</p>
+      <p class="mt-4 text-soft text-[15px] leading-relaxed">Off the clock: film photography, bouldering, and an unreasonable collection of mechanical keyboards.</p>
+      <div class="mt-6 flex flex-wrap gap-2">
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">Product Design</span>
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">5 yrs exp</span>
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">40+ projects</span>
+        <span class="font-mono text-[11px] border border-line rounded-md px-2.5 py-1">Remote-friendly</span>
+      </div>
+    </div>
+    <div class="fadeup relative" style="--d:120ms">
+      <svg class="w-full rounded-xl border border-line" viewBox="0 0 480 380" aria-hidden="true">
+        <rect width="480" height="380" fill="hsl(0, 0%, 6%)"/>
+        <rect x="60" y="80" width="150" height="100" rx="8" fill="hsl(0, 0%, 10%)"/>
+        <rect x="80" y="100" width="80" height="8" rx="4" fill="hsl(270, 60%, 55%)"/>
+        <rect x="80" y="120" width="110" height="6" rx="3" fill="hsl(0, 0%, 22%)"/>
+        <rect x="80" y="134" width="95" height="6" rx="3" fill="hsl(0, 0%, 22%)"/>
+        <rect x="250" y="80" width="150" height="100" rx="8" fill="hsl(0, 0%, 10%)"/>
+        <rect x="270" y="100" width="80" height="8" rx="4" fill="hsl(270, 60%, 55%)"/>
+        <circle cx="240" cy="240" r="46" fill="hsl(0, 0%, 12%)"/>
+        <path d="M240 258 a22 22 0 0 0 22 -22 a22 22 0 0 0 -44 0 a22 22 0 0 0 22 22" fill="hsl(270, 50%, 45%)" opacity=".6"/>
+        <rect x="120" y="280" width="240" height="10" rx="5" fill="hsl(0, 0%, 15%)"/>
+      </svg>
+      <div class="absolute -bottom-4 -left-4 bg-raised border border-line rounded-lg px-3 py-2 font-mono text-[11px] text-vio">Figma</div>
+      <div class="absolute -top-4 right-6 bg-raised border border-line rounded-lg px-3 py-2 font-mono text-[11px] text-vio">Framer</div>
+    </div>
+  </section>
+
+  <!-- 5. 服务 -->
+  <section id="services" class="bg-surface py-24 px-5 md:px-16">
+    <div class="max-w-7xl mx-auto">
+      <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(32px,4vw,52px)] fadeup">What I do.</h2>
+      <div class="mt-10 grid md:grid-cols-3 gap-5">
+        <div class="fadeup glow-card bg-base border border-line rounded-xl p-7" style="--d:0ms">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-soft">Product</p>
+          <h3 class="font-bold text-lg mt-2">UI/UX Design</h3>
+          <p class="mt-2 text-soft text-sm">Research, flows, wireframes and polished UI. From messy problem to shipped interface.</p>
+          <p class="mt-4 font-mono text-xs text-vio">from $2,400</p>
+        </div>
+        <div class="fadeup glow-card bg-base border border-line rounded-xl p-7" style="--d:100ms">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-soft">No-code</p>
+          <h3 class="font-bold text-lg mt-2">Framer Development</h3>
+          <p class="mt-2 text-soft text-sm">Design-grade marketing sites built in Framer — fast, responsive, CMS-ready.</p>
+          <p class="mt-4 font-mono text-xs text-vio">from $1,800</p>
+        </div>
+        <div class="fadeup glow-card bg-base border border-line rounded-xl p-7" style="--d:200ms">
+          <p class="font-mono text-[10px] uppercase tracking-widest text-soft">Foundations</p>
+          <h3 class="font-bold text-lg mt-2">Design Systems</h3>
+          <p class="mt-2 text-soft text-sm">Tokens, components and documentation your team will actually keep using.</p>
+          <p class="mt-4 font-mono text-xs text-vio">from $3,200</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. 技术 -->
+  <section id="tech" class="py-16 px-5 md:px-16 text-center">
+    <h2 class="font-extrabold tracking-[-0.04em] text-2xl md:text-3xl fadeup">Technologies.</h2>
+    <div class="mt-8 grid grid-cols-3 md:grid-cols-6 gap-6 max-w-4xl mx-auto text-soft">
+      <div class="fadeup" style="--d:0ms"><p class="text-xl">Figma</p><p class="font-mono text-[10px] mt-1">figma</p></div>
+      <div class="fadeup" style="--d:60ms"><p class="text-xl">Framer</p><p class="font-mono text-[10px] mt-1">framer</p></div>
+      <div class="fadeup" style="--d:120ms"><p class="text-xl">Webflow</p><p class="font-mono text-[10px] mt-1">webflow</p></div>
+      <div class="fadeup" style="--d:180ms"><p class="text-xl">React</p><p class="font-mono text-[10px] mt-1">react</p></div>
+      <div class="fadeup" style="--d:240ms"><p class="text-xl">Adobe</p><p class="font-mono text-[10px] mt-1">adobe</p></div>
+      <div class="fadeup" style="--d:300ms"><p class="text-xl">Notion</p><p class="font-mono text-[10px] mt-1">notion</p></div>
+    </div>
+  </section>
+
+  <!-- 7. 客户评价 -->
+  <section class="py-24 px-5 md:px-16 max-w-7xl mx-auto">
+    <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(32px,4vw,52px)] fadeup">From clients.</h2>
+    <div class="mt-10 grid md:grid-cols-3 gap-5">
+      <blockquote class="fadeup border-t-2 border-vio bg-surface rounded-b-xl p-6" style="--d:0ms">
+        <p class="font-light italic text-sm leading-relaxed">"Paul turned a forty-page spec into something our customers understood on first open. Rare talent."</p>
+        <footer class="mt-4 font-semibold text-sm">Marta Kiln</footer>
+        <p class="font-mono text-[10px] text-soft">COO, Helio Analytics</p>
+      </blockquote>
+      <blockquote class="fadeup border-t-2 border-vio bg-surface rounded-b-xl p-6" style="--d:100ms">
+        <p class="font-light italic text-sm leading-relaxed">"The design system paid for itself in a quarter. Our dev velocity doubled."</p>
+        <footer class="mt-4 font-semibold text-sm">Sam Oduya</footer>
+        <p class="font-mono text-[10px] text-soft">Head of Eng, Nomad</p>
+      </blockquote>
+      <blockquote class="fadeup border-t-2 border-vio bg-surface rounded-b-xl p-6" style="--d:200ms">
+        <p class="font-light italic text-sm leading-relaxed">"Fast, communicative, and genuinely opinionated in the right way. Booking him again."</p>
+        <footer class="mt-4 font-semibold text-sm">Lin Zhao</footer>
+        <p class="font-mono text-[10px] text-soft">Founder, Kindred</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- 8. CTA -->
+  <section id="hire" class="relative py-20 px-5 text-center bg-[hsl(0,0%,3%)] overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none" aria-hidden="true" style="background: radial-gradient(ellipse at center, hsl(270 80% 68% / 0.08), transparent 60%)"></div>
+    <div class="relative fadeup">
+      <h2 class="font-extrabold tracking-[-0.04em] text-[clamp(36px,5vw,64px)]">Let's build something.</h2>
+      <p class="mt-4 text-soft">Tell me about your product, your timeline, and what success looks like.</p>
+      <div class="mt-8 flex flex-wrap justify-center items-center gap-5">
+        <a href="mailto:hello@paulsmith.example" class="bg-vio text-white font-semibold px-7 py-3.5 rounded-lg hover:bg-viodark">Start a project →</a>
+        <a href="mailto:hello@paulsmith.example" class="text-vio font-semibold hover:underline">Or email me</a>
+      </div>
+      <p class="mt-6 font-mono text-[11px] text-soft">avg. response time · under 24 hours</p>
+    </div>
+  </section>
+</main>
+
+<!-- 9. 页脚 -->
+<footer class="bg-[hsl(0,0%,3%)] border-t border-line">
+  <div class="max-w-7xl mx-auto px-5 md:px-16 py-10 flex flex-col md:flex-row items-center justify-between gap-4">
+    <div>
+      <p class="font-bold">Paul Smith</p>
+      <p class="font-mono text-[11px] text-soft">Product designer · remote worldwide</p>
+    </div>
+    <div class="flex gap-6 text-sm text-soft">
+      <a href="#" class="hover:text-vio">Dribbble</a><a href="#" class="hover:text-vio">Behance</a><a href="#" class="hover:text-vio">LinkedIn</a><a href="#" class="hover:text-vio">GitHub</a>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-5 md:px-16 pb-6">
+    <p class="font-mono text-[10px] text-soft">© 2026 Paul Smith. Demo page generated from the designer portfolio prompt.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 光标辉光
+  const glow = document.getElementById('glow');
+  document.addEventListener('mousemove', function (e) {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top = e.clientY + 'px';
+  });
+  // 汉堡
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('mobilemenu');
+  burger.addEventListener('click', function () {
+    const open = menu.classList.toggle('hidden') === false;
+    burger.setAttribute('aria-expanded', String(open));
+  });
+  menu.addEventListener('click', function (e) { if (e.target.tagName === 'A') menu.classList.add('hidden'); });
+  // 入场
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.fadeup').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>

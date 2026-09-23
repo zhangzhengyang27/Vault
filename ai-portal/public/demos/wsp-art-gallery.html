@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VESSEL GALLERY · Contemporary Art</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-300.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-400.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5/latin-500.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        paper: 'hsl(0, 0%, 100%)',
+        ink: 'hsl(0, 0%, 8%)',
+        soft: 'hsl(0, 0%, 48%)',
+        line: 'hsl(0, 0%, 90%)',
+        card: 'hsl(0, 0%, 98%)',
+      },
+      fontFamily: { sans: ['Inter', '"PingFang SC"', 'Arial', 'sans-serif'] },
+      maxWidth: { site: '1280px' },
+    },
+  },
+};
+</script>
+<style>
+  body { font-family: Inter, "PingFang SC", Arial, sans-serif; font-weight: 300; letter-spacing: -0.01em; }
+  .label { font-weight: 400; font-size: 12px; letter-spacing: 0.06em; color: hsl(0, 0%, 48%); }
+  @media (pointer: fine) {
+    body, a, button { cursor: none; }
+  }
+  /* "View" 光标 */
+  #viewcur {
+    position: fixed; z-index: 60; top: 0; left: 0; pointer-events: none;
+    width: 64px; height: 64px; border-radius: 9999px; background: #141414; color: #fff;
+    display: none; align-items: center; justify-content: center;
+    font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    transform: translate(-50%, -50%);
+  }
+  .art { opacity: 0; transition: opacity .9s ease; }
+  .art figcaption { opacity: 0; transition: opacity .9s ease .2s; }
+  .art.in { opacity: 1; }
+  .art.in figcaption { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) {
+    .art, .art figcaption { opacity: 1; transition: none; }
+    #viewcur { display: none !important; }
+  }
+</style>
+</head>
+<body class="bg-white text-ink">
+
+<div id="viewcur" aria-hidden="true">View</div>
+
+<!-- 1. 导航栏 -->
+<header class="h-[88px] flex items-center">
+  <div class="max-w-site mx-auto w-full px-4 md:px-16 flex items-center justify-between">
+    <a href="#top" class="text-sm tracking-[0.14em] font-normal">VESSEL&nbsp;GALLERY</a>
+    <button id="menutoggle" class="md:hidden text-sm text-soft" aria-expanded="false">Menu</button>
+    <nav id="navlinks" class="hidden md:flex items-center gap-8 text-xs tracking-[0.06em] text-soft">
+      <a href="#exhibition" class="hover:text-ink">Exhibition</a>
+      <a href="#works" class="hover:text-ink">Artists</a>
+      <a href="#archive" class="hover:text-ink">Archive</a>
+      <a href="#enquire" class="hover:text-ink">Enquiries</a>
+      <a href="#visit" class="hover:text-ink">Visit</a>
+    </nav>
+  </div>
+  <div id="mobilenav" class="hidden md:hidden border-t border-line px-4 md:px-16 py-4">
+    <div class="grid gap-2 text-xs tracking-[0.06em] text-soft">
+      <a href="#exhibition" class="py-1">Exhibition</a><a href="#works" class="py-1">Artists</a>
+      <a href="#archive" class="py-1">Archive</a><a href="#enquire" class="py-1">Enquiries</a><a href="#visit" class="py-1">Visit</a>
+    </div>
+  </div>
+</header>
+
+<main id="top" class="max-w-site mx-auto px-4 md:px-16">
+  <!-- 2. 主视觉：纯文本块 -->
+  <section id="exhibition" class="pt-24 md:pt-36 pb-40 md:pb-64">
+    <p class="label">Ines Okafor</p>
+    <h1 class="font-light text-[28px] md:text-[46px] leading-tight mt-3" style="letter-spacing:-0.02em"><em>Slow Water</em></h1>
+    <p class="label mt-3">14 March — 21 June 2026</p>
+    <p class="mt-8 max-w-md text-[16px] leading-[1.8]">New paintings that move the way water moves — slowly, and only when you stop watching. The gallery's third solo exhibition with the artist.</p>
+  </section>
+
+  <!-- 3. 当前展览通栏 -->
+  <section class="pb-40">
+    <figure class="art">
+      <!-- 画廊内部：白墙大作品、抛光混凝土地面、均匀日光 -->
+      <svg viewBox="0 0 1200 620" class="w-full block" role="img" aria-label="Installation view of Slow Water at VESSEL GALLERY">
+        <rect width="1200" height="620" fill="#f4f3f1"/>
+        <rect y="520" width="1200" height="100" fill="#e8e6e2"/>
+        <rect x="380" y="110" width="440" height="330" fill="#141414"/>
+        <g opacity=".5" stroke="#f4f3f1" stroke-width="3">
+          <path d="M420 200 q60 40 120 0 t120 0 t120 0 M420 260 q60 40 120 0 t120 0 t120 0"/>
+        </g>
+        <g stroke="#c9c6c1" stroke-width="2">
+          <path d="M380 60 v40 M820 60 v40 M380 560 h440"/>
+        </g>
+      </svg>
+      <figcaption class="mt-5 space-y-0.5 text-xs leading-relaxed text-soft">
+        <div class="text-ink">Installation view</div>
+        <div><em>Slow Water</em>, 2026</div>
+        <div>VESSEL GALLERY, London</div>
+      </figcaption>
+    </figure>
+  </section>
+
+  <!-- 4. 作品 -->
+  <section id="works" class="pb-40">
+    <h2 class="label mb-12">Selected works</h2>
+    <div class="grid md:grid-cols-2 gap-x-24 gap-y-32 max-w-4xl">
+      <figure class="art" data-view>
+        <svg viewBox="0 0 560 620" class="w-full block" role="img" aria-label="Untitled work by Ines Okafor"><rect width="560" height="620" fill="#dcdcd6"/><g stroke="#141414" stroke-width="5" opacity=".85"><path d="M120 480 C200 300 360 320 440 140" fill="none"/><path d="M120 380 C220 260 340 280 440 100" fill="none" opacity=".5"/></g></svg>
+        <figcaption class="mt-5 space-y-0.5 text-xs leading-relaxed text-soft">
+          <div class="text-ink">Ines Okafor</div>
+          <div><em>Slow Water (iv)</em>, 2025</div>
+          <div>Oil and pigment on linen</div>
+          <div>180 × 140 cm</div>
+        </figcaption>
+      </figure>
+      <figure class="art" data-view>
+        <svg viewBox="0 0 560 460" class="w-full block" role="img" aria-label="Untitled work by Tomas Ehrlund"><rect width="560" height="460" fill="#c9c9c4"/><rect x="180" y="120" width="200" height="220" fill="#8f8f8a"/><rect x="210" y="150" width="140" height="160" fill="#efeeea"/></svg>
+        <figcaption class="mt-5 space-y-0.5 text-xs leading-relaxed text-soft">
+          <div class="text-ink">Tomas Ehrlund</div>
+          <div><em>Window, dusk</em>, 2024</div>
+          <div>Silver gelatin print, ed. 5</div>
+          <div>92 × 76 cm</div>
+        </figcaption>
+      </figure>
+      <figure class="art" data-view>
+        <svg viewBox="0 0 560 440" class="w-full block" role="img" aria-label="Untitled work by Nadia Qureshi"><rect width="560" height="440" fill="#efeeea"/><g fill="#141414"><circle cx="280" cy="220" r="70"/></g><circle cx="280" cy="220" r="70" fill="none" stroke="#c9c6c1" stroke-width="2"/></svg>
+        <figcaption class="mt-5 space-y-0.5 text-xs leading-relaxed text-soft">
+          <div class="text-ink">Nadia Qureshi</div>
+          <div><em>Held breath</em>, 2025</div>
+          <div>Ink and gesso on panel</div>
+          <div>120 × 96 cm</div>
+        </figcaption>
+      </figure>
+      <figure class="art" data-view>
+        <svg viewBox="0 0 560 640" class="w-full block" role="img" aria-label="Untitled work by Ines Okafor"><rect width="560" height="640" fill="#141414"/><g stroke="#efeeea" stroke-width="3" opacity=".6"><path d="M140 520 C220 380 340 420 420 180" fill="none"/></g></svg>
+        <figcaption class="mt-5 space-y-0.5 text-xs leading-relaxed text-soft">
+          <div class="text-ink">Ines Okafor</div>
+          <div><em>Slow Water (ii)</em>, 2024</div>
+          <div>Oil and pigment on linen</div>
+          <div>200 × 160 cm</div>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- 5. 艺术家 -->
+  <section class="pb-40">
+    <h2 class="label mb-10">Represented artists</h2>
+    <ul class="max-w-2xl space-y-4">
+      <li class="flex justify-between items-baseline border-b border-line pb-3"><a href="#works" class="text-[17px] font-medium hover:text-soft">Ines Okafor</a><span class="label">Painting</span></li>
+      <li class="flex justify-between items-baseline border-b border-line pb-3"><a href="#works" class="text-[17px] font-medium hover:text-soft">Tomas Ehrlund</a><span class="label">Photography</span></li>
+      <li class="flex justify-between items-baseline border-b border-line pb-3"><a href="#works" class="text-[17px] font-medium hover:text-soft">Nadia Qureshi</a><span class="label">Painting &amp; works on paper</span></li>
+      <li class="flex justify-between items-baseline border-b border-line pb-3"><a href="#works" class="text-[17px] font-medium hover:text-soft">June Castellano</a><span class="label">Sculpture</span></li>
+    </ul>
+  </section>
+
+  <!-- 6. 展览档案 -->
+  <section id="archive" class="pb-40">
+    <h2 class="label mb-10">Exhibition archive</h2>
+    <table class="w-full text-sm">
+      <tbody class="align-top">
+        <tr class="border-t border-line"><td class="py-3 pr-6 tabular-nums label">2025</td><td class="py-3 pr-6">Ines Okafor</td><td class="py-3 pr-6"><em>Salt Season</em></td><td class="py-3 text-soft">Sep — Nov</td></tr>
+        <tr class="border-t border-line"><td class="py-3 pr-6 tabular-nums label">2025</td><td class="py-3 pr-6">Group show</td><td class="py-3 pr-6"><em>Room Temperature</em></td><td class="py-3 text-soft">May — Jul</td></tr>
+        <tr class="border-t border-line"><td class="py-3 pr-6 tabular-nums label">2024</td><td class="py-3 pr-6">Tomas Ehrlund</td><td class="py-3 pr-6"><em>Northern Light</em></td><td class="py-3 text-soft">Oct — Dec</td></tr>
+        <tr class="border-t border-b border-line"><td class="py-3 pr-6 tabular-nums label">2024</td><td class="py-3 pr-6">Nadia Qureshi</td><td class="py-3 pr-6"><em>Held breath</em></td><td class="py-3 text-soft">Mar — Apr</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 7. 私人展厅 -->
+  <section class="pb-40 max-w-xl">
+    <h2 class="label mb-6">Viewing Room</h2>
+    <p class="text-[16px] leading-[1.8]">An online viewing room of available works is open to collectors on request. Enquiries receive a private link within one working day.</p>
+    <a href="#enquire" class="inline-block mt-4 text-sm underline underline-offset-4 hover:text-soft">Request access →</a>
+  </section>
+
+  <!-- 8. 艺博会 -->
+  <section class="pb-40">
+    <h2 class="label mb-10">Fairs</h2>
+    <div class="space-y-6 max-w-xl">
+      <div class="flex justify-between items-baseline border-b border-line pb-4"><div><p class="text-[17px] font-medium">Frieze London</p><p class="label mt-1">Stand B12 · Regent's Park</p></div><span class="label tabular-nums">14 — 18 Oct 2026</span></div>
+      <div class="flex justify-between items-baseline border-b border-line pb-4"><div><p class="text-[17px] font-medium">Art Basel Paris</p><p class="label mt-1">Booth C24 · Grand Palais</p></div><span class="label tabular-nums">21 — 25 Oct 2026</span></div>
+      <div class="flex justify-between items-baseline border-b border-line pb-4"><div><p class="text-[17px] font-medium">ARMORY SHOW</p><p class="label mt-1">Pier 94 · New York</p></div><span class="label tabular-nums">Mar 2027</span></div>
+    </div>
+  </section>
+
+  <!-- 9. 咨询 -->
+  <section id="enquire" class="pb-40 max-w-xl">
+    <h2 class="label mb-6">Enquiries</h2>
+    <p class="text-[16px] leading-[1.8]">Available works, condition reports and prices are shared on request. A short waiting list applies for new commissions by represented artists.</p>
+    <p class="mt-5"><a class="text-[16px] underline underline-offset-4 hover:text-soft" href="mailto:enquiries@vesselgallery.example">enquiries@vesselgallery.example</a></p>
+    <p class="mt-1 text-[16px]">+44 20 7946 0555</p>
+  </section>
+
+  <!-- 10. 到访 -->
+  <section id="visit" class="pb-40">
+    <h2 class="label mb-6">Visit</h2>
+    <dl class="grid sm:grid-cols-2 gap-8 max-w-xl text-[16px] leading-[1.8]">
+      <div><dt class="label mb-1">Address</dt><dd>18 Wharf Lane, Shoreditch<br>London N1 7FG</dd></div>
+      <div><dt class="label mb-1">Hours</dt><dd>Wed — Sun · 11:00 — 18:00<br>Mon — Tue by appointment</dd></div>
+      <div><dt class="label mb-1">Admission</dt><dd>Free, no booking required</dd></div>
+      <div><dt class="label mb-1">Access</dt><dd>Step-free entrance; accessible WC on ground floor.</dd></div>
+    </dl>
+  </section>
+</main>
+
+<!-- 11. 页脚 -->
+<footer class="border-t border-line">
+  <div class="max-w-site mx-auto px-4 md:px-16 py-10 grid sm:grid-cols-3 gap-6 label">
+    <span>VESSEL GALLERY · London</span>
+    <span>Wed — Sun · 11 — 18</span>
+    <a href="#enquire" class="underline underline-offset-4 hover:text-ink sm:text-right">Join the mailing list</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  // 移动菜单
+  const t = document.getElementById('menutoggle');
+  const nav = document.getElementById('mobilenav');
+  t.addEventListener('click', function () {
+    const open = nav.classList.toggle('hidden') === false;
+    t.setAttribute('aria-expanded', String(open));
+    t.textContent = open ? 'Close' : 'Menu';
+  });
+  nav.addEventListener('click', function (e) {
+    if (e.target.tagName === 'A') { nav.classList.add('hidden'); t.textContent = 'Menu'; }
+  });
+
+  // "View" 弹簧光标（触屏禁用）
+  if (window.matchMedia('(pointer: fine)').matches) {
+    const cur = document.getElementById('viewcur');
+    document.body.style.cursor = 'none';
+    let mx = -100, my = -100, cx = -100, cy = -100;
+    const STIFF = 220, DAMP = 26;
+    let v = 0;
+    document.addEventListener('mousemove', function (e) {
+      mx = e.clientX; my = e.clientY;
+      const overArt = !!(e.target.closest && e.target.closest('[data-view]'));
+      cur.textContent = overArt ? 'View' : '';
+      if (!overArt) cur.style.width = '20px', cur.style.height = '20px';
+      else cur.style.width = '64px', cur.style.height = '64px';
+    });
+    (function follow() {
+      const dt = 1 / 60;
+      const k = STIFF, c = 2 * Math.sqrt(k) * (DAMP / 26);
+      v += (k * (mx - cx) - c * v) * dt * 0.06;
+      cx += v * dt * 0.35 + (mx - cx) * 0.18;
+      cy += (my - cy) * 0.28;
+      cur.style.left = cx + 'px';
+      cur.style.top = cy + 'px';
+      requestAnimationFrame(follow);
+    })();
+  }
+
+  // 图片淡入
+  const io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.art').forEach(function (el) { io.observe(el); });
+})();
+</script>
+</body>
+</html>
