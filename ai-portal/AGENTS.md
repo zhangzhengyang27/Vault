@@ -7,7 +7,7 @@
 
 AI 导航 Vault 的前台门户：Next.js 16（App Router）+ React 19 + Tailwind 4，
 开启 React Compiler。同仓库兄弟工程：`../ai-portal-api`（后端）、
-`../ai-portal-admin`（独立管理后台）、`../ai-portal-extension`（Chrome 扩展）。
+`../ai-portal-admin`（独立管理后台）。
 
 ## 常用命令（改动后的最低验证）
 

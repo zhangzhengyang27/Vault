@@ -75,21 +75,15 @@ async function bootstrap() {
   }
 
   // CORS：配置白名单来源（本地开发 + 局域网访问，可通过环境变量覆盖）。
-  // 浏览器扩展（MV3 popup）的 fetch 受 CORS 约束且未授予 host_permissions，
-  // 默认放行 chrome-extension:// 来源读取公开数据；设 CORS_ALLOW_EXTENSION=false 关闭。
   const allowedOrigins = (
     process.env.CORS_ORIGINS ?? "http://localhost:3000,http://127.0.0.1:3000"
   )
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  const allowExtension = process.env.CORS_ALLOW_EXTENSION !== "false";
   app.enableCors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      if (allowExtension && origin.startsWith("chrome-extension://")) {
         return callback(null, true);
       }
       return callback(null, false);

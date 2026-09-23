@@ -12,7 +12,6 @@
 | `ai-portal/.env.production`（构建环境） | `NEXT_PUBLIC_SITE_URL` | `https://vault.zhangzhengyang.com` |
 | `ai-portal/.env.production`（构建环境） | `BACKEND_URL` | `http://127.0.0.1:3001`（单机部署：后端与门户同机） |
 | `ai-portal-admin/.env.production` | `VITE_PORTAL_URL` | `https://vault.zhangzhengyang.com` |
-| `ai-portal-extension/popup/popup.js` | `DEFAULT_API`（默认值，可在弹窗设置面板修改） | 本地 `http://localhost:3001/api`；打包发布/上传商店前改为 `https://vault.zhangzhengyang.com/api` |
 
 注意：门户两项在 **build 时**内联进产物，构建机不是部署机时，构建环境必须带同样
 的值（详见第 2 节）。
@@ -116,16 +115,7 @@ docker run -p 8080:80 \
 反代 + try_files 回退即可。若 API 在独立域名，设置 `VITE_GATEWAY` 并在后端
 `CORS_ORIGINS` 加入管理后台地址。
 
-## 4. 浏览器扩展 ai-portal-extension
-
-1. `popup/popup.js` 顶部 `DEFAULT_API` 常量为默认 API 地址（当前默认本地
-   `http://localhost:3001/api`，可在弹窗设置面板修改并保存，`chrome.storage.sync`）。
-   打包上传商店/分发前把它改为 `https://vault.zhangzhengyang.com/api`
-   （若日后更换域名需同步修改）；
-2. 确认线上 `/api/prompts` 公开可读、后端 CORS 放行 `chrome-extension://`（已默认放行）；
-3. 打包上传商店前，README 权限说明已与 manifest 对齐（MV3，仅 storage/activeTab/scripting）。
-
-## 5. 发布后待办（不阻塞上线）
+## 4. 发布后待办（不阻塞上线）
 
 - 上传文件目前只有 10MB/文件限制、无用户级配额：观察磁盘占用，必要时加每日配额与清理任务；
 - 在线用户/限流/账号锁定均为单实例内存态：**当前按单实例部署，无需处理**；
