@@ -15,6 +15,8 @@ type ApiRoute = {
     rank?: number;
     roles?: Array<string>;
     showLink?: boolean;
+    /** keep-alive 页面缓存：路由名加入 permission store 缓存名单 */
+    keepAlive?: boolean;
     /** iframe 菜单：真实外嵌 URL（由 iframe/index.vue 渲染） */
     iframeLink?: string;
     /** 外链菜单：不注册路由，侧边栏按 name=URL 新窗口打开 */
@@ -31,54 +33,54 @@ const STATIC_ROUTES: Array<ApiRoute> = [
     path: "/welcome",
     name: "Welcome",
     component: "welcome/index",
-    meta: { title: "运营概览", icon: "ep:data-analysis", roles: ADMIN, rank: 1 }
+    meta: { title: "运营概览", icon: "ep:data-analysis", roles: ADMIN, keepAlive: true, rank: 1 }
   },
   {
     path: "/content",
     name: "ContentParent",
-    meta: { title: "内容管理", icon: "ep:notebook", roles: ADMIN, rank: 2 },
+    meta: { title: "内容管理", icon: "ep:notebook", roles: ADMIN, keepAlive: true, rank: 2 },
     children: [
       {
         path: "/content/tools",
         name: "ContentTools",
         component: "content/tools/index",
-        meta: { title: "工具管理", icon: "ep:monitor", roles: ADMIN }
+        meta: { title: "工具管理", icon: "ep:monitor", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/content/prompts",
         name: "ContentPrompts",
         component: "content/prompts/index",
-        meta: { title: "提示词管理", icon: "ep:chat-dot-round", roles: ADMIN }
+        meta: { title: "提示词管理", icon: "ep:chat-dot-round", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/content/articles",
         name: "ContentArticles",
         component: "content/articles/index",
-        meta: { title: "文章管理", icon: "ep:reading", roles: ADMIN }
+        meta: { title: "文章管理", icon: "ep:reading", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/content/news",
         name: "ContentNews",
         component: "content/news/index",
-        meta: { title: "资讯管理", icon: "ep:news", roles: ADMIN }
+        meta: { title: "资讯管理", icon: "ep:news", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/content/mcps",
         name: "ContentMcps",
         component: "content/mcps/index",
-        meta: { title: "MCP 服务", icon: "ep:cpu", roles: ADMIN }
+        meta: { title: "MCP 服务", icon: "ep:cpu", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/content/repos",
         name: "ContentRepos",
         component: "content/repos/index",
-        meta: { title: "开源项目", icon: "ep:link", roles: ADMIN }
+        meta: { title: "开源项目", icon: "ep:link", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/content/resources",
         name: "ContentResources",
         component: "content/resources/index",
-        meta: { title: "学习资源", icon: "ep:collection", roles: ADMIN }
+        meta: { title: "学习资源", icon: "ep:collection", roles: ADMIN, keepAlive: true }
       }
     ]
   },
@@ -86,79 +88,79 @@ const STATIC_ROUTES: Array<ApiRoute> = [
     path: "/review",
     name: "Review",
     component: "review/index",
-    meta: { title: "采集审核", icon: "ep:finished", roles: ADMIN, rank: 3 }
+    meta: { title: "采集审核", icon: "ep:finished", roles: ADMIN, keepAlive: true, rank: 3 }
   },
   {
     path: "/sources",
     name: "Sources",
     component: "crawl-sources/index",
-    meta: { title: "数据源管理", icon: "ep:connection", roles: ADMIN, rank: 4 }
+    meta: { title: "数据源管理", icon: "ep:connection", roles: ADMIN, keepAlive: true, rank: 4 }
   },
   {
     path: "/submissions",
     name: "Submissions",
     component: "submissions/index",
-    meta: { title: "投稿审核", icon: "ep:edit", roles: ADMIN, rank: 5 }
+    meta: { title: "投稿审核", icon: "ep:edit", roles: ADMIN, keepAlive: true, rank: 5 }
   },
   {
     path: "/reports",
     name: "Reports",
     component: "reports/index",
-    meta: { title: "举报管理", icon: "ep:warning-outline", roles: ADMIN, rank: 6 }
+    meta: { title: "举报管理", icon: "ep:warning-outline", roles: ADMIN, keepAlive: true, rank: 6 }
   },
   {
     path: "/users",
     name: "Users",
     component: "users/index",
-    meta: { title: "用户管理", icon: "ep:user", roles: ADMIN, rank: 7 }
+    meta: { title: "用户管理", icon: "ep:user", roles: ADMIN, keepAlive: true, rank: 7 }
   },
   {
     path: "/categories",
     name: "Categories",
     component: "categories/index",
-    meta: { title: "分类管理", icon: "ep:collection", roles: ADMIN, rank: 8 }
+    meta: { title: "分类管理", icon: "ep:collection", roles: ADMIN, keepAlive: true, rank: 8 }
   },
   {
     path: "/community",
     name: "CommunityParent",
-    meta: { title: "社区管理", icon: "ep:chat-line-square", roles: ADMIN, rank: 9 },
+    meta: { title: "社区管理", icon: "ep:chat-line-square", roles: ADMIN, keepAlive: true, rank: 9 },
     children: [
       {
         path: "/community/posts",
         name: "CommunityPosts",
         component: "community/posts/index",
-        meta: { title: "帖子管理", icon: "ep:chat-dot-square", roles: ADMIN }
+        meta: { title: "帖子管理", icon: "ep:chat-dot-square", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/community/comments",
         name: "CommunityComments",
         component: "community/comments/index",
-        meta: { title: "评论管理", icon: "ep:comment", roles: ADMIN }
+        meta: { title: "评论管理", icon: "ep:comment", roles: ADMIN, keepAlive: true }
       }
     ]
   },
   {
     path: "/monitor",
     name: "MonitorParent",
-    meta: { title: "系统监控", icon: "ep:data-line", roles: ADMIN, rank: 10 },
+    meta: { title: "系统监控", icon: "ep:data-line", roles: ADMIN, keepAlive: true, rank: 10 },
     children: [
       {
         path: "/monitor/login-logs",
         name: "MonitorLoginLogs",
         component: "monitor/login-logs/index",
-        meta: { title: "登录日志", icon: "ep:key", roles: ADMIN }
+        meta: { title: "登录日志", icon: "ep:key", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/monitor/oper-logs",
         name: "MonitorOperLogs",
         component: "monitor/oper-logs/index",
-        meta: { title: "操作日志", icon: "ep:tickets", roles: ADMIN }
+        meta: { title: "操作日志", icon: "ep:tickets", roles: ADMIN, keepAlive: true }
       },
       {
         path: "/monitor/online",
         name: "MonitorOnline",
         component: "monitor/online/index",
-        meta: { title: "在线用户", icon: "ep:user-filled", roles: ADMIN }
+        meta: { title: "在线用户", icon: "ep:user-filled", roles: ADMIN, keepAlive: true }
       }
     ]
   }

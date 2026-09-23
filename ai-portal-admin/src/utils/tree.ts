@@ -24,6 +24,8 @@ export function buildHierarchyTree(
     });
   };
 
-  walk(rows, 0);
+  // 根节点 parentId 必须是 null（formatTwoStageRoutes 以 == null 判定根），
+  // 用 0 会被当成子节点，整棵树被拍空导致任何页面都渲染不出来
+  walk(rows, null);
   return rows;
 }

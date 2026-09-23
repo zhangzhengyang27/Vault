@@ -2,12 +2,14 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 import LayNavbar from "@/layout/components/lay-navbar/index.vue";
+import LayTags from "@/layout/components/lay-tags/index.vue";
 import LaySidebarLogo from "@/layout/components/lay-sidebar/components/SidebarLogo.vue";
 import { usePermissionStoreHook } from "@/store/modules/permission";
 import { useAppStoreHook } from "@/store/modules/app";
 import { useNav } from "@/layout/hooks/useNav";
 import { useRenderIcon } from "@/components/ReIcon/hooks";
 import { getConfig } from "@/config";
+import { refreshTick } from "@/utils/refresh-key";
 
 defineOptions({
   name: "Layout"
@@ -19,6 +21,9 @@ const permissionStore = usePermissionStoreHook();
 
 /** 侧边栏菜单树（已按 rank 排序、过滤隐藏项） */
 const menus = computed(() => permissionStore.wholeMenus);
+
+/** keep-alive 缓存名单（页面组件名 = 路由名） */
+const cacheList = computed(() => permissionStore.cachingPageList);
 
 const sidebarOpened = computed(() => pureApp.sidebar.opened);
 
@@ -81,12 +86,18 @@ const activeMenu = computed(() => route.path);
     <!-- 主内容区 -->
     <div class="flex min-w-0 flex-1 flex-col">
       <LayNavbar class="shrink-0" />
+      <LayTags class="shrink-0" />
 
       <el-scrollbar class="min-h-0 flex-1">
         <main class="main-container">
           <router-view>
-            <template #default="{ Component, route }">
-              <component :is="Component" :key="route.path" />
+            <template #default="{ Component, route: viewRoute }">
+              <KeepAlive :include="cacheList">
+                <component
+                  :is="Component"
+                  :key="`${viewRoute.path}:${refreshTick}`"
+                />
+              </KeepAlive>
             </template>
           </router-view>
         </main>
@@ -113,7 +124,7 @@ const activeMenu = computed(() => route.path);
 }
 
 .main-container {
-  min-height: calc(100vh - 56px);
+  min-height: calc(100vh - 94px);
   display: flex;
   flex-direction: column;
   width: 100%;

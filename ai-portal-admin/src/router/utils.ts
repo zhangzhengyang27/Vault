@@ -1,4 +1,4 @@
-import { defineComponent, h, markRaw } from "vue";
+import { defineAsyncComponent, defineComponent, h, markRaw } from "vue";
 import { cloneDeep, isAllEmpty } from "@pureadmin/utils";
 import { type RouteRecordRaw, type RouterHistory, createWebHashHistory, createWebHistory } from "vue-router";
 import { getAsyncRoutes } from "@/api/routes";
@@ -74,14 +74,29 @@ export function findRouteByPath(path: string, routes: Array<any> = []): any {
 }
 
 /**
- * keep-alive 缓存处理（精简实现：本后台未启用页面级缓存渲染，
- * 保留与模板一致的调用签名）。
+ * keep-alive 缓存处理：把页面组件名写入/移出 permission store 的缓存列表。
+ * 顶级叶子路由注册名带 Layout 后缀，include 匹配的是内层页面组件名，需剥掉。
  */
 export function handleAliveRoute(
-  _matched: unknown,
-  _mode: "add" | "delete" | "refresh" = "refresh"
+  route: any,
+  mode: "add" | "delete" | "refresh" = "refresh"
 ): void {
-  /* no-op */
+  const name =
+    typeof route?.name === "string"
+      ? route.name.replace(/Layout$/, "")
+      : undefined;
+  if (!name) return;
+  const permissionStore = usePermissionStoreHook();
+  switch (mode) {
+    case "add":
+      if (route.meta?.keepAlive) permissionStore.cacheOperate("add", name);
+      break;
+    case "delete":
+      permissionStore.cacheOperate("delete", name);
+      break;
+    default:
+      break;
+  }
 }
 
 /** 获取首个可访问的顶级菜单（登录后跳转用） */
@@ -129,10 +144,26 @@ function createContentPage(type: ContentType, routeName?: string) {
   const config = CONTENT_CONFIGS[type];
   return markRaw(
     defineComponent({
-      name: routeName ? `${routeName}Page` : "ContentManagerPage",
+      // name = 路由名：KeepAlive include 与页签缓存按组件名匹配
+      name: routeName || "ContentManagerPage",
       render() {
         return h(ContentManager, { config });
       }
+    })
+  );
+}
+
+/**
+ * 把懒加载视图包一层以路由名命名的同步组件：
+ * KeepAlive include 按组件名匹配，而异步组件在路由解析前拿不到 SFC 内的
+ * defineOptions 名，统一由包装层提供名字。
+ */
+function createNamedPage(routeName: string | undefined, loader: () => Promise<any>) {
+  const Inner = markRaw(defineAsyncComponent(loader));
+  return markRaw(
+    defineComponent({
+      name: routeName || "AnonymousPage",
+      render: () => h(Inner)
     })
   );
 }
@@ -183,12 +214,13 @@ export function addAsyncRoutes(arrRoutes: Array<any>, isTop = true): Array<any> 
         v.component = createContentPage(contentType, v.name);
       } else {
         const loader = resolveViewComponent(key);
-        if (loader) {
-          v.component = loader;
-        } else {
+        if (!loader) {
           console.warn(`[router] 未找到组件「${key}」，已回退到空页面`);
-          v.component = viewModules["../views/empty/index.vue"];
         }
+        v.component = createNamedPage(
+          v.name,
+          loader ?? viewModules["../views/empty/index.vue"]
+        );
       }
 
       // 顶级叶子路由（无 children）包一层 Layout
@@ -204,8 +236,23 @@ export function addAsyncRoutes(arrRoutes: Array<any>, isTop = true): Array<any> 
 function handleAsyncRoutes(routeList: Array<any>): void {
   if (!routeList?.length) return;
   const processed = addAsyncRoutes(cloneDeep(routeList));
-  formatTwoStageRoutes(formatFlatteningRoutes(processed)).forEach(v => {
+  // 预注册 keep-alive 缓存名单（include 按页面组件名 = 路由名匹配）
+  registerKeepAlive(processed);
+  // formatFlatteningRoutes 依赖 buildHierarchyTree 填充的 parentId
+  // 判定父子层级，漏掉它会把所有 children 拍空（页面永远渲染不出来）
+  formatTwoStageRoutes(formatFlatteningRoutes(buildHierarchyTree(processed))).forEach(v => {
     router.addRoute(v as RouteRecordRaw);
+  });
+}
+
+/** 递归把 meta.keepAlive 的叶子路由组件名加入缓存列表 */
+function registerKeepAlive(routes: Array<any>): void {
+  routes.forEach(v => {
+    if (Array.isArray(v.children) && v.children.length) {
+      registerKeepAlive(v.children);
+    } else if (v.meta?.keepAlive && typeof v.name === "string") {
+      usePermissionStoreHook().cacheOperate("add", v.name);
+    }
   });
 }
 
