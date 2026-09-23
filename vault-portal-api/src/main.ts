@@ -106,7 +106,13 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   // 全局序列化：配合实体上的 @Exclude 剔除敏感字段（如 passwordHash）
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.useStaticAssets(join(process.cwd(), "uploads"), { prefix: "/uploads/" });
+  // 上传文件名含时间戳+随机串、内容永不变化，下发强缓存：
+  // 用户二次访问直接走本地缓存，公网链路（frp 中继）下收益明显
+  app.useStaticAssets(join(process.cwd(), "uploads"), {
+    prefix: "/uploads/",
+    maxAge: "365d",
+    immutable: true,
+  });
 
   // 优雅停机：等待连接关闭
   app.enableShutdownHooks();

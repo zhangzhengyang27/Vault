@@ -75,10 +75,12 @@ export const CONTENT_CONFIGS: Record<ContentType, ContentTypeConfig> = {
     type: "prompts",
     title: "提示词管理",
     description: "维护提示词库：提示词正文、适用场景与分类标签。",
-    titleField: "name",
+    // prompt 实体的标题字段是 title（tools/mcps/repos 才是 name），此前误绑 name
+    // 导致列表名称列全空、新建/编辑提交错字段
+    titleField: "title",
     detailPath: "/prompts/",
     fields: [
-      { key: "name", label: "名称", type: "text", required: true },
+      { key: "title", label: "名称", type: "text", required: true },
       { key: "slug", label: "Slug", type: "text", placeholder: "留空自动生成" },
       CATEGORY_FIELD,
       { key: "description", label: "适用场景", type: "textarea", full: true, placeholder: "说明该提示词的用途与适用场景" },
