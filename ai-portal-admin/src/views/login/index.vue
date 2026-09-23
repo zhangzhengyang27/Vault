@@ -11,7 +11,6 @@ import { useUserStoreHook } from "@/store/modules/user";
 import { initRouter, getTopMenu } from "@/router/utils";
 import { bg, illustration } from "./utils/static";
 import { ref, toRaw, reactive, watch } from "vue";
-import { useRenderIcon } from "@/components/ReIcon/hooks";
 import { useDataThemeChange } from "@/layout/hooks/useDataThemeChange";
 
 import dayIcon from "@/assets/svg/day.svg?component";

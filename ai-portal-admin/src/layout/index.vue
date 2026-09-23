@@ -5,7 +5,6 @@ import LayNavbar from "@/layout/components/lay-navbar/index.vue";
 import LayTags from "@/layout/components/lay-tags/index.vue";
 import LaySidebarLogo from "@/layout/components/lay-sidebar/components/SidebarLogo.vue";
 import { usePermissionStoreHook } from "@/store/modules/permission";
-import { useAppStoreHook } from "@/store/modules/app";
 import { useNav } from "@/layout/hooks/useNav";
 import { useRenderIcon } from "@/components/ReIcon/hooks";
 import { getConfig } from "@/config";

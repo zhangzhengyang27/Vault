@@ -250,7 +250,7 @@ onMounted(async () => {
     </div>
 
     <!-- 统计卡片 -->
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-3" v-loading="loading">
+    <div v-loading="loading" class="grid grid-cols-2 gap-4 md:grid-cols-3">
       <el-card
         v-for="c in cards"
         :key="c.label"
@@ -304,7 +304,7 @@ onMounted(async () => {
           <template #header>
             <span class="font-medium">审核待办</span>
           </template>
-          <div class="space-y-4" v-loading="loading">
+          <div v-loading="loading" class="space-y-4">
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
                 <div
@@ -340,7 +340,7 @@ onMounted(async () => {
           <template #header>
             <span class="font-medium">系统状态</span>
           </template>
-          <div class="space-y-4" v-loading="loading">
+          <div v-loading="loading" class="space-y-4">
             <div
               class="cursor-pointer! flex items-center justify-between"
               @click="router.push('/monitor/online')"

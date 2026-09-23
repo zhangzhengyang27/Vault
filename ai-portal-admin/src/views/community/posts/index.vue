@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount, watch } from "vue";
+import { ref, onMounted, onBeforeUnmount, watch } from "vue";
 import { Search } from "@element-plus/icons-vue";
 import { message } from "@/utils/message";
 import { ElMessageBox } from "element-plus";

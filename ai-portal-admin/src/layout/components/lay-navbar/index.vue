@@ -32,7 +32,7 @@ const {
       v-if="device === 'mobile'"
       class="hamburger-container"
       :is-active="pureApp.sidebar.opened"
-      @toggleClick="toggleSideBar"
+      @toggle-click="toggleSideBar"
     />
 
     <LaySidebarBreadCrumb
