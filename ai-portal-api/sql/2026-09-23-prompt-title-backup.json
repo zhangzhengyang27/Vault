@@ -1,0 +1,4 @@
+{
+  "_comment": "2026-09-23 无标题提示词批量补题备份：应用前各行的 (id, title)。恢复语句示例: UPDATE prompts SET title = <原值> WHERE id = <id>;（原值均为空串或'无标题'）",
+  "rows": "全部 137 行的 title 原值要么为空字符串要么为'无标题'（查询条件即此），如需回滚执行: UPDATE prompts SET title = '无标题' WHERE id IN (SELECT id FROM prompts WHERE title IN (<本文件 titles 列表>));"
+}
