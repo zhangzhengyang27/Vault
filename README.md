@@ -7,9 +7,9 @@
 
 | 目录 | 说明 | 技术栈 | 默认端口 |
 | --- | --- | --- | --- |
-| `ai-portal/` | 前台门户（含早期内嵌后台 `/admin`） | Next.js 16 (App Router) / React 19 / Tailwind 4 | 3000 |
-| `ai-portal-api/` | 后端 API（认证/内容/采集/审核/通知） | NestJS 11 / TypeORM / PostgreSQL | 3001 |
-| `ai-portal-admin/` | 独立管理后台（自前台拆出，独立部署） | Vue 3 / Element Plus / Vite | 5173 |
+| `vault-portal/` | 前台门户（含早期内嵌后台 `/admin`） | Next.js 16 (App Router) / React 19 / Tailwind 4 | 3000 |
+| `vault-portal-api/` | 后端 API（认证/内容/采集/审核/通知） | NestJS 11 / TypeORM / PostgreSQL | 3001 |
+| `vault-portal-admin/` | 独立管理后台（自前台拆出，独立部署） | Vue 3 / Element Plus / Vite | 5173 |
 
 前端通过 `next.config.ts` 的 rewrites 将 `/api/*`、`/uploads/*` 代理到后端，
 前后端同源，会话依赖 HttpOnly cookie（无 token 暴露在 JS 侧）。
@@ -17,8 +17,8 @@
 ## 快速开始
 
 ```bash
-# 1. 后端（需要 PostgreSQL 13+，先复制 ai-portal-api/.env.example 为 .env 并填写）
-cd ai-portal-api
+# 1. 后端（需要 PostgreSQL 13+，先复制 vault-portal-api/.env.example 为 .env 并填写）
+cd vault-portal-api
 pnpm install
 pnpm migration:run        # 执行数据库迁移
 pnpm start:dev            # http://localhost:3001/api
@@ -26,13 +26,13 @@ pnpm start:dev            # http://localhost:3001/api
 # 创建管理员（或配置 ADMIN_USERNAME/ADMIN_PASSWORD 由启动引导创建）
 pnpm cli:create-admin --username=admin --password=你的密码
 
-# 2. 前端（先复制 ai-portal/.env.example 为 .env.local，可全部使用默认值）
-cd ai-portal
+# 2. 前端（先复制 vault-portal/.env.example 为 .env.local，可全部使用默认值）
+cd vault-portal
 pnpm install
 pnpm dev                  # http://localhost:3000
 
 # 3. 独立管理后台（可选，需后端已启动）
-cd ai-portal-admin
+cd vault-portal-admin
 pnpm install              # 需 pnpm 10.23.0（corepack pnpm@10.23.0 install）
 pnpm dev                  # http://localhost:5173
 ```

@@ -18,19 +18,19 @@ build/
 # Database
 *.sql
 # 版库化的迁移 SQL 需要保留（此前 !migrations/*.sql 只匹配仓库根目录，
-# ai-portal-api/migrations/ 下的迁移文件会被静默忽略）
+# vault-portal-api/migrations/ 下的迁移文件会被静默忽略）
 !**/migrations/*.sql
 # 人工数据迁移留档同样保留
 !**/sql/*.sql
 # 全量基线 dump（结构+种子数据+migrations 记录），DEPLOYMENT.md 的从零建库入口
-!ai-portal-api/ai_portal_dump.sql
+!vault-portal-api/ai_portal_dump.sql
 
 # Uploads
 uploads/
 # 提示词示例图必须版本化：2026-09 该目录曾因只存在于本机磁盘而丢失 166 张
 # （线上/NAS/备份全没有），后从 ~/Downloads/AI 生图 找回 105 张。
 # 目录被重新包含后其中的文件也会入库；新增上传的图片随之自动受版本控制
-!ai-portal-api/uploads/
+!vault-portal-api/uploads/
 
 # IDE
 .vscode/
@@ -61,8 +61,8 @@ pnpm-debug.log*
 # Playwright MCP screenshots
 .playwright-mcp/
 
-# ai-portal-admin：build/ 目录是 vite 构建配置源码，不能被根级 build/ 规则误伤
-!ai-portal-admin/build/
+# vault-portal-admin：build/ 目录是 vite 构建配置源码，不能被根级 build/ 规则误伤
+!vault-portal-admin/build/
 
 # 业务/规划文档：仅本地保留，不入版本库、不上 GitHub
 /AI综合门户建站方案文档.md

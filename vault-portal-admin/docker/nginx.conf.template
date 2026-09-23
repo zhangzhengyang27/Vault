@@ -1,0 +1,60 @@
+# 管理后台 nginx 配置（模板变量 ${API_UPSTREAM} 由容器环境变量注入）
+#
+# 部署要求：
+#   docker run -p 8080:80 -e API_UPSTREAM=http://api:3001 vault-portal-admin
+# 默认 API_UPSTREAM=http://host.docker.internal:3001（Docker Desktop 可直连宿主机）。
+# 若改用独立 API 域名 + VITE_GATEWAY，可删除下面的反代 location。
+
+server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # VITE_COMPRESSION 产物优先（.gz）；无预压缩文件时回落动态 gzip
+    gzip_static on;
+    gzip on;
+    gzip_comp_level 5;
+    gzip_types text/plain text/css application/javascript application/json image/svg+xml;
+
+    # 不对外发布 sourcemap / 隐藏文件
+    location ~* \.map$ {
+        return 404;
+    }
+    location ~ /\. {
+        deny all;
+    }
+
+    # 带缓存的静态资源
+    location /assets/ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+
+    # API 网关（不保留 URI 前缀：后端本身就是 /api、/uploads 路径）
+    location /api/ {
+        proxy_pass ${API_UPSTREAM};
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_read_timeout 120s;
+        # 上传接口允许 10MB 文件，留出余量
+        client_max_body_size 20m;
+    }
+
+    location /uploads/ {
+        proxy_pass ${API_UPSTREAM};
+        proxy_set_header Host $host;
+        expires 7d;
+        add_header Cache-Control "public";
+    }
+
+    # history 路由 SPA 回退：刷新/直达任意路径均回落 index.html
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}

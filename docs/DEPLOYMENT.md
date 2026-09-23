@@ -9,14 +9,14 @@
 
 | 位置 | 变量 | 当前值 |
 |---|---|---|
-| `ai-portal/.env.production`（构建环境） | `NEXT_PUBLIC_SITE_URL` | `https://vault.zhangzhengyang.com` |
-| `ai-portal/.env.production`（构建环境） | `BACKEND_URL` | `http://127.0.0.1:3001`（单机部署：后端与门户同机） |
-| `ai-portal-admin/.env.production` | `VITE_PORTAL_URL` | `https://vault.zhangzhengyang.com` |
+| `vault-portal/.env.production`（构建环境） | `NEXT_PUBLIC_SITE_URL` | `https://vault.zhangzhengyang.com` |
+| `vault-portal/.env.production`（构建环境） | `BACKEND_URL` | `http://127.0.0.1:3001`（单机部署：后端与门户同机） |
+| `vault-portal-admin/.env.production` | `VITE_PORTAL_URL` | `https://vault.zhangzhengyang.com` |
 
 注意：门户两项在 **build 时**内联进产物，构建机不是部署机时，构建环境必须带同样
 的值（详见第 2 节）。
 
-## 1. 后端 ai-portal-api
+## 1. 后端 vault-portal-api
 
 ### 环境变量（生产必填）
 
@@ -65,13 +65,13 @@ pnpm build
 node --enable-source-maps dist/src/main.js   # 用进程管理器（pmi/systemd）托管
 ```
 
-## 2. 门户 ai-portal（Next.js）
+## 2. 门户 vault-portal（Next.js）
 
 ### ⚠️ 构建期内联的环境变量
 
 `NEXT_PUBLIC_SITE_URL`（源码引用）与 `next.config.ts` 的 `BACKEND_URL`（rewrites）
 都在 **build 时**烘焙进产物——运行时改环境变量无效，改配置必须重新 build。
-两项已写入 `ai-portal/.env.production`（单机部署：门户与后端同机，`BACKEND_URL` 指向
+两项已写入 `vault-portal/.env.production`（单机部署：门户与后端同机，`BACKEND_URL` 指向
 本机 3001）。直接在部署机上构建即可：
 
 ```bash
@@ -87,7 +87,7 @@ pnpm build    # 自动读取 .env.production；如需覆盖可在命令行显式
   HSTS 建议在边缘/负载均衡层开启；
 - `/login`、`/register` 已 noindex；社区帖子详情页 metadata 由 layout 服务端生成。
 
-## 3. 管理后台 ai-portal-admin
+## 3. 管理后台 vault-portal-admin
 
 ### 构建
 
@@ -97,12 +97,12 @@ pnpm build    # 自动读取 .env.production；如需覆盖可在命令行显式
 ### 部署（Docker，推荐）
 
 ```bash
-docker build -t ai-portal-admin .
+docker build -t vault-portal-admin .
 # Linux 宿主机：
 docker run -p 8080:80 \
   --add-host=host.docker.internal:host-gateway \
   -e API_UPSTREAM=http://host.docker.internal:3001 \
-  ai-portal-admin
+  vault-portal-admin
 ```
 
 镜像内 nginx 已包含（`docker/nginx.conf.template`）：
