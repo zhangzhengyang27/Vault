@@ -4,16 +4,12 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
-  Eye,
   Pencil,
   PenLine,
   Copy,
   Check,
   Sparkles,
   ExternalLink,
-  Calendar,
-  User,
-  Hash,
 } from "lucide-react";
 import PhaseBadge from "@/components/PhaseBadge";
 import FavoriteButton from "@/components/FavoriteButton";
@@ -261,23 +257,6 @@ export default function PromptDetailPage() {
           </div>
         </div>
 
-        {/* 元信息行 */}
-        <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-zinc-100 pt-5 text-[13px] text-zinc-400 dark:border-zinc-800 dark:text-zinc-500">
-          <span className="flex items-center gap-1">
-            <User size={13} /> @{prompt.author}
-          </span>
-          <span className="flex items-center gap-1">
-            <Eye size={13} /> {(prompt.uses ?? 0).toLocaleString()} 次使用
-          </span>
-          <span className="flex items-center gap-1">
-            <Calendar size={13} /> 适用模型：{prompt.modelHint ?? "通用"}
-          </span>
-          {optPositive && (
-            <span className="flex items-center gap-1">
-              <Hash size={13} /> {optPositive.length.toLocaleString()} 字符
-            </span>
-          )}
-        </div>
       </div>
 
       {/* 提示词正文 */}
