@@ -221,6 +221,15 @@ export default function PromptDetailPage() {
       .find((u): u is string => !!u) ?? fallbackDemo;
   const title = prompt.title.trim() || "无标题";
 
+  // 面包屑父级按子站归属返回（与导航栏下拉的三个子站一致）：
+  // 通用 → /prompts；precise 带图片附件 → 图片画廊；precise 纯文字 → 网页生成
+  const parentCrumb =
+    prompt.kind === "general"
+      ? { label: "通用提示词", href: "/prompts" }
+      : (prompt.attachments ?? []).some((a) => a.type === "image")
+        ? { label: "图片画廊", href: "/prompts/precise" }
+        : { label: "网页生成", href: "/prompts/text" };
+
   const main = (
     <>
       {/* 主信息卡：参考站文章式详情（渐变圆标 + 标题 + 简介 + 标签药丸） */}
@@ -428,10 +437,7 @@ export default function PromptDetailPage() {
     <>
       <HistoryTracker type="prompt" slug={prompt.slug} title={prompt.title} path={`/prompts/${prompt.slug}`} />
       <DetailLayout
-        breadcrumb={[
-          { label: "AI 提示词", href: "/prompts" },
-          { label: title },
-        ]}
+        breadcrumb={[parentCrumb, { label: title }]}
         main={main}
         sidebar={sidebar}
       />
