@@ -1,13 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { Article } from '../../entities/article.entity';
-import { News } from '../../entities/news.entity';
-import { User } from '../../entities/user.entity';
-import { Post } from '../../entities/post.entity';
-import { Submission } from '../../entities/submission.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, Repository } from "typeorm";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { Article } from "../../entities/article.entity";
+import { News } from "../../entities/news.entity";
+import { User } from "../../entities/user.entity";
+import { Post } from "../../entities/post.entity";
+import { Submission } from "../../entities/submission.entity";
 
 @Injectable()
 export class AdminService {
@@ -39,7 +39,7 @@ export class AdminService {
         this.news.count(),
         this.users.count(),
         this.posts.count(),
-        this.submissions.count({ where: { status: 'pending' } }),
+        this.submissions.count({ where: { status: "pending" } }),
       ]);
 
     const pendingContent = await this.countPendingContent();
@@ -88,25 +88,25 @@ export class AdminService {
     const countByDay = async (repo: Repository<any>, alias: string) => {
       const rows = await repo
         .createQueryBuilder(alias)
-        .select(`to_char(${alias}.created_at, 'YYYY-MM-DD')`, 'd')
-        .addSelect('COUNT(*)', 'c')
+        .select(`to_char(${alias}.created_at, 'YYYY-MM-DD')`, "d")
+        .addSelect("COUNT(*)", "c")
         .where(
           `${alias}.created_at >= date_trunc('day', now()) - make_interval(days => :span)`,
           { span: safeDays - 1 },
         )
-        .groupBy('d')
+        .groupBy("d")
         .getRawMany();
       return rows as { d: string; c: string }[];
     };
 
     const [contentRows, userRows] = await Promise.all([
       Promise.all([
-        countByDay(this.tools, 't'),
-        countByDay(this.prompts, 'p'),
-        countByDay(this.articles, 'a'),
-        countByDay(this.news, 'n'),
+        countByDay(this.tools, "t"),
+        countByDay(this.prompts, "p"),
+        countByDay(this.articles, "a"),
+        countByDay(this.news, "n"),
       ]),
-      countByDay(this.users, 'u'),
+      countByDay(this.users, "u"),
     ]);
 
     for (const tableRows of contentRows) {
@@ -123,7 +123,7 @@ export class AdminService {
 
   private async countPendingContent(): Promise<number> {
     const count = async (repo: Repository<any>) =>
-      repo.count({ where: { status: 'pending' } });
+      repo.count({ where: { status: "pending" } });
     const [t, p, a, n] = await Promise.all([
       count(this.tools),
       count(this.prompts),

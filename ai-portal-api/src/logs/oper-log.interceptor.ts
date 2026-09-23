@@ -4,10 +4,10 @@ import {
   Injectable,
   Logger,
   NestInterceptor,
-} from '@nestjs/common';
-import { Observable, tap } from 'rxjs';
-import type { Response } from 'express';
-import { OperLogService } from './oper-log.service';
+} from "@nestjs/common";
+import { Observable, tap } from "rxjs";
+import type { Response } from "express";
+import { OperLogService } from "./oper-log.service";
 
 /**
  * 操作日志拦截器：记录管理端的变更类请求（POST/PATCH/PUT/DELETE），
@@ -21,7 +21,7 @@ export class OperLogInterceptor implements NestInterceptor {
   constructor(private readonly operLogs: OperLogService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    if (context.getType() !== 'http') return next.handle();
+    if (context.getType() !== "http") return next.handle();
 
     const http = context.switchToHttp();
     const req = http.getRequest<{
@@ -36,7 +36,7 @@ export class OperLogInterceptor implements NestInterceptor {
       headers: Record<string, string | string[] | undefined>;
     }>();
 
-    if (!['POST', 'PATCH', 'PUT', 'DELETE'].includes(req.method)) {
+    if (!["POST", "PATCH", "PUT", "DELETE"].includes(req.method)) {
       return next.handle();
     }
 
@@ -74,16 +74,16 @@ export class OperLogInterceptor implements NestInterceptor {
     start: number,
     error?: string,
   ): Promise<void> {
-    const path = (req.originalUrl ?? req.path ?? '').split('?')[0];
+    const path = (req.originalUrl ?? req.path ?? "").split("?")[0];
     try {
       await this.operLogs.write({
         userId: req.user?.id ?? null,
-        username: req.user?.username ?? 'anonymous',
+        username: req.user?.username ?? "anonymous",
         method: req.method,
         path,
         statusCode,
         ip: req.ip,
-        userAgent: req.headers?.['user-agent'] as string,
+        userAgent: req.headers?.["user-agent"] as string,
         durationMs: Date.now() - start,
         body: error !== undefined ? { error } : req.body,
       });

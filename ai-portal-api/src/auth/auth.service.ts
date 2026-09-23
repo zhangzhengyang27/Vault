@@ -3,17 +3,17 @@ import {
   HttpException,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-import { createHash, randomUUID } from 'crypto';
-import * as bcrypt from 'bcryptjs';
-import { User } from '../entities/user.entity';
-import { RefreshToken } from '../entities/refresh-token.entity';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { OnlineUserService } from './online-user.service';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { JwtService } from "@nestjs/jwt";
+import { Repository } from "typeorm";
+import { createHash, randomUUID } from "crypto";
+import * as bcrypt from "bcryptjs";
+import { User } from "../entities/user.entity";
+import { RefreshToken } from "../entities/refresh-token.entity";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+import { OnlineUserService } from "./online-user.service";
 
 /** refresh token 有效期（毫秒），与签发 expiresIn '30d' 一致 */
 const REFRESH_TTL_MS = 30 * 24 * 60 * 60 * 1000;
@@ -49,12 +49,12 @@ export class AuthService {
         sub: user.id,
         username: user.username,
         role: user.role,
-        typ: 'refresh',
+        typ: "refresh",
         // jti 保证同一秒内多次签发 token 仍唯一（iat 只有秒级精度，
         // 否则相同载荷会产出相同 token，撞 refresh_tokens.token_hash 唯一约束）
         jti: randomUUID(),
       },
-      { expiresIn: '30d' },
+      { expiresIn: "30d" },
     );
     await this.refreshTokens.save(
       this.refreshTokens.create({
@@ -68,13 +68,13 @@ export class AuthService {
 
   /** 只存哈希：数据库泄露无法还原 token */
   private hashToken(token: string) {
-    return createHash('sha256').update(token).digest('hex');
+    return createHash("sha256").update(token).digest("hex");
   }
 
   /** access token 有效期（秒）：与 JWT 全局 expiresIn '7d' / cookie maxAge 一致 */
   readonly accessExpiresIn = 7 * 24 * 60 * 60;
 
-  private sanitize(user: User): Omit<User, 'passwordHash'> {
+  private sanitize(user: User): Omit<User, "passwordHash"> {
     const { passwordHash, ...rest } = user;
     void passwordHash; // 显式忽略，避免未使用告警
     return rest;
@@ -96,7 +96,7 @@ export class AuthService {
     );
     if (recent.length >= AuthService.LOGIN_MAX_FAILURES) {
       throw new HttpException(
-        '登录失败次数过多，该账号已被临时锁定，请 15 分钟后再试',
+        "登录失败次数过多，该账号已被临时锁定，请 15 分钟后再试",
         429,
       );
     }
@@ -121,7 +121,7 @@ export class AuthService {
       where: { username: dto.username },
     });
     if (exists) {
-      throw new ConflictException('用户名已存在');
+      throw new ConflictException("用户名已存在");
     }
 
     const passwordHash = await bcrypt.hash(dto.password, 10);
@@ -145,16 +145,16 @@ export class AuthService {
     });
     if (!user || !user.passwordHash) {
       this.recordLoginFailure(dto.username);
-      throw new UnauthorizedException('用户名或密码错误');
+      throw new UnauthorizedException("用户名或密码错误");
     }
 
     const valid = await bcrypt.compare(dto.password, user.passwordHash);
     if (!valid) {
       this.recordLoginFailure(dto.username);
-      throw new UnauthorizedException('用户名或密码错误');
+      throw new UnauthorizedException("用户名或密码错误");
     }
-    if (user.status === 'banned') {
-      throw new UnauthorizedException('账号已被封禁，请联系管理员');
+    if (user.status === "banned") {
+      throw new UnauthorizedException("账号已被封禁，请联系管理员");
     }
 
     // 重新登录解除此前的强制下线标记
@@ -179,11 +179,11 @@ export class AuthService {
     const userId = payload.sub;
 
     if (this.onlineUsers.isRevoked(userId)) {
-      throw new UnauthorizedException('登录状态已失效，请重新登录');
+      throw new UnauthorizedException("登录状态已失效，请重新登录");
     }
     const user = await this.users.findOne({ where: { id: userId } });
-    if (!user || user.status === 'banned') {
-      throw new UnauthorizedException('账号不存在或已被封禁');
+    if (!user || user.status === "banned") {
+      throw new UnauthorizedException("账号不存在或已被封禁");
     }
 
     const row = await this.refreshTokens.findOne({
@@ -191,15 +191,15 @@ export class AuthService {
     });
     if (!row) {
       // 该功能上线前签发的旧 refresh token 无库记录，一律要求重新登录
-      throw new UnauthorizedException('refresh token 已失效，请重新登录');
+      throw new UnauthorizedException("refresh token 已失效，请重新登录");
     }
     if (row.revokedAt) {
       // 已轮换/已撤销的 token 再次使用：视为泄露，撤销该用户全部会话
       await this.revokeAllForUser(userId);
-      throw new UnauthorizedException('refresh token 已失效，请重新登录');
+      throw new UnauthorizedException("refresh token 已失效，请重新登录");
     }
     if (row.expiresAt.getTime() < Date.now()) {
-      throw new UnauthorizedException('refresh token 已过期，请重新登录');
+      throw new UnauthorizedException("refresh token 已过期，请重新登录");
     }
 
     // 轮换：旧 token 作废，签发新 refresh token（前端需保存返回的 refresh_token）
@@ -216,7 +216,7 @@ export class AuthService {
       .createQueryBuilder()
       .update(RefreshToken)
       .set({ revokedAt: new Date() })
-      .where('user_id = :userId AND revoked_at IS NULL', { userId })
+      .where("user_id = :userId AND revoked_at IS NULL", { userId })
       .execute();
   }
 
@@ -228,14 +228,14 @@ export class AuthService {
   ) {
     const user = await this.users.findOne({ where: { id: userId } });
     if (!user || !user.passwordHash) {
-      throw new UnauthorizedException('账号不存在');
+      throw new UnauthorizedException("账号不存在");
     }
     const valid = await bcrypt.compare(oldPassword, user.passwordHash);
     if (!valid) {
-      throw new UnauthorizedException('原密码错误');
+      throw new UnauthorizedException("原密码错误");
     }
-    if (user.status === 'banned') {
-      throw new UnauthorizedException('账号已被封禁，无法修改密码');
+    if (user.status === "banned") {
+      throw new UnauthorizedException("账号已被封禁，无法修改密码");
     }
     user.passwordHash = await bcrypt.hash(newPassword, 10);
     await this.users.save(user);
@@ -257,14 +257,14 @@ export class AuthService {
   ) {
     const user = await this.users.findOne({ where: { id: userId } });
     if (!user) {
-      throw new UnauthorizedException('账号不存在');
+      throw new UnauthorizedException("账号不存在");
     }
     if (profile.email !== undefined) {
-      const email = profile.email === '' ? null : (profile.email ?? null);
+      const email = profile.email === "" ? null : (profile.email ?? null);
       if (email) {
         const exists = await this.users.findOne({ where: { email } });
         if (exists && exists.id !== userId) {
-          throw new ConflictException('该邮箱已被其他账号使用');
+          throw new ConflictException("该邮箱已被其他账号使用");
         }
       }
       user.email = email;
@@ -309,18 +309,18 @@ export class AuthService {
     try {
       payload = await this.jwtService.verifyAsync(token);
     } catch {
-      throw new UnauthorizedException('refresh token 无效或已过期');
+      throw new UnauthorizedException("refresh token 无效或已过期");
     }
-    if (payload.typ !== 'refresh') {
-      throw new UnauthorizedException('refresh token 无效');
+    if (payload.typ !== "refresh") {
+      throw new UnauthorizedException("refresh token 无效");
     }
     return payload;
   }
 
   async me(userId: number) {
     const user = await this.users.findOne({ where: { id: userId } });
-    if (!user || user.status === 'banned') {
-      throw new UnauthorizedException('账号不存在或已被封禁');
+    if (!user || user.status === "banned") {
+      throw new UnauthorizedException("账号不存在或已被封禁");
     }
     // JWT 已由 HttpOnly cookie 携带，这里只返回用户信息（不再回传 token）
     return this.sanitize(user);

@@ -5,8 +5,8 @@ import {
   HttpException,
   HttpStatus,
   Logger,
-} from '@nestjs/common';
-import type { Request, Response } from 'express';
+} from "@nestjs/common";
+import type { Request, Response } from "express";
 
 /**
  * 全局异常过滤器：统一错误响应格式，避免生产环境泄露堆栈信息。
@@ -27,13 +27,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status = exception.getStatus();
       const res = exception.getResponse();
       message =
-        typeof res === 'string'
+        typeof res === "string"
           ? res
           : ((res as { message?: string | string[] }).message ??
             exception.message);
     } else {
       status = HttpStatus.INTERNAL_SERVER_ERROR;
-      message = '服务器内部错误';
+      message = "服务器内部错误";
       // 非 HttpException 记录完整错误日志，便于排查
       this.logger.error(
         `Unhandled exception on ${request.method} ${request.url}`,

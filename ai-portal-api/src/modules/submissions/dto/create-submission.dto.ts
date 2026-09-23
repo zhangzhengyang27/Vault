@@ -5,11 +5,11 @@ import {
   IsUrl,
   MaxLength,
   MinLength,
-} from 'class-validator';
+} from "class-validator";
 
 export class CreateSubmissionDto {
-  @IsIn(['tool', 'prompt', 'resource', 'news', 'mcp'])
-  type: 'tool' | 'prompt' | 'resource' | 'news' | 'mcp';
+  @IsIn(["tool", "prompt", "resource", "news", "mcp"])
+  type: "tool" | "prompt" | "resource" | "news" | "mcp";
 
   @IsString()
   @MinLength(2)

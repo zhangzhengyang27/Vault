@@ -1,8 +1,8 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import * as bcrypt from 'bcryptjs';
-import { User } from '../../entities/user.entity';
+import { Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import * as bcrypt from "bcryptjs";
+import { User } from "../../entities/user.entity";
 
 /**
  * 管理员账号引导：
@@ -27,22 +27,22 @@ export class AdminBootstrapService implements OnApplicationBootstrap {
     }
     if (!username || !password) {
       this.logger.warn(
-        'ADMIN_USERNAME 与 ADMIN_PASSWORD 需同时配置才会创建管理员账号',
+        "ADMIN_USERNAME 与 ADMIN_PASSWORD 需同时配置才会创建管理员账号",
       );
       return;
     }
     // 与 CLI create-admin 一致的最小强度校验，防止配置失误产生弱口令管理员
     if (password.length < 6) {
       this.logger.error(
-        'ADMIN_PASSWORD 至少需要 6 位，已跳过管理员引导创建。请修改环境变量后重启。',
+        "ADMIN_PASSWORD 至少需要 6 位，已跳过管理员引导创建。请修改环境变量后重启。",
       );
       return;
     }
 
     const exists = await this.users.findOne({ where: { username } });
     if (exists) {
-      if (exists.role !== 'admin') {
-        exists.role = 'admin';
+      if (exists.role !== "admin") {
+        exists.role = "admin";
         await this.users.save(exists);
         this.logger.warn(`已把用户「${username}」提升为管理员`);
       }
@@ -55,8 +55,8 @@ export class AdminBootstrapService implements OnApplicationBootstrap {
         username,
         email: process.env.ADMIN_EMAIL?.trim() || null,
         passwordHash,
-        role: 'admin',
-        status: 'active',
+        role: "admin",
+        status: "active",
       }),
     );
     this.logger.log(`已创建管理员账号：${username}`);

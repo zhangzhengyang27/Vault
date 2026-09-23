@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { LoginLog } from '../entities/login-log.entity';
+import { Injectable, Logger } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { LoginLog } from "../entities/login-log.entity";
 
 export interface LoginLogInput {
   userId: number | null;
@@ -31,7 +31,7 @@ export class LoginLogService {
         success: input.success,
         message: input.message ?? null,
         ip: input.ip ?? null,
-        userAgent: (input.userAgent ?? '').slice(0, 500) || null,
+        userAgent: (input.userAgent ?? "").slice(0, 500) || null,
       });
     } catch (e) {
       this.logger.warn(
@@ -46,16 +46,16 @@ export class LoginLogService {
     username?: string;
     success?: boolean;
   }): Promise<{ items: LoginLog[]; total: number }> {
-    const qb = this.repo.createQueryBuilder('log');
+    const qb = this.repo.createQueryBuilder("log");
     if (params.username) {
-      qb.andWhere('log.username ILIKE :username', {
+      qb.andWhere("log.username ILIKE :username", {
         username: `%${params.username}%`,
       });
     }
     if (params.success !== undefined) {
-      qb.andWhere('log.success = :success', { success: params.success });
+      qb.andWhere("log.success = :success", { success: params.success });
     }
-    qb.orderBy('log.createdAt', 'DESC')
+    qb.orderBy("log.createdAt", "DESC")
       .skip((params.page - 1) * params.limit)
       .take(params.limit);
     const [items, total] = await qb.getManyAndCount();

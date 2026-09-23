@@ -1,19 +1,19 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { User } from '../../entities/user.entity';
-import { Submission } from '../../entities/submission.entity';
-import { Comment } from '../../entities/comment.entity';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { Article } from '../../entities/article.entity';
-import { News } from '../../entities/news.entity';
-import { Repo } from '../../entities/repo.entity';
-import { Resource } from '../../entities/resource.entity';
-import { Mcp } from '../../entities/mcp.entity';
-import { Post } from '../../entities/post.entity';
-import { Follow } from '../../entities/follow.entity';
-import { clampInt } from '../posts/posts.service';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { User } from "../../entities/user.entity";
+import { Submission } from "../../entities/submission.entity";
+import { Comment } from "../../entities/comment.entity";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { Article } from "../../entities/article.entity";
+import { News } from "../../entities/news.entity";
+import { Repo } from "../../entities/repo.entity";
+import { Resource } from "../../entities/resource.entity";
+import { Mcp } from "../../entities/mcp.entity";
+import { Post } from "../../entities/post.entity";
+import { Follow } from "../../entities/follow.entity";
+import { clampInt } from "../posts/posts.service";
 
 @Injectable()
 export class UsersService {
@@ -78,20 +78,20 @@ export class UsersService {
   async suggested(meId?: number, limit = 5) {
     const safeLimit = clampInt(limit, 5, 20);
     const qb = this.userRepo
-      .createQueryBuilder('user')
-      .leftJoin('follows', 'f', 'f.following_id = user.id')
-      .addSelect('COUNT(f.id)', 'followers')
-      .where('user.status = :status', { status: 'active' });
+      .createQueryBuilder("user")
+      .leftJoin("follows", "f", "f.following_id = user.id")
+      .addSelect("COUNT(f.id)", "followers")
+      .where("user.status = :status", { status: "active" });
     if (meId) {
-      qb.andWhere('user.id != :meId', { meId }).andWhere(
-        'user.id NOT IN (SELECT following_id FROM follows WHERE follower_id = :meId)',
+      qb.andWhere("user.id != :meId", { meId }).andWhere(
+        "user.id NOT IN (SELECT following_id FROM follows WHERE follower_id = :meId)",
         { meId },
       );
     }
     const rows = await qb
-      .groupBy('user.id')
-      .orderBy('"followers"', 'DESC')
-      .addOrderBy('user.id', 'DESC')
+      .groupBy("user.id")
+      .orderBy('"followers"', "DESC")
+      .addOrderBy("user.id", "DESC")
       .limit(safeLimit)
       .getRawMany<{
         user_id: number;
@@ -119,24 +119,24 @@ export class UsersService {
       where: { username },
     });
     if (!user) {
-      throw new NotFoundException('用户不存在');
+      throw new NotFoundException("用户不存在");
     }
     const [submissions, comments, posts, followers, following] =
       await Promise.all([
         this.submissionRepo.count({ where: { userId: user.id } }),
         this.commentRepo.count({ where: { user: { id: user.id } } }),
         this.postRepo.count({
-          where: { user: { id: user.id }, status: 'published' },
+          where: { user: { id: user.id }, status: "published" },
         }),
         this.followRepo.count({ where: { followingId: user.id } }),
         this.followRepo.count({ where: { followerId: user.id } }),
       ]);
     // 获赞 = 该用户已发布帖子的 likes 之和
     const likesRow = await this.postRepo
-      .createQueryBuilder('post')
-      .select('COALESCE(SUM(post.likes), 0)', 'total')
-      .where('post.user_id = :id', { id: user.id })
-      .andWhere('post.status = :status', { status: 'published' })
+      .createQueryBuilder("post")
+      .select("COALESCE(SUM(post.likes), 0)", "total")
+      .where("post.user_id = :id", { id: user.id })
+      .andWhere("post.status = :status", { status: "published" })
       .getRawOne<{ total: number | string }>();
     return {
       id: user.id,
@@ -163,13 +163,13 @@ export class UsersService {
   async getUserSubmissions(username: string, page = 1, limit = 20) {
     const user = await this.userRepo.findOne({ where: { username } });
     if (!user) {
-      throw new NotFoundException('用户不存在');
+      throw new NotFoundException("用户不存在");
     }
     const safePage = clampInt(page, 1, Number.MAX_SAFE_INTEGER);
     const safeLimit = clampInt(limit, 20, 100);
     const [items, total] = await this.submissionRepo.findAndCount({
-      where: { userId: user.id, status: 'approved' },
-      order: { createdAt: 'DESC' },
+      where: { userId: user.id, status: "approved" },
+      order: { createdAt: "DESC" },
       skip: (safePage - 1) * safeLimit,
       take: safeLimit,
     });
@@ -208,13 +208,13 @@ export class UsersService {
   async getUserComments(username: string, page = 1, limit = 20) {
     const user = await this.userRepo.findOne({ where: { username } });
     if (!user) {
-      throw new NotFoundException('用户不存在');
+      throw new NotFoundException("用户不存在");
     }
     const safePage = clampInt(page, 1, Number.MAX_SAFE_INTEGER);
     const safeLimit = clampInt(limit, 20, 100);
     const [items, total] = await this.commentRepo.findAndCount({
       where: { user: { id: user.id } },
-      order: { createdAt: 'DESC' },
+      order: { createdAt: "DESC" },
       skip: (safePage - 1) * safeLimit,
       take: safeLimit,
     });
@@ -253,13 +253,13 @@ export class UsersService {
   async getUserPosts(username: string, page = 1, limit = 20) {
     const user = await this.userRepo.findOne({ where: { username } });
     if (!user) {
-      throw new NotFoundException('用户不存在');
+      throw new NotFoundException("用户不存在");
     }
     const safePage = clampInt(page, 1, Number.MAX_SAFE_INTEGER);
     const safeLimit = clampInt(limit, 20, 100);
     const [items, total] = await this.postRepo.findAndCount({
-      where: { user: { id: user.id }, status: 'published' },
-      order: { id: 'DESC' },
+      where: { user: { id: user.id }, status: "published" },
+      order: { id: "DESC" },
       skip: (safePage - 1) * safeLimit,
       take: safeLimit,
     });

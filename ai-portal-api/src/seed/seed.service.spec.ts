@@ -1,17 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { SeedService } from './seed.service';
-import { Category } from '../entities/category.entity';
-import { Tool } from '../entities/tool.entity';
-import { Prompt } from '../entities/prompt.entity';
-import { Article } from '../entities/article.entity';
-import { News } from '../entities/news.entity';
-import { Repo } from '../entities/repo.entity';
-import { Mcp } from '../entities/mcp.entity';
-import { Resource } from '../entities/resource.entity';
-import { Post } from '../entities/post.entity';
-import { User } from '../entities/user.entity';
-import { Source } from '../entities/source.entity';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { SeedService } from "./seed.service";
+import { Category } from "../entities/category.entity";
+import { Tool } from "../entities/tool.entity";
+import { Prompt } from "../entities/prompt.entity";
+import { Article } from "../entities/article.entity";
+import { News } from "../entities/news.entity";
+import { Repo } from "../entities/repo.entity";
+import { Mcp } from "../entities/mcp.entity";
+import { Resource } from "../entities/resource.entity";
+import { Post } from "../entities/post.entity";
+import { User } from "../entities/user.entity";
+import { Source } from "../entities/source.entity";
 
 const SEED_ENTITIES = [
   Category,
@@ -85,7 +85,7 @@ const CONTENT_ENTITIES: SeedEntity[] = [
   Source,
 ];
 
-describe('SeedService', () => {
+describe("SeedService", () => {
   const originalSeedDemo = process.env.SEED_DEMO;
 
   afterEach(() => {
@@ -94,7 +94,7 @@ describe('SeedService', () => {
     jest.restoreAllMocks();
   });
 
-  it('空库时写入各类种子数据', async () => {
+  it("空库时写入各类种子数据", async () => {
     const { service, repoOf } = await buildSeedService(false);
     await service.onApplicationBootstrap();
 
@@ -104,7 +104,7 @@ describe('SeedService', () => {
     }
   });
 
-  it('已存在时不再重复写入（幂等，只插不改）', async () => {
+  it("已存在时不再重复写入（幂等，只插不改）", async () => {
     const { service, repoOf } = await buildSeedService(true);
     await service.onApplicationBootstrap();
 
@@ -114,7 +114,7 @@ describe('SeedService', () => {
     }
   });
 
-  it('写入的工具 slug 不重复，且缺省 tags 补为空数组', async () => {
+  it("写入的工具 slug 不重复，且缺省 tags 补为空数组", async () => {
     const { service, repoOf } = await buildSeedService(false);
     await service.onApplicationBootstrap();
 
@@ -129,19 +129,19 @@ describe('SeedService', () => {
     }
   });
 
-  it('MCP 与 Skills 合并写入 mcps 表，缺 type 时回退为 mcp', async () => {
+  it("MCP 与 Skills 合并写入 mcps 表，缺 type 时回退为 mcp", async () => {
     const { service, repoOf } = await buildSeedService(false);
     await service.onApplicationBootstrap();
 
     const saved = savedArgs(repoOf(Mcp));
     expect(saved.length).toBeGreaterThan(0);
     for (const m of saved) {
-      expect(typeof m.type).toBe('string');
+      expect(typeof m.type).toBe("string");
       expect(String(m.type).length).toBeGreaterThan(0);
     }
   });
 
-  it('演示管理员受 SEED_DEMO 与「用户表为空」双重门控', async () => {
+  it("演示管理员受 SEED_DEMO 与「用户表为空」双重门控", async () => {
     // 1) 未开启 SEED_DEMO：不创建
     delete process.env.SEED_DEMO;
     {
@@ -151,7 +151,7 @@ describe('SeedService', () => {
     }
 
     // 2) 开启但用户表非空：不创建（不能把已降级的 demo 悄悄提回 admin）
-    process.env.SEED_DEMO = 'true';
+    process.env.SEED_DEMO = "true";
     {
       const { service, repoOf } = await buildSeedService(false);
       repoOf(User).count.mockResolvedValue(3);
@@ -167,15 +167,15 @@ describe('SeedService', () => {
       expect(repoOf(User).save).toHaveBeenCalled();
 
       const created = savedArgs(repoOf(User))[0];
-      expect(created.username).toBe('demo');
-      expect(created.role).toBe('admin');
+      expect(created.username).toBe("demo");
+      expect(created.role).toBe("admin");
       // 必须存哈希而不是明文
-      expect(created.passwordHash).not.toBe('demo1234');
-      expect(String(created.passwordHash).startsWith('$2')).toBe(true);
+      expect(created.passwordHash).not.toBe("demo1234");
+      expect(String(created.passwordHash).startsWith("$2")).toBe(true);
     }
 
     // 4) SEED_DEMO 为其他值：不创建
-    process.env.SEED_DEMO = 'false';
+    process.env.SEED_DEMO = "false";
     {
       const { service, repoOf } = await buildSeedService(false);
       await service.onApplicationBootstrap();
@@ -183,7 +183,7 @@ describe('SeedService', () => {
     }
   });
 
-  it('文章不做种子（避免空心示例文章反复复活）', async () => {
+  it("文章不做种子（避免空心示例文章反复复活）", async () => {
     const { service, repoOf } = await buildSeedService(false);
     await service.onApplicationBootstrap();
     expect(repoOf(Article).save).not.toHaveBeenCalled();

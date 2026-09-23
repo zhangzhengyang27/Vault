@@ -2,17 +2,17 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Brackets } from 'typeorm';
-import { Article } from '../../entities/article.entity';
-import { Category } from '../../entities/category.entity';
-import { KnowledgeBaseMeta } from '../../entities/knowledge-base.entity';
-import { Tool } from '../../entities/tool.entity';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { ContentCleanupService } from '../../common/content-cleanup.service';
-import { escapeLike, LIKE_ESCAPE_SQL } from '../../common/like.util';
-import { extractUrlHosts, websiteHost } from '../../common/url-hosts';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Brackets } from "typeorm";
+import { Article } from "../../entities/article.entity";
+import { Category } from "../../entities/category.entity";
+import { KnowledgeBaseMeta } from "../../entities/knowledge-base.entity";
+import { Tool } from "../../entities/tool.entity";
+import { CreateArticleDto } from "./dto/create-article.dto";
+import { ContentCleanupService } from "../../common/content-cleanup.service";
+import { escapeLike, LIKE_ESCAPE_SQL } from "../../common/like.util";
+import { extractUrlHosts, websiteHost } from "../../common/url-hosts";
 
 /** getKnowledgeBases：按知识库聚合的统计行（Postgres COUNT(*) 经 raw query 返回字符串） */
 interface KnowledgeBaseStatsRow {
@@ -40,7 +40,7 @@ export interface ArticleQuery {
  * getKnowledgeBases 用 COALESCE 把 knowledge_base 为 NULL 的文章聚合成这个桶名。
  * findAll 按知识库过滤时必须把该桶名翻译成 IS NULL，否则对应知识库页永远查空。
  */
-export const DEFAULT_KB_NAME = '通用文章';
+export const DEFAULT_KB_NAME = "通用文章";
 
 @Injectable()
 export class ArticlesService {
@@ -61,19 +61,19 @@ export class ArticlesService {
     const limit = Math.min(100, Math.max(1, Number(query.limit) || 12));
     const offset = (page - 1) * limit;
 
-    const qb = this.repo.createQueryBuilder('article');
-    qb.leftJoinAndSelect('article.category', 'category');
+    const qb = this.repo.createQueryBuilder("article");
+    qb.leftJoinAndSelect("article.category", "category");
 
     // 公开接口默认只返回已发布内容
-    qb.andWhere('article.status = :status', { status: 'published' });
+    qb.andWhere("article.status = :status", { status: "published" });
 
     if (query.category) {
       // OR 条件必须用 Brackets 包裹：裸拼接会因 AND 优先级高于 OR 变成
       // (published AND name) OR slug，把「分类匹配但未发布」的文章泄露进公开列表
       qb.andWhere(
         new Brackets((w) => {
-          w.where('category.name = :cat', { cat: query.category }).orWhere(
-            'category.slug = :cat',
+          w.where("category.name = :cat", { cat: query.category }).orWhere(
+            "category.slug = :cat",
             { cat: query.category },
           );
         }),
@@ -81,17 +81,17 @@ export class ArticlesService {
     }
     if (query.knowledgeBase) {
       if (query.knowledgeBase === DEFAULT_KB_NAME) {
-        qb.andWhere('article.knowledgeBase IS NULL');
+        qb.andWhere("article.knowledgeBase IS NULL");
       } else {
-        qb.andWhere('article.knowledgeBase = :kb', { kb: query.knowledgeBase });
+        qb.andWhere("article.knowledgeBase = :kb", { kb: query.knowledgeBase });
       }
     }
     if (query.q) {
       qb.andWhere(
         new Brackets((w) => {
-          w.where('article.title ILIKE :q' + LIKE_ESCAPE_SQL, {
+          w.where("article.title ILIKE :q" + LIKE_ESCAPE_SQL, {
             q: `%${escapeLike(query.q)}%`,
-          }).orWhere('article.summary ILIKE :q' + LIKE_ESCAPE_SQL, {
+          }).orWhere("article.summary ILIKE :q" + LIKE_ESCAPE_SQL, {
             q: `%${escapeLike(query.q)}%`,
           });
         }),
@@ -99,11 +99,11 @@ export class ArticlesService {
     }
 
     switch (query.sort) {
-      case 'newest':
-        qb.orderBy('article.createdAt', 'DESC');
+      case "newest":
+        qb.orderBy("article.createdAt", "DESC");
         break;
       default:
-        qb.orderBy('article.id', 'ASC');
+        qb.orderBy("article.id", "ASC");
     }
 
     const [items, total] = await qb.skip(offset).take(limit).getManyAndCount();
@@ -123,21 +123,21 @@ export class ArticlesService {
   async findOne(slug: string) {
     // 公开详情只返回已发布内容（draft/pending/rejected 不可匿名直达）
     const entity = await this.repo.findOne({
-      where: { slug, status: 'published' },
+      where: { slug, status: "published" },
     });
-    if (!entity) throw new NotFoundException('文章不存在或未发布');
+    if (!entity) throw new NotFoundException("文章不存在或未发布");
     return entity;
   }
 
   async getKnowledgeBases() {
     const raw = await this.repo
-      .createQueryBuilder('article')
-      .select('COALESCE(article.knowledge_base, :default)', 'name')
-      .addSelect('COUNT(*)', 'count')
-      .addSelect('MAX(article.updated_at)', 'lastUpdated')
-      .where('article.status = :status', { status: 'published' })
-      .groupBy('COALESCE(article.knowledge_base, :default)')
-      .setParameter('default', DEFAULT_KB_NAME)
+      .createQueryBuilder("article")
+      .select("COALESCE(article.knowledge_base, :default)", "name")
+      .addSelect("COUNT(*)", "count")
+      .addSelect("MAX(article.updated_at)", "lastUpdated")
+      .where("article.status = :status", { status: "published" })
+      .groupBy("COALESCE(article.knowledge_base, :default)")
+      .setParameter("default", DEFAULT_KB_NAME)
       .getRawMany<KnowledgeBaseStatsRow>();
     const agg = raw.map((r) => ({
       name: r.name,
@@ -150,16 +150,16 @@ export class ArticlesService {
     const [metas, catRows] = await Promise.all([
       this.kbMeta.find(),
       this.repo
-        .createQueryBuilder('article')
-        .select('article.knowledge_base', 'kb')
-        .addSelect('category.name', 'cat')
-        .innerJoin('article.category', 'category')
-        .where('article.status = :status', { status: 'published' })
-        .andWhere('article.knowledge_base IS NOT NULL')
-        .groupBy('article.knowledge_base')
-        .addGroupBy('category.name')
-        .addGroupBy('category.sortOrder')
-        .orderBy('category.sortOrder', 'ASC')
+        .createQueryBuilder("article")
+        .select("article.knowledge_base", "kb")
+        .addSelect("category.name", "cat")
+        .innerJoin("article.category", "category")
+        .where("article.status = :status", { status: "published" })
+        .andWhere("article.knowledge_base IS NOT NULL")
+        .groupBy("article.knowledge_base")
+        .addGroupBy("category.name")
+        .addGroupBy("category.sortOrder")
+        .orderBy("category.sortOrder", "ASC")
         .getRawMany<KnowledgeBaseCategoryRow>(),
     ]);
     const metaByName = new Map(metas.map((m) => [m.name, m]));
@@ -197,7 +197,7 @@ export class ArticlesService {
     // 只对已发布文章生效：否则该接口会成为未发布文章的存在性 oracle
     // （可借响应是否为空探测草稿 slug 及其正文提到的工具）
     const article = await this.repo.findOne({
-      where: { slug, status: 'published' },
+      where: { slug, status: "published" },
       select: { id: true, slug: true, content: true },
     });
     if (!article?.content) return [];
@@ -205,7 +205,7 @@ export class ArticlesService {
     if (hosts.size === 0) return [];
 
     const candidates = await this.tools.find({
-      where: { status: 'published' },
+      where: { status: "published" },
     });
     const seen = new Set<string>();
     const matched: Tool[] = [];
@@ -240,7 +240,7 @@ export class ArticlesService {
 
   async update(slug: string, dto: Partial<CreateArticleDto>) {
     const article = await this.repo.findOne({ where: { slug } });
-    if (!article) throw new NotFoundException('文章不存在');
+    if (!article) throw new NotFoundException("文章不存在");
     const { categoryId, ...rest } = dto;
     Object.assign(article, rest);
     if (categoryId !== undefined) {
@@ -258,22 +258,22 @@ export class ArticlesService {
     try {
       saved = await this.repo.save(article);
     } catch (err) {
-      if ((err as { code?: string }).code === '23505') {
+      if ((err as { code?: string }).code === "23505") {
         throw new ConflictException(`slug 已被占用: ${rest.slug}`);
       }
       throw err;
     }
     if (rest.slug && rest.slug !== oldSlug) {
-      await this.cleanup.syncSlug('article', article.id, rest.slug);
+      await this.cleanup.syncSlug("article", article.id, rest.slug);
     }
     return saved;
   }
   async remove(slug: string) {
     const article = await this.repo.findOne({ where: { slug } });
-    if (!article) throw new NotFoundException('文章不存在');
+    if (!article) throw new NotFoundException("文章不存在");
     await this.repo.remove(article);
     // 清理该内容关联的评论/收藏/通知（多态关联无外键）
-    await this.cleanup.purge('article', article.id);
+    await this.cleanup.purge("article", article.id);
     return article;
   }
 }

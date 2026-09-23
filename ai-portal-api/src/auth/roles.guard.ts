@@ -3,10 +3,10 @@ import {
   ExecutionContext,
   ForbiddenException,
   Injectable,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { ROLES_KEY } from './roles.decorator';
-import type { RequestUser } from './current-user.decorator';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { ROLES_KEY } from "./roles.decorator";
+import type { RequestUser } from "./current-user.decorator";
 
 /**
  * 角色守卫：配合 @Roles('admin') 使用。
@@ -27,7 +27,7 @@ export class RolesGuard implements CanActivate {
       user?: RequestUser;
     }>();
     if (!user || !required.includes(user.role)) {
-      throw new ForbiddenException('无权限执行此操作');
+      throw new ForbiddenException("无权限执行此操作");
     }
     return true;
   }

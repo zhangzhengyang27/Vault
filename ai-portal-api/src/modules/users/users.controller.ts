@@ -1,9 +1,9 @@
-import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
-import type { Request } from 'express';
-import { UsersService } from './users.service';
-import { OptionalJwtAuthGuard } from '../../auth/optional-jwt-auth.guard';
+import { Controller, Get, Param, Query, Req, UseGuards } from "@nestjs/common";
+import type { Request } from "express";
+import { UsersService } from "./users.service";
+import { OptionalJwtAuthGuard } from "../../auth/optional-jwt-auth.guard";
 
-@Controller('users')
+@Controller("users")
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -12,8 +12,8 @@ export class UsersController {
    * 注意：必须注册在 @Get(':username') 之前，否则 'suggested' 会被吞掉
    */
   @UseGuards(OptionalJwtAuthGuard)
-  @Get('suggested')
-  suggested(@Req() req: Request, @Query('limit') limit?: string) {
+  @Get("suggested")
+  suggested(@Req() req: Request, @Query("limit") limit?: string) {
     // OptionalJwtAuthGuard 匿名时不挂 user，用宽化类型读取
     const me = (req as Request & { user?: { id: number } }).user;
     return this.usersService.suggested(me?.id, limit ? Number(limit) : 5);
@@ -23,8 +23,8 @@ export class UsersController {
    * 获取用户公开信息
    * GET /users/:username
    */
-  @Get(':username')
-  findOne(@Param('username') username: string) {
+  @Get(":username")
+  findOne(@Param("username") username: string) {
     return this.usersService.findByUsername(username);
   }
 
@@ -32,11 +32,11 @@ export class UsersController {
    * 获取用户的提交列表（已通过的）
    * GET /users/:username/submissions?page=1&limit=20
    */
-  @Get(':username/submissions')
+  @Get(":username/submissions")
   getSubmissions(
-    @Param('username') username: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Param("username") username: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
   ) {
     return this.usersService.getUserSubmissions(
       username,
@@ -49,11 +49,11 @@ export class UsersController {
    * 获取用户的评论列表
    * GET /users/:username/comments?page=1&limit=20
    */
-  @Get(':username/comments')
+  @Get(":username/comments")
   getComments(
-    @Param('username') username: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Param("username") username: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
   ) {
     return this.usersService.getUserComments(
       username,
@@ -66,11 +66,11 @@ export class UsersController {
    * 获取用户的公开帖子列表
    * GET /users/:username/posts?page=1&limit=20
    */
-  @Get(':username/posts')
+  @Get(":username/posts")
   getPosts(
-    @Param('username') username: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Param("username") username: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
   ) {
     return this.usersService.getUserPosts(
       username,

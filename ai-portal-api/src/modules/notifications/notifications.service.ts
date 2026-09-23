@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Notification } from '../../entities/notification.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { Notification } from "../../entities/notification.entity";
 import {
   PublishableItem,
   SubscriptionsService,
-} from '../subscriptions/subscriptions.service';
+} from "../subscriptions/subscriptions.service";
 
 @Injectable()
 export class NotificationsService {
@@ -29,10 +29,10 @@ export class NotificationsService {
     return this.repo.save(
       this.repo.create({
         userId,
-        type: data.type ?? 'system',
+        type: data.type ?? "system",
         title: data.title,
         content: data.content,
-        targetType: data.targetType ?? '',
+        targetType: data.targetType ?? "",
         targetId: data.targetId ?? null,
         targetSlug: data.targetSlug ?? null,
         read: false,
@@ -56,7 +56,7 @@ export class NotificationsService {
     let sent = 0;
     for (const userId of userIds) {
       await this.createForUser(userId, {
-        type: 'subscription',
+        type: "subscription",
         title: `你订阅的「${item.type}」有新内容：${item.title}`,
         content: item.description ?? undefined,
         targetType: item.type,
@@ -93,7 +93,7 @@ export class NotificationsService {
         // type 过滤供消息中心分类 tab 使用；空数组表示不过滤
         ...(opts.types?.length ? { type: In(opts.types) } : {}),
       },
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
       take: limit,
       skip: offset,
     });

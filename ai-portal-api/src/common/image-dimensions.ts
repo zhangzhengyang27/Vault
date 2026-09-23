@@ -1,5 +1,5 @@
-import { open, type FileHandle } from 'fs/promises';
-import { join, resolve, sep } from 'path';
+import { open, type FileHandle } from "fs/promises";
+import { join, resolve, sep } from "path";
 
 export interface ImageDimensions {
   width: number;
@@ -29,15 +29,15 @@ export async function getImageDimensions(
 
   let handle: FileHandle | undefined;
   try {
-    handle = await open(filePath, 'r');
+    handle = await open(filePath, "r");
     const buf = Buffer.alloc(HEADER_BYTES);
     const { bytesRead } = await handle.read(buf, 0, HEADER_BYTES, 0);
     const head = buf.subarray(0, bytesRead);
 
     const ext = filePath.toLowerCase();
     let result: ImageDimensions | null = null;
-    if (ext.endsWith('.jpeg') || ext.endsWith('.jpg')) result = parseJpeg(head);
-    else if (ext.endsWith('.png')) result = parsePng(head);
+    if (ext.endsWith(".jpeg") || ext.endsWith(".jpg")) result = parseJpeg(head);
+    else if (ext.endsWith(".png")) result = parsePng(head);
     else if (head[0] === 0xff && head[1] === 0xd8) result = parseJpeg(head);
     else if (head[0] === 0x89 && head[1] === 0x50) result = parsePng(head);
 
@@ -107,11 +107,11 @@ function parsePng(buf: Buffer): ImageDimensions | null {
  *   app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' })
  */
 export function urlToLocalPath(url: string): string | null {
-  if (!url.startsWith('/uploads/')) return null;
-  const filename = url.slice('/uploads/'.length);
+  if (!url.startsWith("/uploads/")) return null;
+  const filename = url.slice("/uploads/".length);
   // 归一化并校验，防止 ../ 等路径穿越读取 uploads 目录之外的文件
-  const base = resolve(process.cwd(), 'uploads');
+  const base = resolve(process.cwd(), "uploads");
   const full = resolve(base, filename);
   if (full !== base && !full.startsWith(base + sep)) return null;
-  return join(process.cwd(), 'uploads', filename);
+  return join(process.cwd(), "uploads", filename);
 }

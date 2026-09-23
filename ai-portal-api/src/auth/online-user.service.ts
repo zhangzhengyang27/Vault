@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable } from "@nestjs/common";
 
 export interface OnlineUserEntry {
   userId: number;
@@ -38,7 +38,7 @@ export class OnlineUserService {
       username: user.username,
       role: user.role,
       ip: req.ip ?? null,
-      userAgent: (req.headers?.['user-agent'] as string) ?? null,
+      userAgent: (req.headers?.["user-agent"] as string) ?? null,
       lastSeen: Date.now(),
     });
     return true;

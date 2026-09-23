@@ -1,17 +1,17 @@
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import { NestFactory } from "@nestjs/core";
+import { NestExpressApplication } from "@nestjs/platform-express";
 import {
   ClassSerializerInterceptor,
   ValidationPipe,
   Logger,
-} from '@nestjs/common';
-import { DataSource } from 'typeorm';
-import { join } from 'path';
-import { Reflector } from '@nestjs/core';
-import cookieParser from 'cookie-parser';
-import helmet from 'helmet';
-import { AppModule } from './app.module';
-import { AllExceptionsFilter } from './common/all-exceptions.filter';
+} from "@nestjs/common";
+import { DataSource } from "typeorm";
+import { join } from "path";
+import { Reflector } from "@nestjs/core";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import { AppModule } from "./app.module";
+import { AllExceptionsFilter } from "./common/all-exceptions.filter";
 
 /**
  * 确保 pg_trgm GIN 索引存在。
@@ -19,7 +19,7 @@ import { AllExceptionsFilter } from './common/all-exceptions.filter';
  * 因此需要在每次启动后显式重建。
  */
 async function ensureGinTrgmIndexes(dataSource: DataSource): Promise<void> {
-  const logger = new Logger('IndexBootstrap');
+  const logger = new Logger("IndexBootstrap");
   const statements = [
     `CREATE EXTENSION IF NOT EXISTS pg_trgm`,
     `CREATE INDEX IF NOT EXISTS idx_tools_name_trgm ON tools USING gin (name gin_trgm_ops)`,
@@ -41,7 +41,7 @@ async function ensureGinTrgmIndexes(dataSource: DataSource): Promise<void> {
     for (const sql of statements) {
       await dataSource.query(sql);
     }
-    logger.log('pg_trgm GIN 索引已就绪');
+    logger.log("pg_trgm GIN 索引已就绪");
   } catch (e) {
     logger.warn(
       `GIN 索引初始化失败: ${e instanceof Error ? e.message : String(e)}`,
@@ -52,17 +52,17 @@ async function ensureGinTrgmIndexes(dataSource: DataSource): Promise<void> {
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.setGlobalPrefix('api');
+  app.setGlobalPrefix("api");
 
   // helmet v8 不再隐藏 Server 指纹，显式关闭
-  app.disable('x-powered-by');
+  app.disable("x-powered-by");
 
   // 安全响应头：nosniff/frameguard/HSTS 等默认开启。
   // CSP 关闭（API + uploads 场景由前端站点点控制）；uploads 资源允许跨站嵌入。
   app.use(
     helmet({
       contentSecurityPolicy: false,
-      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      crossOriginResourcePolicy: { policy: "cross-origin" },
     }),
   );
 
@@ -71,25 +71,25 @@ async function bootstrap() {
   const trustProxy = process.env.TRUST_PROXY;
   if (trustProxy) {
     const hops = Number(trustProxy);
-    app.set('trust proxy', Number.isNaN(hops) ? trustProxy : hops);
+    app.set("trust proxy", Number.isNaN(hops) ? trustProxy : hops);
   }
 
   // CORS：配置白名单来源（本地开发 + 局域网访问，可通过环境变量覆盖）。
   // 浏览器扩展（MV3 popup）的 fetch 受 CORS 约束且未授予 host_permissions，
   // 默认放行 chrome-extension:// 来源读取公开数据；设 CORS_ALLOW_EXTENSION=false 关闭。
   const allowedOrigins = (
-    process.env.CORS_ORIGINS ?? 'http://localhost:3000,http://127.0.0.1:3000'
+    process.env.CORS_ORIGINS ?? "http://localhost:3000,http://127.0.0.1:3000"
   )
-    .split(',')
+    .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
-  const allowExtension = process.env.CORS_ALLOW_EXTENSION !== 'false';
+  const allowExtension = process.env.CORS_ALLOW_EXTENSION !== "false";
   app.enableCors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
-      if (allowExtension && origin.startsWith('chrome-extension://')) {
+      if (allowExtension && origin.startsWith("chrome-extension://")) {
         return callback(null, true);
       }
       return callback(null, false);
@@ -112,15 +112,15 @@ async function bootstrap() {
   app.useGlobalFilters(new AllExceptionsFilter());
   // 全局序列化：配合实体上的 @Exclude 剔除敏感字段（如 passwordHash）
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
+  app.useStaticAssets(join(process.cwd(), "uploads"), { prefix: "/uploads/" });
 
   // 优雅停机：等待连接关闭
   app.enableShutdownHooks();
 
   // 开发默认 JWT_SECRET 告警（缺失时 auth 模块会直接启动失败）
-  if (process.env.JWT_SECRET === 'ai-portal-dev-secret') {
-    new Logger('Security').warn(
-      '当前使用开发默认 JWT_SECRET，仅限本地开发；部署前必须更换为强随机密钥',
+  if (process.env.JWT_SECRET === "ai-portal-dev-secret") {
+    new Logger("Security").warn(
+      "当前使用开发默认 JWT_SECRET，仅限本地开发；部署前必须更换为强随机密钥",
     );
   }
 
@@ -129,6 +129,6 @@ async function bootstrap() {
   await ensureGinTrgmIndexes(dataSource);
 
   // 绑定 0.0.0.0，使后端可被局域网内其他设备访问
-  await app.listen(process.env.PORT ?? 3001, '0.0.0.0');
+  await app.listen(process.env.PORT ?? 3001, "0.0.0.0");
 }
 void bootstrap();

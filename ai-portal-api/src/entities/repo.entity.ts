@@ -4,9 +4,9 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
+} from "typeorm";
 
-@Entity('repos')
+@Entity("repos")
 export class Repo {
   @PrimaryGeneratedColumn()
   id: number;
@@ -17,7 +17,7 @@ export class Repo {
   @Column()
   name: string;
 
-  @Column('text', { nullable: true })
+  @Column("text", { nullable: true })
   description?: string;
 
   @Column({ nullable: true })
@@ -26,16 +26,16 @@ export class Repo {
   @Column({ nullable: true })
   lang?: string;
 
-  @Column({ default: 'mvp' })
+  @Column({ default: "mvp" })
   phase: string;
 
   /** 内容状态：published（前台可见）/ pending（采集待审）/ rejected / archived */
-  @Column({ default: 'published' })
+  @Column({ default: "published" })
   status: string;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

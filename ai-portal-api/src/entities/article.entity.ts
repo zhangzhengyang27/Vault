@@ -7,13 +7,13 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { Category } from './category.entity';
+} from "typeorm";
+import { Category } from "./category.entity";
 
-@Entity('articles')
-@Index(['status'])
-@Index(['category'])
-@Index(['createdAt'])
+@Entity("articles")
+@Index(["status"])
+@Index(["category"])
+@Index(["createdAt"])
 export class Article {
   @PrimaryGeneratedColumn()
   id: number;
@@ -24,36 +24,36 @@ export class Article {
   @Column()
   title: string;
 
-  @Column('text')
+  @Column("text")
   summary: string;
 
-  @Column('text', { nullable: true })
+  @Column("text", { nullable: true })
   content?: string;
 
   @ManyToOne(() => Category, { eager: true, nullable: true })
-  @JoinColumn({ name: 'category_id' })
+  @JoinColumn({ name: "category_id" })
   category: Category | null;
 
-  @Column({ default: 'published' })
+  @Column({ default: "published" })
   status: string;
 
-  @Column({ default: 'mvp' })
+  @Column({ default: "mvp" })
   phase: string;
 
-  @Column({ type: 'timestamptz', nullable: true })
+  @Column({ type: "timestamptz", nullable: true })
   publishedAt: Date | null;
 
   @Column({
-    name: 'knowledge_base',
-    type: 'varchar',
+    name: "knowledge_base",
+    type: "varchar",
     length: 255,
     nullable: true,
   })
   knowledgeBase?: string | null;
 
-  @CreateDateColumn({ name: 'created_at' })
+  @CreateDateColumn({ name: "created_at" })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt: Date;
 }

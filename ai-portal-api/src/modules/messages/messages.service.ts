@@ -2,12 +2,12 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { In, Repository } from 'typeorm';
-import { Message } from '../../entities/message.entity';
-import { User } from '../../entities/user.entity';
-import { clampInt } from '../posts/posts.service';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { In, Repository } from "typeorm";
+import { Message } from "../../entities/message.entity";
+import { User } from "../../entities/user.entity";
+import { clampInt } from "../posts/posts.service";
 
 /** 会话联系人/对话对方的公开信息（不含 email/passwordHash） */
 function toPublicUser(u: User) {
@@ -32,8 +32,8 @@ export class MessagesService {
   private async findActiveUser(username: string) {
     const user = await this.userRepo.findOne({ where: { username } });
     // 封禁用户对私信体系不可见
-    if (!user || user.status !== 'active') {
-      throw new NotFoundException('用户不存在');
+    if (!user || user.status !== "active") {
+      throw new NotFoundException("用户不存在");
     }
     return user;
   }
@@ -45,16 +45,16 @@ export class MessagesService {
   ) {
     const receiver = await this.findActiveUser(toUsername);
     if (receiver.id === sender.id) {
-      throw new BadRequestException('不能给自己发私信');
+      throw new BadRequestException("不能给自己发私信");
     }
     // 与帖子/评论同一套防存储型 XSS 处理
     const content = rawContent
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, '')
-      .replace(/<[^>]+>/g, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, "")
+      .replace(/<[^>]+>/g, "")
       .trim();
     if (!content) {
-      throw new BadRequestException('私信内容不能为空');
+      throw new BadRequestException("私信内容不能为空");
     }
     return this.repo.save(
       this.repo.create({
@@ -114,7 +114,7 @@ export class MessagesService {
     const items = rows
       .map((r) => {
         const user = userMap.get(Number(r.partner));
-        if (!user || user.status !== 'active') return null;
+        if (!user || user.status !== "active") return null;
         return {
           partner: toPublicUser(user),
           lastMessage: {
@@ -148,7 +148,7 @@ export class MessagesService {
     ];
     const [rows, total] = await this.repo.findAndCount({
       where,
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
       take: safeLimit,
       skip: safeOffset,
     });

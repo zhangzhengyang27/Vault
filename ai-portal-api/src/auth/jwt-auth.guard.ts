@@ -3,13 +3,13 @@ import {
   ExecutionContext,
   Injectable,
   UnauthorizedException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { JwtService } from '@nestjs/jwt';
-import { Repository } from 'typeorm';
-import type { Request } from 'express';
-import { User } from '../entities/user.entity';
-import { OnlineUserService } from './online-user.service';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { JwtService } from "@nestjs/jwt";
+import { Repository } from "typeorm";
+import type { Request } from "express";
+import { User } from "../entities/user.entity";
+import { OnlineUserService } from "./online-user.service";
 
 interface JwtPayload {
   sub: number;
@@ -49,7 +49,7 @@ export class JwtAuthGuard implements CanActivate {
       request as Request & { cookies?: Record<string, string> }
     ).cookies;
     let token: string | undefined;
-    if (auth && auth.startsWith('Bearer ')) {
+    if (auth && auth.startsWith("Bearer ")) {
       token = auth.slice(7);
     } else if (cookies?.ai_portal_token) {
       token = cookies.ai_portal_token;
@@ -67,14 +67,14 @@ export class JwtAuthGuard implements CanActivate {
     }
 
     // refresh token 只能用于 /auth/refresh 换发，不能冒充 access token 访问接口
-    if (payload.typ === 'refresh') {
+    if (payload.typ === "refresh") {
       throw new UnauthorizedException();
     }
 
     // 以数据库为准加载用户：被封禁或已删除的用户立即拒绝
     const user = await this.users.findOne({ where: { id: payload.sub } });
-    if (!user || user.status === 'banned') {
-      throw new UnauthorizedException('账号不存在或已被封禁');
+    if (!user || user.status === "banned") {
+      throw new UnauthorizedException("账号不存在或已被封禁");
     }
 
     // 被管理员强制下线的用户立即拒绝（重新登录可解除）
@@ -84,7 +84,7 @@ export class JwtAuthGuard implements CanActivate {
         request,
       )
     ) {
-      throw new UnauthorizedException('登录状态已失效，请重新登录');
+      throw new UnauthorizedException("登录状态已失效，请重新登录");
     }
 
     request.user = {

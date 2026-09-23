@@ -3,11 +3,11 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Category } from '../../entities/category.entity';
-import { isPgErrorWithCode } from '../../common/pg-error';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Category } from "../../entities/category.entity";
+import { isPgErrorWithCode } from "../../common/pg-error";
 
 @Injectable()
 export class CategoriesService {
@@ -23,11 +23,11 @@ export class CategoriesService {
    *  表名来自白名单,类型值一律走参数化,防止拼接注入/标识符误解析 */
   async findAll(kind?: string) {
     const cats = await this.repo.find({
-      order: { sortOrder: 'ASC', id: 'ASC' },
+      order: { sortOrder: "ASC", id: "ASC" },
     });
     if (!kind) return cats;
     const rows: { category_id: number; n: string }[] =
-      kind === 'tool'
+      kind === "tool"
         ? await this.repo.query(
             `SELECT category_id, COUNT(*)::text AS n FROM tools
              WHERE status = 'published' AND category_id IS NOT NULL
@@ -60,13 +60,13 @@ export class CategoriesService {
   ) {
     if (parentId == null) return;
     if (id != null && parentId === id) {
-      throw new BadRequestException('父级分类不能是自己');
+      throw new BadRequestException("父级分类不能是自己");
     }
     let cursor: number | null = parentId;
     const seen = new Set<number>();
     while (cursor != null) {
       if (id != null && cursor === id) {
-        throw new BadRequestException('分类层级不能形成环');
+        throw new BadRequestException("分类层级不能形成环");
       }
       if (seen.has(cursor)) break;
       seen.add(cursor);
@@ -74,14 +74,14 @@ export class CategoriesService {
         where: { id: cursor },
         select: { id: true, parentId: true },
       });
-      if (!row) throw new NotFoundException('父级分类不存在');
+      if (!row) throw new NotFoundException("父级分类不存在");
       cursor = row.parentId;
     }
   }
 
   async update(id: number, dto: Partial<Category>) {
     const category = await this.repo.findOne({ where: { id } });
-    if (!category) throw new NotFoundException('分类不存在');
+    if (!category) throw new NotFoundException("分类不存在");
     if (dto.slug !== undefined) category.slug = dto.slug;
     if (dto.name !== undefined) category.name = dto.name;
     if (dto.parentId !== undefined) {
@@ -94,16 +94,16 @@ export class CategoriesService {
 
   async remove(id: number) {
     const category = await this.repo.findOne({ where: { id } });
-    if (!category) throw new NotFoundException('分类不存在');
+    if (!category) throw new NotFoundException("分类不存在");
     // 先挂空子级，避免删除父级后子分类指向不存在的 parentId
     await this.repo.update({ parentId: id }, { parentId: null });
     try {
       return await this.repo.remove(category);
     } catch (e) {
       // 外键约束（tools/prompts/articles 引用 categories）：给出友好提示而非裸 500
-      if (isPgErrorWithCode(e, '23503')) {
+      if (isPgErrorWithCode(e, "23503")) {
         throw new ConflictException(
-          '该分类下仍有内容引用，无法删除，请先调整引用',
+          "该分类下仍有内容引用，无法删除，请先调整引用",
         );
       }
       throw e;

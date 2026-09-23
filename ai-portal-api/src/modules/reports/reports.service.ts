@@ -1,9 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Report } from '../../entities/report.entity';
-import { clampInt } from '../posts/posts.service';
-import { CreateReportDto } from './dto/create-report.dto';
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Report } from "../../entities/report.entity";
+import { clampInt } from "../posts/posts.service";
+import { CreateReportDto } from "./dto/create-report.dto";
 
 @Injectable()
 export class ReportsService {
@@ -19,7 +19,7 @@ export class ReportsService {
         targetType: dto.targetType,
         targetId: dto.targetId,
         reason: dto.reason,
-        status: 'open',
+        status: "open",
       },
     });
     if (existing) {
@@ -32,7 +32,7 @@ export class ReportsService {
         targetTitle: dto.targetTitle ?? null,
         reason: dto.reason,
         reporter: user?.username ?? null,
-        status: 'open',
+        status: "open",
       }),
     );
   }
@@ -41,8 +41,8 @@ export class ReportsService {
     const safePage = clampInt(page, 1, Number.MAX_SAFE_INTEGER);
     const safeLimit = clampInt(limit, 20, 100);
     const [items, total] = await this.repo.findAndCount({
-      where: status && status !== 'all' ? { status } : {},
-      order: { createdAt: 'DESC' },
+      where: status && status !== "all" ? { status } : {},
+      order: { createdAt: "DESC" },
       skip: (safePage - 1) * safeLimit,
       take: safeLimit,
     });
@@ -55,9 +55,9 @@ export class ReportsService {
   }
 
   /** 管理员标记处理结果 */
-  async resolve(id: number, status: 'open' | 'resolved') {
+  async resolve(id: number, status: "open" | "resolved") {
     const report = await this.repo.findOne({ where: { id } });
-    if (!report) throw new NotFoundException('举报不存在');
+    if (!report) throw new NotFoundException("举报不存在");
     report.status = status;
     return this.repo.save(report);
   }

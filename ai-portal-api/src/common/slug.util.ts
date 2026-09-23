@@ -4,10 +4,10 @@
 export function makeSlug(title: string): string {
   const base = title
     .toLowerCase()
-    .replace(/[^\p{L}\p{N}\s-]/gu, '')
+    .replace(/[^\p{L}\p{N}\s-]/gu, "")
     .trim()
-    .replace(/\s+/g, '-')
+    .replace(/\s+/g, "-")
     .slice(0, 60);
   const suffix = Math.random().toString(36).slice(2, 8);
-  return `${base || 'item'}-${suffix}`;
+  return `${base || "item"}-${suffix}`;
 }

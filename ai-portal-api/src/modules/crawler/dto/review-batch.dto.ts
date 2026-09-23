@@ -6,11 +6,11 @@ import {
   IsOptional,
   IsString,
   Min,
-} from 'class-validator';
+} from "class-validator";
 
 export class ReviewBatchDto {
-  @IsIn(['approve', 'reject'])
-  action!: 'approve' | 'reject';
+  @IsIn(["approve", "reject"])
+  action!: "approve" | "reject";
 
   /** 指定要处理的条目 id；不传则按 status 处理整批（受 limit 约束） */
   @IsOptional()

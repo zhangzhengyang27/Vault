@@ -8,13 +8,13 @@
  */
 
 export const NEWS_CATEGORY_KEYS = [
-  'models',
-  'product',
-  'business',
-  'research',
-  'policy',
-  'opensource',
-  'industry',
+  "models",
+  "product",
+  "business",
+  "research",
+  "policy",
+  "opensource",
+  "industry",
 ] as const;
 
 export type NewsCategoryKey = (typeof NEWS_CATEGORY_KEYS)[number];
@@ -27,7 +27,7 @@ export type NewsCategoryKey = (typeof NEWS_CATEGORY_KEYS)[number];
  */
 const STRONG_RULES: { key: NewsCategoryKey; patterns: RegExp[] }[] = [
   {
-    key: 'business',
+    key: "business",
     patterns: [
       /融资/,
       /收购/,
@@ -41,11 +41,11 @@ const STRONG_RULES: { key: NewsCategoryKey; patterns: RegExp[] }[] = [
     ],
   },
   {
-    key: 'policy',
+    key: "policy",
     patterns: [/监管/, /法案/, /立法/, /合规/, /欧盟/, /政策/, /版权/, /审查/],
   },
   {
-    key: 'research',
+    key: "research",
     patterns: [
       /论文/,
       /\barxiv\b/i,
@@ -58,11 +58,11 @@ const STRONG_RULES: { key: NewsCategoryKey; patterns: RegExp[] }[] = [
     ],
   },
   {
-    key: 'opensource',
+    key: "opensource",
     patterns: [/开源/, /开放权重/, /\bgithub\b/i, /\bapache\b/i, /\bmit\b/i],
   },
   {
-    key: 'models',
+    key: "models",
     patterns: [
       /\bgpt[-\s]?\d/i,
       /\bclaude\b/i,
@@ -81,7 +81,7 @@ const STRONG_RULES: { key: NewsCategoryKey; patterns: RegExp[] }[] = [
     ],
   },
   {
-    key: 'product',
+    key: "product",
     patterns: [
       /发布/,
       /上线/,
@@ -97,15 +97,15 @@ const STRONG_RULES: { key: NewsCategoryKey; patterns: RegExp[] }[] = [
 ];
 
 const WEAK_RULES: { key: NewsCategoryKey; patterns: RegExp[] }[] = [
-  { key: 'research', patterns: [/研究/, /实验/, /报告/] },
+  { key: "research", patterns: [/研究/, /实验/, /报告/] },
   {
-    key: 'models',
+    key: "models",
     patterns: [/模型/, /多模态/, /推理/, /智能体/, /\bagent\b/i, /\bllm\b/i],
   },
-  { key: 'product', patterns: [/版本/, /更新/, /工具/, /功能/] },
-  { key: 'business', patterns: [/商业/, /合作/, /市场/, /美元/] },
-  { key: 'policy', patterns: [/安全/, /风险/] },
-  { key: 'opensource', patterns: [/社区/, /\bweight\b/i] },
+  { key: "product", patterns: [/版本/, /更新/, /工具/, /功能/] },
+  { key: "business", patterns: [/商业/, /合作/, /市场/, /美元/] },
+  { key: "policy", patterns: [/安全/, /风险/] },
+  { key: "opensource", patterns: [/社区/, /\bweight\b/i] },
 ];
 
 function matchCategoryKey(text: string): NewsCategoryKey | null {
@@ -132,6 +132,6 @@ export interface NewsClassifyInput {
 export function classifyNewsCategory(
   input: NewsClassifyInput,
 ): NewsCategoryKey {
-  const text = `${input.title} ${input.summary ?? ''} ${(input.tags ?? []).join(' ')}`;
-  return matchCategoryKey(text) ?? 'industry';
+  const text = `${input.title} ${input.summary ?? ""} ${(input.tags ?? []).join(" ")}`;
+  return matchCategoryKey(text) ?? "industry";
 }

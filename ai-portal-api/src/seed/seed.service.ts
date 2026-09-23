@@ -1,30 +1,30 @@
-import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Category } from '../entities/category.entity';
-import { Tool } from '../entities/tool.entity';
-import { Prompt } from '../entities/prompt.entity';
-import { Article } from '../entities/article.entity';
-import { News } from '../entities/news.entity';
-import { Repo } from '../entities/repo.entity';
-import { Mcp } from '../entities/mcp.entity';
-import { Resource } from '../entities/resource.entity';
-import { Post } from '../entities/post.entity';
-import { User } from '../entities/user.entity';
-import { Source, SourceType } from '../entities/source.entity';
-import * as bcrypt from 'bcryptjs';
+import { Injectable, Logger, OnApplicationBootstrap } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Category } from "../entities/category.entity";
+import { Tool } from "../entities/tool.entity";
+import { Prompt } from "../entities/prompt.entity";
+import { Article } from "../entities/article.entity";
+import { News } from "../entities/news.entity";
+import { Repo } from "../entities/repo.entity";
+import { Mcp } from "../entities/mcp.entity";
+import { Resource } from "../entities/resource.entity";
+import { Post } from "../entities/post.entity";
+import { User } from "../entities/user.entity";
+import { Source, SourceType } from "../entities/source.entity";
+import * as bcrypt from "bcryptjs";
 
-import categoriesJson from './data/categories.json';
-import sourcesJson from './data/sources.json';
-import toolsJson from './data/tools.json';
-import promptsJson from './data/prompts.json';
-import newsJson from './data/news.json';
-import reposJson from './data/repos.json';
-import mcpsJson from './data/mcps.json';
-import skillsJson from './data/skills.json';
-import resourcesJson from './data/resources.json';
-import postsJson from './data/posts.json';
-import { classifyNewsCategory } from '../modules/news/news-categories';
+import categoriesJson from "./data/categories.json";
+import sourcesJson from "./data/sources.json";
+import toolsJson from "./data/tools.json";
+import promptsJson from "./data/prompts.json";
+import newsJson from "./data/news.json";
+import reposJson from "./data/repos.json";
+import mcpsJson from "./data/mcps.json";
+import skillsJson from "./data/skills.json";
+import resourcesJson from "./data/resources.json";
+import postsJson from "./data/posts.json";
+import { classifyNewsCategory } from "../modules/news/news-categories";
 
 /** 自动采集管道默认数据源（白名单），可在管理后台增删改 */
 export type SourceSeed = {
@@ -117,7 +117,7 @@ export class SeedService implements OnApplicationBootstrap {
   ) {}
 
   async onApplicationBootstrap() {
-    this.logger.log('Checking seed data…');
+    this.logger.log("Checking seed data…");
 
     const categoryMap = new Map<string, Category>();
     const existingCategories = await this.categories.find();
@@ -166,8 +166,8 @@ export class SeedService implements OnApplicationBootstrap {
       const exists = await this.news.findOne({ where: { slug: n.slug } });
       if (!exists) {
         // 写入时打分类标（与爬虫/后台路径共用同一套规则）
-        const title = typeof n.title === 'string' ? n.title : '';
-        const summary = typeof n.summary === 'string' ? n.summary : '';
+        const title = typeof n.title === "string" ? n.title : "";
+        const summary = typeof n.summary === "string" ? n.summary : "";
         await this.news.save(
           this.news.create({
             ...n,
@@ -190,7 +190,7 @@ export class SeedService implements OnApplicationBootstrap {
     for (const m of seedMcps) {
       const exists = await this.mcps.findOne({ where: { slug: m.slug } });
       if (!exists) {
-        await this.mcps.save(this.mcps.create({ ...m, type: m.type ?? 'mcp' }));
+        await this.mcps.save(this.mcps.create({ ...m, type: m.type ?? "mcp" }));
       }
     }
 
@@ -212,20 +212,20 @@ export class SeedService implements OnApplicationBootstrap {
     // demo 账号悄悄提回 admin——否则任何部署空库即等于开放已知口令的管理后台。
     // 生产环境（NODE_ENV=production）一律拒绝，防止误配把已知口令账号带上线
     if (
-      process.env.SEED_DEMO === 'true' &&
-      process.env.NODE_ENV !== 'production'
+      process.env.SEED_DEMO === "true" &&
+      process.env.NODE_ENV !== "production"
     ) {
       if ((await this.users.count()) === 0) {
         await this.users.save(
           this.users.create({
-            username: 'demo',
-            email: 'demo@example.com',
-            passwordHash: await bcrypt.hash('demo1234', 10),
-            role: 'admin',
+            username: "demo",
+            email: "demo@example.com",
+            passwordHash: await bcrypt.hash("demo1234", 10),
+            role: "admin",
           }),
         );
         this.logger.log(
-          '已创建演示管理员 demo（SEED_DEMO=true，请尽快修改密码）',
+          "已创建演示管理员 demo（SEED_DEMO=true，请尽快修改密码）",
         );
       }
     }
@@ -238,6 +238,6 @@ export class SeedService implements OnApplicationBootstrap {
       }
     }
 
-    this.logger.log('Seed check completed.');
+    this.logger.log("Seed check completed.");
   }
 }

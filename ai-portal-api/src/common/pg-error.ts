@@ -1,4 +1,4 @@
-import { QueryFailedError } from 'typeorm';
+import { QueryFailedError } from "typeorm";
 
 /**
  * 判断是否为指定 SQLSTATE 的 PostgreSQL 错误。

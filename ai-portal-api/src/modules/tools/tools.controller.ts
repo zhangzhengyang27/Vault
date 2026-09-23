@@ -8,26 +8,26 @@ import {
   Post,
   Query,
   UseGuards,
-} from '@nestjs/common';
-import { ToolsService } from './tools.service';
-import { CreateToolDto } from './dto/create-tool.dto';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { RolesGuard } from '../../auth/roles.guard';
-import { Roles } from '../../auth/roles.decorator';
+} from "@nestjs/common";
+import { ToolsService } from "./tools.service";
+import { CreateToolDto } from "./dto/create-tool.dto";
+import { JwtAuthGuard } from "../../auth/jwt-auth.guard";
+import { RolesGuard } from "../../auth/roles.guard";
+import { Roles } from "../../auth/roles.decorator";
 
-@Controller('tools')
+@Controller("tools")
 export class ToolsController {
   constructor(private readonly toolsService: ToolsService) {}
 
   @Get()
   findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('category') category?: string,
-    @Query('tag') tag?: string,
-    @Query('q') q?: string,
-    @Query('free') free?: string,
-    @Query('sort') sort?: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+    @Query("category") category?: string,
+    @Query("tag") tag?: string,
+    @Query("q") q?: string,
+    @Query("free") free?: string,
+    @Query("sort") sort?: string,
   ) {
     return this.toolsService.findAll({
       page: page ? Number(page) : 1,
@@ -35,34 +35,34 @@ export class ToolsController {
       category,
       tag,
       q,
-      free: free === '1' || free === 'true',
+      free: free === "1" || free === "true",
       sort,
     });
   }
 
-  @Get(':slug')
-  findOne(@Param('slug') slug: string) {
+  @Get(":slug")
+  findOne(@Param("slug") slug: string) {
     return this.toolsService.findOne(slug);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles("admin")
   create(@Body() body: CreateToolDto) {
     return this.toolsService.create(body);
   }
 
-  @Patch(':slug')
+  @Patch(":slug")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  update(@Param('slug') slug: string, @Body() body: Partial<CreateToolDto>) {
+  @Roles("admin")
+  update(@Param("slug") slug: string, @Body() body: Partial<CreateToolDto>) {
     return this.toolsService.update(slug, body);
   }
 
-  @Delete(':slug')
+  @Delete(":slug")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  remove(@Param('slug') slug: string) {
+  @Roles("admin")
+  remove(@Param("slug") slug: string) {
     return this.toolsService.remove(slug);
   }
 }

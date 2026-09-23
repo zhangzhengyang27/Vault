@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Comment } from '../entities/comment.entity';
-import { Favorite } from '../entities/favorite.entity';
-import { Notification } from '../entities/notification.entity';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Comment } from "../entities/comment.entity";
+import { Favorite } from "../entities/favorite.entity";
+import { Notification } from "../entities/notification.entity";
 
 /**
  * 内容删除时的子行清理：comments / favorites / notifications 通过

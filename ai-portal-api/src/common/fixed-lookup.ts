@@ -1,4 +1,4 @@
-import { isIP } from 'net';
+import { isIP } from "net";
 
 export type FixedLookupCallback = (
   err: NodeJS.ErrnoException | null,
@@ -23,7 +23,7 @@ export function buildFixedLookup(allowedIps: string[]) {
   }));
 
   return (_hostname: string, opts: unknown, cb: FixedLookupCallback): void => {
-    if (opts && typeof opts === 'object' && (opts as { all?: boolean }).all) {
+    if (opts && typeof opts === "object" && (opts as { all?: boolean }).all) {
       cb(null, list);
       return;
     }

@@ -4,7 +4,7 @@
  * 无法被 pg_trgm GIN 索引服务，会退化为全表扫描。
  */
 export function escapeLike(input?: string | null): string {
-  return (input ?? '').replace(/[\\%_]/g, '\\$&');
+  return (input ?? "").replace(/[\\%_]/g, "\\$&");
 }
 
 /** ILIKE 查询拼接用 ESCAPE 子句（运行时值为单个反斜杠，Postgres 标准字符串语义下合法） */

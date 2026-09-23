@@ -5,36 +5,36 @@ import {
   Logger,
   NotFoundException,
   ServiceUnavailableException,
-} from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
-import * as crypto from 'crypto';
-import { isIP } from 'net';
-import { lookup } from 'dns/promises';
-import { URL } from 'url';
-import { Agent as HttpAgent, request as httpRequest } from 'http';
-import { Agent as HttpsAgent, request as httpsRequest } from 'https';
-import Parser from 'rss-parser';
-import sanitizeHtmlLib from 'sanitize-html';
-import { Source } from '../../entities/source.entity';
-import { CrawlLog } from '../../entities/crawl-log.entity';
-import { News } from '../../entities/news.entity';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { Repo } from '../../entities/repo.entity';
-import { Article } from '../../entities/article.entity';
-import { Mcp } from '../../entities/mcp.entity';
-import { Resource } from '../../entities/resource.entity';
-import { NotificationsService } from '../notifications/notifications.service';
-import { classifyNewsCategory } from '../news/news-categories';
+} from "@nestjs/common";
+import { Cron } from "@nestjs/schedule";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, In, Repository } from "typeorm";
+import * as crypto from "crypto";
+import { isIP } from "net";
+import { lookup } from "dns/promises";
+import { URL } from "url";
+import { Agent as HttpAgent, request as httpRequest } from "http";
+import { Agent as HttpsAgent, request as httpsRequest } from "https";
+import Parser from "rss-parser";
+import sanitizeHtmlLib from "sanitize-html";
+import { Source } from "../../entities/source.entity";
+import { CrawlLog } from "../../entities/crawl-log.entity";
+import { News } from "../../entities/news.entity";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { Repo } from "../../entities/repo.entity";
+import { Article } from "../../entities/article.entity";
+import { Mcp } from "../../entities/mcp.entity";
+import { Resource } from "../../entities/resource.entity";
+import { NotificationsService } from "../notifications/notifications.service";
+import { classifyNewsCategory } from "../news/news-categories";
 import {
   FirecrawlService,
   type FirecrawlScrapeResult,
-} from './firecrawl.service';
-import { buildFixedLookup } from '../../common/fixed-lookup';
-import { CreateSourceDto } from './dto/create-source.dto';
-import { UpdateSourceDto } from './dto/update-source.dto';
+} from "./firecrawl.service";
+import { buildFixedLookup } from "../../common/fixed-lookup";
+import { CreateSourceDto } from "./dto/create-source.dto";
+import { UpdateSourceDto } from "./dto/update-source.dto";
 
 /**
  * 审核队列条目的通用形状。
@@ -64,11 +64,11 @@ type RssItem = {
 };
 
 const INTERVAL_CRON: Record<string, string> = {
-  minutely: '0 * * * * *',
-  hourly: '0 0 * * * *',
-  daily: '0 0 6 * * *',
+  minutely: "0 * * * * *",
+  hourly: "0 0 * * * *",
+  daily: "0 0 6 * * *",
   // 周一 4 点：避开 daily 的 6 点整点，防止同一天两个调度重复抓同一批源
-  weekly: '0 0 4 * * 1',
+  weekly: "0 0 4 * * 1",
 };
 
 /**
@@ -84,9 +84,9 @@ export class CrawlerService {
   private readonly parser = new Parser({
     timeout: 15000,
     headers: {
-      'User-Agent':
-        'Mozilla/5.0 (compatible; AiPortalCrawler/1.0; +https://example.com)',
-      Accept: 'application/rss+xml, application/atom+xml, application/xml',
+      "User-Agent":
+        "Mozilla/5.0 (compatible; AiPortalCrawler/1.0; +https://example.com)",
+      Accept: "application/rss+xml, application/atom+xml, application/xml",
     },
   });
 
@@ -96,7 +96,7 @@ export class CrawlerService {
   /** 判断 IP 是否为私网/环回/链路本地/保留地址（SSRF 防护） */
   private isBlockedIp(ip: string): boolean {
     if (isIP(ip) === 4) {
-      const parts = ip.split('.').map(Number);
+      const parts = ip.split(".").map(Number);
       const [a, b] = parts;
       return (
         a === 0 ||
@@ -123,16 +123,16 @@ export class CrawlerService {
               parseInt(mapped[2], 16) & 0xff,
               parseInt(mapped[3], 16) >> 8,
               parseInt(mapped[3], 16) & 0xff,
-            ].join('.');
+            ].join(".");
         return this.isBlockedIp(v4);
       }
       return (
-        lower === '::1' ||
-        lower === '::' ||
-        lower.startsWith('fc') ||
-        lower.startsWith('fd') || // 唯一本地地址 ULA fc00::/7
-        lower.startsWith('fe80:') || // 链路本地 fe80::/10
-        lower.startsWith('::ffff:') // 其余映射形式（含 169.254 等点分变体）
+        lower === "::1" ||
+        lower === "::" ||
+        lower.startsWith("fc") ||
+        lower.startsWith("fd") || // 唯一本地地址 ULA fc00::/7
+        lower.startsWith("fe80:") || // 链路本地 fe80::/10
+        lower.startsWith("::ffff:") // 其余映射形式（含 169.254 等点分变体）
       );
     }
     // 非 IP 地址不拦截（调用方已通过 dns.lookup 解析，理论上不会走到这里）
@@ -151,15 +151,15 @@ export class CrawlerService {
     } catch {
       throw new BadRequestException(`非法 URL: ${rawUrl}`);
     }
-    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
       throw new BadRequestException(`不支持的协议: ${parsed.protocol}`);
     }
     const hostname = parsed.hostname;
     // 本地主机名直接拒绝
     if (
-      hostname === 'localhost' ||
-      hostname === '127.0.0.1' ||
-      hostname === '::1'
+      hostname === "localhost" ||
+      hostname === "127.0.0.1" ||
+      hostname === "::1"
     ) {
       throw new BadRequestException(`禁止访问本地地址: ${hostname}`);
     }
@@ -183,7 +183,7 @@ export class CrawlerService {
    * 堵住「校验时解析一次、真正请求时又被 rebinding 到内网 IP」的 TOCTOU 窗口。
    */
   private fetchFeed(url: string, allowedIps: string[]): Promise<string> {
-    const isHttps = new URL(url).protocol === 'https:';
+    const isHttps = new URL(url).protocol === "https:";
     const AgentCtor = isHttps ? HttpsAgent : HttpAgent;
     if (allowedIps.length === 0) {
       return Promise.reject(new Error(`没有可用的已校验地址: ${url}`));
@@ -201,10 +201,10 @@ export class CrawlerService {
           agent,
           timeout: 15000,
           headers: {
-            'User-Agent':
-              'Mozilla/5.0 (compatible; AiPortalCrawler/1.0; +https://example.com)',
+            "User-Agent":
+              "Mozilla/5.0 (compatible; AiPortalCrawler/1.0; +https://example.com)",
             Accept:
-              'application/rss+xml, application/atom+xml, application/xml',
+              "application/rss+xml, application/atom+xml, application/xml",
           },
         },
         (res) => {
@@ -216,20 +216,20 @@ export class CrawlerService {
           }
           const chunks: Buffer[] = [];
           let size = 0;
-          res.on('data', (chunk: Buffer) => {
+          res.on("data", (chunk: Buffer) => {
             size += chunk.length;
             if (size > 10 * 1024 * 1024) {
-              req.destroy(new Error('响应体超过 10MB，已中断'));
+              req.destroy(new Error("响应体超过 10MB，已中断"));
               return;
             }
             chunks.push(chunk);
           });
-          res.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
-          res.on('error', reject);
+          res.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+          res.on("error", reject);
         },
       );
-      req.on('timeout', () => req.destroy(new Error('请求超时')));
-      req.on('error', reject);
+      req.on("timeout", () => req.destroy(new Error("请求超时")));
+      req.on("error", reject);
     });
   }
 
@@ -292,14 +292,14 @@ export class CrawlerService {
   /* ------------------------- 定时调度 ------------------------- */
 
   // 每天凌晨清理 30 天前的采集日志，防止日志表无限膨胀
-  @Cron('0 30 3 * * *')
+  @Cron("0 30 3 * * *")
   async cleanOldLogs() {
     try {
       const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
       const result = await this.logRepo
-        .createQueryBuilder('log')
+        .createQueryBuilder("log")
         .delete()
-        .where('log.createdAt < :cutoff', { cutoff })
+        .where("log.createdAt < :cutoff", { cutoff })
         .execute();
       if (result.affected) {
         this.logger.log(`已清理 ${result.affected} 条过期采集日志`);
@@ -311,29 +311,29 @@ export class CrawlerService {
 
   @Cron(INTERVAL_CRON.minutely)
   async cronMinutely() {
-    await this.crawlByIntervals(['minutely']);
+    await this.crawlByIntervals(["minutely"]);
   }
 
   @Cron(INTERVAL_CRON.hourly)
   async cronHourly() {
-    await this.crawlByIntervals(['minutely', 'hourly']);
+    await this.crawlByIntervals(["minutely", "hourly"]);
   }
 
   @Cron(INTERVAL_CRON.daily)
   async cronDaily() {
-    await this.crawlByIntervals(['minutely', 'hourly', 'daily']);
+    await this.crawlByIntervals(["minutely", "hourly", "daily"]);
   }
 
   @Cron(INTERVAL_CRON.weekly)
   async cronWeekly() {
-    await this.crawlByIntervals(['minutely', 'hourly', 'daily', 'weekly']);
+    await this.crawlByIntervals(["minutely", "hourly", "daily", "weekly"]);
   }
 
   private async crawlByIntervals(intervals: string[]) {
     // 分布式锁：多实例部署时避免采集任务重叠
     const lock = await this.acquireDistributedLock();
     if (!lock) {
-      this.logger.warn('采集任务正在运行（其他实例持有锁），跳过本次调度');
+      this.logger.warn("采集任务正在运行（其他实例持有锁），跳过本次调度");
       return;
     }
     try {
@@ -363,7 +363,7 @@ export class CrawlerService {
   async crawlAll() {
     const lock = await this.acquireDistributedLock();
     if (!lock) {
-      return { skipped: true, message: '采集任务正在运行（其他实例持有锁）' };
+      return { skipped: true, message: "采集任务正在运行（其他实例持有锁）" };
     }
     try {
       const sources = await this.sourceRepo.find({
@@ -382,7 +382,7 @@ export class CrawlerService {
             newCount: r.newCount,
           });
         } catch {
-          results.push({ sourceId: source.id, status: 'failed', newCount: 0 });
+          results.push({ sourceId: source.id, status: "failed", newCount: 0 });
         }
       }
       return results;
@@ -403,10 +403,10 @@ export class CrawlerService {
     const lock = await this.acquireDistributedLock(sourceLockKey);
     if (!lock) {
       return {
-        status: 'skipped',
+        status: "skipped",
         newCount: 0,
         duplicateCount: 0,
-        message: '该数据源的采集正在进行中，请稍后再试',
+        message: "该数据源的采集正在进行中，请稍后再试",
       };
     }
     try {
@@ -419,7 +419,7 @@ export class CrawlerService {
   private async doCrawlSource(source: Source) {
     const sourceId = source.id;
     const startedAt = Date.now();
-    let status = 'success';
+    let status = "success";
     let error: string | null = null;
     let fetchedCount = 0;
     let newCount = 0;
@@ -456,7 +456,7 @@ export class CrawlerService {
         }
       }
     } catch (err) {
-      status = 'failed';
+      status = "failed";
       error = (err as Error).message;
       this.logger.error(
         `采集数据源 ${source.name} (${source.url}) 失败: ${error}`,
@@ -466,9 +466,9 @@ export class CrawlerService {
     // 更新数据源统计与日志（计数用 SQL 自增，避免并发下基于过期快照的丢更新）
     await this.sourceRepo.update(sourceId, {
       lastCrawledAt: new Date(),
-      lastError: error ?? '',
-      status: status === 'failed' ? 'error' : 'active',
-      ...(status === 'failed'
+      lastError: error ?? "",
+      status: status === "failed" ? "error" : "active",
+      ...(status === "failed"
         ? { failCount: () => '"failCount" + 1' }
         : { successCount: () => '"successCount" + 1' }),
     });
@@ -479,11 +479,11 @@ export class CrawlerService {
         sourceName: source.name,
         sourceType: source.sourceType,
         status:
-          status === 'failed'
-            ? 'failed'
+          status === "failed"
+            ? "failed"
             : duplicateCount > 0 && newCount === 0
-              ? 'partial'
-              : 'success',
+              ? "partial"
+              : "success",
         fetchedCount,
         newCount,
         duplicateCount,
@@ -501,7 +501,7 @@ export class CrawlerService {
   /* ------------------------- 清洗与去重 ------------------------- */
 
   private cleanTitle(title: string): string {
-    return title.replace(/\s+/g, ' ').trim();
+    return title.replace(/\s+/g, " ").trim();
   }
 
   /** 预取指定内容类型最近的标题集合用于批内去重（限制条数避免内存膨胀，唯一约束兜底） */
@@ -510,37 +510,37 @@ export class CrawlerService {
     const TAKE = 5000;
     try {
       switch (sourceType) {
-        case 'news': {
+        case "news": {
           const rows = await this.newsRepo.find({
             select: { title: true },
-            order: { id: 'DESC' },
+            order: { id: "DESC" },
             take: TAKE,
           });
           for (const r of rows) if (r.title) set.add(r.title);
           break;
         }
-        case 'tool': {
+        case "tool": {
           const rows = await this.toolRepo.find({
             select: { name: true },
-            order: { id: 'DESC' },
+            order: { id: "DESC" },
             take: TAKE,
           });
           for (const r of rows) if (r.name) set.add(r.name);
           break;
         }
-        case 'prompt': {
+        case "prompt": {
           const rows = await this.promptRepo.find({
             select: { title: true },
-            order: { id: 'DESC' },
+            order: { id: "DESC" },
             take: TAKE,
           });
           for (const r of rows) if (r.title) set.add(r.title);
           break;
         }
-        case 'github': {
+        case "github": {
           const rows = await this.repoRepo.find({
             select: { name: true },
-            order: { id: 'DESC' },
+            order: { id: "DESC" },
             take: TAKE,
           });
           for (const r of rows) if (r.name) set.add(r.name);
@@ -549,7 +549,7 @@ export class CrawlerService {
         default: {
           const rows = await this.articleRepo.find({
             select: { title: true },
-            order: { id: 'DESC' },
+            order: { id: "DESC" },
             take: TAKE,
           });
           for (const r of rows) if (r.title) set.add(r.title);
@@ -564,26 +564,26 @@ export class CrawlerService {
   private makeSlug(title: string): string {
     const base = title
       .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu, '')
+      .replace(/[^\p{L}\p{N}\s-]/gu, "")
       .trim()
-      .replace(/\s+/g, '-')
+      .replace(/\s+/g, "-")
       .slice(0, 60);
     const hash = crypto
-      .createHash('sha1')
+      .createHash("sha1")
       .update(title)
-      .digest('hex')
+      .digest("hex")
       .slice(0, 8);
-    return `${base || 'item'}-${hash}`;
+    return `${base || "item"}-${hash}`;
   }
 
   /** 摘要：截取正文前 150 字并标注「AI 摘要」（接入大模型后可替换为结构化摘要） */
   private generateSummary(raw?: string): string {
-    if (!raw) return '【AI 摘要】暂无正文内容';
+    if (!raw) return "【AI 摘要】暂无正文内容";
     const text = raw
-      .replace(/<[^>]+>/g, ' ')
-      .replace(/\s+/g, ' ')
+      .replace(/<[^>]+>/g, " ")
+      .replace(/\s+/g, " ")
       .trim();
-    const summary = text.slice(0, 150) + (text.length > 150 ? '…' : '');
+    const summary = text.slice(0, 150) + (text.length > 150 ? "…" : "");
     return `【AI 摘要】${summary}`;
   }
 
@@ -592,10 +592,10 @@ export class CrawlerService {
     if (!link) return false;
     try {
       const u = new URL(link);
-      if (u.hostname !== 'github.com' && u.hostname !== 'www.github.com') {
+      if (u.hostname !== "github.com" && u.hostname !== "www.github.com") {
         return false;
       }
-      return u.pathname.split('/').filter(Boolean).length === 2;
+      return u.pathname.split("/").filter(Boolean).length === 2;
     } catch {
       return false;
     }
@@ -603,31 +603,31 @@ export class CrawlerService {
 
   /** HTML 清洗：allowlist 白名单，剥离脚本/事件属性/javascript: 链接，防止存储型 XSS */
   private sanitizeHtml(raw?: string): string {
-    if (!raw) return '';
+    if (!raw) return "";
     return sanitizeHtmlLib(raw, {
       allowedTags: [
         ...sanitizeHtmlLib.defaults.allowedTags,
-        'img',
-        'figure',
-        'figcaption',
-        'mark',
-        'del',
-        'ins',
+        "img",
+        "figure",
+        "figcaption",
+        "mark",
+        "del",
+        "ins",
       ],
       allowedAttributes: {
         ...sanitizeHtmlLib.defaults.allowedAttributes,
-        img: ['src', 'alt', 'title', 'loading'],
-        a: ['href', 'name', 'target', 'title', 'rel'],
+        img: ["src", "alt", "title", "loading"],
+        a: ["href", "name", "target", "title", "rel"],
       },
-      allowedSchemes: ['http', 'https', 'mailto'],
+      allowedSchemes: ["http", "https", "mailto"],
       // 外链强制加 rel，防钓鱼与 opener 攻击
       transformTags: {
-        a: sanitizeHtmlLib.simpleTransform('a', {
-          rel: 'noopener noreferrer nofollow',
-          target: '_blank',
+        a: sanitizeHtmlLib.simpleTransform("a", {
+          rel: "noopener noreferrer nofollow",
+          target: "_blank",
         }),
       },
-      disallowedTagsMode: 'discard',
+      disallowedTagsMode: "discard",
     }).trim();
   }
 
@@ -648,11 +648,11 @@ export class CrawlerService {
     const slug = this.makeSlug(title);
     const summary = this.generateSummary(item.content ?? item.contentSnippet);
     const content =
-      this.sanitizeHtml(item.content ?? item.contentSnippet ?? '') || undefined;
+      this.sanitizeHtml(item.content ?? item.contentSnippet ?? "") || undefined;
     const tags = this.mapTags(item.categories);
 
     switch (sourceType) {
-      case 'news':
+      case "news":
         return this.saveSafe(() =>
           this.newsRepo.save(
             this.newsRepo.create({
@@ -664,46 +664,46 @@ export class CrawlerService {
               sourceUrl: item.link || undefined,
               tags: tags.length ? tags : undefined,
               category: classifyNewsCategory({ title, summary, tags }),
-              status: 'pending',
-              phase: 'crawl',
+              status: "pending",
+              phase: "crawl",
             }),
           ),
         );
-      case 'tool':
+      case "tool":
         return this.saveSafe(() =>
           this.toolRepo.save(
             this.toolRepo.create({
               slug,
               name: title,
               description: summary,
-              content: content ?? '',
+              content: content ?? "",
               tags,
-              status: 'pending',
-              phase: 'crawl',
+              status: "pending",
+              phase: "crawl",
             }),
           ),
         );
-      case 'prompt':
+      case "prompt":
         return this.saveSafe(() =>
           this.promptRepo.save(
             this.promptRepo.create({
               slug,
               title,
               description: summary,
-              content: content ?? '',
-              source: 'crawl',
-              status: 'pending',
-              phase: 'crawl',
+              content: content ?? "",
+              source: "crawl",
+              status: "pending",
+              phase: "crawl",
             }),
           ),
         );
-      case 'github': {
+      case "github": {
         // github 类型的语义是「仓库」：只收 github.com/<owner>/<repo> 主页链接的条目。
         // RSS 博客（如 GitHub Blog）没有仓库链接，混进 repos 表会成为无 stars 的
         // 伪仓库污染 /github 列表（2026-09-14 已清理过一批，见 sql/2026-09-14-github-cleanup.sql）。
         if (!this.isRepoLink(item.link)) {
           this.logger.warn(
-            `github 源包含非仓库链接，已跳过: ${title} (${item.link ?? '无链接'})`,
+            `github 源包含非仓库链接，已跳过: ${title} (${item.link ?? "无链接"})`,
           );
           return false;
         }
@@ -715,8 +715,8 @@ export class CrawlerService {
               slug,
               name: title,
               description: summary,
-              phase: 'crawl',
-              status: 'pending', // 采集内容默认进审核队列，与 news/tool/prompt 一致
+              phase: "crawl",
+              status: "pending", // 采集内容默认进审核队列，与 news/tool/prompt 一致
             }),
           ),
         );
@@ -729,8 +729,8 @@ export class CrawlerService {
               title,
               summary,
               content,
-              status: 'pending',
-              phase: 'crawl',
+              status: "pending",
+              phase: "crawl",
             }),
           ),
         );
@@ -750,7 +750,7 @@ export class CrawlerService {
   /** 分类打标：RSS categories → 站内标签 */
   private mapTags(categories?: string[]): string[] {
     if (!categories || categories.length === 0) return [];
-    const blacklist = new Set(['ai', '人工智能', 'news']);
+    const blacklist = new Set(["ai", "人工智能", "news"]);
     return categories
       .map((c) => c.trim())
       .filter((c) => c.length <= 20 && !blacklist.has(c.toLowerCase()))
@@ -760,13 +760,13 @@ export class CrawlerService {
   /* ------------------------- 管理查询 ------------------------- */
 
   async findAllSources() {
-    return this.sourceRepo.find({ order: { id: 'DESC' } });
+    return this.sourceRepo.find({ order: { id: "DESC" } });
   }
 
   async findLogs(limit = 50) {
     // 钳制到 [1, 200]，防止 ?limit=99999999 拖垮数据库或 NaN/负数产生非法 SQL
     const safe = Math.min(200, Math.max(1, Math.floor(Number(limit)) || 50));
-    return this.logRepo.find({ order: { id: 'DESC' }, take: safe });
+    return this.logRepo.find({ order: { id: "DESC" }, take: safe });
   }
 
   async createSource(dto: CreateSourceDto) {
@@ -802,7 +802,7 @@ export class CrawlerService {
     if (!repo) throw new BadRequestException(`不支持的内容类型: ${sourceType}`);
     return repo.find({
       where: { status },
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
       take: 100,
     });
   }
@@ -812,7 +812,7 @@ export class CrawlerService {
   async reviewItem(
     sourceType: string,
     id: number,
-    action: 'approve' | 'reject',
+    action: "approve" | "reject",
   ): Promise<boolean> {
     const targets: Record<string, Repository<any>> = {
       news: this.newsRepo,
@@ -828,20 +828,20 @@ export class CrawlerService {
     // 仅允许审核 pending 条目：重复 approve 会向订阅者重复推送，
     // 对已发布内容 reject 则会把正式内容静默翻成 rejected
     const item = (await repo.findOne({
-      where: { id, status: 'pending' },
+      where: { id, status: "pending" },
     })) as ReviewableItem | null;
     if (!item) return false;
-    item.status = action === 'approve' ? 'published' : 'rejected';
+    item.status = action === "approve" ? "published" : "rejected";
     await repo.save(item);
 
     // 审核通过 = 正式发布，触发订阅匹配推送（失败不影响审核结果）
-    if (action === 'approve') {
+    if (action === "approve") {
       try {
         const rawTags = item.tags;
         await this.notificationsService.notifyContentPublished({
-          type: sourceType === 'github' ? 'repo' : sourceType,
+          type: sourceType === "github" ? "repo" : sourceType,
           id: item.id,
-          title: item.title ?? item.name ?? '',
+          title: item.title ?? item.name ?? "",
           slug: item.slug ?? null,
           description: item.description ?? item.summary ?? null,
           tags: Array.isArray(rawTags) ? (rawTags as string[]) : null,
@@ -867,7 +867,7 @@ export class CrawlerService {
    */
   async reviewBatch(
     sourceType: string,
-    action: 'approve' | 'reject',
+    action: "approve" | "reject",
     options: { ids?: number[]; status?: string; limit?: number } = {},
   ): Promise<{ updated: number; remaining: number }> {
     const targets: Record<string, Repository<any>> = {
@@ -882,8 +882,8 @@ export class CrawlerService {
     const repo = targets[sourceType];
     if (!repo) throw new BadRequestException(`不支持的内容类型: ${sourceType}`);
 
-    const status = options.status ?? 'pending';
-    const next = action === 'approve' ? 'published' : 'rejected';
+    const status = options.status ?? "pending";
+    const next = action === "approve" ? "published" : "rejected";
     // 单次上限，避免一次请求改动过多数据造成长事务
     const limit = Math.min(Math.max(options.limit ?? 500, 1), 2000);
 
@@ -898,7 +898,7 @@ export class CrawlerService {
       const rows = (await repo.find({
         where: { status },
         select: { id: true },
-        order: { id: 'DESC' },
+        order: { id: "DESC" },
         take: limit,
       })) as { id: number }[];
       ids = rows.map((r) => r.id);
@@ -909,7 +909,7 @@ export class CrawlerService {
     }
 
     // 批量翻转同样只允许 pending → published/rejected，防止误伤已发布内容
-    await repo.update({ id: In(ids), status: 'pending' }, { status: next });
+    await repo.update({ id: In(ids), status: "pending" }, { status: next });
 
     const remaining = await repo.count({ where: { status } });
     this.logger.log(
@@ -935,12 +935,12 @@ export class CrawlerService {
   async scrapeWebpage(url: string): Promise<FirecrawlScrapeResult> {
     if (!this.firecrawl.isAvailable()) {
       throw new ServiceUnavailableException(
-        'Firecrawl 未配置：请在 .env 中设置 FIRECRAWL_API_KEY 或 FIRECRAWL_BASE_URL',
+        "Firecrawl 未配置：请在 .env 中设置 FIRECRAWL_API_KEY 或 FIRECRAWL_BASE_URL",
       );
     }
     await this.assertSafeSourceUrl(url);
     const result = await this.firecrawl.scrapeUrl(url, {
-      formats: ['markdown', 'html'],
+      formats: ["markdown", "html"],
       onlyMainContent: true,
     });
     this.logger.log(
@@ -958,7 +958,7 @@ export class CrawlerService {
     options: { limit?: number; maxDepth?: number } = {},
   ): Promise<FirecrawlScrapeResult[]> {
     if (!this.firecrawl.isAvailable()) {
-      throw new ServiceUnavailableException('Firecrawl 未配置');
+      throw new ServiceUnavailableException("Firecrawl 未配置");
     }
     await this.assertSafeSourceUrl(url);
     this.logger.log(
@@ -978,29 +978,29 @@ export class CrawlerService {
    */
   async importWebpageAsArticle(
     url: string,
-    sourceType: 'news' | 'knowledge' = 'knowledge',
+    sourceType: "news" | "knowledge" = "knowledge",
   ): Promise<{ success: boolean; title: string; slug: string }> {
     const result = await this.scrapeWebpage(url);
     const title =
       result.title ||
       this.extractTitleFromMarkdown(result.markdown) ||
-      '未命名文章';
+      "未命名文章";
     const slug = this.makeSlug(title);
     const summary = this.generateSummary(result.markdown);
     const content = this.sanitizeHtml(result.html) || result.markdown;
 
     const repo = (
-      sourceType === 'news' ? this.newsRepo : this.articleRepo
+      sourceType === "news" ? this.newsRepo : this.articleRepo
     ) as Repository<any>;
     const entity: Record<string, any> = {
       slug,
       title,
       summary,
       content,
-      status: 'pending',
-      phase: 'firecrawl',
+      status: "pending",
+      phase: "firecrawl",
     };
-    if (sourceType === 'news') {
+    if (sourceType === "news") {
       entity.time = new Date().toISOString().slice(0, 10);
       entity.sourceUrl = url;
       entity.category = classifyNewsCategory({ title, summary });
@@ -1008,7 +1008,7 @@ export class CrawlerService {
     const saved = await this.saveSafe(() => repo.save(repo.create(entity)));
     if (!saved) {
       // 去重兜底触发（相同标题指纹已存在）：如实报告，而不是返回一个解析不到的 slug
-      throw new ConflictException('相同标题的内容已存在，导入被去重规则跳过');
+      throw new ConflictException("相同标题的内容已存在，导入被去重规则跳过");
     }
 
     this.logger.log(`Firecrawl 导入文章: ${title} (${slug})`);
@@ -1018,6 +1018,6 @@ export class CrawlerService {
   /** 从 Markdown 中提取第一个 # 标题作为 fallback */
   private extractTitleFromMarkdown(md: string): string {
     const match = md.match(/^#\s+(.+)$/m);
-    return match ? match[1].trim() : '';
+    return match ? match[1].trim() : "";
   }
 }

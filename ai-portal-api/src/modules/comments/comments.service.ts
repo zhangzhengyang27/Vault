@@ -3,39 +3,39 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
-import { Comment } from '../../entities/comment.entity';
-import { Post } from '../../entities/post.entity';
-import { User } from '../../entities/user.entity';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { CommentLike } from '../../entities/comment-like.entity';
-import { NotificationsService } from '../notifications/notifications.service';
-import { isPgErrorWithCode } from '../../common/pg-error';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, In, Repository } from "typeorm";
+import { Comment } from "../../entities/comment.entity";
+import { Post } from "../../entities/post.entity";
+import { User } from "../../entities/user.entity";
+import { CreateCommentDto } from "./dto/create-comment.dto";
+import { CommentLike } from "../../entities/comment-like.entity";
+import { NotificationsService } from "../notifications/notifications.service";
+import { isPgErrorWithCode } from "../../common/pg-error";
 
 /** 允许评论的目标类型（与实体表一一对应，防止任意字符串写入） */
 const COMMENT_TARGETS = [
-  'tool',
-  'prompt',
-  'article',
-  'news',
-  'repo',
-  'resource',
-  'mcp',
-  'post',
+  "tool",
+  "prompt",
+  "article",
+  "news",
+  "repo",
+  "resource",
+  "mcp",
+  "post",
 ] as const;
 
 /** targetType → 对应实体名（用于校验目标存在性） */
 const TARGET_ENTITIES: Record<string, string> = {
-  tool: 'Tool',
-  prompt: 'Prompt',
-  article: 'Article',
-  news: 'News',
-  repo: 'Repo',
-  resource: 'Resource',
-  mcp: 'Mcp',
-  post: 'Post',
+  tool: "Tool",
+  prompt: "Prompt",
+  article: "Article",
+  news: "News",
+  repo: "Repo",
+  resource: "Resource",
+  mcp: "Mcp",
+  post: "Post",
 };
 
 @Injectable()
@@ -61,13 +61,13 @@ export class CommentsService {
    * latest：id 升序（时间正序）；hot：点赞降序（同级按时间正序），
    * 子回复渲染顺序由前端按 parentId 保持本数组的相对顺序。
    */
-  findByPost(postId: number, sort: 'latest' | 'hot' = 'latest') {
+  findByPost(postId: number, sort: "latest" | "hot" = "latest") {
     // 兼容两条写入路径：专用路径写 post_id 列，通用 createForTarget 只写
     // target_type/target_id 列（历史数据如此），OR 查询保证两边都能读到
     return this.repo
       .find({
-        where: [{ postId }, { targetType: 'post', targetId: postId }],
-        order: sort === 'hot' ? { likes: 'DESC', id: 'ASC' } : { id: 'ASC' },
+        where: [{ postId }, { targetType: "post", targetId: postId }],
+        order: sort === "hot" ? { likes: "DESC", id: "ASC" } : { id: "ASC" },
         relations: { user: true },
       })
       .then((rows) => rows.map((c) => this.stripUser(c)));
@@ -87,18 +87,18 @@ export class CommentsService {
     },
   ) {
     if (parent == null) {
-      throw new NotFoundException('回复的评论不存在');
+      throw new NotFoundException("回复的评论不存在");
     }
     const sameTarget =
       (parent.postId !== null && parent.postId === match.postId) ||
       (parent.targetType === match.targetType &&
         parent.targetId === match.targetId);
     if (!sameTarget) {
-      throw new BadRequestException('回复目标与父评论不一致');
+      throw new BadRequestException("回复目标与父评论不一致");
     }
     if (parent.parentId !== null) {
       // 嵌套仅一级：回复「楼中楼的回复」统一挂到顶级评论
-      throw new BadRequestException('仅支持对顶级评论回复');
+      throw new BadRequestException("仅支持对顶级评论回复");
     }
   }
 
@@ -111,7 +111,7 @@ export class CommentsService {
     // 此前不校验存在性（可对不存在的 postId 写孤儿评论）也不 +1，
     // 而删除路径统一 -1，导致 posts.comments 持续负漂移。
     const post = await this.dataSource.getRepository(Post).findOne({
-      where: { id: postId, status: 'published' },
+      where: { id: postId, status: "published" },
       relations: { user: true },
     });
     if (!post) {
@@ -127,19 +127,19 @@ export class CommentsService {
       });
       this.assertParentComment(parent, {
         postId,
-        targetType: 'post',
+        targetType: "post",
         targetId: postId,
       });
     }
     const saved = await this.repo.save(
       this.repo.create({
         postId,
-        targetType: 'post',
+        targetType: "post",
         targetId: postId,
         parentId: parent?.id ?? null,
         content: this.stripHtml(dto.content),
         // 登录用户一律以账号用户名署名，忽略客户端传入的 authorName（防冒名）
-        authorName: user?.username ?? '匿名',
+        authorName: user?.username ?? "匿名",
         // TypeORM 只凭 id 即可建立关联，无需加载完整 User 实体
         user: user ? { id: user.id } : null,
       }),
@@ -150,20 +150,20 @@ export class CommentsService {
         // 回复通知父评论作者：匿名回复、自己回复自己不通知
         if (parent.user && parent.user.id !== user.id) {
           await this.notifications.createForUser(parent.user.id, {
-            type: 'comment',
+            type: "comment",
             title: `${user.username} 回复了你的评论`,
             content: saved.content.slice(0, 100),
-            targetType: 'post',
+            targetType: "post",
             targetId: postId,
           });
         }
       } else if (post.user && post.user.id !== user.id) {
         // 顶级评论通知帖子作者：匿名评论、自己评论自己不通知
         await this.notifications.createForUser(post.user.id, {
-          type: 'comment',
+          type: "comment",
           title: `${user.username} 评论了你的帖子「${post.title}」`,
           content: saved.content.slice(0, 100),
-          targetType: 'post',
+          targetType: "post",
           targetId: postId,
         });
       }
@@ -176,7 +176,7 @@ export class CommentsService {
     return this.repo
       .find({
         where: { targetType, targetId },
-        order: { id: 'ASC' },
+        order: { id: "ASC" },
         relations: { user: true },
       })
       .then((rows) => rows.map((c) => this.stripUser(c)));
@@ -191,7 +191,7 @@ export class CommentsService {
     // 否则评论接口会成为未发布内容的存在性 oracle 且可抢评待审内容
     const target = await this.dataSource
       .getRepository(entityName)
-      .findOne({ where: { id: targetId, status: 'published' } });
+      .findOne({ where: { id: targetId, status: "published" } });
     if (!target) {
       throw new NotFoundException(
         `评论目标不存在或未发布: ${targetType} #${targetId}`,
@@ -203,7 +203,7 @@ export class CommentsService {
   private async shiftPostComments(postId: number, delta: number) {
     await this.dataSource
       .getRepository(Post)
-      .increment({ id: postId }, 'comments', delta);
+      .increment({ id: postId }, "comments", delta);
   }
 
   async createForTarget(
@@ -222,7 +222,7 @@ export class CommentsService {
         relations: { user: true },
       });
       this.assertParentComment(parent, {
-        postId: targetType === 'post' ? targetId : null,
+        postId: targetType === "post" ? targetId : null,
         targetType,
         targetId,
       });
@@ -231,29 +231,29 @@ export class CommentsService {
       this.repo.create({
         // 帖子评论同时回填 post_id 列，与专用写入路径保持一致，
         // 避免 findByPost / findByTarget 两条读取路径出现数据盲区
-        postId: targetType === 'post' ? targetId : null,
+        postId: targetType === "post" ? targetId : null,
         targetType,
         targetId,
         parentId: parent?.id ?? null,
         content: this.stripHtml(dto.content),
         // 登录用户一律以账号用户名署名，忽略客户端传入的 authorName（防冒名）
-        authorName: user?.username ?? '匿名',
+        authorName: user?.username ?? "匿名",
         rating: dto.rating ?? null,
         // TypeORM 只凭 id 即可建立关联，无需加载完整 User 实体
         user: user ? { id: user.id } : null,
       }),
     );
-    if (targetType === 'post') {
+    if (targetType === "post") {
       await this.shiftPostComments(targetId, 1);
       if (user) {
         if (parent) {
           // 回复通知父评论作者（仅 post 评论有跳转上下文）
           if (parent.user && parent.user.id !== user.id) {
             await this.notifications.createForUser(parent.user.id, {
-              type: 'comment',
+              type: "comment",
               title: `${user.username} 回复了你的评论`,
               content: saved.content.slice(0, 100),
-              targetType: 'post',
+              targetType: "post",
               targetId,
             });
           }
@@ -265,10 +265,10 @@ export class CommentsService {
           });
           if (post && post.user && post.user.id !== user.id) {
             await this.notifications.createForUser(post.user.id, {
-              type: 'comment',
+              type: "comment",
               title: `${user.username} 评论了你的帖子「${post.title}」`,
               content: saved.content.slice(0, 100),
-              targetType: 'post',
+              targetType: "post",
               targetId,
             });
           }
@@ -284,7 +284,7 @@ export class CommentsService {
       where: { id: commentId },
       relations: { user: true },
     });
-    if (!comment) throw new NotFoundException('评论不存在');
+    if (!comment) throw new NotFoundException("评论不存在");
 
     const existing = await this.likeRepo.findOne({
       where: { comment: { id: commentId }, user: { id: user.id } },
@@ -296,7 +296,7 @@ export class CommentsService {
         user: { id: user.id },
       });
       if ((del.affected ?? 0) > 0) {
-        await this.repo.decrement({ id: commentId }, 'likes', 1);
+        await this.repo.decrement({ id: commentId }, "likes", 1);
         return { liked: false, likes: Math.max(0, comment.likes - 1) };
       }
       return { liked: false, likes: comment.likes };
@@ -311,21 +311,21 @@ export class CommentsService {
     } catch (err) {
       // 并发双击：唯一约束命中说明对方请求已插入且已 increment，
       // 直接返回避免重复 +1 造成计数永久漂移
-      if (!isPgErrorWithCode(err, '23505')) throw err;
+      if (!isPgErrorWithCode(err, "23505")) throw err;
       return { liked: true, likes: comment.likes + 1 };
     }
-    await this.repo.increment({ id: commentId }, 'likes', 1);
+    await this.repo.increment({ id: commentId }, "likes", 1);
     // 点赞通知评论作者：匿名评论、自己赞自己不通知；仅 post 评论有跳转上下文
     if (
-      comment.targetType === 'post' &&
+      comment.targetType === "post" &&
       comment.user &&
       comment.user.id !== user.id
     ) {
       await this.notifications.createForUser(comment.user.id, {
-        type: 'like',
+        type: "like",
         title: `${user.username} 赞了你的评论`,
         content: comment.content.slice(0, 100),
-        targetType: 'post',
+        targetType: "post",
         targetId: comment.targetId ?? undefined,
       });
     }
@@ -352,22 +352,22 @@ export class CommentsService {
     targetType?: string;
   }): Promise<{ items: Array<Record<string, unknown>>; total: number }> {
     const qb = this.repo
-      .createQueryBuilder('comment')
+      .createQueryBuilder("comment")
       .leftJoinAndMapOne(
-        'comment.user',
+        "comment.user",
         User,
-        'author',
-        'author.id = comment.user_id',
+        "author",
+        "author.id = comment.user_id",
       );
     if (params.q) {
-      qb.andWhere('comment.content ILIKE :q', { q: `%${params.q}%` });
+      qb.andWhere("comment.content ILIKE :q", { q: `%${params.q}%` });
     }
-    if (params.targetType && params.targetType !== 'all') {
-      qb.andWhere('comment.targetType = :targetType', {
+    if (params.targetType && params.targetType !== "all") {
+      qb.andWhere("comment.targetType = :targetType", {
         targetType: params.targetType,
       });
     }
-    qb.orderBy('comment.id', 'DESC')
+    qb.orderBy("comment.id", "DESC")
       .skip((params.page - 1) * params.limit)
       .take(params.limit);
     const [items, total] = await qb.getManyAndCount();
@@ -376,7 +376,7 @@ export class CommentsService {
     const postIds = [
       ...new Set(
         items
-          .filter((c) => c.targetType === 'post' && c.targetId != null)
+          .filter((c) => c.targetType === "post" && c.targetId != null)
           .map((c) => c.targetId as number),
       ),
     ];
@@ -392,7 +392,7 @@ export class CommentsService {
         ...rest,
         authorUsername: user?.username ?? null,
         postTitle:
-          rest.targetType === 'post' && rest.targetId != null
+          rest.targetType === "post" && rest.targetId != null
             ? (titleMap.get(rest.targetId) ?? null)
             : null,
       })),
@@ -406,12 +406,12 @@ export class CommentsService {
       relations: { user: true },
     });
     if (!comment) {
-      throw new NotFoundException('评论不存在');
+      throw new NotFoundException("评论不存在");
     }
     // 仅作者本人或管理员可删除
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.role === "admin";
     if (!isAdmin && (!user || !comment.user || comment.user.id !== user.id)) {
-      throw new ForbiddenException('无权删除此评论');
+      throw new ForbiddenException("无权删除此评论");
     }
     // 统计子回复、删除、修正计数放进同一事务：
     // 避免统计与删除之间新回复写入导致少减计数（DB CASCADE 删父连子）
@@ -421,12 +421,12 @@ export class CommentsService {
         ? 0
         : await em.count(Comment, { where: { parentId: commentId } });
       await em.remove(comment);
-      if (comment.targetType === 'post' && comment.targetId != null) {
+      if (comment.targetType === "post" && comment.targetId != null) {
         // 删父评论连子回复，帖子评论数按 1+子回复数 递减，否则计数负漂移复发
         await em.decrement(
           Post,
           { id: comment.targetId },
-          'comments',
+          "comments",
           1 + childCount,
         );
       }
@@ -437,9 +437,9 @@ export class CommentsService {
   /** 剥离 HTML/脚本标签，防止存储型 XSS */
   private stripHtml(raw: string): string {
     return raw
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, '')
-      .replace(/<[^>]+>/g, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, "")
+      .replace(/<[^>]+>/g, "")
       .trim();
   }
 }

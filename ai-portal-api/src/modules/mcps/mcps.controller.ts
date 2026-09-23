@@ -8,16 +8,16 @@ import {
   Post,
   Query,
   UseGuards,
-} from '@nestjs/common';
-import { McpsService } from './mcps.service';
-import { McpRegistrySyncService } from './mcp-registry-sync.service';
-import { McpToolsService } from './mcp-tools.service';
-import { CreateMcpDto } from './dto/create-mcp.dto';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { RolesGuard } from '../../auth/roles.guard';
-import { Roles } from '../../auth/roles.decorator';
+} from "@nestjs/common";
+import { McpsService } from "./mcps.service";
+import { McpRegistrySyncService } from "./mcp-registry-sync.service";
+import { McpToolsService } from "./mcp-tools.service";
+import { CreateMcpDto } from "./dto/create-mcp.dto";
+import { JwtAuthGuard } from "../../auth/jwt-auth.guard";
+import { RolesGuard } from "../../auth/roles.guard";
+import { Roles } from "../../auth/roles.decorator";
 
-@Controller('mcps')
+@Controller("mcps")
 export class McpsController {
   constructor(
     private readonly mcpsService: McpsService,
@@ -27,11 +27,11 @@ export class McpsController {
 
   @Get()
   findAll(
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
-    @Query('q') q?: string,
-    @Query('sort') sort?: string,
-    @Query('type') type?: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
+    @Query("q") q?: string,
+    @Query("sort") sort?: string,
+    @Query("type") type?: string,
   ) {
     return this.mcpsService.findAll({
       page: page ? Number(page) : 1,
@@ -43,9 +43,9 @@ export class McpsController {
   }
 
   // 注意：此路由必须在 :slug 之前，否则会被当作 slug 处理
-  @Post('registry/sync')
+  @Post("registry/sync")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles("admin")
   syncRegistry() {
     return this.registrySync.syncFromRegistry();
   }
@@ -53,39 +53,39 @@ export class McpsController {
   // MCP 工具列表探测（必须在 :slug 之前）
   // 探测会在服务器上 spawn npx/uvx/docker 进程或向远端发起请求，
   // 属于高开销诊断操作，仅限管理员触发，避免被匿名访客当探测/DoS 跳板
-  @Get(':slug/tools')
+  @Get(":slug/tools")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  async getTools(@Param('slug') slug: string) {
+  @Roles("admin")
+  async getTools(@Param("slug") slug: string) {
     const mcp = await this.mcpsService.findOne(slug);
-    if (!mcp) return { tools: [], source: 'unavailable', note: 'MCP 不存在' };
+    if (!mcp) return { tools: [], source: "unavailable", note: "MCP 不存在" };
     return this.mcpTools.getTools(mcp);
   }
 
-  @Get(':slug')
-  findOne(@Param('slug') slug: string, @Query('type') type?: string) {
+  @Get(":slug")
+  findOne(@Param("slug") slug: string, @Query("type") type?: string) {
     // type 过滤让 /mcp/[slug] 前端能拒绝把 skill 当 MCP 渲染；/skills 复用本接口时不传 type
     return this.mcpsService.findOne(slug, type);
   }
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
+  @Roles("admin")
   create(@Body() body: CreateMcpDto) {
     return this.mcpsService.create(body);
   }
 
-  @Patch(':slug')
+  @Patch(":slug")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  update(@Param('slug') slug: string, @Body() body: Partial<CreateMcpDto>) {
+  @Roles("admin")
+  update(@Param("slug") slug: string, @Body() body: Partial<CreateMcpDto>) {
     return this.mcpsService.update(slug, body);
   }
 
-  @Delete(':slug')
+  @Delete(":slug")
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  remove(@Param('slug') slug: string) {
+  @Roles("admin")
+  remove(@Param("slug") slug: string) {
     return this.mcpsService.remove(slug);
   }
 }

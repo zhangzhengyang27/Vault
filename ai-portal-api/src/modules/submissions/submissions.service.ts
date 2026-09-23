@@ -3,18 +3,18 @@ import {
   Injectable,
   Logger,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import * as crypto from 'crypto';
-import { Submission } from '../../entities/submission.entity';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { News } from '../../entities/news.entity';
-import { Mcp } from '../../entities/mcp.entity';
-import { Notification } from '../../entities/notification.entity';
-import { NotificationsService } from '../notifications/notifications.service';
-import { CreateSubmissionDto } from './dto/create-submission.dto';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DataSource, Repository } from "typeorm";
+import * as crypto from "crypto";
+import { Submission } from "../../entities/submission.entity";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { News } from "../../entities/news.entity";
+import { Mcp } from "../../entities/mcp.entity";
+import { Notification } from "../../entities/notification.entity";
+import { NotificationsService } from "../notifications/notifications.service";
+import { CreateSubmissionDto } from "./dto/create-submission.dto";
 
 @Injectable()
 export class SubmissionsService {
@@ -48,8 +48,8 @@ export class SubmissionsService {
           : undefined,
         content: dto.content ? this.stripHtml(dto.content) : undefined,
         url: dto.url,
-        contact: dto.contact ?? '',
-        status: 'pending',
+        contact: dto.contact ?? "",
+        status: "pending",
       }),
     );
   }
@@ -57,13 +57,13 @@ export class SubmissionsService {
   async findMy(userId: number) {
     return this.repo.find({
       where: { userId },
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
     });
   }
 
   async findOneForUser(userId: number, id: number) {
     const sub = await this.repo.findOne({ where: { id, userId } });
-    if (!sub) throw new NotFoundException('投稿不存在');
+    if (!sub) throw new NotFoundException("投稿不存在");
     return sub;
   }
 
@@ -72,7 +72,7 @@ export class SubmissionsService {
   async findAll(status?: string) {
     return this.repo.find({
       where: status ? { status } : {},
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
       take: 100,
     });
   }
@@ -86,83 +86,83 @@ export class SubmissionsService {
       // 无 join 的 QueryBuilder 只锁 submission 行本身
       const locked = await em
         .getRepository(Submission)
-        .createQueryBuilder('s')
-        .where('s.id = :id', { id })
-        .setLock('pessimistic_write')
+        .createQueryBuilder("s")
+        .where("s.id = :id", { id })
+        .setLock("pessimistic_write")
         .getOne();
-      if (!locked) throw new NotFoundException('投稿不存在');
-      if (locked.status !== 'pending') {
-        throw new BadRequestException('该投稿已处理，不能重复审核');
+      if (!locked) throw new NotFoundException("投稿不存在");
+      if (locked.status !== "pending") {
+        throw new BadRequestException("该投稿已处理，不能重复审核");
       }
 
       const slug = this.makeSlug(locked.title);
       let contentId: number;
 
       switch (locked.type) {
-        case 'tool':
+        case "tool":
           contentId = (
             await em.save(
               em.create(Tool, {
                 slug,
                 name: locked.title,
-                description: locked.description ?? '',
-                content: locked.content ?? '',
+                description: locked.description ?? "",
+                content: locked.content ?? "",
                 tags: [],
-                status: 'published',
-                phase: 'submission',
+                status: "published",
+                phase: "submission",
               }),
             )
           ).id;
           break;
-        case 'prompt':
+        case "prompt":
           contentId = (
             await em.save(
               em.create(Prompt, {
                 slug,
                 title: locked.title,
-                description: locked.description ?? '',
-                content: locked.content ?? '',
-                source: 'submission',
-                status: 'published',
-                phase: 'submission',
+                description: locked.description ?? "",
+                content: locked.content ?? "",
+                source: "submission",
+                status: "published",
+                phase: "submission",
               }),
             )
           ).id;
           break;
-        case 'news':
+        case "news":
           contentId = (
             await em.save(
               em.create(News, {
                 slug,
                 title: locked.title,
-                summary: locked.description ?? '',
+                summary: locked.description ?? "",
                 content: locked.content ?? undefined,
                 time: new Date().toISOString().slice(0, 10),
-                status: 'published',
-                phase: 'submission',
+                status: "published",
+                phase: "submission",
               }),
             )
           ).id;
           break;
-        case 'mcp':
+        case "mcp":
           contentId = (
             await em.save(
               em.create(Mcp, {
                 slug,
                 name: locked.title,
-                description: locked.description ?? '',
-                endpoint: locked.url ?? '',
-                type: 'mcp',
-                phase: 'submission',
+                description: locked.description ?? "",
+                endpoint: locked.url ?? "",
+                type: "mcp",
+                phase: "submission",
               }),
             )
           ).id;
           break;
         default:
-          throw new BadRequestException('不支持的投稿类型');
+          throw new BadRequestException("不支持的投稿类型");
       }
 
-      locked.status = 'approved';
+      locked.status = "approved";
       locked.reviewedBy = adminId;
       locked.reviewedAt = new Date();
       locked.contentId = contentId;
@@ -172,9 +172,9 @@ export class SubmissionsService {
       await em.save(
         em.create(Notification, {
           userId: locked.userId,
-          type: 'submission',
+          type: "submission",
           title: `你的投稿《${locked.title}》已审核通过`,
-          content: '内容已正式发布，感谢你的贡献',
+          content: "内容已正式发布，感谢你的贡献",
           targetType: locked.type,
           targetId: contentId,
           targetSlug: slug,
@@ -216,17 +216,17 @@ export class SubmissionsService {
       // 无 join 的 QueryBuilder 只锁 submission 行本身
       const locked = await em
         .getRepository(Submission)
-        .createQueryBuilder('s')
-        .where('s.id = :id', { id })
-        .setLock('pessimistic_write')
+        .createQueryBuilder("s")
+        .where("s.id = :id", { id })
+        .setLock("pessimistic_write")
         .getOne();
-      if (!locked) throw new NotFoundException('投稿不存在');
-      if (locked.status !== 'pending') {
-        throw new BadRequestException('该投稿已处理，不能重复审核');
+      if (!locked) throw new NotFoundException("投稿不存在");
+      if (locked.status !== "pending") {
+        throw new BadRequestException("该投稿已处理，不能重复审核");
       }
 
-      locked.status = 'rejected';
-      locked.rejectReason = reason ?? '';
+      locked.status = "rejected";
+      locked.rejectReason = reason ?? "";
       locked.reviewedBy = adminId;
       locked.reviewedAt = new Date();
       await em.save(locked);
@@ -234,9 +234,9 @@ export class SubmissionsService {
       await em.save(
         em.create(Notification, {
           userId: locked.userId,
-          type: 'submission',
+          type: "submission",
           title: `你的投稿《${locked.title}》未通过审核`,
-          content: reason || '内容不符合收录标准，请修改后重新提交',
+          content: reason || "内容不符合收录标准，请修改后重新提交",
           targetType: locked.type,
           targetId: null,
           read: false,
@@ -251,21 +251,21 @@ export class SubmissionsService {
   private makeSlug(title: string): string {
     const base = title
       .toLowerCase()
-      .replace(/[^\p{L}\p{N}\s-]/gu, '')
+      .replace(/[^\p{L}\p{N}\s-]/gu, "")
       .trim()
-      .replace(/\s+/g, '-')
+      .replace(/\s+/g, "-")
       .slice(0, 60);
     // 随机后缀避免相同标题冲突（比确定性 hash 更安全）
-    const suffix = crypto.randomBytes(4).toString('hex');
-    return `${base || 'item'}-${suffix}`;
+    const suffix = crypto.randomBytes(4).toString("hex");
+    return `${base || "item"}-${suffix}`;
   }
 
   /** 剥离 HTML/脚本标签，防止存储型 XSS */
   private stripHtml(raw: string): string {
     return raw
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, '')
-      .replace(/<[^>]+>/g, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, "")
+      .replace(/<[^>]+>/g, "")
       .trim();
   }
 }

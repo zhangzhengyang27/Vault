@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { escapeLike, LIKE_ESCAPE_SQL } from '../../common/like.util';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { Article } from '../../entities/article.entity';
-import { News } from '../../entities/news.entity';
-import { Repo } from '../../entities/repo.entity';
-import { Mcp } from '../../entities/mcp.entity';
-import { Resource } from '../../entities/resource.entity';
+import { Injectable } from "@nestjs/common";
+import { escapeLike, LIKE_ESCAPE_SQL } from "../../common/like.util";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { Article } from "../../entities/article.entity";
+import { News } from "../../entities/news.entity";
+import { Repo } from "../../entities/repo.entity";
+import { Mcp } from "../../entities/mcp.entity";
+import { Resource } from "../../entities/resource.entity";
 
 interface SearchRow {
   slug: string;
@@ -43,7 +43,7 @@ export class SearchService {
    * 依赖已创建的 gin_trgm_ops GIN 索引，可走索引而非全表扫描。
    */
   async search(q: string) {
-    const keyword = (q ?? '').trim();
+    const keyword = (q ?? "").trim();
     if (!keyword || keyword.length < 2) {
       return [];
     }
@@ -55,77 +55,77 @@ export class SearchService {
       await Promise.all([
         this.searchTable(
           this.tools,
-          'tool',
-          'name',
-          'description',
+          "tool",
+          "name",
+          "description",
           like,
           keyword,
         ),
         this.searchTable(
           this.prompts,
-          'prompt',
-          'title',
-          'description',
+          "prompt",
+          "title",
+          "description",
           like,
           keyword,
         ),
         this.searchTable(
           this.articles,
-          'article',
-          'title',
-          'summary',
+          "article",
+          "title",
+          "summary",
           like,
           keyword,
-          [{ column: 'knowledgeBase', alias: 'kb' }],
+          [{ column: "knowledgeBase", alias: "kb" }],
         ),
-        this.searchTable(this.news, 'news', 'title', 'summary', like, keyword),
+        this.searchTable(this.news, "news", "title", "summary", like, keyword),
         this.searchTable(
           this.repos,
-          'repo',
-          'name',
-          'description',
+          "repo",
+          "name",
+          "description",
           like,
           keyword,
         ),
         this.searchTable(
           this.mcps,
-          'mcp',
-          'name',
-          'description',
+          "mcp",
+          "name",
+          "description",
           like,
           keyword,
           [],
-          'mcp',
+          "mcp",
         ),
         this.searchTable(
           this.mcps,
-          'mcp',
-          'name',
-          'description',
+          "mcp",
+          "name",
+          "description",
           like,
           keyword,
           [],
-          'skill',
+          "skill",
         ),
         this.searchTable(
           this.resources,
-          'resource',
-          'title',
-          'description',
+          "resource",
+          "title",
+          "description",
           like,
           keyword,
         ),
       ]);
 
     const typeMap: Record<string, { type: string; hrefPrefix: string }> = {
-      tool: { type: '工具', hrefPrefix: '/tools' },
-      prompt: { type: '提示词', hrefPrefix: '/prompts' },
-      article: { type: '知识库', hrefPrefix: '/knowledge' },
-      news: { type: '资讯', hrefPrefix: '/news' },
-      repo: { type: '开源', hrefPrefix: '/github' },
-      mcp: { type: 'MCP', hrefPrefix: '/mcp' },
-      skill: { type: 'Skill', hrefPrefix: '/skills' },
-      resource: { type: '资源', hrefPrefix: '/resources' },
+      tool: { type: "工具", hrefPrefix: "/tools" },
+      prompt: { type: "提示词", hrefPrefix: "/prompts" },
+      article: { type: "知识库", hrefPrefix: "/knowledge" },
+      news: { type: "资讯", hrefPrefix: "/news" },
+      repo: { type: "开源", hrefPrefix: "/github" },
+      mcp: { type: "MCP", hrefPrefix: "/mcp" },
+      skill: { type: "Skill", hrefPrefix: "/skills" },
+      resource: { type: "资源", hrefPrefix: "/resources" },
     };
 
     const all: { row: SearchRow; kind: string }[] = [];
@@ -149,7 +149,7 @@ export class SearchService {
       // 知识库文章的阅读路由是 /knowledge/{知识库名}?doc={slug}，
       // 直接拼 /knowledge/{slug} 会被当成不存在的知识库
       const href =
-        kind === 'article' && row.kb
+        kind === "article" && row.kb
           ? `/knowledge/${encodeURIComponent(row.kb)}?doc=${encodeURIComponent(row.slug)}`
           : `${meta.hrefPrefix}/${row.slug}`;
       return {
@@ -177,16 +177,16 @@ export class SearchService {
     // 全部接入状态机的表都必须过滤已发布内容，否则采集/同步入库的
     // pending/rejected 条目会经公开搜索接口泄露（repo/mcp 也有 status 列）
     const hasStatus = [
-      'tool',
-      'prompt',
-      'article',
-      'news',
-      'repo',
-      'mcp',
-      'resource',
+      "tool",
+      "prompt",
+      "article",
+      "news",
+      "repo",
+      "mcp",
+      "resource",
     ].includes(alias);
     if (hasStatus) {
-      qb.andWhere(`${alias}.status = :status`, { status: 'published' });
+      qb.andWhere(`${alias}.status = :status`, { status: "published" });
     }
     if (typeFilter) {
       qb.andWhere(`${alias}.type = :${alias}_type`, {
@@ -200,10 +200,10 @@ export class SearchService {
     // 用 pg_trgm 相似度计算排序分（标题权重高于描述）
     qb.addSelect(
       `LEAST(1, similarity(${alias}.${titleCol}, :kw) * 1.5 + similarity(${alias}.${descCol}, :kw) * 0.5)`,
-      'sim',
+      "sim",
     );
-    qb.setParameter('kw', keyword);
-    qb.orderBy('sim', 'DESC');
+    qb.setParameter("kw", keyword);
+    qb.orderBy("sim", "DESC");
     qb.limit(10);
     for (const e of extra) {
       qb.addSelect(`${alias}.${e.column}`, e.alias);
@@ -218,7 +218,7 @@ export class SearchService {
       sim: Number(r.sim) || 0,
       kb:
         (r[`${alias}_kb`] as string | undefined) ??
-        (r['kb'] as string | undefined) ??
+        (r["kb"] as string | undefined) ??
         undefined,
     }));
   }

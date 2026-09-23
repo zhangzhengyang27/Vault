@@ -1,7 +1,7 @@
-import 'reflect-metadata';
-import * as bcrypt from 'bcryptjs';
-import { AppDataSource } from '../../data-source';
-import { User } from '../entities/user.entity';
+import "reflect-metadata";
+import * as bcrypt from "bcryptjs";
+import { AppDataSource } from "../../data-source";
+import { User } from "../entities/user.entity";
 
 /**
  * 手动创建 / 提升管理员账号
@@ -22,20 +22,20 @@ async function main(): Promise<void> {
   const hasFlag = (key: string): boolean =>
     args.includes(`--${key}`) || args.includes(`--${key}=true`);
 
-  const username = get('username');
-  const password = get('password');
-  const email = get('email');
-  const resetPassword = hasFlag('reset-password');
+  const username = get("username");
+  const password = get("password");
+  const email = get("email");
+  const resetPassword = hasFlag("reset-password");
 
   if (!username) {
     console.error(
-      '用法: ts-node src/cli/create-admin.ts --username=xxx [--password=xxx] [--email=xxx] [--reset-password]',
+      "用法: ts-node src/cli/create-admin.ts --username=xxx [--password=xxx] [--email=xxx] [--reset-password]",
     );
     process.exit(1);
   }
 
   if (password !== undefined && password.length < 6) {
-    throw new Error('密码长度至少 6 位');
+    throw new Error("密码长度至少 6 位");
   }
 
   await AppDataSource.initialize();
@@ -45,11 +45,11 @@ async function main(): Promise<void> {
 
     if (user) {
       // 已存在：默认只提升角色/解封，保留原密码；仅在 --reset-password 时重置
-      user.role = 'admin';
-      user.status = 'active';
+      user.role = "admin";
+      user.status = "active";
       if (resetPassword) {
         if (!password)
-          throw new Error('--reset-password 需要同时提供 --password=xxx');
+          throw new Error("--reset-password 需要同时提供 --password=xxx");
         user.passwordHash = await bcrypt.hash(password, 10);
         await repo.save(user);
         console.log(`已更新用户「${username}」为管理员角色并重置密码`);
@@ -58,15 +58,15 @@ async function main(): Promise<void> {
         console.log(`已更新用户「${username}」为管理员角色（保留原密码）`);
       }
     } else {
-      if (!password) throw new Error('新建账号必须提供 --password=xxx');
+      if (!password) throw new Error("新建账号必须提供 --password=xxx");
       const passwordHash = await bcrypt.hash(password, 10);
       await repo.save(
         repo.create({
           username,
           email: email || null,
           passwordHash,
-          role: 'admin',
-          status: 'active',
+          role: "admin",
+          status: "active",
         }),
       );
       console.log(`已创建管理员账号：${username}`);

@@ -6,13 +6,13 @@ import {
   Param,
   Post,
   UseGuards,
-} from '@nestjs/common';
-import { FavoritesService } from './favorites.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CurrentUser } from '../auth/current-user.decorator';
-import { CreateFavoriteDto } from './dto/create-favorite.dto';
+} from "@nestjs/common";
+import { FavoritesService } from "./favorites.service";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { CurrentUser } from "../auth/current-user.decorator";
+import { CreateFavoriteDto } from "./dto/create-favorite.dto";
 
-@Controller('favorites')
+@Controller("favorites")
 @UseGuards(JwtAuthGuard)
 export class FavoritesController {
   constructor(private readonly favoritesService: FavoritesService) {}
@@ -33,8 +33,8 @@ export class FavoritesController {
     return this.favoritesService.findAll(user.id);
   }
 
-  @Delete(':id')
-  remove(@CurrentUser() user: { id: number }, @Param('id') id: string) {
+  @Delete(":id")
+  remove(@CurrentUser() user: { id: number }, @Param("id") id: string) {
     return this.favoritesService.remove(user.id, Number(id));
   }
 }

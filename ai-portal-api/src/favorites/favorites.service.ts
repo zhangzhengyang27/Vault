@@ -1,9 +1,9 @@
-import { Injectable, ConflictException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Favorite } from '../entities/favorite.entity';
-import { User } from '../entities/user.entity';
-import { isPgErrorWithCode } from '../common/pg-error';
+import { Injectable, ConflictException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Favorite } from "../entities/favorite.entity";
+import { User } from "../entities/user.entity";
+import { isPgErrorWithCode } from "../common/pg-error";
 
 @Injectable()
 export class FavoritesService {
@@ -24,7 +24,7 @@ export class FavoritesService {
       where: { targetType, targetId, user: { id: userId } },
     });
     if (existing) {
-      throw new ConflictException('已收藏过该内容');
+      throw new ConflictException("已收藏过该内容");
     }
     const favorite = this.repo.create({
       user: { id: userId } as User,
@@ -37,8 +37,8 @@ export class FavoritesService {
       return await this.repo.save(favorite);
     } catch (err) {
       // 并发下两个请求同时通过 exists 检查：数据库唯一索引兜底（ux_favorites_user_target）
-      if (isPgErrorWithCode(err, '23505')) {
-        throw new ConflictException('已收藏过该内容');
+      if (isPgErrorWithCode(err, "23505")) {
+        throw new ConflictException("已收藏过该内容");
       }
       throw err;
     }
@@ -47,7 +47,7 @@ export class FavoritesService {
   findAll(userId: number) {
     return this.repo.find({
       where: { user: { id: userId } },
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
     });
   }
 

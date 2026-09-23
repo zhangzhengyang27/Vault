@@ -1,8 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { spawn } from 'child_process';
-import { lookup } from 'dns/promises';
+import { Injectable, Logger } from "@nestjs/common";
+import { spawn } from "child_process";
+import { lookup } from "dns/promises";
 
-type InstallMethod = 'npx' | 'uvx' | 'docker' | 'remote' | 'unknown';
+type InstallMethod = "npx" | "uvx" | "docker" | "remote" | "unknown";
 
 interface InstallInfo {
   method: InstallMethod;
@@ -15,82 +15,82 @@ function inferInstall(mcp: {
   name: string;
   description?: string;
 }): InstallInfo {
-  const raw = (mcp.endpoint ?? '').trim();
+  const raw = (mcp.endpoint ?? "").trim();
   const lower = raw.toLowerCase();
 
   // GitHub 仓库优先匹配（应走 npx/uvx，而非 remote HTTP）
-  if (lower.includes('github.com/')) {
+  if (lower.includes("github.com/")) {
     const repo =
       lower
-        .split('github.com/')[1]
-        ?.split('/')[1]
-        ?.replace(/\.git$/, '') ?? '';
+        .split("github.com/")[1]
+        ?.split("/")[1]
+        ?.replace(/\.git$/, "") ?? "";
     if (
-      repo.startsWith('mcp-server-') ||
-      repo.endsWith('-mcp') ||
-      repo.includes('_')
+      repo.startsWith("mcp-server-") ||
+      repo.endsWith("-mcp") ||
+      repo.includes("_")
     ) {
-      return { method: 'uvx', target: repo };
+      return { method: "uvx", target: repo };
     }
-    if (repo) return { method: 'npx', target: repo };
+    if (repo) return { method: "npx", target: repo };
   }
 
   // 远程 HTTP/SSE MCP endpoint
   if (
-    lower.startsWith('http://') ||
-    lower.startsWith('https://') ||
-    lower.includes('/sse')
+    lower.startsWith("http://") ||
+    lower.startsWith("https://") ||
+    lower.includes("/sse")
   ) {
-    return { method: 'remote', target: raw };
+    return { method: "remote", target: raw };
   }
 
   const registries = [
-    'docker.io/',
-    'ghcr.io/',
-    'registry.',
-    'quay.io/',
-    'gcr.io/',
+    "docker.io/",
+    "ghcr.io/",
+    "registry.",
+    "quay.io/",
+    "gcr.io/",
   ];
   if (
     registries.some((r) => lower.startsWith(r)) ||
-    (!raw.startsWith('@') && lower.includes(':') && lower.includes('/'))
+    (!raw.startsWith("@") && lower.includes(":") && lower.includes("/"))
   ) {
-    return { method: 'docker', target: raw };
+    return { method: "docker", target: raw };
   }
 
-  if (raw.startsWith('@') || /^[a-z0-9][a-z0-9-]*\/[a-z0-9-]+$/i.test(raw)) {
-    return { method: 'npx', target: raw };
+  if (raw.startsWith("@") || /^[a-z0-9][a-z0-9-]*\/[a-z0-9-]+$/i.test(raw)) {
+    return { method: "npx", target: raw };
   }
 
   if (raw && /^[a-z0-9][a-z0-9-]*$/i.test(raw)) {
-    return { method: 'npx', target: raw };
+    return { method: "npx", target: raw };
   }
 
-  return { method: 'unknown', target: raw || mcp.name };
+  return { method: "unknown", target: raw || mcp.name };
 }
 
 /** 判定 IP 是否属于私网/保留段（SSRF 防护） */
 function isPrivateIp(ip: string): boolean {
-  if (ip.includes(':')) {
+  if (ip.includes(":")) {
     // IPv6（含 IPv4-mapped ::ffff:a.b.c.d）
     const v4Mapped = ip.toLowerCase().match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
     if (v4Mapped) return isPrivateIp(v4Mapped[1]);
     const lower = ip.toLowerCase();
     if (
-      lower === '::' ||
-      lower === '::1' ||
-      lower.startsWith('fc') ||
-      lower.startsWith('fd') ||
-      lower.startsWith('fe8') ||
-      lower.startsWith('fe9') ||
-      lower.startsWith('fea') ||
-      lower.startsWith('feb')
+      lower === "::" ||
+      lower === "::1" ||
+      lower.startsWith("fc") ||
+      lower.startsWith("fd") ||
+      lower.startsWith("fe8") ||
+      lower.startsWith("fe9") ||
+      lower.startsWith("fea") ||
+      lower.startsWith("feb")
     ) {
       return true;
     }
     return false;
   }
-  const parts = ip.split('.').map(Number);
+  const parts = ip.split(".").map(Number);
   if (parts.length !== 4 || parts.some((n) => Number.isNaN(n))) return true;
   const [a, b] = parts;
   if (a === 0 || a === 10 || a === 127) return true; // 本段/私网/环回
@@ -135,21 +135,21 @@ export class McpToolsService {
     description?: string;
   }): Promise<{
     tools: McpTool[];
-    source: 'cache' | 'live' | 'unavailable';
+    source: "cache" | "live" | "unavailable";
     note?: string;
   }> {
     const cacheKey = mcp.slug;
     const cached = this.cache.get(cacheKey);
     if (cached && Date.now() - cached.fetchedAt < cached.ttl) {
-      return { tools: cached.tools, source: 'cache' };
+      return { tools: cached.tools, source: "cache" };
     }
 
     // 并发去重：同一 MCP 同时只有一个探测在跑
     if (this.inFlight.has(cacheKey)) {
       return {
         tools: [],
-        source: 'unavailable',
-        note: '正在探测中，请稍后刷新',
+        source: "unavailable",
+        note: "正在探测中，请稍后刷新",
       };
     }
 
@@ -157,27 +157,27 @@ export class McpToolsService {
 
     // 基本校验：防止 target 包含 npx 额外参数
     if (
-      (install.method === 'npx' || install.method === 'uvx') &&
+      (install.method === "npx" || install.method === "uvx") &&
       !/^[@a-z0-9][a-z0-9._/-]*$/i.test(install.target)
     ) {
       return {
         tools: [],
-        source: 'unavailable',
-        note: 'MCP endpoint 格式不合法，无法自动探测。',
+        source: "unavailable",
+        note: "MCP endpoint 格式不合法，无法自动探测。",
       };
     }
 
     // docker 镜像引用校验（镜像名/registry/tag/digest，禁止空白与 shell 元字符）
     if (
-      install.method === 'docker' &&
+      install.method === "docker" &&
       !/^[a-z0-9][a-z0-9._/-]*(:[\w][\w.-]{0,127})?(@sha256:[a-f0-9]{64})?$/i.test(
         install.target,
       )
     ) {
       return {
         tools: [],
-        source: 'unavailable',
-        note: 'MCP endpoint 不是合法的镜像引用，无法自动探测。',
+        source: "unavailable",
+        note: "MCP endpoint 不是合法的镜像引用，无法自动探测。",
       };
     }
 
@@ -186,16 +186,16 @@ export class McpToolsService {
     // 因此生产环境默认禁用；如需启用须显式设置 MCP_STDIO_PROBE_ENABLED=true
     // 并自行保证在沙箱/隔离环境中运行。
     if (
-      (install.method === 'npx' ||
-        install.method === 'uvx' ||
-        install.method === 'docker') &&
-      process.env.NODE_ENV === 'production' &&
-      process.env.MCP_STDIO_PROBE_ENABLED !== 'true'
+      (install.method === "npx" ||
+        install.method === "uvx" ||
+        install.method === "docker") &&
+      process.env.NODE_ENV === "production" &&
+      process.env.MCP_STDIO_PROBE_ENABLED !== "true"
     ) {
       return {
         tools: [],
-        source: 'unavailable',
-        note: '本地进程探测已在生产环境禁用，请安装后在客户端查看工具列表。',
+        source: "unavailable",
+        note: "本地进程探测已在生产环境禁用，请安装后在客户端查看工具列表。",
       };
     }
 
@@ -204,21 +204,21 @@ export class McpToolsService {
     try {
       let tools: McpTool[] = [];
 
-      if (install.method === 'remote') {
+      if (install.method === "remote") {
         // SSRF 防护：endpoint 必须是公网 http(s) 地址
         await this.assertPublicHttpUrl(install.target);
         tools = await this.listRemoteTools(install.target);
       } else if (
-        install.method === 'npx' ||
-        install.method === 'uvx' ||
-        install.method === 'docker'
+        install.method === "npx" ||
+        install.method === "uvx" ||
+        install.method === "docker"
       ) {
         tools = await this.listStdioTools(install.method, install.target);
       } else {
         return {
           tools: [],
-          source: 'unavailable',
-          note: '无法自动探测该 MCP 服务器的工具列表，请安装后在客户端查看。',
+          source: "unavailable",
+          note: "无法自动探测该 MCP 服务器的工具列表，请安装后在客户端查看。",
         };
       }
 
@@ -228,7 +228,7 @@ export class McpToolsService {
         fetchedAt: Date.now(),
         ttl: tools.length > 0 ? this.CACHE_TTL : this.NEGATIVE_TTL,
       });
-      return { tools, source: 'live' };
+      return { tools, source: "live" };
     } catch (err) {
       this.logger.warn(
         `探测 MCP ${mcp.name} 工具列表失败: ${(err as Error).message}`,
@@ -240,7 +240,7 @@ export class McpToolsService {
       });
       return {
         tools: [],
-        source: 'unavailable',
+        source: "unavailable",
         note: `探测失败（${(err as Error).message}），请安装后在客户端查看工具列表。`,
       };
     } finally {
@@ -254,18 +254,18 @@ export class McpToolsService {
     try {
       u = new URL(raw);
     } catch {
-      throw new Error('endpoint 不是合法 URL');
+      throw new Error("endpoint 不是合法 URL");
     }
-    if (u.protocol !== 'http:' && u.protocol !== 'https:') {
-      throw new Error('endpoint 仅允许 http(s) 协议');
+    if (u.protocol !== "http:" && u.protocol !== "https:") {
+      throw new Error("endpoint 仅允许 http(s) 协议");
     }
     const addrs = await lookup(u.hostname, { all: true }).catch(() => null);
     if (!addrs || addrs.length === 0) {
-      throw new Error('endpoint 域名无法解析');
+      throw new Error("endpoint 域名无法解析");
     }
     for (const { address } of addrs) {
       if (isPrivateIp(address)) {
-        throw new Error('endpoint 指向内网/保留地址，已拦截');
+        throw new Error("endpoint 指向内网/保留地址，已拦截");
       }
     }
   }
@@ -275,45 +275,45 @@ export class McpToolsService {
    * 执行 MCP 协议：initialize → notifications/initialized → tools/list
    */
   private async listStdioTools(
-    method: 'npx' | 'uvx' | 'docker',
+    method: "npx" | "uvx" | "docker",
     target: string,
   ): Promise<McpTool[]> {
     return new Promise((resolve, reject) => {
       const cmd =
-        method === 'npx' ? 'npx' : method === 'uvx' ? 'uvx' : 'docker';
+        method === "npx" ? "npx" : method === "uvx" ? "uvx" : "docker";
       const args =
-        method === 'npx'
-          ? ['-y', target]
-          : method === 'uvx'
+        method === "npx"
+          ? ["-y", target]
+          : method === "uvx"
             ? [target]
-            : ['run', '-i', '--rm', target];
+            : ["run", "-i", "--rm", target];
 
       const child = spawn(cmd, args, {
-        stdio: ['pipe', 'pipe', 'pipe'],
-        env: { ...process.env, NODE_ENV: 'production' },
+        stdio: ["pipe", "pipe", "pipe"],
+        env: { ...process.env, NODE_ENV: "production" },
       });
 
-      let stdout = '';
-      let stderr = '';
+      let stdout = "";
+      let stderr = "";
       let toolsRequested = false;
       const timer = setTimeout(() => {
-        child.kill('SIGKILL');
-        reject(new Error('连接超时'));
+        child.kill("SIGKILL");
+        reject(new Error("连接超时"));
       }, this.TIMEOUT_MS);
 
       const send = (obj: Record<string, any>) => {
-        child.stdin.write(JSON.stringify(obj) + '\n');
+        child.stdin.write(JSON.stringify(obj) + "\n");
       };
 
-      child.stdout.on('data', (data: Buffer) => {
+      child.stdout.on("data", (data: Buffer) => {
         stdout += data.toString();
         // 只有当 buffer 不以 \n 结尾时，最后一行才是不完整的
-        const endsWithNewline = stdout.endsWith('\n');
-        const segments = stdout.split('\n');
+        const endsWithNewline = stdout.endsWith("\n");
+        const segments = stdout.split("\n");
         if (!endsWithNewline) {
-          stdout = segments.pop() ?? ''; // 保留不完整的最后一行
+          stdout = segments.pop() ?? ""; // 保留不完整的最后一行
         } else {
-          stdout = ''; // 全部完整，清空 buffer
+          stdout = ""; // 全部完整，清空 buffer
           segments.pop(); // 移除末尾空字符串
         }
 
@@ -323,22 +323,22 @@ export class McpToolsService {
             const msg = JSON.parse(line) as McpJsonRpcMessage;
             // initialize 响应
             if (msg.id === 1 && msg.result) {
-              send({ jsonrpc: '2.0', method: 'notifications/initialized' });
+              send({ jsonrpc: "2.0", method: "notifications/initialized" });
               // 短暂延迟后请求工具列表
               setTimeout(() => {
                 if (!toolsRequested) {
                   toolsRequested = true;
-                  send({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
+                  send({ jsonrpc: "2.0", id: 2, method: "tools/list" });
                 }
               }, 300);
             }
             // tools/list 响应
             if (msg.id === 2 && msg.result) {
               clearTimeout(timer);
-              child.kill('SIGKILL');
+              child.kill("SIGKILL");
               const tools = (msg.result.tools ?? []).map((t) => ({
-                name: t.name ?? '',
-                description: t.description ?? '',
+                name: t.name ?? "",
+                description: t.description ?? "",
                 inputSchema: t.inputSchema ?? {},
               }));
               resolve(tools);
@@ -349,21 +349,21 @@ export class McpToolsService {
         }
       });
 
-      child.stderr.on('data', (data: Buffer) => {
+      child.stderr.on("data", (data: Buffer) => {
         stderr += data.toString();
       });
 
-      child.on('error', (err) => {
+      child.on("error", (err) => {
         clearTimeout(timer);
         reject(new Error(`无法启动 ${cmd}: ${err.message}`));
       });
 
-      child.on('exit', (code) => {
+      child.on("exit", (code) => {
         clearTimeout(timer);
         if (!toolsRequested) {
           reject(
             new Error(
-              `进程退出 (code=${code}) ${stderr ? ': ' + stderr.slice(0, 200) : ''}`,
+              `进程退出 (code=${code}) ${stderr ? ": " + stderr.slice(0, 200) : ""}`,
             ),
           );
         }
@@ -371,13 +371,13 @@ export class McpToolsService {
 
       // 发送 initialize 请求
       send({
-        jsonrpc: '2.0',
+        jsonrpc: "2.0",
         id: 1,
-        method: 'initialize',
+        method: "initialize",
         params: {
-          protocolVersion: '2024-11-05',
+          protocolVersion: "2024-11-05",
           capabilities: {},
-          clientInfo: { name: 'ai-portal', version: '1.0.0' },
+          clientInfo: { name: "ai-portal", version: "1.0.0" },
         },
       });
     });
@@ -412,24 +412,24 @@ export class McpToolsService {
     baseUrl: string,
     signal: AbortSignal,
   ): Promise<McpTool[]> {
-    const endpoint = baseUrl.replace(/\/$/, '');
+    const endpoint = baseUrl.replace(/\/$/, "");
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json, text/event-stream',
+      "Content-Type": "application/json",
+      Accept: "application/json, text/event-stream",
     };
 
     // 1. initialize
     const initRes = await fetch(endpoint, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: JSON.stringify({
-        jsonrpc: '2.0',
+        jsonrpc: "2.0",
         id: 1,
-        method: 'initialize',
+        method: "initialize",
         params: {
-          protocolVersion: '2024-11-05',
+          protocolVersion: "2024-11-05",
           capabilities: {},
-          clientInfo: { name: 'ai-portal', version: '1.0.0' },
+          clientInfo: { name: "ai-portal", version: "1.0.0" },
         },
       }),
       signal,
@@ -438,14 +438,14 @@ export class McpToolsService {
     if (!initRes.ok) return [];
 
     // SSE 类型响应：Streamable HTTP 不适用，立即回退到 SSE 传输
-    const contentType = initRes.headers.get('content-type') ?? '';
-    if (contentType.includes('text/event-stream')) {
+    const contentType = initRes.headers.get("content-type") ?? "";
+    if (contentType.includes("text/event-stream")) {
       return [];
     }
 
     // 提取 session ID
-    const sessionId = initRes.headers.get('mcp-session-id') || '';
-    if (sessionId) headers['Mcp-Session-Id'] = sessionId;
+    const sessionId = initRes.headers.get("mcp-session-id") || "";
+    if (sessionId) headers["Mcp-Session-Id"] = sessionId;
 
     // 解析 initialize 响应（可能是 JSON 或 SSE）
     const initBody = await initRes.text();
@@ -454,11 +454,11 @@ export class McpToolsService {
 
     // 2. notifications/initialized（fire and forget）
     fetch(endpoint, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: JSON.stringify({
-        jsonrpc: '2.0',
-        method: 'notifications/initialized',
+        jsonrpc: "2.0",
+        method: "notifications/initialized",
       }),
       signal,
     }).catch(() => {});
@@ -466,12 +466,12 @@ export class McpToolsService {
     // 3. tools/list
     await new Promise((r) => setTimeout(r, 200));
     const toolsRes = await fetch(endpoint, {
-      method: 'POST',
+      method: "POST",
       headers,
       body: JSON.stringify({
-        jsonrpc: '2.0',
+        jsonrpc: "2.0",
         id: 2,
-        method: 'tools/list',
+        method: "tools/list",
       }),
       signal,
     });
@@ -482,8 +482,8 @@ export class McpToolsService {
     if (!toolsMsg?.result?.tools) return [];
 
     return (toolsMsg.result.tools ?? []).map((t) => ({
-      name: t.name ?? '',
-      description: t.description ?? '',
+      name: t.name ?? "",
+      description: t.description ?? "",
       inputSchema: t.inputSchema ?? {},
     }));
   }
@@ -493,7 +493,7 @@ export class McpToolsService {
     baseUrl: string,
     signal: AbortSignal,
   ): Promise<McpTool[]> {
-    const sseUrl = `${baseUrl.replace(/\/$/, '')}/sse`;
+    const sseUrl = `${baseUrl.replace(/\/$/, "")}/sse`;
 
     // GET /sse，从 endpoint 事件中提取 POST URL
     const sseRes = await fetch(sseUrl, { signal });
@@ -505,7 +505,7 @@ export class McpToolsService {
 
     const postEndpoint = endpointMatch[1];
     // 相对路径转绝对
-    const postUrl = postEndpoint.startsWith('http')
+    const postUrl = postEndpoint.startsWith("http")
       ? postEndpoint
       : new URL(postEndpoint, baseUrl).toString();
 
@@ -525,7 +525,7 @@ export class McpToolsService {
     if (!trimmed) return null;
 
     // 纯 JSON
-    if (trimmed.startsWith('{')) {
+    if (trimmed.startsWith("{")) {
       try {
         return JSON.parse(trimmed) as McpJsonRpcMessage;
       } catch {
@@ -535,8 +535,8 @@ export class McpToolsService {
 
     // SSE 格式：找最后一个 data: 行
     const dataLines = trimmed
-      .split('\n')
-      .filter((l) => l.startsWith('data:'))
+      .split("\n")
+      .filter((l) => l.startsWith("data:"))
       .map((l) => l.slice(5).trim());
 
     for (let i = dataLines.length - 1; i >= 0; i--) {

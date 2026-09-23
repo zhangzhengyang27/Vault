@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import { Injectable, Logger } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 
 /**
  * Firecrawl 单页抓取结果中的 metadata 字段。
@@ -40,7 +40,7 @@ interface FirecrawlCrawlStartResponse {
 
 /** Firecrawl /v1/crawl/{jobId} 状态响应 */
 interface FirecrawlCrawlStatusResponse {
-  status: 'scraping' | 'completed' | 'failed' | 'cancelled';
+  status: "scraping" | "completed" | "failed" | "cancelled";
   total?: number;
   completed?: number;
   creditsUsed?: number;
@@ -68,24 +68,24 @@ export class FirecrawlService {
   private readonly timeoutMs: number;
 
   constructor(private readonly configService: ConfigService) {
-    this.apiKey = this.configService.get<string>('FIRECRAWL_API_KEY', '');
+    this.apiKey = this.configService.get<string>("FIRECRAWL_API_KEY", "");
     this.baseUrl =
-      this.configService.get<string>('FIRECRAWL_BASE_URL', '') ||
-      'https://api.firecrawl.dev';
+      this.configService.get<string>("FIRECRAWL_BASE_URL", "") ||
+      "https://api.firecrawl.dev";
     this.timeoutMs = Number(
-      this.configService.get<string>('FIRECRAWL_TIMEOUT', '30000'),
+      this.configService.get<string>("FIRECRAWL_TIMEOUT", "30000"),
     );
   }
 
   /** Firecrawl 是否可用（配置了 API Key 或自托管地址） */
   isAvailable(): boolean {
-    return Boolean(this.apiKey) || this.baseUrl !== 'https://api.firecrawl.dev';
+    return Boolean(this.apiKey) || this.baseUrl !== "https://api.firecrawl.dev";
   }
 
   /** 返回配置模式：hosted（托管API）/ self-hosted（自托管）/ unconfigured */
-  getMode(): 'hosted' | 'self-hosted' | 'unconfigured' {
-    if (!this.isAvailable()) return 'unconfigured';
-    return this.apiKey ? 'hosted' : 'self-hosted';
+  getMode(): "hosted" | "self-hosted" | "unconfigured" {
+    if (!this.isAvailable()) return "unconfigured";
+    return this.apiKey ? "hosted" : "self-hosted";
   }
 
   /**
@@ -96,7 +96,7 @@ export class FirecrawlService {
     url: string,
     options: {
       formats?: (
-        'markdown' | 'html' | 'rawHtml' | 'content' | 'links' | 'screenshot'
+        "markdown" | "html" | "rawHtml" | "content" | "links" | "screenshot"
       )[];
       onlyMainContent?: boolean;
       waitFor?: number;
@@ -104,25 +104,25 @@ export class FirecrawlService {
   ): Promise<FirecrawlScrapeResult> {
     if (!this.isAvailable()) {
       throw new Error(
-        'Firecrawl 未配置：请设置 FIRECRAWL_API_KEY 或 FIRECRAWL_BASE_URL',
+        "Firecrawl 未配置：请设置 FIRECRAWL_API_KEY 或 FIRECRAWL_BASE_URL",
       );
     }
 
     const body = {
       url,
-      formats: options.formats ?? ['markdown'],
+      formats: options.formats ?? ["markdown"],
       onlyMainContent: options.onlyMainContent ?? true,
       ...(options.waitFor ? { waitFor: options.waitFor } : {}),
     };
 
     const res = await this.fetchWithTimeout(`${this.baseUrl}/v1/scrape`, {
-      method: 'POST',
+      method: "POST",
       headers: this.authHeaders(),
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
+      const text = await res.text().catch(() => "");
       throw new Error(
         `Firecrawl 抓取失败 (${res.status}): ${text.slice(0, 200)}`,
       );
@@ -130,7 +130,7 @@ export class FirecrawlService {
 
     const data = (await res.json()) as FirecrawlScrapeResponse;
     if (data.success === false) {
-      throw new Error(`Firecrawl 返回错误: ${data.error ?? '未知错误'}`);
+      throw new Error(`Firecrawl 返回错误: ${data.error ?? "未知错误"}`);
     }
 
     return this.normalizeScrapeResult(data, url);
@@ -151,7 +151,7 @@ export class FirecrawlService {
     } = {},
   ): Promise<{ jobId: string }> {
     if (!this.isAvailable()) {
-      throw new Error('Firecrawl 未配置');
+      throw new Error("Firecrawl 未配置");
     }
 
     const body = {
@@ -160,17 +160,17 @@ export class FirecrawlService {
       maxDepth: options.maxDepth ?? 2,
       ...(options.includes?.length ? { includes: options.includes } : {}),
       ...(options.excludes?.length ? { excludes: options.excludes } : {}),
-      scrapeOptions: options.scrapeOptions ?? { formats: ['markdown'] },
+      scrapeOptions: options.scrapeOptions ?? { formats: ["markdown"] },
     };
 
     const res = await this.fetchWithTimeout(`${this.baseUrl}/v1/crawl`, {
-      method: 'POST',
+      method: "POST",
       headers: this.authHeaders(),
       body: JSON.stringify(body),
     });
 
     if (!res.ok) {
-      const text = await res.text().catch(() => '');
+      const text = await res.text().catch(() => "");
       throw new Error(
         `Firecrawl 启动爬取失败 (${res.status}): ${text.slice(0, 200)}`,
       );
@@ -178,21 +178,21 @@ export class FirecrawlService {
 
     const data = (await res.json()) as FirecrawlCrawlStartResponse;
     if (!data.id) {
-      throw new Error('Firecrawl 未返回 jobId');
+      throw new Error("Firecrawl 未返回 jobId");
     }
     return { jobId: data.id };
   }
 
   /** 查询批量爬取进度 */
   async getCrawlStatus(jobId: string): Promise<{
-    status: 'scraping' | 'completed' | 'failed' | 'cancelled';
+    status: "scraping" | "completed" | "failed" | "cancelled";
     total: number;
     completed: number;
     creditsUsed: number;
     data: FirecrawlScrapeResult[];
   }> {
     if (!this.isAvailable()) {
-      throw new Error('Firecrawl 未配置');
+      throw new Error("Firecrawl 未配置");
     }
 
     const res = await this.fetchWithTimeout(
@@ -211,7 +211,7 @@ export class FirecrawlService {
       completed: data.completed ?? 0,
       creditsUsed: data.creditsUsed ?? 0,
       data: (data.data ?? []).map((d: FirecrawlScrapeResponse) =>
-        this.normalizeScrapeResult(d, d.metadata?.sourceURL ?? ''),
+        this.normalizeScrapeResult(d, d.metadata?.sourceURL ?? ""),
       ),
     };
   }
@@ -240,10 +240,10 @@ export class FirecrawlService {
 
     while (Date.now() - start < timeout) {
       const status = await this.getCrawlStatus(jobId);
-      if (status.status === 'completed') {
+      if (status.status === "completed") {
         return status.data;
       }
-      if (status.status === 'failed' || status.status === 'cancelled') {
+      if (status.status === "failed" || status.status === "cancelled") {
         throw new Error(`Firecrawl 爬取 ${status.status}: ${jobId}`);
       }
       await this.sleep(pollInterval);
@@ -254,7 +254,7 @@ export class FirecrawlService {
 
   /** 提取页面中的所有链接（用于发现子页面） */
   async extractLinks(url: string): Promise<string[]> {
-    const result = await this.scrapeUrl(url, { formats: ['links'] });
+    const result = await this.scrapeUrl(url, { formats: ["links"] });
     return result.links ?? [];
   }
 
@@ -274,7 +274,7 @@ export class FirecrawlService {
     try {
       return await fetch(url, { ...init, signal: controller.signal });
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
+      if (err instanceof Error && err.name === "AbortError") {
         throw new Error(
           `Firecrawl 请求超时 (${timeoutMs ?? this.timeoutMs}ms): ${url}`,
         );
@@ -288,7 +288,7 @@ export class FirecrawlService {
   /** 统一认证头 */
   private authHeaders(): Record<string, string> {
     return {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...(this.apiKey ? { Authorization: `Bearer ${this.apiKey}` } : {}),
     };
   }
@@ -297,25 +297,25 @@ export class FirecrawlService {
     data: FirecrawlScrapeResponse,
     sourceUrl: string,
   ): FirecrawlScrapeResult {
-    const markdown = data.markdown ?? data.data?.markdown ?? '';
-    const html = data.html ?? data.data?.html ?? '';
+    const markdown = data.markdown ?? data.data?.markdown ?? "";
+    const html = data.html ?? data.data?.html ?? "";
     const metadata: FirecrawlMetadata =
       data.metadata ?? data.data?.metadata ?? {};
     return {
       url: metadata.sourceURL ?? metadata.url ?? sourceUrl,
-      title: metadata.title ?? '',
-      description: metadata.description ?? '',
+      title: metadata.title ?? "",
+      description: metadata.description ?? "",
       markdown,
       html,
       links: data.links ?? data.data?.links ?? [],
       metadata: {
         ...metadata,
-        title: metadata.title ?? '',
-        description: metadata.description ?? '',
-        language: metadata.language ?? '',
+        title: metadata.title ?? "",
+        description: metadata.description ?? "",
+        language: metadata.language ?? "",
         keywords: metadata.keywords ?? [],
-        robots: metadata.robots ?? '',
-        ogImage: metadata.ogImage ?? '',
+        robots: metadata.robots ?? "",
+        ogImage: metadata.ogImage ?? "",
       },
     };
   }

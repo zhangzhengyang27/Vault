@@ -1,5 +1,5 @@
-import { ExecutionContext, Injectable } from '@nestjs/common';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { ExecutionContext, Injectable } from "@nestjs/common";
+import { JwtAuthGuard } from "./jwt-auth.guard";
 
 /**
  * 可选认证守卫：有合法 token 时挂上 request.user，无 token/失效时匿名放行。

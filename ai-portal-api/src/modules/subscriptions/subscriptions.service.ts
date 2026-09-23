@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { ILike, Repository } from "typeorm";
 import {
   Subscription,
   SubscriptionTargetType,
-} from '../../entities/subscription.entity';
-import { isPgErrorWithCode } from '../../common/pg-error';
+} from "../../entities/subscription.entity";
+import { isPgErrorWithCode } from "../../common/pg-error";
 
 export type PublishableItem = {
   type: string; // tool / prompt / article / news / post / repo
@@ -27,7 +27,7 @@ export class SubscriptionsService {
   async listByUser(userId: number) {
     return this.repo.find({
       where: { userId, active: true },
-      order: { id: 'DESC' },
+      order: { id: "DESC" },
     });
   }
 
@@ -52,7 +52,7 @@ export class SubscriptionsService {
       );
     } catch (err) {
       // 并发下两个请求同时通过 exists 检查：唯一约束兜底，返回幂等的重复语义
-      if (isPgErrorWithCode(err, '23505')) {
+      if (isPgErrorWithCode(err, "23505")) {
         return { duplicated: true };
       }
       throw err;
@@ -84,14 +84,14 @@ export class SubscriptionsService {
    */
   async findMatchingSubscribers(item: PublishableItem): Promise<number[]> {
     const userIds = new Set<number>();
-    const keyword = (item.title + ' ' + (item.description ?? '')).toLowerCase();
+    const keyword = (item.title + " " + (item.description ?? "")).toLowerCase();
 
     // 1) 栏目订阅：按名称精确匹配
     if (item.categoryName) {
       const categorySubs = await this.repo.find({
         where: {
           active: true,
-          targetType: 'category',
+          targetType: "category",
           targetValue: ILike(item.categoryName),
         },
       });
@@ -101,7 +101,7 @@ export class SubscriptionsService {
     // 2) 标签订阅：任一标签精确匹配
     if (item.tags && item.tags.length > 0) {
       const tagSubs = await this.repo.find({
-        where: { active: true, targetType: 'tag' },
+        where: { active: true, targetType: "tag" },
       });
       for (const s of tagSubs) {
         if (
@@ -114,7 +114,7 @@ export class SubscriptionsService {
 
     // 3) 关键词订阅：标题/描述包含匹配（关键词无界，需遍历）
     const keywordSubs = await this.repo.find({
-      where: { active: true, targetType: 'keyword' },
+      where: { active: true, targetType: "keyword" },
     });
     for (const s of keywordSubs) {
       if (keyword.includes(s.targetValue.toLowerCase())) {

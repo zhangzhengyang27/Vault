@@ -1,6 +1,6 @@
-import { IsArray, IsIn, IsOptional, IsString } from 'class-validator';
-import { CONTENT_STATUSES } from '../../admin/dto/admin-content.dto';
-import { NEWS_CATEGORY_KEYS } from '../news-categories';
+import { IsArray, IsIn, IsOptional, IsString } from "class-validator";
+import { CONTENT_STATUSES } from "../../admin/dto/admin-content.dto";
+import { NEWS_CATEGORY_KEYS } from "../news-categories";
 
 export class CreateNewsDto {
   @IsString()

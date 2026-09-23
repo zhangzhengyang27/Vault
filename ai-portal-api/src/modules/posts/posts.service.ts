@@ -2,16 +2,16 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, In, Repository } from 'typeorm';
-import { Post } from '../../entities/post.entity';
-import { PostLike } from '../../entities/post-like.entity';
-import { User } from '../../entities/user.entity';
-import { ContentCleanupService } from '../../common/content-cleanup.service';
-import { isPgErrorWithCode } from '../../common/pg-error';
-import { NotificationsService } from '../notifications/notifications.service';
-import { CreatePostDto } from './dto/create-post.dto';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { DeepPartial, In, Repository } from "typeorm";
+import { Post } from "../../entities/post.entity";
+import { PostLike } from "../../entities/post-like.entity";
+import { User } from "../../entities/user.entity";
+import { ContentCleanupService } from "../../common/content-cleanup.service";
+import { isPgErrorWithCode } from "../../common/pg-error";
+import { NotificationsService } from "../notifications/notifications.service";
+import { CreatePostDto } from "./dto/create-post.dto";
 
 /** 整数参数钳制：非法输入回退默认值（避免 NaN 直达 SQL） */
 export function clampInt(
@@ -39,29 +39,29 @@ export class PostsService {
   async findAll(
     page: number | string = 1,
     limit: number | string = 20,
-    sort: string = 'latest',
+    sort: string = "latest",
     tag?: string,
   ) {
     const safePage = clampInt(page, 1, Number.MAX_SAFE_INTEGER);
     const safeLimit = clampInt(limit, 20, 100);
     const qb = this.repo
-      .createQueryBuilder('post')
+      .createQueryBuilder("post")
       .leftJoinAndMapOne(
-        'post.user',
+        "post.user",
         User,
-        'author',
-        'author.id = post.user_id',
+        "author",
+        "author.id = post.user_id",
       )
-      .where('post.status = :status', { status: 'published' });
+      .where("post.status = :status", { status: "published" });
     if (tag) {
       // 标签筛选：simple-array 逗号串的包含匹配（小数据量足够，避免引入多对多）
-      const escaped = tag.replace(/[%_\\]/g, '\\$&');
-      qb.andWhere('post.tags ILIKE :tag', { tag: `%${escaped}%` });
+      const escaped = tag.replace(/[%_\\]/g, "\\$&");
+      qb.andWhere("post.tags ILIKE :tag", { tag: `%${escaped}%` });
     }
-    if (sort === 'hot') {
-      qb.orderBy('post.likes', 'DESC').addOrderBy('post.id', 'DESC');
+    if (sort === "hot") {
+      qb.orderBy("post.likes", "DESC").addOrderBy("post.id", "DESC");
     } else {
-      qb.orderBy('post.id', 'DESC');
+      qb.orderBy("post.id", "DESC");
     }
     qb.skip((safePage - 1) * safeLimit).take(safeLimit);
     const [items, total] = await qb.getManyAndCount();
@@ -91,7 +91,7 @@ export class PostsService {
     if (!tags?.length) return null;
     const cleaned = [
       ...new Set(
-        tags.map((t) => t.trim().replace(/[,，]/g, '')).filter(Boolean),
+        tags.map((t) => t.trim().replace(/[,，]/g, "")).filter(Boolean),
       ),
     ];
     return cleaned.length ? cleaned.slice(0, 5) : null;
@@ -103,7 +103,7 @@ export class PostsService {
         title: this.stripHtml(dto.title),
         content: this.stripHtml(dto.content),
         // 登录用户一律以账号用户名署名，忽略客户端传入的 authorName（防冒名）
-        authorName: user?.username ?? '匿名',
+        authorName: user?.username ?? "匿名",
         // TypeORM 只需 id 即可建立关联，无需加载完整 User 实体
         user: user ? { id: user.id } : null,
         tags: this.normalizeTags(dto.tags),
@@ -121,13 +121,13 @@ export class PostsService {
    */
   async findOnePublic(id: number, countView = true) {
     const item = await this.repo.findOne({
-      where: { id, status: 'published' },
+      where: { id, status: "published" },
       relations: { user: true },
     });
     if (!item) return null;
     // 阅读数原子自增（无需去重，与参考站口径一致）；失败不影响阅读
     if (countView) {
-      await this.repo.increment({ id }, 'views', 1).catch(() => undefined);
+      await this.repo.increment({ id }, "views", 1).catch(() => undefined);
     }
     const { user, ...rest } = item;
     return {
@@ -154,10 +154,10 @@ export class PostsService {
       where: { id },
       relations: { user: true },
     });
-    if (!post) throw new NotFoundException('帖子不存在');
-    const isAdmin = user?.role === 'admin';
+    if (!post) throw new NotFoundException("帖子不存在");
+    const isAdmin = user?.role === "admin";
     if (!isAdmin && (!user || !post.user || post.user.id !== user.id)) {
-      throw new ForbiddenException('无权编辑此帖子');
+      throw new ForbiddenException("无权编辑此帖子");
     }
     post.title = this.stripHtml(dto.title);
     post.content = this.stripHtml(dto.content);
@@ -173,7 +173,7 @@ export class PostsService {
       where: { id: postId },
       relations: { user: true },
     });
-    if (!post) throw new NotFoundException('帖子不存在');
+    if (!post) throw new NotFoundException("帖子不存在");
 
     const existing = await this.likeRepo.findOne({
       where: { post: { id: postId }, user: { id: userId } },
@@ -185,7 +185,7 @@ export class PostsService {
         user: { id: userId },
       });
       if ((del.affected ?? 0) > 0) {
-        await this.repo.decrement({ id: postId }, 'likes', 1);
+        await this.repo.decrement({ id: postId }, "likes", 1);
         return { liked: false, likes: Math.max(0, post.likes - 1) };
       }
       return { liked: false, likes: post.likes };
@@ -200,18 +200,18 @@ export class PostsService {
     } catch (err) {
       // 并发双击：唯一约束命中说明对方请求已插入且已 increment，
       // 直接返回避免重复 +1 造成计数永久漂移
-      if (!isPgErrorWithCode(err, '23505')) {
+      if (!isPgErrorWithCode(err, "23505")) {
         throw err;
       }
       return { liked: true, likes: post.likes + 1 };
     }
-    await this.repo.increment({ id: postId }, 'likes', 1);
+    await this.repo.increment({ id: postId }, "likes", 1);
     // 点赞通知作者：匿名帖、自己赞自己不通知
     if (post.user && post.user.id !== userId) {
       await this.notifications.createForUser(post.user.id, {
-        type: 'like',
+        type: "like",
         title: `${user.username} 赞了你的帖子「${post.title}」`,
-        targetType: 'post',
+        targetType: "post",
         targetId: postId,
       });
     }
@@ -234,19 +234,19 @@ export class PostsService {
     q?: string;
   }): Promise<{ items: Array<Record<string, unknown>>; total: number }> {
     const qb = this.repo
-      .createQueryBuilder('post')
+      .createQueryBuilder("post")
       .leftJoinAndMapOne(
-        'post.user',
+        "post.user",
         User,
-        'author',
-        'author.id = post.user_id',
+        "author",
+        "author.id = post.user_id",
       );
     if (params.q) {
-      qb.andWhere('(post.title ILIKE :q OR post.content ILIKE :q)', {
+      qb.andWhere("(post.title ILIKE :q OR post.content ILIKE :q)", {
         q: `%${params.q}%`,
       });
     }
-    qb.orderBy('post.id', 'DESC')
+    qb.orderBy("post.id", "DESC")
       .skip((params.page - 1) * params.limit)
       .take(params.limit);
     const [items, total] = await qb.getManyAndCount();
@@ -260,10 +260,10 @@ export class PostsService {
   }
 
   /** 管理端切换帖子可见性：published 展示 / hidden 下架 */
-  async setStatus(id: number, status: 'published' | 'hidden') {
+  async setStatus(id: number, status: "published" | "hidden") {
     const post = await this.repo.findOne({ where: { id } });
     if (!post) {
-      throw new NotFoundException('帖子不存在');
+      throw new NotFoundException("帖子不存在");
     }
     post.status = status;
     await this.repo.save(post);
@@ -276,28 +276,28 @@ export class PostsService {
       relations: { user: true },
     });
     if (!post) {
-      throw new NotFoundException('帖子不存在');
+      throw new NotFoundException("帖子不存在");
     }
     // 仅作者本人或管理员可删除
-    const isAdmin = user?.role === 'admin';
+    const isAdmin = user?.role === "admin";
     if (!isAdmin && (!user || !post.user || post.user.id !== user.id)) {
-      throw new ForbiddenException('无权删除此帖子');
+      throw new ForbiddenException("无权删除此帖子");
     }
     // post_likes 外键无 ON DELETE CASCADE，必须先删点赞，否则删帖触发 23503
     // 使有赞帖子永远无法删除，后续的评论/收藏清理也执行不到
     await this.likeRepo.delete({ post: { id } });
     await this.repo.remove(post);
     // 清理帖子关联的评论/收藏/通知（多态关联无外键）
-    await this.cleanup.purge('post', id);
+    await this.cleanup.purge("post", id);
     return { success: true };
   }
 
   /** 剥离 HTML/脚本标签，防止存储型 XSS */
   private stripHtml(raw: string): string {
     return raw
-      .replace(/<script[\s\S]*?<\/script>/gi, '')
-      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, '')
-      .replace(/<[^>]+>/g, '')
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<\/?(script|iframe|object|embed|form)[^>]*>/gi, "")
+      .replace(/<[^>]+>/g, "")
       .trim();
   }
 }

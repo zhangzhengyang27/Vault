@@ -5,15 +5,15 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-} from 'class-validator';
+} from "class-validator";
 
 /** 内容状态白名单：published 前台可见，其余（draft/pending/archived/rejected）前台隐藏 */
 export const CONTENT_STATUSES = [
-  'published',
-  'draft',
-  'pending',
-  'archived',
-  'rejected',
+  "published",
+  "draft",
+  "pending",
+  "archived",
+  "rejected",
 ] as const;
 
 /**

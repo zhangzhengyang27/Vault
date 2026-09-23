@@ -1,6 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity('categories')
+@Entity("categories")
 export class Category {
   @PrimaryGeneratedColumn()
   id: number;
@@ -11,9 +11,9 @@ export class Category {
   @Column()
   name: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: "int", nullable: true })
   parentId: number | null;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: "int", default: 0 })
   sortOrder: number;
 }

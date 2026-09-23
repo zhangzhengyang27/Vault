@@ -1,13 +1,13 @@
-import { Test } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { DataSource, QueryFailedError } from 'typeorm';
-import { CommentsService } from './comments.service';
-import { Comment } from '../../entities/comment.entity';
-import { CommentLike } from '../../entities/comment-like.entity';
-import { Post } from '../../entities/post.entity';
-import { NotificationsService } from '../notifications/notifications.service';
+import { Test } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { DataSource, QueryFailedError } from "typeorm";
+import { CommentsService } from "./comments.service";
+import { Comment } from "../../entities/comment.entity";
+import { CommentLike } from "../../entities/comment-like.entity";
+import { Post } from "../../entities/post.entity";
+import { NotificationsService } from "../notifications/notifications.service";
 
-describe('CommentsService（P1 回归）', () => {
+describe("CommentsService（P1 回归）", () => {
   let service: CommentsService;
   let commentRepo: {
     findOne: jest.Mock;
@@ -66,29 +66,29 @@ describe('CommentsService（P1 回归）', () => {
     service = moduleRef.get(CommentsService);
   });
 
-  describe('toggleLike', () => {
+  describe("toggleLike", () => {
     const comment = {
       id: 5,
       likes: 3,
-      targetType: 'post',
+      targetType: "post",
       targetId: 1,
-      content: 'x',
+      content: "x",
       user: { id: 2 },
     };
 
-    it('23505 命中（并发双击）时不重复 increment，防止计数漂移', async () => {
+    it("23505 命中（并发双击）时不重复 increment，防止计数漂移", async () => {
       commentRepo.findOne.mockResolvedValue(comment);
       likeRepo.findOne.mockResolvedValue(null);
       likeRepo.save.mockRejectedValue(
         Object.assign(
-          new QueryFailedError('', [], new Error('duplicate key')),
+          new QueryFailedError("", [], new Error("duplicate key")),
           {
-            code: '23505',
+            code: "23505",
           },
         ),
       );
 
-      const result = await service.toggleLike(5, { id: 1, username: 'bob' });
+      const result = await service.toggleLike(5, { id: 1, username: "bob" });
 
       expect(result).toEqual({ liked: true, likes: 4 });
       expect(commentRepo.increment).not.toHaveBeenCalled();
@@ -96,39 +96,39 @@ describe('CommentsService（P1 回归）', () => {
       expect(notifications.createForUser).not.toHaveBeenCalled();
     });
 
-    it('正常点赞：插入 + increment + 通知评论作者', async () => {
+    it("正常点赞：插入 + increment + 通知评论作者", async () => {
       commentRepo.findOne.mockResolvedValue(comment);
       likeRepo.findOne.mockResolvedValue(null);
       likeRepo.save.mockResolvedValue({});
 
-      const result = await service.toggleLike(5, { id: 1, username: 'bob' });
+      const result = await service.toggleLike(5, { id: 1, username: "bob" });
 
       expect(result).toEqual({ liked: true, likes: 4 });
-      expect(commentRepo.increment).toHaveBeenCalledWith({ id: 5 }, 'likes', 1);
+      expect(commentRepo.increment).toHaveBeenCalledWith({ id: 5 }, "likes", 1);
       expect(notifications.createForUser).toHaveBeenCalledWith(
         2,
         expect.objectContaining({
-          type: 'like',
-          targetType: 'post',
+          type: "like",
+          targetType: "post",
           targetId: 1,
         }),
       );
     });
   });
 
-  describe('嵌套回复', () => {
-    it('可回复存量评论（post_id=null 仅写 target 列的历史数据）', async () => {
+  describe("嵌套回复", () => {
+    it("可回复存量评论（post_id=null 仅写 target 列的历史数据）", async () => {
       postRepo.findOne.mockResolvedValue({
         id: 1,
-        title: 'T',
-        status: 'published',
+        title: "T",
+        status: "published",
         user: { id: 9 },
       });
       // 存量行：postId 为 null，仅 target_type/target_id 有值
       commentRepo.findOne.mockResolvedValue({
         id: 7,
         postId: null,
-        targetType: 'post',
+        targetType: "post",
         targetId: 1,
         parentId: null,
         user: { id: 2 },
@@ -139,31 +139,31 @@ describe('CommentsService（P1 回归）', () => {
 
       const saved = await service.create(
         1,
-        { content: 'hi', parentId: 7 },
-        { id: 1, username: 'bob' },
+        { content: "hi", parentId: 7 },
+        { id: 1, username: "bob" },
       );
 
       expect(saved.parentId).toBe(7);
       expect(notifications.createForUser).toHaveBeenCalledWith(
         2,
         expect.objectContaining({
-          type: 'comment',
-          title: 'bob 回复了你的评论',
+          type: "comment",
+          title: "bob 回复了你的评论",
         }),
       );
     });
 
-    it('回复楼中楼的回复被拒（仅支持一级嵌套）', async () => {
+    it("回复楼中楼的回复被拒（仅支持一级嵌套）", async () => {
       postRepo.findOne.mockResolvedValue({
         id: 1,
-        title: 'T',
-        status: 'published',
+        title: "T",
+        status: "published",
         user: { id: 9 },
       });
       commentRepo.findOne.mockResolvedValue({
         id: 8,
         postId: 1,
-        targetType: 'post',
+        targetType: "post",
         targetId: 1,
         parentId: 7,
         user: { id: 2 },
@@ -172,20 +172,20 @@ describe('CommentsService（P1 回归）', () => {
       await expect(
         service.create(
           1,
-          { content: 'hi', parentId: 8 },
+          { content: "hi", parentId: 8 },
           {
             id: 1,
-            username: 'bob',
+            username: "bob",
           },
         ),
-      ).rejects.toThrow('仅支持对顶级评论回复');
+      ).rejects.toThrow("仅支持对顶级评论回复");
     });
   });
 
-  describe('findByPost', () => {
-    it('剥离 user 关联只透出 userId（删除权限判断用）', async () => {
+  describe("findByPost", () => {
+    it("剥离 user 关联只透出 userId（删除权限判断用）", async () => {
       commentRepo.find.mockResolvedValue([
-        { id: 1, authorName: 'a', user: { id: 9 } },
+        { id: 1, authorName: "a", user: { id: 9 } },
       ] as never);
 
       const rows = await service.findByPost(1);

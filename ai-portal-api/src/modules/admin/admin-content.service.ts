@@ -2,52 +2,52 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { Article } from '../../entities/article.entity';
-import { News } from '../../entities/news.entity';
-import { Mcp } from '../../entities/mcp.entity';
-import { Repo } from '../../entities/repo.entity';
-import { Resource } from '../../entities/resource.entity';
-import { Category } from '../../entities/category.entity';
-import { makeSlug } from '../../common/slug.util';
-import { CONTENT_STATUSES } from './dto/admin-content.dto';
-import { NotificationsService } from '../notifications/notifications.service';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { Article } from "../../entities/article.entity";
+import { News } from "../../entities/news.entity";
+import { Mcp } from "../../entities/mcp.entity";
+import { Repo } from "../../entities/repo.entity";
+import { Resource } from "../../entities/resource.entity";
+import { Category } from "../../entities/category.entity";
+import { makeSlug } from "../../common/slug.util";
+import { CONTENT_STATUSES } from "./dto/admin-content.dto";
+import { NotificationsService } from "../notifications/notifications.service";
 import {
   classifyNewsCategory,
   NEWS_CATEGORY_KEYS,
   NewsCategoryKey,
-} from '../news/news-categories';
-import { ContentCleanupService } from '../../common/content-cleanup.service';
-import { escapeLike, LIKE_ESCAPE_SQL } from '../../common/like.util';
+} from "../news/news-categories";
+import { ContentCleanupService } from "../../common/content-cleanup.service";
+import { escapeLike, LIKE_ESCAPE_SQL } from "../../common/like.util";
 
 /** 管理端创建/编辑时必填的标题字段（用于校验与生成 slug） */
 const REQUIRED_TITLE: Record<ContentType, string> = {
-  tools: 'name',
-  prompts: 'title',
-  articles: 'title',
-  news: 'title',
-  mcps: 'name',
-  repos: 'name',
-  resources: 'title',
+  tools: "name",
+  prompts: "title",
+  articles: "title",
+  news: "title",
+  mcps: "name",
+  repos: "name",
+  resources: "title",
 };
 
 /** 各类型在 DB 中 NOT NULL 且无默认值的额外必填字段（缺失会触发裸 500） */
 const REQUIRED_EXTRA: Record<ContentType, string[]> = {
-  tools: ['description'],
-  prompts: ['description', 'content'],
-  articles: ['summary'],
-  news: ['summary'],
+  tools: ["description"],
+  prompts: ["description", "content"],
+  articles: ["summary"],
+  news: ["summary"],
   mcps: [],
   repos: [],
   resources: [],
 };
 
 export type ContentType =
-  'tools' | 'prompts' | 'articles' | 'news' | 'mcps' | 'repos' | 'resources';
+  "tools" | "prompts" | "articles" | "news" | "mcps" | "repos" | "resources";
 
 interface ContentQuery {
   status?: string;
@@ -91,96 +91,96 @@ type ContentDto = Record<string, unknown>;
  * 与原有 `String(v)` 对合法输入的结果一致。
  */
 function asString(v: unknown): string {
-  return typeof v === 'string' ? v : '';
+  return typeof v === "string" ? v : "";
 }
 
 const TYPE_CONFIG: Record<ContentType, TypeConfig> = {
   tools: {
-    titleField: 'name',
-    searchFields: ['name', 'description'],
+    titleField: "name",
+    searchFields: ["name", "description"],
     hasCategory: true,
     fields: [
-      'slug',
-      'name',
-      'description',
-      'content',
-      'tags',
-      'rating',
-      'isFree',
-      'requiresLogin',
-      'phase',
+      "slug",
+      "name",
+      "description",
+      "content",
+      "tags",
+      "rating",
+      "isFree",
+      "requiresLogin",
+      "phase",
     ],
   },
   prompts: {
-    titleField: 'title',
-    searchFields: ['title', 'description'],
+    titleField: "title",
+    searchFields: ["title", "description"],
     hasCategory: true,
     fields: [
-      'slug',
-      'title',
-      'description',
-      'content',
-      'optimizedContent',
-      'modelHint',
-      'author',
-      'phase',
-      'kind',
-      'source',
+      "slug",
+      "title",
+      "description",
+      "content",
+      "optimizedContent",
+      "modelHint",
+      "author",
+      "phase",
+      "kind",
+      "source",
     ],
   },
   articles: {
-    titleField: 'title',
-    searchFields: ['title', 'summary'],
+    titleField: "title",
+    searchFields: ["title", "summary"],
     hasCategory: true,
-    fields: ['slug', 'title', 'summary', 'content', 'phase', 'knowledgeBase'],
+    fields: ["slug", "title", "summary", "content", "phase", "knowledgeBase"],
   },
   news: {
-    titleField: 'title',
-    searchFields: ['title', 'summary'],
+    titleField: "title",
+    searchFields: ["title", "summary"],
     hasCategory: false,
-    fields: ['slug', 'title', 'summary', 'content', 'time', 'phase'],
+    fields: ["slug", "title", "summary", "content", "time", "phase"],
   },
   mcps: {
-    titleField: 'name',
-    searchFields: ['name', 'description'],
+    titleField: "name",
+    searchFields: ["name", "description"],
     hasCategory: false,
-    listFields: ['type'],
+    listFields: ["type"],
     fields: [
-      'slug',
-      'name',
-      'description',
-      'endpoint',
-      'type',
-      'tags',
-      'installMethod',
-      'installTarget',
-      'sourceUrl',
-      'phase',
+      "slug",
+      "name",
+      "description",
+      "endpoint",
+      "type",
+      "tags",
+      "installMethod",
+      "installTarget",
+      "sourceUrl",
+      "phase",
     ],
   },
   repos: {
-    titleField: 'name',
-    searchFields: ['name', 'description'],
+    titleField: "name",
+    searchFields: ["name", "description"],
     hasCategory: false,
-    fields: ['slug', 'name', 'description', 'stars', 'lang', 'phase'],
+    fields: ["slug", "name", "description", "stars", "lang", "phase"],
   },
   resources: {
-    titleField: 'title',
-    searchFields: ['title', 'description'],
+    titleField: "title",
+    searchFields: ["title", "description"],
     hasCategory: false,
-    fields: ['slug', 'title', 'type', 'description', 'sourceUrl', 'phase'],
+    fields: ["slug", "title", "type", "description", "sourceUrl", "phase"],
   },
 };
 
 /** 管理端类型 → 对外内容类型（通知/收藏等 targetType 使用单数形式） */
 const CONTENT_TYPE_ALIASES: Record<ContentType, string> = {
-  tools: 'tool',
-  prompts: 'prompt',
-  articles: 'article',
-  news: 'news',
-  mcps: 'mcp',
-  repos: 'repo',
-  resources: 'resource',
+  tools: "tool",
+  prompts: "prompt",
+  articles: "article",
+  news: "news",
+  mcps: "mcp",
+  repos: "repo",
+  resources: "resource",
 };
 
 @Injectable()
@@ -208,28 +208,28 @@ export class AdminContentService {
 
   private getRepo(type: ContentType): Repository<any> {
     switch (type) {
-      case 'tools':
+      case "tools":
         return this.tools;
-      case 'prompts':
+      case "prompts":
         return this.prompts;
-      case 'articles':
+      case "articles":
         return this.articles;
-      case 'news':
+      case "news":
         return this.news;
-      case 'mcps':
+      case "mcps":
         return this.mcps;
-      case 'repos':
+      case "repos":
         return this.repos;
-      case 'resources':
+      case "resources":
         return this.resources;
       default:
-        throw new BadRequestException('不支持的内容类型');
+        throw new BadRequestException("不支持的内容类型");
     }
   }
 
   private getConfig(type: ContentType): TypeConfig {
     const cfg = TYPE_CONFIG[type];
-    if (!cfg) throw new BadRequestException('不支持的内容类型');
+    if (!cfg) throw new BadRequestException("不支持的内容类型");
     return cfg;
   }
 
@@ -250,16 +250,16 @@ export class AdminContentService {
       `${alias}.createdAt`,
     ]);
     if (cfg.hasCategory) {
-      qb.leftJoin(`${alias}.category`, 'cat').addSelect([
-        'cat.id',
-        'cat.name',
-        'cat.slug',
+      qb.leftJoin(`${alias}.category`, "cat").addSelect([
+        "cat.id",
+        "cat.name",
+        "cat.slug",
       ]);
     }
     for (const extra of cfg.listFields ?? []) {
       qb.addSelect(`${alias}.${extra}`);
     }
-    if (query.status && query.status !== 'all') {
+    if (query.status && query.status !== "all") {
       qb.andWhere(`${alias}.status = :status`, { status: query.status });
     }
     if (query.q) {
@@ -270,9 +270,9 @@ export class AdminContentService {
       cfg.searchFields.forEach((_, i) => {
         params[`q${i}`] = `%${escapeLike(query.q)}%`;
       });
-      qb.andWhere(`(${conds.join(' OR ')})`, params);
+      qb.andWhere(`(${conds.join(" OR ")})`, params);
     }
-    qb.orderBy(`${alias}.id`, 'DESC');
+    qb.orderBy(`${alias}.id`, "DESC");
 
     const [rows, total] = await qb
       .skip((page - 1) * limit)
@@ -290,7 +290,7 @@ export class AdminContentService {
       where: { id },
       relations: cfg.hasCategory ? { category: true } : undefined,
     })) as ContentRecord | null;
-    if (!entity) throw new NotFoundException('内容不存在');
+    if (!entity) throw new NotFoundException("内容不存在");
     return entity;
   }
 
@@ -312,9 +312,9 @@ export class AdminContentService {
     if (!data.slug) {
       data.slug = makeSlug(title);
     }
-    data.status = dto.status ?? 'published';
-    if (!('phase' in data)) data.phase = 'admin';
-    if (type === 'news') {
+    data.status = dto.status ?? "published";
+    if (!("phase" in data)) data.phase = "admin";
+    if (type === "news") {
       // 资讯写入时打分类标（与爬虫路径共用规则）；显式传入合法 key 时以传入值为准
       const explicit = asString(data.category);
       data.category =
@@ -331,7 +331,7 @@ export class AdminContentService {
     const saved = (await repo.save(entity)) as ContentRecord;
 
     // 直接发布的内容同样触发订阅推送（此前只有投稿审核路径会通知）
-    if (saved.status === 'published') {
+    if (saved.status === "published") {
       await this.notifySubscribers(type, saved).catch(() => undefined);
     }
     return saved;
@@ -343,7 +343,7 @@ export class AdminContentService {
     const entity = (await repo.findOne({
       where: { id },
     })) as ContentRecord | null;
-    if (!entity) throw new NotFoundException('内容不存在');
+    if (!entity) throw new NotFoundException("内容不存在");
     this.assertStatus(dto.status);
     const prevStatus = entity.status;
 
@@ -351,7 +351,7 @@ export class AdminContentService {
       if (dto[f] !== undefined) entity[f] = dto[f];
     }
     if (dto.status !== undefined) entity.status = dto.status as string;
-    if (type === 'news') {
+    if (type === "news") {
       // 资讯的 category 是字符串列（区别于 tools 的 Category 关联形状），
       // ContentRecord 的关联类型在此不适用，经 unknown 窄化回 News 实体读写
       const newsEntity = entity as unknown as News;
@@ -369,7 +369,7 @@ export class AdminContentService {
     const saved = (await repo.save(entity)) as ContentRecord;
 
     // 仅在「首次发布/重新上架」时推送订阅，编辑已发布内容不重复打扰
-    if (saved.status === 'published' && prevStatus !== 'published') {
+    if (saved.status === "published" && prevStatus !== "published") {
       await this.notifySubscribers(type, saved).catch(() => undefined);
     }
     return saved;
@@ -380,7 +380,7 @@ export class AdminContentService {
     const entity = (await repo.findOne({
       where: { id },
     })) as ContentRecord | null;
-    if (!entity) throw new NotFoundException('内容不存在');
+    if (!entity) throw new NotFoundException("内容不存在");
     await repo.remove(entity);
     // 清理该内容关联的评论/收藏/通知（多态关联无外键）
     await this.cleanup.purge(CONTENT_TYPE_ALIASES[type], id);
@@ -418,7 +418,7 @@ export class AdminContentService {
       const cat = await this.categories.findOne({
         where: { id: Number(dto.categoryId) },
       });
-      if (!cat) throw new NotFoundException('分类不存在');
+      if (!cat) throw new NotFoundException("分类不存在");
       entity.category = cat;
     }
   }
@@ -426,11 +426,11 @@ export class AdminContentService {
   private assertStatus(status?: unknown) {
     if (status === undefined) return;
     if (
-      typeof status !== 'string' ||
+      typeof status !== "string" ||
       !(CONTENT_STATUSES as readonly string[]).includes(status)
     ) {
       throw new BadRequestException(
-        `无效的状态值：${asString(status) || '（非字符串值）'}`,
+        `无效的状态值：${asString(status) || "（非字符串值）"}`,
       );
     }
   }
@@ -442,7 +442,7 @@ export class AdminContentService {
       return v === undefined || v === null || !asString(v).trim();
     });
     if (missing.length > 0) {
-      throw new BadRequestException(`缺少必填字段：${missing.join('、')}`);
+      throw new BadRequestException(`缺少必填字段：${missing.join("、")}`);
     }
   }
 }

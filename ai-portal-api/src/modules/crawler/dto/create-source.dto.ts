@@ -1,4 +1,4 @@
-import { IsBoolean, IsIn, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class CreateSourceDto {
   @IsString()
@@ -7,12 +7,12 @@ export class CreateSourceDto {
   @IsUrl()
   url: string;
 
-  @IsIn(['news', 'tool', 'prompt', 'github', 'knowledge'])
-  sourceType: 'news' | 'tool' | 'prompt' | 'github' | 'knowledge';
+  @IsIn(["news", "tool", "prompt", "github", "knowledge"])
+  sourceType: "news" | "tool" | "prompt" | "github" | "knowledge";
 
-  @IsIn(['minutely', 'hourly', 'daily', 'weekly'])
+  @IsIn(["minutely", "hourly", "daily", "weekly"])
   @IsOptional()
-  crawlInterval?: 'minutely' | 'hourly' | 'daily' | 'weekly';
+  crawlInterval?: "minutely" | "hourly" | "daily" | "weekly";
 
   @IsOptional()
   @IsBoolean()

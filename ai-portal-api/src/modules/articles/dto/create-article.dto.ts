@@ -1,5 +1,5 @@
-import { IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
-import { CONTENT_STATUSES } from '../../admin/dto/admin-content.dto';
+import { IsIn, IsNumber, IsOptional, IsString } from "class-validator";
+import { CONTENT_STATUSES } from "../../admin/dto/admin-content.dto";
 
 export class CreateArticleDto {
   @IsString()

@@ -1,9 +1,9 @@
-import { Injectable, Logger } from '@nestjs/common';
-import * as crypto from 'crypto';
-import { Cron } from '@nestjs/schedule';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { Mcp } from '../../entities/mcp.entity';
+import { Injectable, Logger } from "@nestjs/common";
+import * as crypto from "crypto";
+import { Cron } from "@nestjs/schedule";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Mcp } from "../../entities/mcp.entity";
 
 /**
  * MCP 官方 Registry 同步服务。
@@ -18,7 +18,7 @@ import { Mcp } from '../../entities/mcp.entity';
 export class McpRegistrySyncService {
   private readonly logger = new Logger(McpRegistrySyncService.name);
   private readonly REGISTRY_URL =
-    'https://registry.modelcontextprotocol.io/v0.1/servers';
+    "https://registry.modelcontextprotocol.io/v0.1/servers";
   private readonly TIMEOUT_MS = 30000;
 
   constructor(
@@ -37,7 +37,7 @@ export class McpRegistrySyncService {
     skipped: number;
     failed: number;
   }> {
-    this.logger.log('开始从官方 MCP Registry 同步服务器列表...');
+    this.logger.log("开始从官方 MCP Registry 同步服务器列表...");
 
     let servers: RegistryServer[] = [];
     try {
@@ -55,7 +55,7 @@ export class McpRegistrySyncService {
     });
     const existingSlugs = new Set(existing.map((m) => m.slug));
     const endpointBySlug = new Map(
-      existing.map((m) => [m.slug, m.endpoint ?? '']),
+      existing.map((m) => [m.slug, m.endpoint ?? ""]),
     );
     let updated = 0;
 
@@ -87,7 +87,7 @@ export class McpRegistrySyncService {
             continue;
           }
           if (server.repository) {
-            const alt = `${slug}-${crypto.createHash('sha1').update(server.repository).digest('hex').slice(0, 8)}`;
+            const alt = `${slug}-${crypto.createHash("sha1").update(server.repository).digest("hex").slice(0, 8)}`;
             if (existingSlugs.has(alt)) {
               skipped++;
               continue;
@@ -105,12 +105,12 @@ export class McpRegistrySyncService {
           description:
             server.description?.slice(0, 1000) || `MCP 服务器：${server.name}`,
           endpoint: this.inferEndpoint(server),
-          type: 'mcp',
+          type: "mcp",
           tags: this.extractTags(server),
-          phase: 'registry',
+          phase: "registry",
           // 第三方内容默认待审：需人工审核通过后才对公众可见。
           // 已入库并通过审核的存量条目不受影响（上方 sameSource 分支不改 status）。
-          status: 'pending',
+          status: "pending",
         });
 
         await this.mcpRepo.save(mcp);
@@ -131,7 +131,7 @@ export class McpRegistrySyncService {
   }
 
   /** 每天凌晨 4 点自动同步 */
-  @Cron('0 0 4 * * *')
+  @Cron("0 0 4 * * *")
   async dailySync() {
     try {
       await this.syncFromRegistry();
@@ -148,7 +148,7 @@ export class McpRegistrySyncService {
 
     try {
       const res = await fetch(this.REGISTRY_URL, {
-        headers: { Accept: 'application/json' },
+        headers: { Accept: "application/json" },
         signal: controller.signal,
       });
 
@@ -173,23 +173,23 @@ export class McpRegistrySyncService {
     const raw =
       server.name ||
       server.repository
-        ?.split('/')
+        ?.split("/")
         .pop()
-        ?.replace(/\.git$/, '') ||
-      'mcp-server';
+        ?.replace(/\.git$/, "") ||
+      "mcp-server";
     const base = raw
       .toLowerCase()
-      .replace(/[^a-z0-9-]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '')
+      .replace(/[^a-z0-9-]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
       .slice(0, 60);
-    return base || 'mcp-server';
+    return base || "mcp-server";
   }
 
   private inferEndpoint(server: RegistryServer): string {
     // 优先用 repository URL（GitHub 仓库），其次是 homepage
     return (
-      server.repository || server.url || server.homepage || server.name || ''
+      server.repository || server.url || server.homepage || server.name || ""
     );
   }
 
@@ -198,8 +198,8 @@ export class McpRegistrySyncService {
     if (server.tags?.length) {
       tags.push(...server.tags.slice(0, 3));
     }
-    if (server.repository?.includes('github.com')) {
-      tags.push('GitHub');
+    if (server.repository?.includes("github.com")) {
+      tags.push("GitHub");
     }
     return tags.slice(0, 5);
   }

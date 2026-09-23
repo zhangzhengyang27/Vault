@@ -1,15 +1,15 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import { SearchService } from './search.service';
-import { Tool } from '../../entities/tool.entity';
-import { Prompt } from '../../entities/prompt.entity';
-import { Article } from '../../entities/article.entity';
-import { News } from '../../entities/news.entity';
-import { Repo } from '../../entities/repo.entity';
-import { Mcp } from '../../entities/mcp.entity';
-import { Resource } from '../../entities/resource.entity';
+import { Test, TestingModule } from "@nestjs/testing";
+import { getRepositoryToken } from "@nestjs/typeorm";
+import { SearchService } from "./search.service";
+import { Tool } from "../../entities/tool.entity";
+import { Prompt } from "../../entities/prompt.entity";
+import { Article } from "../../entities/article.entity";
+import { News } from "../../entities/news.entity";
+import { Repo } from "../../entities/repo.entity";
+import { Mcp } from "../../entities/mcp.entity";
+import { Resource } from "../../entities/resource.entity";
 
-describe('SearchService', () => {
+describe("SearchService", () => {
   let service: SearchService;
 
   const mockQueryBuilder = {
@@ -43,47 +43,47 @@ describe('SearchService', () => {
     service = module.get<SearchService>(SearchService);
   });
 
-  it('should be defined', () => {
+  it("should be defined", () => {
     expect(service).toBeDefined();
   });
 
-  it('should return empty array for empty query', async () => {
-    const result = await service.search('');
+  it("should return empty array for empty query", async () => {
+    const result = await service.search("");
     expect(result).toEqual([]);
   });
 
-  it('should return empty array for query shorter than 2 chars', async () => {
-    const result = await service.search('a');
+  it("should return empty array for query shorter than 2 chars", async () => {
+    const result = await service.search("a");
     expect(result).toEqual([]);
   });
 
-  it('should call queryBuilder for each table', async () => {
+  it("should call queryBuilder for each table", async () => {
     mockQueryBuilder.getRawMany.mockResolvedValue([]);
-    await service.search('chat');
+    await service.search("chat");
     // 7 张表 + mcps 表拆出 MCP/Skill 两次查询 = 8
     expect(mockRepo.createQueryBuilder).toHaveBeenCalledTimes(8);
   });
 
-  it('should split the mcps table into separate mcp and skill queries', async () => {
+  it("should split the mcps table into separate mcp and skill queries", async () => {
     mockQueryBuilder.getRawMany.mockResolvedValue([]);
-    await service.search('pdf');
+    await service.search("pdf");
     const whereSqls = (
       mockQueryBuilder.andWhere.mock.calls as unknown as string[][]
     ).map((c) => c[0]);
     // mcps 表按 type 列分流，两类结果分别路由到 /mcp 与 /skills
-    expect(whereSqls).toContain('mcp.type = :mcp_type');
+    expect(whereSqls).toContain("mcp.type = :mcp_type");
     expect(
-      whereSqls.filter((sql) => sql === 'mcp.type = :mcp_type').length,
+      whereSqls.filter((sql) => sql === "mcp.type = :mcp_type").length,
     ).toBeGreaterThanOrEqual(2);
   });
 
-  it('should return results with correct format', async () => {
+  it("should return results with correct format", async () => {
     mockQueryBuilder.getRawMany
       .mockResolvedValueOnce([
         {
-          tool_slug: 'chatgpt',
-          tool_name: 'ChatGPT',
-          tool_description: 'AI助手',
+          tool_slug: "chatgpt",
+          tool_name: "ChatGPT",
+          tool_description: "AI助手",
           sim: 0.8,
         },
       ])
@@ -94,32 +94,32 @@ describe('SearchService', () => {
       .mockResolvedValue([]) // mcps
       .mockResolvedValue([]); // resources
 
-    const result = await service.search('chat');
+    const result = await service.search("chat");
     expect(result).toHaveLength(1);
     expect(result[0]).toEqual({
-      type: '工具',
-      name: 'ChatGPT',
-      desc: 'AI助手',
-      slug: 'chatgpt',
-      href: '/tools/chatgpt',
+      type: "工具",
+      name: "ChatGPT",
+      desc: "AI助手",
+      slug: "chatgpt",
+      href: "/tools/chatgpt",
     });
   });
 
-  it('should sort results by similarity descending', async () => {
+  it("should sort results by similarity descending", async () => {
     mockQueryBuilder.getRawMany
       .mockResolvedValueOnce([
         {
-          tool_slug: 'low',
-          tool_name: 'Low',
-          tool_description: '低相似度',
+          tool_slug: "low",
+          tool_name: "Low",
+          tool_description: "低相似度",
           sim: 0.2,
         },
       ])
       .mockResolvedValueOnce([
         {
-          prompt_slug: 'high',
-          prompt_title: 'High',
-          prompt_description: '高相似度',
+          prompt_slug: "high",
+          prompt_title: "High",
+          prompt_description: "高相似度",
           sim: 0.9,
         },
       ])
@@ -129,12 +129,12 @@ describe('SearchService', () => {
       .mockResolvedValue([])
       .mockResolvedValue([]);
 
-    const result = await service.search('test');
-    expect(result[0].name).toBe('High');
-    expect(result[1].name).toBe('Low');
+    const result = await service.search("test");
+    expect(result[0].name).toBe("High");
+    expect(result[1].name).toBe("Low");
   });
 
-  it('should limit results to 50', async () => {
+  it("should limit results to 50", async () => {
     const manyResults = Array.from({ length: 60 }, (_, i) => ({
       tool_slug: `tool-${i}`,
       tool_name: `Tool ${i}`,
@@ -150,7 +150,7 @@ describe('SearchService', () => {
       .mockResolvedValue([])
       .mockResolvedValue([]);
 
-    const result = await service.search('test');
+    const result = await service.search("test");
     expect(result).toHaveLength(50);
   });
 });

@@ -1,11 +1,11 @@
-import { IsIn } from 'class-validator';
+import { IsIn } from "class-validator";
 
 export class AdminUserStatusDto {
-  @IsIn(['active', 'banned'])
+  @IsIn(["active", "banned"])
   status: string;
 }
 
 export class AdminUserRoleDto {
-  @IsIn(['user', 'admin'])
+  @IsIn(["user", "admin"])
   role: string;
 }

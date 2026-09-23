@@ -1,8 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { Test, TestingModule } from "@nestjs/testing";
+import { AppController } from "./app.controller";
+import { AppService } from "./app.service";
 
-describe('AppController', () => {
+describe("AppController", () => {
   let appController: AppController;
 
   beforeEach(async () => {
@@ -14,12 +14,12 @@ describe('AppController', () => {
     appController = app.get<AppController>(AppController);
   });
 
-  describe('root', () => {
-    it('should return health check object', () => {
+  describe("root", () => {
+    it("should return health check object", () => {
       const result = appController.getHello();
-      expect(result).toHaveProperty('status', 'ok');
-      expect(result).toHaveProperty('service', 'ai-portal-api');
-      expect(result).toHaveProperty('time');
+      expect(result).toHaveProperty("status", "ok");
+      expect(result).toHaveProperty("service", "ai-portal-api");
+      expect(result).toHaveProperty("time");
     });
   });
 });

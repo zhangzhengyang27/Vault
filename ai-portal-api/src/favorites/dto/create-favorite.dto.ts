@@ -4,18 +4,18 @@ import {
   IsOptional,
   IsString,
   MaxLength,
-} from 'class-validator';
+} from "class-validator";
 
 /** 可收藏的目标类型（与评论目标白名单一致，防止任意字符串脏数据） */
 const FAVORITE_TARGETS = [
-  'tool',
-  'prompt',
-  'article',
-  'news',
-  'repo',
-  'resource',
-  'mcp',
-  'post',
+  "tool",
+  "prompt",
+  "article",
+  "news",
+  "repo",
+  "resource",
+  "mcp",
+  "post",
 ];
 
 export class CreateFavoriteDto {

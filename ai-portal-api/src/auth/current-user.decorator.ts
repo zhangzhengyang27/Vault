@@ -1,4 +1,4 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 
 /** JwtAuthGuard 校验通过后挂在 request 上的用户信息 */
 export interface RequestUser {

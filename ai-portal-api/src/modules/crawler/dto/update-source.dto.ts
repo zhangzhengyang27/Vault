@@ -1,4 +1,4 @@
-import { IsBoolean, IsIn, IsOptional, IsString, IsUrl } from 'class-validator';
+import { IsBoolean, IsIn, IsOptional, IsString, IsUrl } from "class-validator";
 
 export class UpdateSourceDto {
   @IsOptional()
@@ -10,12 +10,12 @@ export class UpdateSourceDto {
   url?: string;
 
   @IsOptional()
-  @IsIn(['news', 'tool', 'prompt', 'github', 'knowledge'])
-  sourceType?: 'news' | 'tool' | 'prompt' | 'github' | 'knowledge';
+  @IsIn(["news", "tool", "prompt", "github", "knowledge"])
+  sourceType?: "news" | "tool" | "prompt" | "github" | "knowledge";
 
   @IsOptional()
-  @IsIn(['minutely', 'hourly', 'daily', 'weekly'])
-  crawlInterval?: 'minutely' | 'hourly' | 'daily' | 'weekly';
+  @IsIn(["minutely", "hourly", "daily", "weekly"])
+  crawlInterval?: "minutely" | "hourly" | "daily" | "weekly";
 
   @IsOptional()
   @IsBoolean()

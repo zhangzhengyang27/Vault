@@ -2,14 +2,14 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Brackets } from 'typeorm';
-import { Tool } from '../../entities/tool.entity';
-import { Category } from '../../entities/category.entity';
-import { CreateToolDto } from './dto/create-tool.dto';
-import { ContentCleanupService } from '../../common/content-cleanup.service';
-import { escapeLike, LIKE_ESCAPE_SQL } from '../../common/like.util';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository, Brackets } from "typeorm";
+import { Tool } from "../../entities/tool.entity";
+import { Category } from "../../entities/category.entity";
+import { CreateToolDto } from "./dto/create-tool.dto";
+import { ContentCleanupService } from "../../common/content-cleanup.service";
+import { escapeLike, LIKE_ESCAPE_SQL } from "../../common/like.util";
 
 export interface ToolQuery {
   page?: number;
@@ -36,29 +36,29 @@ export class ToolsService {
     const limit = Math.min(100, Math.max(1, Number(query.limit) || 12));
     const offset = (page - 1) * limit;
 
-    const qb = this.repo.createQueryBuilder('tool');
+    const qb = this.repo.createQueryBuilder("tool");
 
     // 公开接口默认只返回已发布内容，pending/rejected 内容仅管理后台可见
-    qb.andWhere('tool.status = :status', { status: 'published' });
+    qb.andWhere("tool.status = :status", { status: "published" });
 
     if (query.category) {
-      qb.leftJoin('tool.category', 'category').andWhere(
-        'category.name = :cat OR category.slug = :cat',
+      qb.leftJoin("tool.category", "category").andWhere(
+        "category.name = :cat OR category.slug = :cat",
         { cat: query.category },
       );
     }
     if (query.tag) {
-      qb.andWhere('tool.tags @> ARRAY[:tag]::text[]', { tag: query.tag });
+      qb.andWhere("tool.tags @> ARRAY[:tag]::text[]", { tag: query.tag });
     }
     if (query.free) {
-      qb.andWhere('tool.isFree = :free', { free: true });
+      qb.andWhere("tool.isFree = :free", { free: true });
     }
     if (query.q) {
       qb.andWhere(
         new Brackets((w) => {
-          w.where('tool.name ILIKE :q' + LIKE_ESCAPE_SQL, {
+          w.where("tool.name ILIKE :q" + LIKE_ESCAPE_SQL, {
             q: `%${escapeLike(query.q)}%`,
-          }).orWhere('tool.description ILIKE :q' + LIKE_ESCAPE_SQL, {
+          }).orWhere("tool.description ILIKE :q" + LIKE_ESCAPE_SQL, {
             q: `%${escapeLike(query.q)}%`,
           });
         }),
@@ -66,17 +66,17 @@ export class ToolsService {
     }
 
     switch (query.sort) {
-      case 'rating':
-        qb.orderBy('tool.rating', 'DESC');
+      case "rating":
+        qb.orderBy("tool.rating", "DESC");
         break;
-      case 'newest':
-        qb.orderBy('tool.createdAt', 'DESC');
+      case "newest":
+        qb.orderBy("tool.createdAt", "DESC");
         break;
-      case 'name':
-        qb.orderBy('tool.name', 'ASC');
+      case "name":
+        qb.orderBy("tool.name", "ASC");
         break;
       default:
-        qb.orderBy('tool.id', 'ASC');
+        qb.orderBy("tool.id", "ASC");
     }
 
     const [items, total] = await qb.skip(offset).take(limit).getManyAndCount();
@@ -96,9 +96,9 @@ export class ToolsService {
   async findOne(slug: string) {
     // 公开详情只返回已发布内容（draft/pending/rejected 不可匿名直达）
     const entity = await this.repo.findOne({
-      where: { slug, status: 'published' },
+      where: { slug, status: "published" },
     });
-    if (!entity) throw new NotFoundException('工具不存在或未发布');
+    if (!entity) throw new NotFoundException("工具不存在或未发布");
     return entity;
   }
 
@@ -114,7 +114,7 @@ export class ToolsService {
 
   async update(slug: string, dto: Partial<CreateToolDto>) {
     const tool = await this.repo.findOne({ where: { slug } });
-    if (!tool) throw new NotFoundException('工具不存在');
+    if (!tool) throw new NotFoundException("工具不存在");
     const { categoryId, ...rest } = dto;
     Object.assign(tool, rest);
     if (categoryId !== undefined) {
@@ -132,22 +132,22 @@ export class ToolsService {
     try {
       saved = await this.repo.save(tool);
     } catch (err) {
-      if ((err as { code?: string }).code === '23505') {
+      if ((err as { code?: string }).code === "23505") {
         throw new ConflictException(`slug 已被占用: ${rest.slug}`);
       }
       throw err;
     }
     if (rest.slug && rest.slug !== oldSlug) {
-      await this.cleanup.syncSlug('tool', tool.id, rest.slug);
+      await this.cleanup.syncSlug("tool", tool.id, rest.slug);
     }
     return saved;
   }
   async remove(slug: string) {
     const tool = await this.repo.findOne({ where: { slug } });
-    if (!tool) throw new NotFoundException('工具不存在');
+    if (!tool) throw new NotFoundException("工具不存在");
     await this.repo.remove(tool);
     // 清理该内容关联的评论/收藏/通知（多态关联无外键）
-    await this.cleanup.purge('tool', tool.id);
+    await this.cleanup.purge("tool", tool.id);
     return tool;
   }
 }

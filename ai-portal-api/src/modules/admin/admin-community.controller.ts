@@ -9,15 +9,15 @@ import {
   Query,
   UseGuards,
   UseInterceptors,
-} from '@nestjs/common';
-import { PostsService } from '../posts/posts.service';
-import { CommentsService } from '../comments/comments.service';
-import { JwtAuthGuard } from '../../auth/jwt-auth.guard';
-import { RolesGuard } from '../../auth/roles.guard';
-import { Roles } from '../../auth/roles.decorator';
-import { CurrentUser } from '../../auth/current-user.decorator';
-import { OperLogInterceptor } from '../../logs/oper-log.interceptor';
-import { PostStatusDto } from './dto/post-status.dto';
+} from "@nestjs/common";
+import { PostsService } from "../posts/posts.service";
+import { CommentsService } from "../comments/comments.service";
+import { JwtAuthGuard } from "../../auth/jwt-auth.guard";
+import { RolesGuard } from "../../auth/roles.guard";
+import { Roles } from "../../auth/roles.decorator";
+import { CurrentUser } from "../../auth/current-user.decorator";
+import { OperLogInterceptor } from "../../logs/oper-log.interceptor";
+import { PostStatusDto } from "./dto/post-status.dto";
 
 interface AdminUser {
   id: number;
@@ -31,8 +31,8 @@ interface AdminUser {
  */
 @UseGuards(JwtAuthGuard, RolesGuard)
 @UseInterceptors(OperLogInterceptor)
-@Roles('admin')
-@Controller('admin/community')
+@Roles("admin")
+@Controller("admin/community")
 export class AdminCommunityController {
   constructor(
     private readonly postsService: PostsService,
@@ -41,11 +41,11 @@ export class AdminCommunityController {
 
   // ---------- 帖子 ----------
 
-  @Get('posts')
+  @Get("posts")
   listPosts(
-    @Query('page') page = '1',
-    @Query('limit') limit = '20',
-    @Query('q') q?: string,
+    @Query("page") page = "1",
+    @Query("limit") limit = "20",
+    @Query("q") q?: string,
   ) {
     return this.postsService.adminList({
       page: Math.max(1, Number(page) || 1),
@@ -55,18 +55,18 @@ export class AdminCommunityController {
   }
 
   /** 下架（hidden）/恢复（published）帖子 */
-  @Patch('posts/:id/status')
+  @Patch("posts/:id/status")
   setPostStatus(
-    @Param('id', ParseIntPipe) id: number,
+    @Param("id", ParseIntPipe) id: number,
     @Body() body: PostStatusDto,
   ) {
     return this.postsService.setStatus(id, body.status);
   }
 
   /** 删除帖子：级联清理点赞/评论/收藏/通知 */
-  @Delete('posts/:id')
+  @Delete("posts/:id")
   removePost(
-    @Param('id', ParseIntPipe) id: number,
+    @Param("id", ParseIntPipe) id: number,
     @CurrentUser() user: AdminUser,
   ) {
     return this.postsService.remove(id, user);
@@ -74,12 +74,12 @@ export class AdminCommunityController {
 
   // ---------- 评论 ----------
 
-  @Get('comments')
+  @Get("comments")
   listComments(
-    @Query('page') page = '1',
-    @Query('limit') limit = '20',
-    @Query('q') q?: string,
-    @Query('targetType') targetType?: string,
+    @Query("page") page = "1",
+    @Query("limit") limit = "20",
+    @Query("q") q?: string,
+    @Query("targetType") targetType?: string,
   ) {
     return this.commentsService.adminList({
       page: Math.max(1, Number(page) || 1),
@@ -90,9 +90,9 @@ export class AdminCommunityController {
   }
 
   /** 删除评论（帖子评论会回退帖子计数） */
-  @Delete('comments/:id')
+  @Delete("comments/:id")
   removeComment(
-    @Param('id', ParseIntPipe) id: number,
+    @Param("id", ParseIntPipe) id: number,
     @CurrentUser() user: AdminUser,
   ) {
     return this.commentsService.remove(id, user);
