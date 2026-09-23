@@ -63,3 +63,9 @@ pnpm-debug.log*
 
 # ai-portal-admin：build/ 目录是 vite 构建配置源码，不能被根级 build/ 规则误伤
 !ai-portal-admin/build/
+
+# 业务/规划文档：仅本地保留，不入版本库、不上 GitHub
+/AI综合门户建站方案文档.md
+/后台管理系统建设计划.md
+/竞品调研与知识库增强计划.md
+/docs/superpowers/
