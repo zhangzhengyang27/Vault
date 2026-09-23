@@ -198,6 +198,7 @@ export function PromptImageCard({
         style={{ aspectRatio: `${aspect}` }}
       >
         {!failed && (
+          // eslint-disable-next-line @next/next/no-img-element -- 附件图任意域名且依赖 onLoad 测量宽高比，避免优化管线干扰
           <img
             src={prompt.image}
             alt={prompt.title.trim() || "提示词图片"}

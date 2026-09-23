@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import dynamic from "next/dynamic";
-import { X, FileText, PencilLine } from "lucide-react";
+import { X, PencilLine } from "lucide-react";
 import type { ToolbarNames } from "md-editor-rt";
 import DOMPurify from "dompurify";
 import "md-editor-rt/lib/style.css";

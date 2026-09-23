@@ -23,6 +23,7 @@ export function McpLogo({
         className="flex shrink-0 items-center justify-center overflow-hidden rounded-xl bg-zinc-50 ring-1 ring-zinc-200/70 dark:bg-zinc-800/60 dark:ring-zinc-700/60"
         style={dim}
       >
+        {/* eslint-disable-next-line @next/next/no-img-element -- 外链 logo 任意域名，小图标无需优化管线 */}
         <img
           src={logo}
           alt={name || "logo"}

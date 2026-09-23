@@ -426,6 +426,7 @@ export default function PromptEditor({
                   </div>
                   <div className="flex items-center gap-2">
                     {a.type === "image" && (
+                      // eslint-disable-next-line @next/next/no-img-element -- 本地上传的 blob/data URL，next/image 不支持
                       <img
                         src={a.url}
                         alt={a.name}
