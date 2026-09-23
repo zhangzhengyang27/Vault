@@ -230,6 +230,9 @@ export class CrawlerService {
       );
       req.on("timeout", () => req.destroy(new Error("请求超时")));
       req.on("error", reject);
+      // GET 无请求体也必须显式 end，否则请求永不发出、socket 直至超时
+      // （2026-09 重建本文件时遗漏此行，导致所有数据源采集必然「请求超时」）
+      req.end();
     });
   }
 
