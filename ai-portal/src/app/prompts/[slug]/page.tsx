@@ -5,13 +5,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
   Pencil,
-  PenLine,
   Copy,
   Check,
   Sparkles,
   ExternalLink,
 } from "lucide-react";
-import PhaseBadge from "@/components/PhaseBadge";
 import FavoriteButton from "@/components/FavoriteButton";
 import PromptEditor from "@/components/PromptEditor";
 import type { PromptDraft } from "@/components/PromptEditor";
@@ -238,22 +236,6 @@ export default function PromptDetailPage() {
             <p className="mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">
               {prompt.description}
             </p>
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-zinc-100 px-2.5 py-1 text-xs text-zinc-500 dark:bg-zinc-800 dark:text-zinc-400">
-                {prompt.category?.name ?? "未分类"}
-              </span>
-              {isWebGen && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#1677ff]/10 px-2.5 py-1 text-xs font-semibold text-[#1677ff] dark:bg-[#5aa0ff]/15 dark:text-[#5aa0ff]">
-                  <Sparkles size={11} /> AI Coding 专用
-                </span>
-              )}
-              {prompt.source === "manual" && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-teal-100 px-2.5 py-1 text-xs font-semibold text-teal-700 dark:bg-teal-500/15 dark:text-teal-300">
-                  <PenLine size={11} /> 手动创建
-                </span>
-              )}
-              <PhaseBadge phase={prompt.phase} />
-            </div>
           </div>
         </div>
 
@@ -439,44 +421,6 @@ export default function PromptDetailPage() {
         </div>
       </div>
 
-      {/* 元信息卡 */}
-      <div className="rounded-lg bg-white p-5 dark:bg-zinc-900">
-        <h3 className="mb-3 text-base font-semibold text-zinc-900 dark:text-zinc-50">
-          元信息
-        </h3>
-        <dl className="space-y-3 text-sm">
-          <div className="flex items-center justify-between">
-            <dt className="text-zinc-500 dark:text-zinc-400">分类</dt>
-            <dd className="font-medium text-zinc-700 dark:text-zinc-300">
-              {prompt.category?.name ?? "未分类"}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-zinc-500 dark:text-zinc-400">适用模型</dt>
-            <dd className="font-medium text-zinc-700 dark:text-zinc-300">
-              {prompt.modelHint ?? "通用"}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-zinc-500 dark:text-zinc-400">使用量</dt>
-            <dd className="font-medium text-zinc-700 dark:text-zinc-300">
-              {(prompt.uses ?? 0).toLocaleString()}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-zinc-500 dark:text-zinc-400">作者</dt>
-            <dd className="font-medium text-zinc-700 dark:text-zinc-300">
-              @{prompt.author}
-            </dd>
-          </div>
-          <div className="flex items-center justify-between">
-            <dt className="text-zinc-500 dark:text-zinc-400">阶段</dt>
-            <dd>
-              <PhaseBadge phase={prompt.phase} />
-            </dd>
-          </div>
-        </dl>
-      </div>
     </>
   );
 
