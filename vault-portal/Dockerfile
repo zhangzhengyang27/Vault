@@ -24,4 +24,5 @@ COPY --from=build /app/public ./public
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/next.config.ts ./next.config.ts
 EXPOSE 3000
-CMD ["pnpm", "start"]
+# 运行层没有 pnpm（corepack 只在构建层启用），直接用 node 启动 next
+CMD ["node", "node_modules/next/dist/bin/next", "start", "-H", "0.0.0.0"]
