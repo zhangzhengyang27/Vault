@@ -9,6 +9,8 @@ AI 导航站前端：Next.js 16（App Router）+ React 19 + Tailwind 4。
   `/search`、`/users/[username]`（用户主页）、`/profile`（个人中心）、`/submit`（投稿）
 - 后台：`/admin/*`（统计、内容管理、数据源、审核、用户、分类），仅 `admin` 角色可见可访问
   （layout 路由守卫 + 页内双保险 + 后端接口强校验）
+- 管理后台另有独立工程 [ai-portal-admin](../ai-portal-admin)（自前台拆出，生产部署为
+  独立站点，见 [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)）；本目录的内嵌后台仍保留可用
 
 ## 与后端的连接
 

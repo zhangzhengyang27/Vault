@@ -8,8 +8,9 @@
 
 | 目录 | 说明 | 技术栈 | 默认端口 |
 | --- | --- | --- | --- |
-| `ai-portal/` | 前台门户 + 后台管理（`/admin`，仅 admin 可见） | Next.js 16 (App Router) / React 19 / Tailwind 4 | 3000 |
+| `ai-portal/` | 前台门户（含早期内嵌后台 `/admin`） | Next.js 16 (App Router) / React 19 / Tailwind 4 | 3000 |
 | `ai-portal-api/` | 后端 API（认证/内容/采集/审核/通知） | NestJS 11 / TypeORM / PostgreSQL | 3001 |
+| `ai-portal-admin/` | 独立管理后台（自前台拆出，独立部署） | Vue 3 / Element Plus / Vite | 5173 |
 | `ai-portal-extension/` | 「AI 提示词助手」Chrome 扩展 | Chrome MV3 (原生 JS) | — |
 
 前端通过 `next.config.ts` 的 rewrites 将 `/api/*`、`/uploads/*` 代理到后端，
@@ -32,7 +33,12 @@ cd ai-portal
 pnpm install
 pnpm dev                  # http://localhost:3000
 
-# 3. 扩展（可选）
+# 3. 独立管理后台（可选，需后端已启动）
+cd ai-portal-admin
+pnpm install              # 需 pnpm 10.23.0（corepack pnpm@10.23.0 install）
+pnpm dev                  # http://localhost:5173
+
+# 4. 扩展（可选）
 # Chrome → chrome://extensions/ → 开发者模式 → 加载已解压的扩展程序 → 选择 ai-portal-extension
 ```
 
@@ -57,6 +63,9 @@ pnpm cli:create-admin         # 创建或提升管理员
 
 # 前端
 pnpm build / pnpm lint
+
+# 管理后台
+pnpm typecheck / pnpm lint / pnpm build
 ```
 
 ## 内容状态约定

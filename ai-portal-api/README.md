@@ -1,133 +1,79 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ai-portal-api — AI 门户后端服务
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+AI 导航 Vault 的后端 API：NestJS 11 + TypeORM + PostgreSQL 13+，为前台门户
+（[ai-portal](../ai-portal)）与独立管理后台（[ai-portal-admin](../ai-portal-admin)）
+提供认证、内容、采集审核、社区等全部接口。仓库总览见[根 README](../README.md)。
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 功能模块
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ pnpm install
-```
-
-## Compile and run the project
-
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Run tests
-
-```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
-
----
-
-## 项目说明（后台管理系统）
-
-### 创建管理员账号
-
-方式一（CLI，推荐）：
-
-```bash
-# 新建管理员
-pnpm cli:create-admin --username=admin --password=你的密码 [--email=xxx]
-# 提升已有用户为管理员（保留原密码）
-pnpm cli:create-admin --username=xxx
-# 提升并重置密码
-pnpm cli:create-admin --username=xxx --reset-password --password=新密码
-```
-
-方式二（环境变量自动引导）：在 `.env` 中配置 `ADMIN_USERNAME` / `ADMIN_PASSWORD`（可选 `ADMIN_EMAIL`），
-应用启动时会自动创建或提升管理员账号；未配置则不生效。
-
-### 后台管理接口
-
-所有后台接口均需管理员身份（`JwtAuthGuard + RolesGuard + @Roles('admin')`），普通用户返回 403。
-
-| 模块 | 接口 |
+| 模块 | 说明 |
 | --- | --- |
-| 统计概览 | `GET /api/admin/stats`、`GET /api/admin/stats/trend?days=7` |
-| 内容管理 | `GET/POST/PATCH/DELETE /api/admin/content/{tools\|prompts\|articles\|news}` |
-| 用户管理 | `GET /api/admin/users`、`PATCH /api/admin/users/:id/status`、`PATCH /api/admin/users/:id/role` |
-| 用户投稿审核 | `GET /api/admin/submissions`、`PATCH /api/admin/submissions/:id/approve\|reject` |
-| 数据源/采集 | `GET/POST/PATCH/DELETE /api/crawler/sources`、`POST /api/crawler/run`、`GET /api/crawler/logs`、`GET/PATCH /api/crawler/review/:type` |
+| `auth` | 注册/登录，JWT + refresh token（入库哈希、轮换、重用检测） |
+| `modules/tools` `prompts` `articles` `news` `repos` `mcps` `resources` | 七类核心内容的 CRUD 与公开接口 |
+| `modules/categories` | 分类树管理 |
+| `modules/search` | pg_trgm 模糊搜索 |
+| `modules/posts` `comments` `messages` `follows` `subscriptions` `notifications` | 社区与消息 |
+| `favorites` | 收藏 |
+| `modules/crawler` | 采集源管理、Firecrawl 抓取（托管 API / 自托管）、采集审核 |
+| `modules/submissions` `reports` | 用户投稿与举报 |
+| `modules/users` | 用户、封禁、角色变更 |
+| `modules/admin` | 管理后台聚合接口（统计、内容管理、批量审核），`@Roles('admin')` |
+| `uploads` | 文件上传（本地磁盘 `uploads/`，单文件 10MB 限制） |
+| `logs` | 登录日志、操作日志、在线用户（30 分钟窗口） |
 
-内容状态约定：`published`（前台可见）／`draft`／`pending`／`archived`／`rejected`（前台隐藏）。
-公开接口只返回 `published` 内容，管理端接口可查看全部状态并支持上下架。
+## 快速开始
+
+```bash
+cp .env.example .env      # 必填 DATABASE_URL、JWT_SECRET（openssl rand -hex 32）
+pnpm install
+pnpm migration:run        # 执行数据库迁移
+pnpm start:dev            # http://localhost:3001/api
+```
+
+创建管理员（二选一）：
+
+```bash
+# 方式一：CLI
+pnpm cli:create-admin --username=admin --password=你的密码
+# 提升已有用户为管理员（保留原密码）：pnpm cli:create-admin --username=xxx
+# 提升并重置密码：pnpm cli:create-admin --username=xxx --reset-password --password=新密码
+
+# 方式二：.env 配 ADMIN_USERNAME / ADMIN_PASSWORD（可选 ADMIN_EMAIL），
+#         应用启动时自动创建或提升；本地演示可 SEED_DEMO=true（空库建 demo/demo1234）
+```
+
+前端接本服务：门户经 Next rewrites 代理 `/api`、`/uploads`（同源无需 CORS）；
+管理后台 dev 走 vite 代理。
+
+## 常用命令
+
+```bash
+pnpm start:dev                          # watch 开发
+pnpm build                              # nest build → dist/
+pnpm start:prod                         # node dist/src/main（生产建议 --enable-source-maps）
+pnpm test                               # jest 单元测试
+pnpm test:e2e                           # e2e（启动完整 AppModule，依赖 .env 的数据库）
+pnpm lint                               # eslint --fix
+pnpm migration:generate ./migrations/Xxx  # 由实体差异生成迁移，生成后人工检查 SQL
+pnpm migration:run / migration:revert   # 迁移执行 / 回滚
+```
+
+## 架构要点
+
+- 全局前缀 `api`；全局 ValidationPipe、AllExceptionsFilter、Throttler 限流
+  （全局 100/min，登录 10/min；账号维度 15 分钟内失败 10 次锁定 15 分钟）。
+- 认证双轨：HttpOnly cookie 会话（门户）+ Bearer access/refresh 双 token（管理后台）。
+  refresh token 入库（SHA-256）、每次刷新轮换、重用检测即全量作废；
+  改密码/管理员强退撤销该用户全部 refresh token。生产默认禁用 MCP stdio 探测。
+- 内容统一状态机：`published`（前台可见）/ `draft` / `pending`（采集与投稿待审）/
+  `rejected` / `archived`。公开接口只返回 `published`；后台接口可见全部状态并支持上下架。
+- pg_trgm GIN 搜索索引由每次启动的 `ensureGinTrgmIndexes`（`src/main.ts`）确保；
+  TypeORM synchronize 不认识 `gin_trgm_ops` 会删这类索引，故生产保持
+  `synchronize=false`，schema 变更一律走 `migrations/`。
+- `sql/` 存一次性维护 SQL 与全量 dump 参考流程；`scripts/` 存数据导入/修复脚本
+  （.mjs / .py）；`content/` 为知识库语料（配套 `scripts/import-kb*.mjs` 入库）。
+
+## 部署
+
+见 [docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md)：生产环境变量（CORS_ORIGINS、
+TRUST_PROXY、COOKIE_SECURE）、全量 dump 与迁移的关系、安全机制清单。
