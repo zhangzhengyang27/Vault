@@ -220,8 +220,12 @@ export function PromptImageCard({
           <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-zinc-200 to-zinc-100 dark:from-zinc-800 dark:to-zinc-900" />
         )}
         {failed && (
-          <div className="absolute inset-0 flex items-center justify-center text-xs text-zinc-400 dark:text-zinc-500">
-            图片加载失败
+          // 示例图缺失（文件未随备份迁移）时的无图占位：保留卡片可点，标题悬浮层仍可用
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-gradient-to-br from-indigo-50 via-violet-50 to-zinc-100 dark:from-indigo-950/40 dark:via-violet-950/30 dark:to-zinc-900">
+            <ImageIcon size={22} className="text-indigo-300 dark:text-indigo-700" />
+            <span className="text-xs text-zinc-400 dark:text-zinc-500">
+              示例图暂缺 · 点击查看提示词
+            </span>
           </div>
         )}
       </div>
