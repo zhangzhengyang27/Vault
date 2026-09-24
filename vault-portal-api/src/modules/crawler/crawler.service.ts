@@ -583,15 +583,37 @@ export class CrawlerService {
     return `${base || "item"}-${hash}`;
   }
 
-  /** 摘要：截取正文前 150 字并标注「AI 摘要」（接入大模型后可替换为结构化摘要） */
-  private generateSummary(raw?: string): string {
-    if (!raw) return "【AI 摘要】暂无正文内容";
-    const text = raw
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-    const summary = text.slice(0, 150) + (text.length > 150 ? "…" : "");
+  /**
+   * 摘要：截取正文前 150 字并标注「AI 摘要」（接入大模型后可替换为结构化摘要）。
+   * 入参须为 htmlToText 产出的纯文本；空文本返回空串（列表/详情页不渲染摘要行）。
+   */
+  private generateSummary(text: string): string {
+    const clean = text.replace(/\s+/g, " ").trim();
+    if (!clean) return "";
+    const summary = clean.slice(0, 150) + (clean.length > 150 ? "…" : "");
     return `【AI 摘要】${summary}`;
+  }
+
+  /** HTML → 纯文本：先过 XSS 白名单，块级标签转换行，再剥掉全部标签并解码实体 */
+  private htmlToText(raw?: string): string {
+    if (!raw) return "";
+    const withBreaks = this.sanitizeHtml(raw)
+      .replace(/<\/?(p|div|li|h[1-6]|blockquote|tr|section|article)\b[^>]*>/gi, "\n")
+      .replace(/<br\s*\/?>/gi, "\n");
+    return sanitizeHtmlLib(withBreaks, { allowedTags: [], allowedAttributes: {} })
+      .replace(/[ \t]+/g, " ")
+      .replace(/ ?\n ?/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
+  }
+
+  /** 识别「链接桩」正文：剥掉查看原文类短语后几乎不剩文字即视为无正文 */
+  private isLinkStub(text: string): boolean {
+    if (!text) return true;
+    const stripped = text
+      .replace(/点击查看原文|查看原文|阅读原文|阅读更多|全文|read more|continue reading/gi, "")
+      .replace(/[\s>»›·|.[\]()（）\-—–~、，。：:;；！!？?]/g, "");
+    return stripped.length < 10;
   }
 
   /** 校验链接是否为 github.com/<owner>/<repo> 仓库主页（博客/文档类条目一律拒绝） */
@@ -658,9 +680,12 @@ export class CrawlerService {
     title: string,
   ): Promise<boolean> {
     const slug = this.makeSlug(title);
-    const summary = this.generateSummary(item.content ?? item.contentSnippet);
-    const content =
-      this.sanitizeHtml(item.content ?? item.contentSnippet ?? "") || undefined;
+    // 正文统一转纯文本（前台按纯文本渲染，存 HTML 会原样露出）；
+    // InfoQ 等 RSS 只给「查看原文」链接桩，识别后置空，详情页走 sourceUrl 的查看原文按钮
+    const bodyText = this.htmlToText(item.content ?? item.contentSnippet);
+    const isStub = this.isLinkStub(bodyText);
+    const summary = isStub ? "" : this.generateSummary(bodyText);
+    const content = isStub ? undefined : bodyText;
     const tags = this.mapTags(item.categories);
 
     switch (sourceType) {
